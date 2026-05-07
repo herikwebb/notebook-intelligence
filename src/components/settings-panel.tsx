@@ -23,6 +23,49 @@ import { writeTextToClipboard } from '../utils';
 const lockedTip = (locked: boolean): string =>
   locked ? 'Locked by your administrator' : '';
 
+// Stable id helper so the tab and its panel agree on aria-controls /
+// aria-labelledby without scattering string concatenation through the
+// component.
+const tabId = (prefix: string, id: string): string => `${prefix}-${id}`;
+
+type TablistOrientation = 'vertical' | 'horizontal';
+
+// WAI-ARIA tablist arrow-key navigation. Same shape for both the
+// vertical (Up/Down) main tabs and the horizontal (Left/Right) Claude
+// subtabs — the orientation flag picks which keys move the cursor.
+// Returns an ``onKeyDown`` for the tablist container; callers decide
+// what to do with each id (typically: select + focus).
+function useTablistArrowKeys<T extends { id: string }>(
+  tabs: T[],
+  activeId: string,
+  onSelect: (id: string) => void,
+  orientation: TablistOrientation,
+  domIdFor: (id: string) => string
+): (e: React.KeyboardEvent<HTMLDivElement>) => void {
+  return (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const key = e.key;
+    const prevKey = orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft';
+    const nextKey = orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight';
+    if (key !== prevKey && key !== nextKey && key !== 'Home' && key !== 'End') {
+      return;
+    }
+    e.preventDefault();
+    const idx = tabs.findIndex(t => t.id === activeId);
+    let next = idx;
+    if (key === nextKey) {
+      next = (idx + 1) % tabs.length;
+    } else if (key === prevKey) {
+      next = (idx - 1 + tabs.length) % tabs.length;
+    } else if (key === 'Home') {
+      next = 0;
+    } else if (key === 'End') {
+      next = tabs.length - 1;
+    }
+    onSelect(tabs[next].id);
+    document.getElementById(domIdFor(tabs[next].id))?.focus();
+  };
+}
+
 // When a boolean policy is locked the panel shows the policy-resolved value;
 // otherwise it shows the user's local toggle state.
 const checkedValue = (
@@ -95,9 +138,8 @@ function SettingsPanelComponent(props: any) {
       <div
         className="nbi-settings-panel-tab-content"
         role="tabpanel"
-        id={`nbi-settings-tabpanel-${activeTab}`}
-        aria-labelledby={`nbi-settings-tab-${activeTab}`}
-        tabIndex={0}
+        id={tabId('nbi-settings-tabpanel', activeTab)}
+        aria-labelledby={tabId('nbi-settings-tab', activeTab)}
       >
         {activeTab === 'general' && (
           <SettingsPanelComponentGeneral
@@ -161,34 +203,13 @@ function SettingsPanelTabsComponent(props: any) {
     props.onTabSelected(id);
   };
 
-  // Arrow-key navigation matches the WAI-ARIA tabs pattern: Up/Down move
-  // between tabs (the list is rendered vertically) and Home/End jump to ends.
-  // Activation is automatic — focus moves and the panel switches together.
-  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
-    const key = e.key;
-    if (
-      key !== 'ArrowDown' &&
-      key !== 'ArrowUp' &&
-      key !== 'Home' &&
-      key !== 'End'
-    ) {
-      return;
-    }
-    e.preventDefault();
-    const idx = tabs.findIndex(t => t.id === activeTab);
-    let next = idx;
-    if (key === 'ArrowDown') {
-      next = (idx + 1) % tabs.length;
-    } else if (key === 'ArrowUp') {
-      next = (idx - 1 + tabs.length) % tabs.length;
-    } else if (key === 'Home') {
-      next = 0;
-    } else if (key === 'End') {
-      next = tabs.length - 1;
-    }
-    selectTab(tabs[next].id);
-    document.getElementById(`nbi-settings-tab-${tabs[next].id}`)?.focus();
-  };
+  const onKeyDown = useTablistArrowKeys(
+    tabs,
+    activeTab,
+    selectTab,
+    'vertical',
+    id => tabId('nbi-settings-tab', id)
+  );
 
   return (
     <div
@@ -204,11 +225,11 @@ function SettingsPanelTabsComponent(props: any) {
           <button
             type="button"
             key={tab.id}
-            id={`nbi-settings-tab-${tab.id}`}
+            id={tabId('nbi-settings-tab', tab.id)}
             className={`nbi-settings-panel-tab ${selected ? 'active' : ''}`}
             role="tab"
             aria-selected={selected}
-            aria-controls={`nbi-settings-tabpanel-${tab.id}`}
+            aria-controls={tabId('nbi-settings-tabpanel', tab.id)}
             tabIndex={selected ? 0 : -1}
             onClick={() => selectTab(tab.id)}
           >
@@ -1152,32 +1173,13 @@ function SettingsPanelComponentClaude(props: any) {
     { id: 'skills', label: 'Skills' }
   ];
 
-  // Horizontal tablist: Left/Right arrows move between subtabs.
-  const onSubTabKeyDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
-    const key = e.key;
-    if (
-      key !== 'ArrowLeft' &&
-      key !== 'ArrowRight' &&
-      key !== 'Home' &&
-      key !== 'End'
-    ) {
-      return;
-    }
-    e.preventDefault();
-    const idx = subTabs.findIndex(t => t.id === claudeSubTab);
-    let next = idx;
-    if (key === 'ArrowRight') {
-      next = (idx + 1) % subTabs.length;
-    } else if (key === 'ArrowLeft') {
-      next = (idx - 1 + subTabs.length) % subTabs.length;
-    } else if (key === 'Home') {
-      next = 0;
-    } else if (key === 'End') {
-      next = subTabs.length - 1;
-    }
-    setClaudeSubTab(subTabs[next].id);
-    document.getElementById(`nbi-claude-subtab-${subTabs[next].id}`)?.focus();
-  };
+  const onSubTabKeyDown = useTablistArrowKeys(
+    subTabs,
+    claudeSubTab,
+    id => setClaudeSubTab(id as 'settings' | 'skills'),
+    'horizontal',
+    id => tabId('nbi-claude-subtab', id)
+  );
 
   return (
     <div className="config-dialog claude-mode-config-dialog">
@@ -1195,11 +1197,11 @@ function SettingsPanelComponentClaude(props: any) {
               <button
                 type="button"
                 key={tab.id}
-                id={`nbi-claude-subtab-${tab.id}`}
+                id={tabId('nbi-claude-subtab', tab.id)}
                 className={`nbi-subtab ${selected ? 'active' : ''}`}
                 role="tab"
                 aria-selected={selected}
-                aria-controls={`nbi-claude-subtabpanel-${tab.id}`}
+                aria-controls={tabId('nbi-claude-subtabpanel', tab.id)}
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setClaudeSubTab(tab.id)}
               >
@@ -1212,9 +1214,8 @@ function SettingsPanelComponentClaude(props: any) {
       {claudeSubTab === 'skills' && (
         <div
           role="tabpanel"
-          id="nbi-claude-subtabpanel-skills"
-          aria-labelledby="nbi-claude-subtab-skills"
-          tabIndex={0}
+          id={tabId('nbi-claude-subtabpanel', 'skills')}
+          aria-labelledby={tabId('nbi-claude-subtab', 'skills')}
         >
           <SettingsPanelComponentSkills />
         </div>
@@ -1223,9 +1224,8 @@ function SettingsPanelComponentClaude(props: any) {
         <div
           className="config-dialog-body"
           role="tabpanel"
-          id="nbi-claude-subtabpanel-settings"
-          aria-labelledby="nbi-claude-subtab-settings"
-          tabIndex={0}
+          id={tabId('nbi-claude-subtabpanel', 'settings')}
+          aria-labelledby={tabId('nbi-claude-subtab', 'settings')}
         >
           <div className="model-config-section">
             <div className="model-config-section-header">
