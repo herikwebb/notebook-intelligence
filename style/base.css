@@ -1078,6 +1078,13 @@ body[data-jp-theme-light='false'] .inline-popover {
   box-shadow: rgba(90 76 191 / 25%) 0 0 4px 1px;
 }
 
+/* Undo .cm-content { caret-color: transparent } from CM6's drawSelection,
+   which inherits into our textarea when the popover renders as a block
+   widget inside the editor. */
+.inline-prompt-widget-inline textarea {
+  caret-color: auto;
+}
+
 .nbi-inline-prompt-block {
   box-sizing: border-box;
   display: block;
