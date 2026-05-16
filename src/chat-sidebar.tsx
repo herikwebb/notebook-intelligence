@@ -16,6 +16,7 @@ import { UUID } from '@lumino/coreutils';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
 
 import { NBIAPI, GitHubCopilotLoginStatus } from './api';
+import { injectTaskTargetNotebook } from './task-target-notebook';
 import {
   BackendMessageType,
   BuiltinToolsetType,
@@ -1110,6 +1111,11 @@ function SidebarComponent(props: any) {
   // walk can't land stale results on a reopened picker.
   const workspaceFilesLoadingRef = useRef(false);
   const workspaceScanGenerationRef = useRef(0);
+  // Path of the notebook that was active when the current agent task
+  // started. Threaded into every notebook-cell RunUICommand so tools keep
+  // targeting the right notebook after the user switches tabs mid-task
+  // (issue #252). Cleared / reset on every new chat submission.
+  const taskTargetNotebookPathRef = useRef<string | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploadingFiles, setIsUploadingFiles] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -2219,6 +2225,15 @@ function SidebarComponent(props: any) {
     setCopilotRequestInProgress(true);
 
     const activeDocInfo: IActiveDocumentInfo = props.getActiveDocumentInfo();
+    // Snapshot the active notebook so cell-targeting tools the agent fires
+    // later in this run keep hitting the right notebook even after the
+    // user switches tabs (issue #252). Non-notebook contexts clear the
+    // ref so a stale path from a previous run doesn't bleed through.
+    taskTargetNotebookPathRef.current = activeDocInfo?.filePath?.endsWith(
+      '.ipynb'
+    )
+      ? activeDocInfo.filePath
+      : null;
     const extractedPrompt = submitPrompt;
     const contents: IChatMessageContent[] = [];
     const app = props.getApp();
@@ -2398,11 +2413,16 @@ function SidebarComponent(props: any) {
             });
           } else if (response.type === BackendMessageType.RunUICommand) {
             const messageId = response.id;
+            const patchedArgs = injectTaskTargetNotebook(
+              response.data.commandId,
+              response.data.args,
+              taskTargetNotebookPathRef.current
+            );
             let result = 'void';
             try {
               result = await app.commands.execute(
                 response.data.commandId,
-                response.data.args
+                patchedArgs
               );
             } catch (error) {
               result = `Error executing command: ${error}`;
@@ -2722,6 +2742,15 @@ function SidebarComponent(props: any) {
         );
       };
       emitProgress(true);
+      // Snapshot the notebook the agent should target for this externally-
+      // triggered request (e.g., notebook-toolbar generation). The
+      // `RunUICommand` handler below uses this for the same tab-switch
+      // resilience covered by the main submit flow (issue #252).
+      const externalActiveDocInfo = props.getActiveDocumentInfo();
+      taskTargetNotebookPathRef.current =
+        externalActiveDocInfo?.filePath?.endsWith('.ipynb')
+          ? externalActiveDocInfo.filePath
+          : null;
       const hideInChat = !!request.hideInChat;
       const newList = hideInChat
         ? chatMessages
@@ -2811,11 +2840,16 @@ function SidebarComponent(props: any) {
             emitProgress(false);
           } else if (response.type === BackendMessageType.RunUICommand) {
             const runUiMessageId = response.id;
+            const patchedArgs = injectTaskTargetNotebook(
+              response.data.commandId,
+              response.data.args,
+              taskTargetNotebookPathRef.current
+            );
             let result = 'void';
             try {
               result = await props
                 .getApp()
-                .commands.execute(response.data.commandId, response.data.args);
+                .commands.execute(response.data.commandId, patchedArgs);
             } catch (error) {
               result = `Error executing command: ${error}`;
             }

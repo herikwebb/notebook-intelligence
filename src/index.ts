@@ -35,7 +35,7 @@ import {
   IInlineCompletionProvider
 } from '@jupyterlab/completer';
 
-import { NotebookPanel } from '@jupyterlab/notebook';
+import { NotebookActions, NotebookPanel } from '@jupyterlab/notebook';
 import { CodeEditor } from '@jupyterlab/codeeditor';
 import { FileEditorWidget } from '@jupyterlab/fileeditor';
 
@@ -107,6 +107,8 @@ import { createRoot, Root } from 'react-dom/client';
 import { SettingsPanel } from './components/settings-panel';
 import { ITerminalConnection } from '@jupyterlab/services/lib/terminal/terminal';
 import { NotebookGenerationToolbarExtension } from './notebook-generation-toolbar';
+
+import { CommandIDs } from './command-ids';
 
 const addInlinePromptEffect = StateEffect.define<{
   pos: number;
@@ -276,60 +278,6 @@ function getLineEndOffset(editor: CodeEditor.IEditor, offset: number): number {
     line: position.line,
     column: editor.getLine(position.line).length
   });
-}
-
-namespace CommandIDs {
-  export const chatuserInput = 'notebook-intelligence:chat-user-input';
-  export const insertAtCursor = 'notebook-intelligence:insert-at-cursor';
-  export const addCodeAsNewCell = 'notebook-intelligence:add-code-as-new-cell';
-  export const createNewFile = 'notebook-intelligence:create-new-file';
-  export const createNewNotebookFromPython =
-    'notebook-intelligence:create-new-notebook-from-py';
-  export const renameNotebook = 'notebook-intelligence:rename-notebook';
-  export const addCodeCellToNotebook =
-    'notebook-intelligence:add-code-cell-to-notebook';
-  export const addMarkdownCellToNotebook =
-    'notebook-intelligence:add-markdown-cell-to-notebook';
-  export const editorGenerateCode =
-    'notebook-intelligence:editor-generate-code';
-  export const editorExplainThisCode =
-    'notebook-intelligence:editor-explain-this-code';
-  export const editorFixThisCode = 'notebook-intelligence:editor-fix-this-code';
-  export const editorExplainThisOutput =
-    'notebook-intelligence:editor-explain-this-output';
-  export const editorTroubleshootThisOutput =
-    'notebook-intelligence:editor-troubleshoot-this-output';
-  export const editorAskAboutThisOutput =
-    'notebook-intelligence:editor-ask-about-this-output';
-  export const openGitHubCopilotLoginDialog =
-    'notebook-intelligence:open-github-copilot-login-dialog';
-  export const openConfigurationDialog =
-    'notebook-intelligence:open-configuration-dialog';
-  export const addMarkdownCellToActiveNotebook =
-    'notebook-intelligence:add-markdown-cell-to-active-notebook';
-  export const addCodeCellToActiveNotebook =
-    'notebook-intelligence:add-code-cell-to-active-notebook';
-  export const deleteCellAtIndex = 'notebook-intelligence:delete-cell-at-index';
-  export const insertCellAtIndex = 'notebook-intelligence:insert-cell-at-index';
-  export const getCellTypeAndSource =
-    'notebook-intelligence:get-cell-type-and-source';
-  export const setCellTypeAndSource =
-    'notebook-intelligence:set-cell-type-and-source';
-  export const getNumberOfCells = 'notebook-intelligence:get-number-of-cells';
-  export const getCellOutput = 'notebook-intelligence:get-cell-output';
-  export const runCellAtIndex = 'notebook-intelligence:run-cell-at-index';
-  export const getCurrentFileContent =
-    'notebook-intelligence:get-current-file-content';
-  export const setCurrentFileContent =
-    'notebook-intelligence:set-current-file-content';
-  export const openMCPConfigEditor =
-    'notebook-intelligence:open-mcp-config-editor';
-  export const showFormInputDialog =
-    'notebook-intelligence:show-form-input-dialog';
-  export const runCommandInTerminal =
-    'notebook-intelligence:run-command-in-terminal';
-  export const openClaudeCodeLauncher =
-    'notebook-intelligence:open-claude-code-launcher';
 }
 
 const DOCUMENT_WATCH_INTERVAL = 1000;
@@ -1388,12 +1336,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       cellType: 'code' | 'markdown',
       source: string
     ): boolean => {
-      const currentWidget = app.shell.currentWidget;
-      const notebookOpen =
-        currentWidget instanceof NotebookPanel &&
-        currentWidget.sessionContext.path === filePath &&
-        currentWidget.model;
-      if (!notebookOpen) {
+      const widget = docManager.findWidget(filePath);
+      const notebook =
+        widget instanceof NotebookPanel && widget.model ? widget : null;
+      if (!notebook) {
         app.commands.execute('apputils:notify', {
           message: `Failed to access the notebook: ${filePath}`,
           type: 'error',
@@ -1402,7 +1348,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         return false;
       }
 
-      const model = currentWidget.model.sharedModel;
+      const model = notebook.model.sharedModel;
 
       const newCellIndex = isNewEmptyNotebook(model)
         ? 0
@@ -1436,20 +1382,47 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       }
     });
 
-    const ensureANotebookIsActive = (): boolean => {
-      const currentWidget = app.shell.currentWidget;
-      const notebookOpen =
-        currentWidget instanceof NotebookPanel && currentWidget.model;
-      if (!notebookOpen) {
+    // Resolve the notebook a cell-targeting command should operate on.
+    //
+    // When the chat sidebar dispatches a RunUICommand on behalf of the
+    // agent it injects `notebookPath` — the notebook that was active at
+    // chat-request time. We look that one up via the doc manager so the
+    // command keeps targeting the right notebook even after the user
+    // switches tabs mid-task. If a `notebookPath` was supplied but no
+    // longer resolves (target tab was closed, or the notebook was
+    // renamed), we *do not* silently fall through to `currentWidget` —
+    // that would let the agent mutate a different notebook than it
+    // believed it was operating on. Surface the error and bail.
+    //
+    // For manually-invoked commands (palette, menu, toolbar) there's no
+    // `notebookPath`; the current widget is the intended target and the
+    // fallback applies.
+    const resolveTargetNotebook = (
+      args: { notebookPath?: string } | null | undefined
+    ): NotebookPanel | null => {
+      const requestedPath = args?.notebookPath;
+      if (requestedPath) {
+        const widget = docManager.findWidget(requestedPath);
+        if (widget instanceof NotebookPanel && widget.model) {
+          return widget;
+        }
         app.commands.execute('apputils:notify', {
-          message: 'Failed to find active notebook',
+          message: `Failed to find notebook: ${requestedPath}`,
           type: 'error',
           options: { autoClose: true }
         });
-        return false;
+        return null;
       }
-
-      return true;
+      const currentWidget = app.shell.currentWidget;
+      if (currentWidget instanceof NotebookPanel && currentWidget.model) {
+        return currentWidget;
+      }
+      app.commands.execute('apputils:notify', {
+        message: 'Failed to find active notebook',
+        type: 'error',
+        options: { autoClose: true }
+      });
+      return null;
     };
 
     const ensureAFileEditorIsActive = (): boolean => {
@@ -1469,11 +1442,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.addMarkdownCellToActiveNotebook, {
       execute: args => {
-        if (!ensureANotebookIsActive()) {
+        const np = resolveTargetNotebook(args);
+        if (!np) {
           return false;
         }
-
-        const np = app.shell.currentWidget as NotebookPanel;
         const model = np.model.sharedModel;
 
         const newCellIndex = isNewEmptyNotebook(model)
@@ -1491,11 +1463,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.addCodeCellToActiveNotebook, {
       execute: args => {
-        if (!ensureANotebookIsActive()) {
+        const np = resolveTargetNotebook(args);
+        if (!np) {
           return false;
         }
-
-        const np = app.shell.currentWidget as NotebookPanel;
         const model = np.model.sharedModel;
 
         const newCellIndex = isNewEmptyNotebook(model)
@@ -1513,11 +1484,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.getCellTypeAndSource, {
       execute: args => {
-        if (!ensureANotebookIsActive()) {
+        const np = resolveTargetNotebook(args);
+        if (!np) {
           return false;
         }
-
-        const np = app.shell.currentWidget as NotebookPanel;
         const model = np.model.sharedModel;
 
         return {
@@ -1529,11 +1499,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.setCellTypeAndSource, {
       execute: args => {
-        if (!ensureANotebookIsActive()) {
+        const np = resolveTargetNotebook(args);
+        if (!np) {
           return false;
         }
-
-        const np = app.shell.currentWidget as NotebookPanel;
         const model = np.model.sharedModel;
 
         const cellIndex = args.cellIndex as number;
@@ -1553,11 +1522,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.getNumberOfCells, {
       execute: args => {
-        if (!ensureANotebookIsActive()) {
+        const np = resolveTargetNotebook(args);
+        if (!np) {
           return false;
         }
-
-        const np = app.shell.currentWidget as NotebookPanel;
         const model = np.model.sharedModel;
 
         return model.cells.length;
@@ -1566,11 +1534,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.getCellOutput, {
       execute: args => {
-        if (!ensureANotebookIsActive()) {
+        const np = resolveTargetNotebook(args);
+        if (!np) {
           return false;
         }
-
-        const np = app.shell.currentWidget as NotebookPanel;
         const cellIndex = args.cellIndex as number;
 
         const cell = np.content.widgets[cellIndex];
@@ -1587,11 +1554,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.insertCellAtIndex, {
       execute: args => {
-        if (!ensureANotebookIsActive()) {
+        const np = resolveTargetNotebook(args);
+        if (!np) {
           return false;
         }
-
-        const np = app.shell.currentWidget as NotebookPanel;
         const model = np.model.sharedModel;
         const cellIndex = args.cellIndex as number;
         const cellType = args.cellType as 'code' | 'markdown';
@@ -1608,11 +1574,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.deleteCellAtIndex, {
       execute: args => {
-        if (!ensureANotebookIsActive()) {
+        const np = resolveTargetNotebook(args);
+        if (!np) {
           return false;
         }
-
-        const np = app.shell.currentWidget as NotebookPanel;
         const model = np.model.sharedModel;
         const cellIndex = args.cellIndex as number;
 
@@ -1624,14 +1589,18 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.runCellAtIndex, {
       execute: async args => {
-        if (!ensureANotebookIsActive()) {
+        const np = resolveTargetNotebook(args);
+        if (!np) {
           return false;
         }
+        np.content.activeCellIndex = args.cellIndex as number;
 
-        const currentWidget = app.shell.currentWidget as NotebookPanel;
-        currentWidget.content.activeCellIndex = args.cellIndex as number;
-
-        await app.commands.execute('notebook:run-cell');
+        // Drive the cell run via NotebookActions directly rather than the
+        // app-level `notebook:run-cell` command. The command operates on the
+        // currently-focused notebook; calling NotebookActions.run with our
+        // resolved target avoids stealing focus from whichever tab the user
+        // is on while the agent is running.
+        await NotebookActions.run(np.content, np.sessionContext);
       }
     });
 
