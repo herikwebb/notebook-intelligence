@@ -504,3 +504,160 @@ class TestLockSerialization:
 # Per-family policy-gate coverage lives in `tests/test_policy_gate.py`,
 # parametrized across SkillsBaseHandler / ClaudeMCPBaseHandler /
 # PluginsBaseHandler.
+
+
+class TestWorkspaceDisable:
+    """`projects.<cwd>.disabledMcpServers[]` round-trips on read/write."""
+
+    def test_disabled_flag_surfaces_on_list(self, claude_home, working_dir):
+        _write_claude_json(
+            claude_home,
+            {
+                "mcpServers": {
+                    "voicemode": {"type": "stdio", "command": "uvx"},
+                    "sentry": {"type": "http", "url": "https://example.com/mcp"},
+                },
+                "projects": {
+                    str(working_dir): {"disabledMcpServers": ["voicemode"]},
+                },
+            },
+        )
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+        servers = {s.name: s for s in manager.list_servers()}
+        assert servers["voicemode"].disabled_for_workspace is True
+        assert servers["sentry"].disabled_for_workspace is False
+
+    def test_disabled_flag_scoped_to_cwd(self, claude_home, tmp_path):
+        cwd_a = tmp_path / "a"
+        cwd_a.mkdir()
+        cwd_b = tmp_path / "b"
+        cwd_b.mkdir()
+        _write_claude_json(
+            claude_home,
+            {
+                "mcpServers": {"voicemode": {"type": "stdio", "command": "uvx"}},
+                "projects": {
+                    str(cwd_a): {"disabledMcpServers": ["voicemode"]},
+                    str(cwd_b): {"disabledMcpServers": []},
+                },
+            },
+        )
+        manager_a = ClaudeMCPManager(working_dir=str(cwd_a))
+        manager_b = ClaudeMCPManager(working_dir=str(cwd_b))
+        assert manager_a.list_servers()[0].disabled_for_workspace is True
+        assert manager_b.list_servers()[0].disabled_for_workspace is False
+
+    def test_disable_writes_to_user_config(self, claude_home, working_dir):
+        _write_claude_json(
+            claude_home,
+            {
+                "mcpServers": {"voicemode": {"type": "stdio", "command": "uvx"}},
+                "projects": {str(working_dir): {"otherKey": "preserved"}},
+            },
+        )
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+        srv = asyncio.run(manager.set_server_disabled("voicemode", True))
+        assert srv.disabled_for_workspace is True
+
+        with (claude_home / ".claude.json").open() as fp:
+            doc = json.load(fp)
+        project_block = doc["projects"][str(working_dir)]
+        assert project_block["disabledMcpServers"] == ["voicemode"]
+        # Sibling keys must not be clobbered when we touch a project block.
+        assert project_block["otherKey"] == "preserved"
+
+    def test_enable_removes_from_disabled_list(self, claude_home, working_dir):
+        _write_claude_json(
+            claude_home,
+            {
+                "mcpServers": {
+                    "voicemode": {"type": "stdio", "command": "uvx"},
+                    "other": {"type": "stdio", "command": "x"},
+                },
+                "projects": {
+                    str(working_dir): {
+                        "disabledMcpServers": ["voicemode", "other"]
+                    }
+                },
+            },
+        )
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+        srv = asyncio.run(manager.set_server_disabled("voicemode", False))
+        assert srv.disabled_for_workspace is False
+        with (claude_home / ".claude.json").open() as fp:
+            doc = json.load(fp)
+        assert doc["projects"][str(working_dir)]["disabledMcpServers"] == [
+            "other"
+        ]
+
+    def test_disable_idempotent(self, claude_home, working_dir):
+        _write_claude_json(
+            claude_home,
+            {
+                "mcpServers": {"voicemode": {"type": "stdio", "command": "uvx"}},
+                "projects": {
+                    str(working_dir): {"disabledMcpServers": ["voicemode"]}
+                },
+            },
+        )
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+        asyncio.run(manager.set_server_disabled("voicemode", True))
+        with (claude_home / ".claude.json").open() as fp:
+            doc = json.load(fp)
+        assert doc["projects"][str(working_dir)]["disabledMcpServers"] == [
+            "voicemode"
+        ]
+
+    def test_disable_creates_missing_project_block(self, claude_home, working_dir):
+        _write_claude_json(
+            claude_home,
+            {"mcpServers": {"voicemode": {"type": "stdio", "command": "uvx"}}},
+        )
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+        asyncio.run(manager.set_server_disabled("voicemode", True))
+        with (claude_home / ".claude.json").open() as fp:
+            doc = json.load(fp)
+        assert doc["projects"][str(working_dir)]["disabledMcpServers"] == [
+            "voicemode"
+        ]
+
+    def test_disable_creates_missing_config_file(self, claude_home, working_dir):
+        path = claude_home / ".claude.json"
+        assert not path.exists()
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+        # Toggling disabled for a server that doesn't yet exist is allowed; the
+        # flag would apply if/when the server is added. The user sees a
+        # synthesized record because there's no canonical definition to read.
+        srv = asyncio.run(manager.set_server_disabled("future-server", True))
+        assert srv.disabled_for_workspace is True
+        assert path.exists()
+        with path.open() as fp:
+            doc = json.load(fp)
+        assert doc["projects"][str(working_dir)]["disabledMcpServers"] == [
+            "future-server"
+        ]
+
+    def test_disable_rejects_corrupt_config(self, claude_home, working_dir):
+        (claude_home / ".claude.json").write_text("{not json", encoding="utf-8")
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+        with pytest.raises(ValueError, match="parse"):
+            asyncio.run(manager.set_server_disabled("voicemode", True))
+
+    def test_disable_atomic_write_preserves_other_top_level_keys(
+        self, claude_home, working_dir
+    ):
+        _write_claude_json(
+            claude_home,
+            {
+                "mcpServers": {"voicemode": {"type": "stdio", "command": "uvx"}},
+                "telemetry": {"feedbackSurveyState": "completed"},
+                "projects": {},
+            },
+        )
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+        asyncio.run(manager.set_server_disabled("voicemode", True))
+        with (claude_home / ".claude.json").open() as fp:
+            doc = json.load(fp)
+        # Unrelated top-level fields must survive a partial-update write.
+        assert doc["telemetry"] == {"feedbackSurveyState": "completed"}
+        assert doc["mcpServers"]["voicemode"]["command"] == "uvx"

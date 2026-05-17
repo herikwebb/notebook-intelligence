@@ -933,6 +933,39 @@ class ClaudeMCPDetailHandler(ClaudeMCPBaseHandler):
         except (FileNotFoundError, TimeoutError, ValueError) as e:
             self._error(e)
 
+    @tornado.web.authenticated
+    async def patch(self, scope, name):
+        # `scope` is part of the URL for symmetry with GET/DELETE but the
+        # workspace-disable list is a single flat array of names (not
+        # per-scope), so any of user/project/local resolves to the same write.
+        # We still validate it so a malformed URL fails fast.
+        try:
+            validate_scope(scope)
+        except ValueError as e:
+            self._error(e)
+            return
+        data = self._parse_json_body()
+        if data is None:
+            return
+        if "disabled_for_workspace" not in data:
+            self.set_status(400)
+            self.finish(json.dumps(
+                {"error": "Missing `disabled_for_workspace` in request body"}
+            ))
+            return
+        raw = data["disabled_for_workspace"]
+        if not isinstance(raw, bool):
+            self.set_status(400)
+            self.finish(json.dumps(
+                {"error": "`disabled_for_workspace` must be a JSON boolean"}
+            ))
+            return
+        try:
+            srv = await self.manager.set_server_disabled(name=name, disabled=raw)
+            self.finish(json.dumps({"server": srv.to_dict()}))
+        except (FileNotFoundError, TimeoutError, ValueError) as e:
+            self._error(e)
+
 
 class PluginsBaseHandler(PolicyGatedHandler):
     """Shared helpers + policy gate for plugin endpoints."""
