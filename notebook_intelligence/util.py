@@ -310,6 +310,64 @@ def compute_effective_disabled_launchers(disabled, allow_enabling_with_env: bool
         )
     ]
 
+
+# Env-var name substrings that indicate the value is sensitive. The shell
+# tools (`execute_command`, `run_command_in_embedded_terminal`) return raw
+# stdout/stderr to chat history, so a verbose command like `env`, a
+# misbehaving binary that dumps env on error, or `git -c http.extraHeader`
+# in trace mode will surface the user's own GITHUB_TOKEN, ANTHROPIC_API_KEY,
+# and similar into the chat transcript (and through to the LLM provider).
+# Match is case-insensitive substring; values shorter than the floor are
+# skipped so a benign one-character env doesn't trigger spurious redaction.
+_SECRET_ENV_NAME_PATTERNS: tuple[str, ...] = (
+    "TOKEN",
+    "PASSWORD",
+    "PASSPHRASE",
+    "PASSWD",
+    "SECRET",
+    "API_KEY",
+    "APIKEY",
+    "PRIVATE_KEY",
+    "CREDENTIAL",
+    "AUTH",
+)
+_SECRET_VALUE_MIN_LEN = 8
+
+
+def _looks_like_secret_env_name(name: str) -> bool:
+    upper = name.upper()
+    return any(pat in upper for pat in _SECRET_ENV_NAME_PATTERNS)
+
+
+def redact_process_secrets(text: str) -> str:
+    """Replace any process-env values that look like secrets with
+    ``<redacted>``. Defense in depth for the shell-execute tools, which
+    return raw stdout/stderr to chat. A verbose command (``env``,
+    ``printenv``, ``git`` with credential-helper tracing) would otherwise
+    paste the user's GITHUB_TOKEN / ANTHROPIC_API_KEY / etc. into chat
+    history.
+
+    Conservative shape: only env vars whose NAME contains one of the
+    sensitive substrings have their VALUES redacted. The value-length
+    floor avoids redacting incidental short strings (e.g. a 3-char
+    DEV_TOKEN) that happen to appear elsewhere in tool output.
+    """
+    if not text:
+        return text
+    out = text
+    for name, value in os.environ.items():
+        if not value or len(value) < _SECRET_VALUE_MIN_LEN:
+            continue
+        if not _looks_like_secret_env_name(name):
+            continue
+        # Replace every literal occurrence. Performance is acceptable
+        # because the loop is O(env size) and `str.replace` is O(N) per
+        # call; tool output is bounded by `capture_output=True` plus the
+        # 30s timeout.
+        if value in out:
+            out = out.replace(value, "<redacted>")
+    return out
+
 def _emit(signal, payload: dict) -> None:
     if signal is not None:
         signal.emit(payload)
