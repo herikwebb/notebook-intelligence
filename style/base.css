@@ -1022,9 +1022,9 @@ button.send-button {
   height: 24px;
 }
 
-button.send-button:disabled,
-button.send-button:disabled:hover,
-button.send-button:disabled:active {
+button.send-button:disabled:not(.send-button-stop),
+button.send-button:disabled:hover:not(.send-button-stop),
+button.send-button:disabled:active:not(.send-button-stop) {
   cursor: default;
   background-color: var(--jp-accept-color-normal);
 }
@@ -1043,7 +1043,11 @@ button.send-button:disabled:active {
    non-redundant signal); pair it with a warn-tinted background and a
    border that picks up the warn color so the state is visible to
    color-blind users too. The accessible name on the <button> swaps to
-   "Stop generating" in lockstep. */
+   "Stop generating" in lockstep.
+   We do NOT reuse JupyterLab's own jp-mod-warn rule because that token
+   resolves to --jp-warn-color-normal (red) which reads as "error". We
+   want "caution" (amber) via --jp-warn-color1, so the custom rule
+   stays intentionally separate. */
 .send-button.send-button-stop {
   background-color: var(--jp-warn-color1, #ff9800);
   border-color: var(--jp-warn-color1, #ff9800);
