@@ -52,7 +52,6 @@ from notebook_intelligence.claude_mcp_manager import ClaudeMCPManager
 from notebook_intelligence.plugin_manager import PluginManager
 from notebook_intelligence.claude_sessions import (
     NBI_CONTEXT_PREFIX,
-    get_sessions_dir as get_claude_sessions_dir,
     list_all_sessions as list_all_claude_sessions,
 )
 import notebook_intelligence.github_copilot as github_copilot
@@ -1541,9 +1540,16 @@ class ClaudeSessionsListHandler(APIHandler):
             cwd = get_jupyter_root_dir()
             sessions = list_all_claude_sessions(cwd=cwd)
             if scope == "cwd" and cwd:
-                target = str(get_claude_sessions_dir(cwd))
+                # Compare realpaths so symlinked workspaces (common on
+                # JupyterHub with NFS user dirs) match transcripts that
+                # were written against the resolved path. The old
+                # implementation compared the encoded directory name,
+                # which produced different strings whenever the user's
+                # cwd was a symlink alias.
+                target = os.path.realpath(cwd)
                 sessions = [
-                    s for s in sessions if os.path.dirname(s.path) == target
+                    s for s in sessions
+                    if s.cwd and os.path.realpath(s.cwd) == target
                 ]
             self.finish(json.dumps({
                 "sessions": [asdict(s) for s in sessions],
