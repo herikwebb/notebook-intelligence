@@ -52,6 +52,22 @@ def _assistant_line(session_id: str, cwd: str = "") -> dict:
     return line
 
 
+@pytest.fixture(autouse=True)
+def _clear_session_cache():
+    """Drop the module-level _SESSION_INFO_CACHE between tests.
+
+    The cache is keyed by (path, mtime), so under tmp_path per-test
+    isolation collisions are theoretical; explicit clearing keeps test
+    ordering, single-test reruns, and future cache-introspection tests
+    deterministic instead of relying on tmp_path entropy.
+    """
+    from notebook_intelligence import claude_sessions
+
+    claude_sessions._SESSION_INFO_CACHE.clear()
+    yield
+    claude_sessions._SESSION_INFO_CACHE.clear()
+
+
 @pytest.fixture
 def fake_claude_home(tmp_path):
     """Create an empty ~/.claude stand-in under a tmp_path."""
@@ -686,14 +702,20 @@ class TestListAllSessions:
 
 
 class TestCrossSurfaceConsistency:
-    """Pin that the three session-listing surfaces (chat sidebar, launcher
-    tile, /resume inside Claude) converge on the same set of resumable
-    sessions.
+    """Pin that NBI's session-listing surfaces converge on the same
+    on-disk set ``claude --resume`` consumes.
 
-    /resume's authoritative source is the on-disk transcript files under
-    ``~/.claude/projects/*/``. Both NBI pickers must enumerate that same
-    set so users never see a session "missing" from one surface that
-    shows up on another.
+    Three surfaces care about session enumeration: the chat sidebar's
+    Resume button (scope=cwd), the Launcher tile picker (scope=all), and
+    Claude Code's own ``/resume`` (external; not shelled out by these
+    tests). The authoritative ground truth all three share is the set
+    of ``.jsonl`` transcripts under ``~/.claude/projects/*/``. These
+    tests assert that NBI's two listing paths enumerate that set, so a
+    user can't see a session in one surface and not the other. Whether
+    Claude Code's own ``/resume`` enumerates the same set is its
+    contract to keep, not ours; a Galata or shell-out integration test
+    that runs ``claude --resume`` and diffs IDs against ours is the
+    cross-binary check, deferred to follow-up.
     """
 
     def test_launcher_returns_every_on_disk_session(

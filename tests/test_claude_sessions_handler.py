@@ -190,6 +190,32 @@ class TestClaudeSessionsListHandler:
         body = _parse_response(handler)
         assert {s["session_id"] for s in body["sessions"]} == {"abc", "xyz"}
 
+    def test_scope_cwd_drops_sessions_with_empty_cwd(
+        self, claude_mode_on, tmp_path
+    ):
+        # A session whose transcript carried no cwd field AND whose
+        # project-dir name failed dash-decoding ends up with cwd="".
+        # Such a session cannot be realpath-compared against the current
+        # cwd, so the handler drops it from scope=cwd. (It stays visible
+        # under scope=all so the user can still find it.) Pin the drop
+        # so a future refactor doesn't accidentally start including
+        # un-matched empty-cwd rows.
+        cwd = str(tmp_path / "proj")
+        in_cwd = _session("abc", str(tmp_path / "proj" / "abc.jsonl"), cwd=cwd)
+        no_cwd = _session("xyz", str(tmp_path / "other" / "xyz.jsonl"), cwd="")
+        with patch.object(
+            ext_module, "list_all_claude_sessions", return_value=[in_cwd, no_cwd]
+        ):
+            with patch.object(
+                ext_module, "get_jupyter_root_dir", return_value=cwd
+            ):
+                handler = _make_handler(scope="cwd")
+                ClaudeSessionsListHandler.get(handler)
+
+        body = _parse_response(handler)
+        ids = {s["session_id"] for s in body["sessions"]}
+        assert ids == {"abc"}
+
     def test_scope_cwd_matches_via_symlink_alias(self, claude_mode_on, tmp_path):
         # A symlinked workspace (common on JupyterHub user dirs) means
         # the jupyter root and the session's recorded cwd may differ as

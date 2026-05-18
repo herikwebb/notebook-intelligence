@@ -202,13 +202,25 @@ export function LauncherPicker({
                   {/* Render the basename of the project as the inline
                       label; keep the full path on hover via title so a
                       user with several similarly-named projects can
-                      disambiguate without losing the path entirely. */}
-                  <span
-                    className="nbi-claude-code-picker-session-project"
-                    title={session.cwd}
-                  >
-                    {projectLabel(session.cwd)}
-                  </span>
+                      disambiguate without losing the path entirely.
+                      Screen readers don't expose `title` on <span>
+                      reliably, so duplicate the full path into
+                      aria-label whenever it differs from the visible
+                      basename. */}
+                  {(() => {
+                    const full = session.cwd ?? '';
+                    const label = projectLabel(full);
+                    const fullDiffersFromLabel = full && full !== label;
+                    return (
+                      <span
+                        className="nbi-claude-code-picker-session-project"
+                        title={full}
+                        aria-label={fullDiffersFromLabel ? full : undefined}
+                      >
+                        {label}
+                      </span>
+                    );
+                  })()}
                 </div>
                 {session.preview && (
                   <div className="nbi-claude-code-picker-msg">

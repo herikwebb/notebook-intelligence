@@ -1546,10 +1546,30 @@ class ClaudeSessionsListHandler(APIHandler):
                 # implementation compared the encoded directory name,
                 # which produced different strings whenever the user's
                 # cwd was a symlink alias.
+                #
+                # `realpath` can be an NFS round trip per call, so cache
+                # per-cwd within this request — many sessions share the
+                # same cwd and re-resolving each time turns a 1k-session
+                # filter into 1k NFS lookups.
+                #
+                # Sessions whose cwd is empty (older transcripts that
+                # carried no cwd field and whose project dir name also
+                # failed the dash-decode fallback) are dropped from
+                # scope=cwd results: they cannot be matched against the
+                # current cwd anyway. They remain visible under
+                # scope=all.
                 target = os.path.realpath(cwd)
+                realpath_cache: dict[str, str] = {}
+
+                def _rp(p: str) -> str:
+                    cached = realpath_cache.get(p)
+                    if cached is None:
+                        cached = os.path.realpath(p)
+                        realpath_cache[p] = cached
+                    return cached
+
                 sessions = [
-                    s for s in sessions
-                    if s.cwd and os.path.realpath(s.cwd) == target
+                    s for s in sessions if s.cwd and _rp(s.cwd) == target
                 ]
             self.finish(json.dumps({
                 "sessions": [asdict(s) for s in sessions],

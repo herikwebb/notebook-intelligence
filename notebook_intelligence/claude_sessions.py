@@ -199,8 +199,10 @@ def _read_session_info(path: Path) -> Optional[ClaudeSessionInfo]:
                     continue
                 if not preview:
                     preview = _extract_preview(obj)
-                # Keep scanning a few more lines if cwd hasn't been
-                # found yet; otherwise we have everything we need.
+                # We need both the preview AND the cwd before we can
+                # stop. Most envelopes carry cwd, so this loop usually
+                # exits within the first few lines; otherwise the
+                # _MAX_LINES_SCANNED cap above provides the upper bound.
                 if cwd_from_transcript:
                     break
     except OSError as exc:
