@@ -3627,13 +3627,25 @@ function SidebarComponent(props: any) {
 
       {chatEnabled &&
         (chatMessages.length === 0 ? (
-          <div className="sidebar-messages">
+          <div
+            className="sidebar-messages"
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions text"
+            aria-label="Chat transcript"
+          >
             <div className="sidebar-greeting">
               Welcome! How can I assist you today?
             </div>
           </div>
         ) : (
-          <div className="sidebar-messages">
+          <div
+            className="sidebar-messages"
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions text"
+            aria-label="Chat transcript"
+          >
             {chatMessages.map((msg, index) => {
               // Only the most recent copilot message owns the live
               // progress-feedback state. Non-active messages receive
