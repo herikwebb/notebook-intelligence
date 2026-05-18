@@ -77,3 +77,29 @@ def test_open_raises_when_unauthenticated():
     with pytest.raises(tornado.web.HTTPError) as exc_info:
         handler.open()
     assert exc_info.value.status_code == 403
+
+
+def test_check_xsrf_cookie_resolves_to_jupyter_handler():
+    # JupyterHandler.check_xsrf_cookie is the upgrade-aware XSRF check
+    # that skips when origin + auth already satisfy. A future refactor
+    # that drops JupyterHandler from the MRO would lose this contract;
+    # symmetric with test_check_origin_resolves_to_websocket_mixin.
+    method = WebsocketCopilotHandler.check_xsrf_cookie
+    qualname = getattr(method, "__qualname__", "")
+    assert qualname.startswith("JupyterHandler"), qualname
+
+
+def test_open_logs_accepted_upgrade(caplog):
+    # The accepted-upgrade audit line is part of the security contract:
+    # incident triage needs to know which user identity and which origin
+    # opened the socket. Pin the log shape so a refactor that drops the
+    # line fails here.
+    import logging
+
+    handler = _construct_handler()
+    handler._current_user = type("U", (), {"username": "jovyan"})()
+    with caplog.at_level(logging.INFO, logger="notebook_intelligence.extension"):
+        handler.open()
+    msg = " ".join(r.message for r in caplog.records)
+    assert "Copilot WS upgrade accepted" in msg
+    assert "jovyan" in msg
