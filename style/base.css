@@ -154,6 +154,33 @@
   }
 }
 
+/* Skip link at the top of the chat sidebar; hidden via .nbi-sr-only,
+   revealed only when focused so sighted users never see it and keyboard
+   users land on it as the very first Tab inside the sidebar. */
+.nbi-skip-link {
+  z-index: 1000;
+}
+
+.nbi-skip-link:focus,
+.nbi-skip-link:focus-visible {
+  left: 8px;
+
+  /* Below the 25px sidebar header so the focused chip doesn't overlap
+     the "Notebook Intelligence" title. */
+  top: 28px;
+  width: auto;
+  height: auto;
+  padding: 6px 10px;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-content-link-color);
+  border: 2px solid var(--jp-brand-color1);
+  border-radius: 3px;
+  text-decoration: underline;
+}
+
 .chat-message-notice {
   background-color: transparent;
   font-size: 12px;
