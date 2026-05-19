@@ -3052,9 +3052,7 @@ svg.access-token-warning {
 
   /* Hide the default SVG fill to show only the masked shape */
   fill: transparent;
-
-  /* Jupyter orange */
-  color: #f37627;
+  color: var(--jp-brand-color1);
 }
 
 /* First-run tour overlay. Rendered into document.body via portal so
