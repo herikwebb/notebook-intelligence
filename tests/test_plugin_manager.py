@@ -262,6 +262,323 @@ class TestPluginManagerReads:
         result = asyncio.run(manager.list_marketplaces())
         assert result == [{"name": "acme", "source": "github:acme/marketplace"}]
 
+    def test_list_marketplaces_enriches_with_manifest_details(
+        self, fake_cli, tmp_path, monkeypatch
+    ):
+        # Pin the enrichment path: when a cached marketplace.json sits
+        # alongside the marketplace entry, the response carries
+        # description, version, plugin_count, and plugin_names so the
+        # frontend can render a rich row without a second HTTP round
+        # trip per marketplace.
+        plugins_root = tmp_path / "plugins"
+        manifest = (
+            plugins_root
+            / "marketplaces"
+            / "acme"
+            / ".claude-plugin"
+            / "marketplace.json"
+        )
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text(
+            json.dumps(
+                {
+                    "name": "acme",
+                    "description": "Acme team plugins",
+                    "version": "1.2.3",
+                    "plugins": [
+                        {"name": "alpha", "source": "./a"},
+                        {"name": "beta", "source": "./b"},
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        monkeypatch.setenv("CLAUDE_CODE_PLUGIN_CACHE_DIR", str(plugins_root))
+        _stub_subprocess(
+            monkeypatch,
+            captured={},
+            stdout=b'[{"name":"acme","source":"github:acme/marketplace"}]',
+        )
+
+        result = asyncio.run(PluginManager().list_marketplaces())
+
+        assert result == [
+            {
+                "name": "acme",
+                "source": "github:acme/marketplace",
+                "description": "Acme team plugins",
+                "version": "1.2.3",
+                "plugin_count": 2,
+                "plugin_names": ["alpha", "beta"],
+            }
+        ]
+
+    def test_list_marketplaces_reads_metadata_block_as_fallback(
+        self, fake_cli, tmp_path, monkeypatch
+    ):
+        # Claude marketplaces predating the top-level fields keep
+        # description/version under "metadata". Honoring both keeps the
+        # row rich for older marketplaces the user already installed.
+        plugins_root = tmp_path / "plugins"
+        manifest = (
+            plugins_root
+            / "marketplaces"
+            / "old"
+            / ".claude-plugin"
+            / "marketplace.json"
+        )
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text(
+            json.dumps(
+                {
+                    "name": "old",
+                    "metadata": {"description": "Old style", "version": "0.9"},
+                    "plugins": [{"name": "only", "source": "./only"}],
+                }
+            ),
+            encoding="utf-8",
+        )
+        monkeypatch.setenv("CLAUDE_CODE_PLUGIN_CACHE_DIR", str(plugins_root))
+        _stub_subprocess(
+            monkeypatch,
+            captured={},
+            stdout=b'[{"name":"old","source":"./old"}]',
+        )
+
+        result = asyncio.run(PluginManager().list_marketplaces())
+        assert result[0]["description"] == "Old style"
+        assert result[0]["version"] == "0.9"
+        assert result[0]["plugin_count"] == 1
+        assert result[0]["plugin_names"] == ["only"]
+
+    def test_list_marketplaces_skips_missing_manifest(
+        self, fake_cli, tmp_path, monkeypatch
+    ):
+        # A marketplace just added but not yet cached, or one whose
+        # manifest disappeared, must not break the entire list. The
+        # entry comes back without the enrichment fields.
+        monkeypatch.setenv("CLAUDE_CODE_PLUGIN_CACHE_DIR", str(tmp_path / "noexist"))
+        _stub_subprocess(
+            monkeypatch,
+            captured={},
+            stdout=b'[{"name":"acme","source":"./acme"}]',
+        )
+        result = asyncio.run(PluginManager().list_marketplaces())
+        assert result == [{"name": "acme", "source": "./acme"}]
+
+    @pytest.mark.parametrize(
+        "cli_field,cli_value,manifest_field,manifest_value",
+        [
+            ("description", "from cli", "description", "from manifest"),
+            ("version", "9.9.9", "version", "1.0.0"),
+            ("plugin_count", 42, "plugin_count", 2),
+            (
+                "plugin_names",
+                ["a", "b"],
+                "plugin_names",
+                ["c", "d", "e"],
+            ),
+        ],
+    )
+    def test_list_marketplaces_does_not_override_cli_supplied_fields(
+        self,
+        fake_cli,
+        tmp_path,
+        monkeypatch,
+        cli_field,
+        cli_value,
+        manifest_field,
+        manifest_value,
+    ):
+        # If a future Claude release surfaces any of the enrichment
+        # fields on the list itself, defer to the CLI value instead of
+        # overwriting from the cached manifest. Parametrized across
+        # description/version/plugin_count/plugin_names so a regression
+        # in any single field's override branch is caught.
+        plugins_root = tmp_path / "plugins"
+        manifest = (
+            plugins_root
+            / "marketplaces"
+            / "acme"
+            / ".claude-plugin"
+            / "marketplace.json"
+        )
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text(
+            json.dumps(
+                {
+                    "description": "from manifest",
+                    "version": "1.0.0",
+                    "plugins": [
+                        {"name": "c", "source": "./c"},
+                        {"name": "d", "source": "./d"},
+                        {"name": "e", "source": "./e"},
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        monkeypatch.setenv("CLAUDE_CODE_PLUGIN_CACHE_DIR", str(plugins_root))
+        cli_entry = {"name": "acme", "source": "./acme", cli_field: cli_value}
+        _stub_subprocess(
+            monkeypatch,
+            captured={},
+            stdout=json.dumps([cli_entry]).encode(),
+        )
+        result = asyncio.run(PluginManager().list_marketplaces())
+        assert result[0][cli_field] == cli_value
+
+    def test_list_marketplaces_couples_plugin_count_and_plugin_names(
+        self, fake_cli, tmp_path, monkeypatch
+    ):
+        # plugin_count and plugin_names must stay in sync. If a future
+        # CLI surfaces only the count, the manifest's names must NOT be
+        # merged in (or the row would render "42 plugins: alpha, beta"
+        # with the two halves disagreeing). The whole pair is treated
+        # atomically: CLI sets both or the manifest sets both.
+        plugins_root = tmp_path / "plugins"
+        manifest = (
+            plugins_root
+            / "marketplaces"
+            / "acme"
+            / ".claude-plugin"
+            / "marketplace.json"
+        )
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text(
+            json.dumps(
+                {
+                    "description": "from manifest",
+                    "plugins": [
+                        {"name": "alpha", "source": "./a"},
+                        {"name": "beta", "source": "./b"},
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        monkeypatch.setenv("CLAUDE_CODE_PLUGIN_CACHE_DIR", str(plugins_root))
+        # CLI surfaces only the count; names should NOT be backfilled.
+        _stub_subprocess(
+            monkeypatch,
+            captured={},
+            stdout=b'[{"name":"acme","source":"./acme","plugin_count":42}]',
+        )
+        result = asyncio.run(PluginManager().list_marketplaces())
+        assert result[0]["plugin_count"] == 42
+        assert "plugin_names" not in result[0]
+
+    def test_list_marketplaces_rejects_path_traversal_in_cli_name(
+        self, fake_cli, tmp_path, monkeypatch
+    ):
+        # Defense in depth: the CLI shouldn't return a name like
+        # `../evil`, but `_read_marketplace_manifest` now validates
+        # anyway. A bad CLI-returned name causes the enrichment to
+        # skip for that entry (caught at ValueError), leaving the rest
+        # of the list intact.
+        monkeypatch.setenv("CLAUDE_CODE_PLUGIN_CACHE_DIR", str(tmp_path / "plugins"))
+        _stub_subprocess(
+            monkeypatch,
+            captured={},
+            stdout=b'[{"name":"../evil","source":"./e"},{"name":"good","source":"./g"}]',
+        )
+        result = asyncio.run(PluginManager().list_marketplaces())
+        # Both entries come back; neither is enriched (the bad one is
+        # rejected by name validation, the good one has no manifest in
+        # the empty cache dir).
+        assert [m["name"] for m in result] == ["../evil", "good"]
+        # No enrichment keys were synthesized for the path-traversal
+        # entry; the row falls back to the CLI fields only.
+        assert "description" not in result[0]
+        assert "plugin_count" not in result[0]
+
+    def test_list_marketplaces_overrides_empty_cli_string_with_manifest_value(
+        self, fake_cli, tmp_path, monkeypatch
+    ):
+        # An empty-string CLI value must not shadow a useful manifest
+        # value. The overlay rule is "prefer CLI when truthy", so
+        # description: "" from the CLI falls through to the manifest's
+        # description.
+        plugins_root = tmp_path / "plugins"
+        manifest = (
+            plugins_root
+            / "marketplaces"
+            / "acme"
+            / ".claude-plugin"
+            / "marketplace.json"
+        )
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text(
+            json.dumps({"description": "from manifest", "plugins": []}),
+            encoding="utf-8",
+        )
+        monkeypatch.setenv("CLAUDE_CODE_PLUGIN_CACHE_DIR", str(plugins_root))
+        _stub_subprocess(
+            monkeypatch,
+            captured={},
+            stdout=b'[{"name":"acme","source":"./acme","description":""}]',
+        )
+        result = asyncio.run(PluginManager().list_marketplaces())
+        assert result[0]["description"] == "from manifest"
+
+    def test_list_marketplaces_rejects_oversize_manifest(
+        self, fake_cli, tmp_path, monkeypatch
+    ):
+        # A marketplace.json that exceeds the size cap is treated as
+        # missing for enrichment purposes; the entry comes back from
+        # the CLI unenriched. Test would otherwise OOM the server on a
+        # large or hostile manifest.
+        plugins_root = tmp_path / "plugins"
+        manifest = (
+            plugins_root
+            / "marketplaces"
+            / "huge"
+            / ".claude-plugin"
+            / "marketplace.json"
+        )
+        manifest.parent.mkdir(parents=True)
+        # Write 2 MiB of valid-looking JSON so the size check fires
+        # rather than the JSON parser.
+        manifest.write_text(
+            "{" + '"x":"' + "z" * (2 * 1024 * 1024) + '"}',
+            encoding="utf-8",
+        )
+        monkeypatch.setenv("CLAUDE_CODE_PLUGIN_CACHE_DIR", str(plugins_root))
+        _stub_subprocess(
+            monkeypatch,
+            captured={},
+            stdout=b'[{"name":"huge","source":"./huge"}]',
+        )
+        result = asyncio.run(PluginManager().list_marketplaces())
+        assert result == [{"name": "huge", "source": "./huge"}]
+
+    def test_list_marketplaces_skips_unreadable_manifest_dir(
+        self, fake_cli, tmp_path, monkeypatch
+    ):
+        # PermissionError from a stat on the manifest dir must not abort
+        # the list endpoint. The entry comes back from the CLI without
+        # enrichment fields, mirroring the missing-manifest behavior.
+        plugins_root = tmp_path / "plugins"
+
+        from pathlib import Path
+
+        original_stat = Path.stat
+
+        def stat_with_permission_error(self, *args, **kwargs):
+            if "huge" in str(self):
+                raise PermissionError("simulated")
+            return original_stat(self, *args, **kwargs)
+
+        monkeypatch.setattr(Path, "stat", stat_with_permission_error)
+        monkeypatch.setenv("CLAUDE_CODE_PLUGIN_CACHE_DIR", str(plugins_root))
+        _stub_subprocess(
+            monkeypatch,
+            captured={},
+            stdout=b'[{"name":"huge","source":"./huge"}]',
+        )
+        result = asyncio.run(PluginManager().list_marketplaces())
+        assert result == [{"name": "huge", "source": "./huge"}]
+
     def test_list_marketplace_plugins_reads_cached_manifest(
         self, tmp_path, monkeypatch
     ):
@@ -682,6 +999,54 @@ class TestPluginManagerWrites:
             "remove",
             "acme",
         ]
+
+    def test_update_marketplace_invokes_cli(self, fake_cli, monkeypatch):
+        captured: dict = {}
+        _stub_subprocess(monkeypatch, captured=captured)
+        # No GitHub token available so the env-overrides branch is
+        # skipped; argv carries only the literal command.
+        monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+        monkeypatch.delenv("GH_TOKEN", raising=False)
+        monkeypatch.setattr(
+            "notebook_intelligence.plugin_manager.resolve_github_token",
+            lambda: None,
+        )
+        manager = PluginManager()
+        asyncio.run(manager.update_marketplace(name="acme"))
+        assert captured["argv"][1:] == [
+            "plugin",
+            "marketplace",
+            "update",
+            "acme",
+        ]
+        # Without a token, run_claude_cli passes env=None so the
+        # subprocess inherits the parent environment unchanged.
+        assert captured["kwargs"]["env"] is None
+
+    def test_update_marketplace_injects_github_token_when_available(
+        self, fake_cli, monkeypatch
+    ):
+        # If the user has GITHUB_TOKEN set, the update flow injects it
+        # the same way add_marketplace does, so refreshing a private GHE
+        # marketplace works without process-level env. Token flows via
+        # env (not argv) so it doesn't appear in the redacted DEBUG log.
+        captured: dict = {}
+        _stub_subprocess(monkeypatch, captured=captured)
+        monkeypatch.setattr(
+            "notebook_intelligence.plugin_manager.resolve_github_token",
+            lambda: "ghu_test_token",
+        )
+        manager = PluginManager()
+        asyncio.run(manager.update_marketplace(name="acme"))
+        env = captured["kwargs"]["env"]
+        assert env is not None
+        assert env["GITHUB_TOKEN"] == "ghu_test_token"
+        assert env["GH_TOKEN"] == "ghu_test_token"
+
+    def test_update_marketplace_rejects_path_traversal_name(self):
+        manager = PluginManager()
+        with pytest.raises(ValueError, match="Invalid marketplace name"):
+            asyncio.run(manager.update_marketplace(name="..\\evil"))
 
     def test_cli_failure_raises_with_stderr(self, fake_cli, monkeypatch):
         async def fake_subprocess(*argv, **kwargs):

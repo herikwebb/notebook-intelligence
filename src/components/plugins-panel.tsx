@@ -22,6 +22,25 @@ function marketplaceName(marketplace: IPluginMarketplaceInfo): string {
   return String(marketplace.name ?? '').trim();
 }
 
+// Plugin-name list trimmed with ellipsis. Caller decides the visible cap;
+// the helper just stitches a comma-separated string and appends the
+// "+N more" tail when the cap is hit, so the row width stays bounded
+// even for marketplaces with hundreds of plugins.
+export function summarizePluginNames(
+  names: readonly string[] | undefined,
+  visible: number
+): string {
+  if (!names || names.length === 0) {
+    return '';
+  }
+  if (names.length <= visible) {
+    return names.join(', ');
+  }
+  const head = names.slice(0, visible).join(', ');
+  const remaining = names.length - visible;
+  return `${head}, +${remaining} more`;
+}
+
 function pluginName(plugin: IPluginInfo): string {
   return String(plugin.name ?? plugin.id ?? '').trim();
 }
@@ -151,6 +170,22 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
     }
   };
 
+  const handleUpdateMarketplace = async (m: IPluginMarketplaceInfo) => {
+    const name = String(m.name ?? '');
+    if (!name) {
+      return;
+    }
+    setBusyMarketplace(name);
+    try {
+      await NBIAPI.updatePluginMarketplace(name);
+      await refresh();
+    } catch (e: any) {
+      setError(`Failed to update marketplace: ${e?.message ?? e}`);
+    } finally {
+      setBusyMarketplace(null);
+    }
+  };
+
   const grouped: Record<PluginScope, IPluginInfo[]> = {
     user: [],
     project: [],
@@ -216,6 +251,7 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
               info={m}
               busy={busyMarketplace === String(m.name ?? '')}
               onRemove={() => handleRemoveMarketplace(m)}
+              onUpdate={() => handleUpdateMarketplace(m)}
             />
           ))
         )}
@@ -347,25 +383,83 @@ function PluginRow(props: {
   );
 }
 
+// Visible plugin-name cap on the marketplace row. Picked so a typical
+// marketplace (a handful of plugins) fits on one line, with longer lists
+// collapsing to "a, b, c, +N more" so the row width stays bounded.
+const MARKETPLACE_VISIBLE_PLUGINS = 5;
+
 function MarketplaceRow(props: {
   info: IPluginMarketplaceInfo;
   busy: boolean;
   onRemove: () => void;
+  onUpdate: () => void;
 }) {
   const { info } = props;
+  const description =
+    typeof info.description === 'string' ? info.description.trim() : '';
+  const version = typeof info.version === 'string' ? info.version.trim() : '';
+  const pluginNames = Array.isArray(info.plugin_names)
+    ? info.plugin_names.filter((n): n is string => typeof n === 'string')
+    : [];
+  const pluginCount =
+    typeof info.plugin_count === 'number'
+      ? info.plugin_count
+      : pluginNames.length;
+  const pluginSummary = summarizePluginNames(
+    pluginNames,
+    MARKETPLACE_VISIBLE_PLUGINS
+  );
+  // Pluralize for 0/1/N: "no plugins" reads better than "0 plugins" when
+  // the marketplace manifest has not yet been refreshed and we have no
+  // plugin entries.
+  const pluginCountLabel =
+    pluginCount === 0
+      ? 'no plugins'
+      : pluginCount === 1
+        ? '1 plugin'
+        : `${pluginCount} plugins`;
+  // Only render the plugin summary line when the manifest read produced
+  // a count or name list. Without this guard, a marketplace that the
+  // user just added but whose manifest hasn't been cached yet would
+  // render "no plugins" and look broken; here it just renders no line
+  // at all until the next refresh picks up the manifest.
+  const hasPluginManifestData =
+    Array.isArray(info.plugin_names) || typeof info.plugin_count === 'number';
   return (
     <div className="nbi-skill-row">
       <div className="nbi-skill-row-main">
         <div className="nbi-skill-row-name">
           {String(info.name ?? '(unnamed)')}
+          {version && (
+            <span className="nbi-skill-row-version"> v{version}</span>
+          )}
         </div>
+        {description && (
+          <div className="nbi-skill-row-description">{description}</div>
+        )}
         {info.source && (
           <div className="nbi-skill-row-description">
             <code>{String(info.source)}</code>
           </div>
         )}
+        {hasPluginManifestData && (
+          <div className="nbi-skill-row-description nbi-skill-row-plugins">
+            {pluginCountLabel}
+            {pluginSummary && <span>{`: ${pluginSummary}`}</span>}
+          </div>
+        )}
       </div>
       <div className="nbi-skill-row-actions" onClick={e => e.stopPropagation()}>
+        <button
+          className="jp-Dialog-button jp-mod-accept jp-mod-styled"
+          onClick={props.onUpdate}
+          disabled={props.busy}
+          title="Refresh this marketplace from its source"
+        >
+          <div className="jp-Dialog-buttonLabel">
+            {props.busy ? 'Updating…' : 'Update'}
+          </div>
+        </button>
         <button
           className="jp-Dialog-button jp-mod-reject jp-mod-styled"
           onClick={props.onRemove}

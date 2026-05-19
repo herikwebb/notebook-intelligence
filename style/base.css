@@ -1742,6 +1742,18 @@ svg.access-token-warning {
   font-size: var(--jp-ui-font-size0);
 }
 
+.nbi-skill-row-version {
+  font-weight: 400;
+  color: var(--jp-ui-font-color2);
+  font-size: var(--jp-ui-font-size0);
+}
+
+.nbi-skill-row-plugins {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .nbi-skill-row-disabled {
   border-style: dashed;
 }

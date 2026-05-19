@@ -90,6 +90,10 @@ export interface IPluginMarketplaceInfo {
   name?: string;
   source?: string;
   scope?: PluginScope | string;
+  description?: string;
+  version?: string;
+  plugin_count?: number;
+  plugin_names?: string[];
   [key: string]: unknown;
 }
 
@@ -1023,6 +1027,16 @@ export class NBIAPI {
     await requestAPI<any>(`plugins/marketplace/${encodeURIComponent(name)}`, {
       method: 'DELETE'
     });
+  }
+
+  static async updatePluginMarketplace(name: string): Promise<void> {
+    await requestAPI<any>(
+      `plugins/marketplace/${encodeURIComponent(name)}/update`,
+      {
+        method: 'POST',
+        body: '{}'
+      }
+    );
   }
 
   static async reconcileManagedSkills(): Promise<IReconcileResult> {

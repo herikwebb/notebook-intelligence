@@ -1126,6 +1126,16 @@ class PluginsMarketplacePluginsHandler(PluginsBaseHandler):
         self.finish(json.dumps({"plugins": plugins}))
 
 
+class PluginsMarketplaceUpdateHandler(PluginsBaseHandler):
+    @tornado.web.authenticated
+    async def post(self, name):
+        try:
+            await self.manager.update_marketplace(name=name)
+            self.finish(json.dumps({"success": True}))
+        except (FileNotFoundError, PermissionError, TimeoutError, ValueError) as e:
+            self._error(e)
+
+
 class SkillsBaseHandler(PolicyGatedHandler):
     """Shared helpers for skills endpoints."""
 
@@ -2755,6 +2765,14 @@ class NotebookIntelligence(ExtensionApp):
         route_pattern_plugins_marketplace_detail = url_path_join(
             base_url, "notebook-intelligence", "plugins", "marketplace", r"([^/]+)"
         )
+        route_pattern_plugins_marketplace_update = url_path_join(
+            base_url,
+            "notebook-intelligence",
+            "plugins",
+            "marketplace",
+            r"([^/]+)",
+            "update",
+        )
         GetCapabilitiesHandler.disabled_tools = self.disabled_tools
         GetCapabilitiesHandler.allow_enabling_tools_with_env = self.allow_enabling_tools_with_env
         GetCapabilitiesHandler.disabled_providers = self.disabled_providers
@@ -2861,6 +2879,10 @@ class NotebookIntelligence(ExtensionApp):
             (
                 route_pattern_plugins_marketplace_plugins,
                 PluginsMarketplacePluginsHandler,
+            ),
+            (
+                route_pattern_plugins_marketplace_update,
+                PluginsMarketplaceUpdateHandler,
             ),
             (route_pattern_plugins_marketplace_detail, PluginsMarketplaceDetailHandler),
             (route_pattern_plugins_marketplace, PluginsMarketplaceListHandler),
