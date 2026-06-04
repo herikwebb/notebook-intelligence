@@ -120,6 +120,8 @@
         "yjs": "^13.5.0"
     },
     "resolutions": {
+        "lodash": "4.18.0",
+        "lodash-es": "4.18.0",
         "minimatch": "^9.0.7",
         "prismjs": "^1.30.0"
     },
