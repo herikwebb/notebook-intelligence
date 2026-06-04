@@ -522,6 +522,92 @@ function ChatResponseHTMLFrame(props: any) {
 // Memoize ChatResponse for performance
 function ChatResponse(props: any) {
   const [renderCount, setRenderCount] = useState(0);
+  const shuffledOrder = useRef<number[]>([]);
+  const shufflePos = useRef(0);
+
+  const _spinnerVerbs = NBIAPI.config.isInClaudeCodeMode
+    ? (NBIAPI.config.spinnerVerbs ?? null)
+    : null;
+  const hasCustomVerbs =
+    _spinnerVerbs?.mode === 'replace' &&
+    Array.isArray(_spinnerVerbs.verbs) &&
+    _spinnerVerbs.verbs.length > 0;
+
+  // Fisher-Yates shuffle. When `avoidFirst` is set, swap it out of
+  // position 0 so the new first verb is never the same as the last shown
+  // (prevents an identical repeat at the wrap point between passes).
+  const shuffleVerbs = (verbs: any[], avoidFirst?: number): number[] => {
+    const order = verbs.map((_, i) => i);
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    if (
+      avoidFirst !== undefined &&
+      order[0] === avoidFirst &&
+      order.length > 1
+    ) {
+      [order[0], order[1]] = [order[1], order[0]];
+    }
+    return order;
+  };
+
+  // Initialize the shuffle synchronously in useState so the correct verb
+  // is shown on the very first paint. A useEffect-based init fires after
+  // paint and causes a single-frame flash of verbs[0] before correcting.
+  const [verbIndex, setVerbIndex] = useState(() => {
+    const sv = NBIAPI.config.isInClaudeCodeMode
+      ? (NBIAPI.config.spinnerVerbs ?? null)
+      : null;
+    if (
+      !sv ||
+      sv.mode !== 'replace' ||
+      !Array.isArray(sv.verbs) ||
+      sv.verbs.length === 0
+    ) {
+      return 0;
+    }
+    const order = shuffleVerbs(sv.verbs);
+    shuffledOrder.current = order;
+    shufflePos.current = 0;
+    return order[0];
+  });
+
+  useEffect(() => {
+    if (!props.showGenerating || !hasCustomVerbs) {
+      return;
+    }
+
+    const verbs = _spinnerVerbs!.verbs;
+
+    // Shuffle already initialized by useState on mount. Only re-initialize
+    // if hasCustomVerbs just became true after a capabilities refresh
+    // (shuffledOrder would be empty because the lazy init found no verbs).
+    if (shuffledOrder.current.length === 0) {
+      shuffledOrder.current = shuffleVerbs(verbs);
+      shufflePos.current = 0;
+      setVerbIndex(shuffledOrder.current[0]);
+    }
+
+    let id: ReturnType<typeof setTimeout>;
+    const scheduleNext = () => {
+      const delay = 4000 + Math.random() * 3000;
+      id = setTimeout(() => {
+        shufflePos.current++;
+        if (shufflePos.current >= shuffledOrder.current.length) {
+          const lastShown =
+            shuffledOrder.current[shuffledOrder.current.length - 1];
+          shuffledOrder.current = shuffleVerbs(verbs, lastShown);
+          shufflePos.current = 0;
+        }
+        setVerbIndex(shuffledOrder.current[shufflePos.current]);
+        scheduleNext();
+      }, delay);
+    };
+    scheduleNext();
+    return () => clearTimeout(id);
+  }, [props.showGenerating, hasCustomVerbs]);
+
   const msg: IChatMessage = props.message;
   const timestamp = msg.date.toLocaleTimeString('en-US', { hour12: false });
 
@@ -712,17 +798,25 @@ function ChatResponse(props: any) {
               }`}
               aria-hidden="true"
             />
-            <div
-              className="generating-label"
-              aria-live="polite"
-              aria-atomic="true"
-            >
+            <div className="generating-label" aria-hidden="true">
               {props.isStalled
                 ? 'Still working, server may be slow'
-                : 'Generating'}
+                : hasCustomVerbs
+                  ? _spinnerVerbs!.verbs[verbIndex]
+                  : 'Generating'}
               {props.showGenerating && props.elapsedSeconds > 0
                 ? ` (${formatElapsedSeconds(props.elapsedSeconds)})`
                 : ''}
+            </div>
+            {/* aria-live region contains only the verb — no elapsed suffix —
+                so screen readers announce only on verb changes, not on every
+                elapsed-seconds tick. */}
+            <div className="nbi-sr-only" aria-live="polite" aria-atomic="true">
+              {props.isStalled
+                ? 'Still working, server may be slow'
+                : hasCustomVerbs
+                  ? _spinnerVerbs!.verbs[verbIndex]
+                  : 'Generating'}
             </div>
           </div>
         </div>

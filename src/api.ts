@@ -388,6 +388,10 @@ export class NBIConfig {
     return this.capabilities.claude_settings;
   }
 
+  get spinnerVerbs(): { mode: string; verbs: string[] } | null {
+    return this.capabilities.spinner_verbs ?? null;
+  }
+
   get claudeModels(): IClaudeModelInfo[] {
     return (this.capabilities.claude_models ?? []).map(claudeModelFromWire);
   }
