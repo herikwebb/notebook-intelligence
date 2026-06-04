@@ -1961,6 +1961,26 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
                     }
                 ]
             }
+        elif data_type == ResponseStreamDataType.ToolCall:
+            data = {
+                "choices": [
+                    {
+                        "delta": {
+                            "nbiContent": {
+                                "type": data_type,
+                                "content": {
+                                    "id": data.id,
+                                    "title": data.title,
+                                    "kind": data.kind,
+                                    "status": data.status
+                                }
+                            },
+                            "content": "",
+                            "role": "assistant"
+                        }
+                    }
+                ]
+            }
         elif data_type == ResponseStreamDataType.Confirmation:
             data = {
                 "choices": [

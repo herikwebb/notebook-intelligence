@@ -80,6 +80,8 @@ import { mcpServerSettingsToEnabledState } from './components/mcp-util';
 import claudeSvgStr from '../style/icons/claude.svg';
 import { AskUserQuestion } from './components/ask-user-question';
 import { ClaudeSessionPicker } from './components/claude-session-picker';
+import { ToolCallCard } from './components/tool-call-card';
+import { upsertToolCallContent } from './tool-call-stream';
 import { TourOverlay } from './tour/tour-overlay';
 import { TOUR_ANCHOR } from './tour/tour-anchors';
 import { TOUR_START_EVENT, TOUR_STOP_EVENT } from './tour/tour-events';
@@ -857,6 +859,14 @@ function ChatResponse(props: any) {
                   {item.content}
                 </div>
               ) : null;
+            case ResponseStreamDataType.ToolCall:
+              // Unlike Progress, tool-call cards persist after the turn ends,
+              // so they render regardless of `showGenerating`. The backend
+              // re-emits each call under the same id to flip its status, and
+              // the stream handler merges by id, so one card shows here.
+              return (
+                <ToolCallCard key={`key-${index}`} toolCall={item.content} />
+              );
             case ResponseStreamDataType.Confirmation:
               return answeredForms.get(item.id) ===
                 'confirmed' ? null : answeredForms.get(item.id) ===
@@ -2920,22 +2930,33 @@ function SidebarComponent(props: any) {
             }
             if (delta['nbiContent']) {
               const nbiContent = delta['nbiContent'];
-              contents.push({
-                id: UUID.uuid4(),
-                type: nbiContent.type,
-                content: nbiContent.content || '',
-                reasoningContent: nbiContent.reasoning_content || '',
-                reasoningTag: nbiContent.reasoning_content
-                  ? '<think>'
-                  : undefined,
-                reasoningFinished:
-                  nbiContent.type === ResponseStreamDataType.Markdown &&
-                  nbiContent.reasoning_content
-                    ? true
-                    : false,
-                contentDetail: nbiContent.detail,
-                created: new Date(response.created)
-              });
+              if (nbiContent.type === ResponseStreamDataType.ToolCall) {
+                // A tool call streams twice under one id (start, then finish);
+                // merge by id so it stays one persistent card. See
+                // upsertToolCallContent.
+                upsertToolCallContent(
+                  contents,
+                  nbiContent.content,
+                  new Date(response.created)
+                );
+              } else {
+                contents.push({
+                  id: UUID.uuid4(),
+                  type: nbiContent.type,
+                  content: nbiContent.content || '',
+                  reasoningContent: nbiContent.reasoning_content || '',
+                  reasoningTag: nbiContent.reasoning_content
+                    ? '<think>'
+                    : undefined,
+                  reasoningFinished:
+                    nbiContent.type === ResponseStreamDataType.Markdown &&
+                    nbiContent.reasoning_content
+                      ? true
+                      : false,
+                  contentDetail: nbiContent.detail,
+                  created: new Date(response.created)
+                });
+              }
             } else {
               responseMessage =
                 response.data['choices']?.[0]?.['delta']?.['content'];
@@ -3356,22 +3377,33 @@ function SidebarComponent(props: any) {
 
             if (delta['nbiContent']) {
               const nbiContent = delta['nbiContent'];
-              contents.push({
-                id: UUID.uuid4(),
-                type: nbiContent.type,
-                content: nbiContent.content || '',
-                reasoningContent: nbiContent.reasoning_content || '',
-                reasoningTag: nbiContent.reasoning_content
-                  ? '<think>'
-                  : undefined,
-                reasoningFinished:
-                  nbiContent.type === ResponseStreamDataType.Markdown &&
-                  nbiContent.reasoning_content
-                    ? true
-                    : false,
-                contentDetail: nbiContent.detail,
-                created: new Date(response.created)
-              });
+              if (nbiContent.type === ResponseStreamDataType.ToolCall) {
+                // A tool call streams twice under one id (start, then finish);
+                // merge by id so it stays one persistent card. See
+                // upsertToolCallContent.
+                upsertToolCallContent(
+                  contents,
+                  nbiContent.content,
+                  new Date(response.created)
+                );
+              } else {
+                contents.push({
+                  id: UUID.uuid4(),
+                  type: nbiContent.type,
+                  content: nbiContent.content || '',
+                  reasoningContent: nbiContent.reasoning_content || '',
+                  reasoningTag: nbiContent.reasoning_content
+                    ? '<think>'
+                    : undefined,
+                  reasoningFinished:
+                    nbiContent.type === ResponseStreamDataType.Markdown &&
+                    nbiContent.reasoning_content
+                      ? true
+                      : false,
+                  contentDetail: nbiContent.detail,
+                  created: new Date(response.created)
+                });
+              }
             } else {
               const responseMessage =
                 response.data['choices']?.[0]?.['delta']?.['content'];

@@ -48,6 +48,7 @@ export enum ResponseStreamDataType {
   Button = 'button',
   Anchor = 'anchor',
   Progress = 'progress',
+  ToolCall = 'tool-call',
   Confirmation = 'confirmation',
   AskUserQuestion = 'ask-user-question'
 }

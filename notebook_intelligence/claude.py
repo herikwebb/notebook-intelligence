@@ -14,7 +14,7 @@ import uuid
 import re
 from anyio.abc import Process
 from anthropic import Anthropic
-from notebook_intelligence.api import AskUserQuestionData, BackendMessageType, CancelToken, ChatCommand, ChatModel, ChatRequest, ChatResponse, ClaudeToolType, CompletionContext, ConfirmationData, Host, InlineCompletionModel, MarkdownData, ProgressData, SignalImpl
+from notebook_intelligence.api import AskUserQuestionData, BackendMessageType, CancelToken, ChatCommand, ChatModel, ChatRequest, ChatResponse, ClaudeToolType, CompletionContext, ConfirmationData, Host, InlineCompletionModel, MarkdownData, ProgressData, SignalImpl, ToolCallData
 from notebook_intelligence.base_chat_participant import BaseChatParticipant
 from notebook_intelligence._version import __version__ as NBI_VERSION
 import base64
@@ -116,6 +116,8 @@ _CLAUDE_TOOL_LABELS: dict[str, str] = {
     "Read": "Reading file",
     "Write": "Writing file",
     "Edit": "Editing file",
+    "MultiEdit": "Editing file",
+    "NotebookEdit": "Editing notebook cell",
     "Glob": "Searching files",
     "Grep": "Searching contents",
     "WebFetch": "Fetching URL",
@@ -147,6 +149,67 @@ def humanize_claude_tool_name(name: str) -> str:
     if not pretty:
         return name
     return pretty[:1].upper() + pretty[1:]
+
+
+# Coarse category per tool, used only to pick a tool-call card icon.
+_CLAUDE_TOOL_KINDS: dict[str, str] = {
+    "create-new-notebook": "edit",
+    "rename-notebook": "edit",
+    "add-markdown-cell": "edit",
+    "add-code-cell": "edit",
+    "get-number-of-cells": "read",
+    "get-cell-type-and-source": "read",
+    "get-cell-output": "read",
+    "set-cell-type-and-source": "edit",
+    "delete-cell": "edit",
+    "insert-cell": "edit",
+    "run-cell": "execute",
+    "save-notebook": "edit",
+    "run-command-in-jupyter-terminal": "execute",
+    "open-file-in-jupyter-ui": "read",
+    "Bash": "execute",
+    "Read": "read",
+    "Write": "edit",
+    "Edit": "edit",
+    "MultiEdit": "edit",
+    "NotebookEdit": "edit",
+    "Glob": "read",
+    "Grep": "read",
+    "WebFetch": "read",
+    "WebSearch": "read",
+    "Task": "other",
+    "TodoWrite": "other",
+}
+
+
+def claude_tool_kind(name: str) -> str:
+    """Coarse category for a tool call (``read`` / ``edit`` / ``execute`` /
+    ``other``), used only to choose a card icon.
+
+    Mirrors ``humanize_claude_tool_name``: known names map directly,
+    ``mcp__server__tool`` unwraps to its inner name, and anything left over
+    falls back to a keyword heuristic so unfamiliar MCP tools still get a
+    sensible icon rather than always landing on ``other``.
+    """
+    inner = name
+    if name.startswith("mcp__"):
+        parts = name.split("__")
+        if len(parts) >= 3:
+            inner = parts[-1]
+    if inner in _CLAUDE_TOOL_KINDS:
+        return _CLAUDE_TOOL_KINDS[inner]
+    # Tokenize so a verb is matched as a whole word, not a substring: "widget"
+    # must not read as "get", and "command" must not read as "and".
+    tokens = {t for t in re.split(r"[^a-z0-9]+", inner.lower()) if t}
+    if tokens & {"bash", "run", "exec", "execute", "shell", "terminal", "command"}:
+        return "execute"
+    if tokens & {"write", "edit", "create", "add", "insert", "delete", "remove",
+                 "rename", "save", "set", "update", "patch", "make"}:
+        return "edit"
+    if tokens & {"read", "get", "list", "search", "grep", "glob", "fetch",
+                 "view", "open", "show", "find"}:
+        return "read"
+    return "other"
 
 
 _current_request = None
@@ -692,12 +755,11 @@ class ClaudeCodeClient():
                             if not already_handled and not request.cancel_token.is_cancel_requested:
                                 await client.query(client_query)
                                 # Per-query map from tool_use_id to its
-                                # humanized label so the ToolResultBlock
-                                # echo back can name the tool that just
-                                # finished. Lifetime is one query — pops
-                                # entries on completion so the dict stays
-                                # bounded.
-                                in_flight_tools: dict[str, str] = {}
+                                # (title, kind) so the ToolResultBlock echo
+                                # back can re-emit the same card with a final
+                                # status. Lifetime is one query — pops entries
+                                # on completion so the dict stays bounded.
+                                in_flight_tools: dict[str, tuple[str, str]] = {}
                                 async for message in client.receive_response():
                                     if request.cancel_token.is_cancel_requested:
                                         # Stop iterating once the user cancels — we'd
@@ -710,9 +772,15 @@ class ClaudeCodeClient():
                                             if isinstance(block, TextBlock):
                                                 response.stream(MarkdownData(block.text))
                                             elif isinstance(block, ToolUseBlock):
-                                                label = humanize_claude_tool_name(block.name)
-                                                in_flight_tools[block.id] = label
-                                                response.stream(ProgressData(f"{label}…"))
+                                                title = humanize_claude_tool_name(block.name)
+                                                kind = claude_tool_kind(block.name)
+                                                in_flight_tools[block.id] = (title, kind)
+                                                response.stream(ToolCallData(
+                                                    id=block.id,
+                                                    title=title,
+                                                    kind=kind,
+                                                    status='in_progress',
+                                                ))
                                     elif isinstance(message, UserMessage):
                                         if isinstance(message.content, str):
                                             content = message.content
@@ -729,20 +797,43 @@ class ClaudeCodeClient():
                                                     # ToolUseBlock is anomalous (cross-
                                                     # query stragglers, sub-agent
                                                     # results routed through a parent
-                                                    # tool_use_id). A bare "Tool ✓"
-                                                    # without context is more
-                                                    # confusing than silence, so we
-                                                    # only surface results we can
-                                                    # name.
-                                                    label = in_flight_tools.pop(
+                                                    # tool_use_id). A status card with
+                                                    # no opening card to merge into
+                                                    # would be more confusing than
+                                                    # silence, so we only surface
+                                                    # results we can name.
+                                                    entry = in_flight_tools.pop(
                                                         block.tool_use_id, None
                                                     )
-                                                    if label is None:
+                                                    if entry is None:
                                                         continue
-                                                    icon = "✗" if block.is_error else "✓"
-                                                    response.stream(ProgressData(f"{label} {icon}"))
+                                                    title, kind = entry
+                                                    status = 'failed' if block.is_error else 'completed'
+                                                    response.stream(ToolCallData(
+                                                        id=block.tool_use_id,
+                                                        title=title,
+                                                        kind=kind,
+                                                        status=status,
+                                                    ))
                                     else:
                                         pass
+
+                                # On cancel the receive loop breaks before
+                                # these tools' results arrive. Their cards are
+                                # persistent now (unlike the old transient
+                                # progress line), so flip them out of the
+                                # spinning in_progress state to a terminal
+                                # 'cancelled' rather than leaving a perpetual
+                                # spinner in the transcript.
+                                if request.cancel_token.is_cancel_requested and in_flight_tools:
+                                    for tool_id, (title, kind) in in_flight_tools.items():
+                                        response.stream(ToolCallData(
+                                            id=tool_id,
+                                            title=title,
+                                            kind=kind,
+                                            status='cancelled',
+                                        ))
+                                    in_flight_tools.clear()
                         except Exception as e:
                             err_msg = f"Error communicating with Claude agent: {str(e)}"
                             log.error(err_msg)

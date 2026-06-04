@@ -57,6 +57,7 @@ class ResponseStreamDataType(str, Enum):
     Button = 'button'
     Anchor = 'anchor'
     Progress = 'progress'
+    ToolCall = 'tool-call'
     Confirmation = 'confirmation'
     AskUserQuestion = 'ask-user-question'
 
@@ -211,6 +212,28 @@ class ProgressData(ResponseStreamData):
     @property
     def data_type(self) -> ResponseStreamDataType:
         return ResponseStreamDataType.Progress
+
+@dataclass
+class ToolCallData(ResponseStreamData):
+    """A single agent tool call, surfaced as a persistent chat card.
+
+    Unlike ``ProgressData`` (a transient single line that vanishes when the
+    turn ends), a tool call is emitted twice under the same ``id`` -- once
+    when it starts and once when it finishes -- and the frontend merges the
+    two by ``id`` into one card that carries its final ``status``.
+
+    ``kind`` is a coarse category (``read`` / ``edit`` / ``execute`` /
+    ``other``) used only to pick an icon. ``status`` is one of
+    ``in_progress`` / ``completed`` / ``failed``.
+    """
+    id: str = ''
+    title: str = ''
+    kind: str = 'other'
+    status: str = 'in_progress'
+
+    @property
+    def data_type(self) -> ResponseStreamDataType:
+        return ResponseStreamDataType.ToolCall
 
 @dataclass
 class ConfirmationData(ResponseStreamData):

@@ -779,6 +779,63 @@ pre:has(.code-block-header) {
   margin-top: 2px;
 }
 
+.nbi-tool-call {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  margin: 2px 0;
+  border-radius: 4px;
+  background-color: var(--jp-layout-color2);
+  font-size: var(--jp-ui-font-size1);
+}
+
+.nbi-tool-call-kind-icon {
+  flex-shrink: 0;
+  color: var(--jp-ui-font-color2);
+}
+
+.nbi-tool-call-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nbi-tool-call-status-icon {
+  flex-shrink: 0;
+  color: var(--jp-ui-font-color2);
+}
+
+.nbi-tool-call-completed .nbi-tool-call-status-icon {
+  color: var(--jp-success-color1);
+}
+
+.nbi-tool-call-failed .nbi-tool-call-status-icon {
+  color: var(--jp-error-color1);
+}
+
+.nbi-tool-call-in-progress .nbi-tool-call-status-icon {
+  animation: nbi-tool-call-spin 1s linear infinite;
+}
+
+@keyframes nbi-tool-call-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nbi-tool-call-in-progress .nbi-tool-call-status-icon {
+    animation: none;
+  }
+}
+
 .user-input-autocomplete,
 .mode-tools-popover,
 .workspace-file-popover {
