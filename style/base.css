@@ -893,12 +893,16 @@ pre:has(.code-block-header) {
   word-break: break-word;
 }
 
+/* Semi-transparent tints rather than the solid --jp-*-color3 fills (which are
+   light pastels in BOTH themes): the tint sits over the card background so the
+   line stays readable with the theme's own (light-on-dark / dark-on-light)
+   text color instead of forcing dark text onto a pale fill. */
 .nbi-diff-add {
-  background-color: var(--jp-success-color3);
+  background-color: rgb(64 160 43 / 22%);
 }
 
 .nbi-diff-remove {
-  background-color: var(--jp-error-color3);
+  background-color: rgb(248 81 73 / 22%);
 }
 
 .nbi-diff-context {
