@@ -64,6 +64,7 @@ dependencies = [
     # cap the upper bound. 2.7.0 picks up CVE-2026-44431 (cross-origin
     # redirect handling) and CVE-2026-44432 (streaming API).
     "urllib3>=2.7.0",
+    "idna>=3.15",  # CVE-2026-45409
     # python-dotenv: ``litellm 1.83.1+`` hard-pins ``==1.0.1`` and refuses
     # to bump it (see BerriAI/litellm#25231 / #26435). NBI doesn't import
     # python-dotenv directly and no longer pulls fastmcp (which would
