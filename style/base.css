@@ -411,15 +411,14 @@
   flex-shrink: 0;
 }
 
+/* Positioned via an inline style in a body-level portal (see
+   permission-mode-select.tsx) so it escapes the sidebar's stacking context:
+   an absolutely-positioned child of the sidebar gets clipped by the icon rail
+   on the left and covered by the main content panel on the right (issue #377).
+   The portal carries position/left/bottom/width inline; this rule is just the
+   look. z-index out-paints the JupyterLab shell. */
 .permission-mode-confirm {
-  position: absolute;
-  bottom: 32px;
-  right: 0;
-  z-index: 100;
-
-  /* width capped so the dialog stays inside a narrow docked sidebar. */
-  width: 280px;
-  max-width: calc(100vw - 32px);
+  z-index: 10000;
   box-sizing: border-box;
   padding: 10px;
   background-color: var(--jp-layout-color1);

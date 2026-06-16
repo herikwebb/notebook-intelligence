@@ -73,3 +73,4 @@ export const MdCheckBox = asIcon(Md.MdCheckBox);
 export const MdOutlineCheckBoxOutlineBlank = asIcon(
   Md.MdOutlineCheckBoxOutlineBlank
 );
+export const MdOutlinePsychology = asIcon(Md.MdOutlinePsychology);

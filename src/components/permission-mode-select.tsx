@@ -1,7 +1,14 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
-import React, { useEffect, useRef, useState } from 'react';
-import { VscCheck, VscEdit, VscEye, VscShield, VscWarning } from '../icons';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import {
+  MdOutlinePsychology,
+  VscCheck,
+  VscPassFilled,
+  VscShield,
+  VscWarning
+} from '../icons';
 
 export const BYPASS_PERMISSIONS_MODE = 'bypassPermissions';
 
@@ -47,9 +54,9 @@ function iconFor(mode: string): JSX.Element {
     case BYPASS_PERMISSIONS_MODE:
       return <VscWarning aria-hidden="true" />;
     case 'acceptEdits':
-      return <VscEdit aria-hidden="true" />;
+      return <VscPassFilled aria-hidden="true" />;
     case 'plan':
-      return <VscEye aria-hidden="true" />;
+      return <MdOutlinePsychology aria-hidden="true" />;
     default:
       return <VscShield aria-hidden="true" />;
   }
@@ -66,7 +73,7 @@ export interface IPermissionModeSelectProps {
  *
  * A compact footer icon button that opens a menu of modes rather than a
  * wide dropdown, to keep the narrow input footer uncluttered. Each mode has
- * a distinct glyph (shield / edit / eye / warning) so the active selection
+ * a distinct glyph (shield / check / brain / warning) so the active selection
  * reads at a glance, and the menu echoes the same glyphs (#359, #377).
  * Default / Accept Edits / Plan switch immediately. Bypass Permissions is
  * listed only when the admin policy allows it and never switches on the
@@ -117,6 +124,40 @@ export function PermissionModeSelect(
     }
   }, [pendingBypass]);
 
+  // The confirm popover renders in a body-level portal (below) so it escapes
+  // the sidebar's stacking context; without that it gets clipped by the icon
+  // rail on the left and covered by the main content panel on the right, both
+  // of which out-paint an absolutely-positioned child of the sidebar (#377).
+  // Position it just above the button, right-aligned, and clamp it inside the
+  // viewport so it can't run off-screen in a narrow docked sidebar.
+  const [confirmStyle, setConfirmStyle] = useState<React.CSSProperties>({});
+  useLayoutEffect(() => {
+    if (!pendingBypass) {
+      return;
+    }
+    const reposition = () => {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (!rect) {
+        return;
+      }
+      const margin = 8;
+      const width = Math.min(280, window.innerWidth - 2 * margin);
+      const left = Math.max(
+        margin,
+        Math.min(rect.right - width, window.innerWidth - margin - width)
+      );
+      setConfirmStyle({
+        position: 'fixed',
+        left,
+        bottom: window.innerHeight - rect.top + 6,
+        width
+      });
+    };
+    reposition();
+    window.addEventListener('resize', reposition);
+    return () => window.removeEventListener('resize', reposition);
+  }, [pendingBypass]);
+
   const closeMenu = (restoreFocus = true) => {
     setOpen(false);
     if (restoreFocus) {
@@ -153,51 +194,54 @@ export function PermissionModeSelect(
 
   return (
     <div className="permission-mode-container" ref={containerRef}>
-      {pendingBypass && (
-        <div
-          className="permission-mode-confirm"
-          role="alertdialog"
-          aria-label="Confirm Bypass Permissions"
-          aria-describedby="permission-mode-confirm-message"
-          onKeyDown={event => {
-            if (event.key === 'Escape') {
-              event.stopPropagation();
-              dismissConfirm();
-            }
-          }}
-        >
+      {pendingBypass &&
+        createPortal(
           <div
-            id="permission-mode-confirm-message"
-            className="permission-mode-confirm-message"
+            className="permission-mode-confirm"
+            style={confirmStyle}
+            role="alertdialog"
+            aria-label="Confirm Bypass Permissions"
+            aria-describedby="permission-mode-confirm-message"
+            onKeyDown={event => {
+              if (event.key === 'Escape') {
+                event.stopPropagation();
+                dismissConfirm();
+              }
+            }}
           >
-            Bypass Permissions runs every tool call without asking for
-            confirmation, with your full user account access. Content the agent
-            reads can steer what it runs. Stays on until you switch modes or
-            start a new session.
-          </div>
-          <div className="permission-mode-confirm-buttons">
-            <button
-              type="button"
-              className="jp-Dialog-button jp-mod-styled jp-mod-reject"
-              ref={cancelRef}
-              onClick={dismissConfirm}
+            <div
+              id="permission-mode-confirm-message"
+              className="permission-mode-confirm-message"
             >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="jp-Dialog-button jp-mod-styled jp-mod-warn"
-              onClick={() => {
-                setPendingBypass(false);
-                props.onModeChange(BYPASS_PERMISSIONS_MODE);
-                buttonRef.current?.focus();
-              }}
-            >
-              Bypass permissions
-            </button>
-          </div>
-        </div>
-      )}
+              Bypass Permissions runs every tool call without asking for
+              confirmation, with your full user account access. Content the
+              agent reads can steer what it runs. Stays on until you switch
+              modes or start a new session.
+            </div>
+            <div className="permission-mode-confirm-buttons">
+              <button
+                type="button"
+                className="jp-Dialog-button jp-mod-styled jp-mod-reject"
+                ref={cancelRef}
+                onClick={dismissConfirm}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="jp-Dialog-button jp-mod-styled jp-mod-warn"
+                onClick={() => {
+                  setPendingBypass(false);
+                  props.onModeChange(BYPASS_PERMISSIONS_MODE);
+                  buttonRef.current?.focus();
+                }}
+              >
+                Bypass permissions
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
       {open && (
         <div
           className="permission-mode-menu"
