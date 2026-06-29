@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repo": "herikwebb/notebook-intelligence",
+  "last_scan": "2026-06-29T12:30:00Z",
+  "scanner": "manual code review + automated exploration",
+  "findings": [
+    {
+      "id": "NBI-2024-001",
+      "title": "search_files symlink traversal",
+      "status": "already_tracked",
+      "severity": "medium",
+      "file": "notebook_intelligence/built_in_toolsets.py",
+      "tracking": {
+        "issue": "#13",
+        "pr": "#26"
+      },
+      "notes": "search_files follows symlinks outside jupyter_root_dir. Already tracked by draft PR #26. Not re-filed."
+    }
+  ],
+  "surfaces_reviewed": [
+    "HTTP/WebSocket handlers (48 authenticated endpoints)",
+    "Subprocess execution (shlex.split + shell=False)",
+    "Path traversal (safe_jupyter_path + resolve_bundle_path)",
+    "MCP stdio command policy (allowlist + env key denylist)",
+    "Credential storage (Fernet + PBKDF2-HMAC-SHA256)",
+    "Secret redaction (env-value scan + prefix detection)",
+    "GitHub skill import (redirect restrictions + tar extraction safety)",
+    "YAML parsing (safe_load only)",
+    "File upload (basename + UUID isolation + size limits)",
+    "Anchor URI validation (scheme allowlist + control char filtering)"
+  ],
+  "no_new_findings_reason": "All major attack surfaces have defense-in-depth mitigations. Authentication enforced on all endpoints. Subprocess calls use shell=False. Path operations use resolve()+relative_to() containment. No template injection surface. YAML uses safe_load only."
+}
