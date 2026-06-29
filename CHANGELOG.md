@@ -10,6 +10,63 @@ For each release we list user-facing changes grouped as **Added**, **Changed**, 
 
 ## [Unreleased]
 
+### Added
+
+- **Claude permission-mode selector in the chat input** (#359). An icon button in the input footer opens a menu to switch between Default, Accept Edits, and Plan; the selected mode rides each request and takes effect immediately, replacing the `/enter-plan-mode` and `/exit-plan-mode` slash commands (still working as hidden aliases for one release, but no longer autocompleted). "Bypass Permissions", which skips NBI's tool-call confirmation entirely, is gated behind the new `claude_bypass_permissions_policy` traitlet / `NBI_CLAUDE_BYPASS_PERMISSIONS_POLICY` env var defaulting to `force-off` (the only policy that does); when an admin sets `user-choice`, the option appears but must be armed through an explicit confirm step, shows a persistent red indicator while armed, and never survives a new session (it resets to default on `/clear` and on a fresh SDK client). The mode is clamped server-side on every request, and NBI defers to Claude Code's enterprise managed settings: `permissions.disableBypassPermissionsMode` refuses bypass regardless of the NBI policy, and `permissions.defaultMode` seeds the selector's starting mode (bypass excepted).
+
+### Changed
+
+- **Provider SDKs load on first use instead of at module import** (#370). `import notebook_intelligence` no longer imports `litellm`, `openai`, `ollama`, or the `anthropic` SDK; `litellm`, `openai`, and `anthropic` load the first time their provider is actually used (for Claude mode that includes the client construction and model refresh NBI runs at startup), while `ollama` still loads during extension startup when the provider enumerates local models. This roughly halves the server-extension import time (a cost the Jupyter server pays on every start), with the biggest effect on Windows machines where antivirus scanning amplifies the many-small-file SDK imports (#368). When NBI does load litellm, it now defaults `LITELLM_LOCAL_MODEL_COST_MAP=true` so litellm reads its bundled model-cost map rather than fetching it over HTTP at import; set the env var to `false` to restore the fetch.
+
+### Fixed
+
+- **Session history follows `CLAUDE_CONFIG_DIR`** (#373). The chat-sidebar resume picker and the launcher tile's session list always read transcripts from `~/.claude/projects`, so both came up empty when the Claude CLI was configured with `CLAUDE_CONFIG_DIR` and wrote its transcripts elsewhere. The session listing now resolves the CLI's config dir the same way the skills and spinner-verbs paths already did.
+- **User-scope MCP config and the plugin cache follow `CLAUDE_CONFIG_DIR`** (#375). The MCP management tab read user-scope servers from `~/.claude.json` even though the CLI relocates that file to `$CLAUDE_CONFIG_DIR/.claude.json` when the override is set (so reads and CLI-mediated writes diverged), and the Plugins panel's cache fallback pointed at `~/.claude/plugins` instead of the relocated cache. Both now resolve the CLI's actual locations; `CLAUDE_CODE_PLUGIN_CACHE_DIR` still wins for the plugin cache when set.
+
+## [5.1.0] - 2026-06-08
+
+5.1.0 builds on 5.0.x with a focus on Claude-mode agent visibility. Tool calls the agent runs now render as persistent status cards with inline diffs and collapsible grouping, the generating indicator can cycle custom verbs, and cancelling a turn tears down the whole process tree the agent spawned instead of leaking it. It also adds two opt-in security guardrails (an MCP stdio-command allowlist and a default-token-password check on shared filesystems) and an always-visible mode for chat feedback. No traitlet, env-var, REST route, or on-disk-format renames or removals; every new admin surface is opt-in and listed below.
+
+### Upgrade note
+
+If you installed NBI before the 5.0 npm-scope rename (from `@notebook-intelligence/notebook-intelligence` to `@plmbr/notebook-intelligence`) and now see **two Notebook Intelligence icons** in the sidebar, an old labextension is lingering alongside the new one and JupyterLab is loading both. Run `jupyter labextension list`; if both scopes show as enabled, remove the stale `@notebook-intelligence` labextension directory. See [Two Notebook Intelligence icons in the sidebar](docs/troubleshooting.md#two-notebook-intelligence-icons-in-the-sidebar) (#367).
+
+### Added
+
+- **Claude agent tool calls render as persistent status cards** (#358). Each tool the agent runs in Claude mode appears as its own card showing a kind icon (read / edit / execute / other), a humanized label, and a live status (in progress, completed, failed, cancelled) that stays on screen after the turn ends instead of scrolling away as transient progress text. Built-in and `mcp__<server>__<tool>` names map to friendly labels, with a sentence-case fallback for unknown tools.
+- **Inline diffs, collapsible grouping, and unified tool maps for tool-call cards** (#360). Edit-style tools (`Edit`, `MultiEdit`, `Write`, and their MCP-wrapped variants) show an inline add/remove diff on the card, capped and truncation-marked for large changes. A run of consecutive tool calls collapses into a single expandable group so a tool-heavy turn reads as one unit rather than a wall of rows; large settled groups start collapsed, live ones stay expanded. The kind/label lookups are unified into one map shared by the humanizer and the categorizer.
+- **Custom Claude spinner verbs** (#356). When Claude mode is active, NBI reads `spinnerVerbs.verbs` from `~/.claude/settings.json` and cycles them in the generating label (Fisher-Yates shuffle, 4-7s per verb, no immediate repeats) instead of a static "Generating". The current verb is mirrored into a hidden `aria-live` region so screen readers announce verb changes without re-reading every elapsed-seconds tick.
+- **Always-visible chat feedback** (#354). New `enable_chat_feedback_always_visible` traitlet (default `False`, requires `enable_chat_feedback = True`) renders the thumbs up/down buttons at full opacity on every assistant reply instead of revealing them on hover, and drops the post-`StreamEnd` gate so they appear with the reply. The thumbs tooltips are reworded to "Good response" / "Bad response" (screen readers announce "Rate response as good" / "Rate response as bad").
+- **Admin allowlist for stdio MCP server commands** (#298). New `mcp_stdio_command_allowlist` traitlet and `NBI_MCP_STDIO_COMMAND_ALLOWLIST` env var (CSV, appended to the traitlet at startup). When non-empty, every stdio MCP server (added via Claude `mcp add` or loaded from `mcp.json`) must match at least one `re.search` regex or the admin gate rejects it; the empty default means no enforcement, so per-user deployments are unchanged. See [Restricting MCP stdio commands](docs/admin-guide.md#restricting-mcp-stdio-commands).
+- **Default-token-password guardrails on shared filesystems** (#302). The GitHub Copilot token storage path now logs a per-process warning the first time it reads or writes the stored token while the public default `NBI_GH_ACCESS_TOKEN_PASSWORD` is in use, escalated when `~/.jupyter/nbi/` is group- or other-accessible. Setting `NBI_REFUSE_DEFAULT_TOKEN_PASSWORD_ON_SHARED_FS=1` upgrades that to a hard refusal of the write when both conditions hold; `NBI_ALLOW_DEFAULT_TOKEN_PASSWORD=1` opts back out per pod. The shared-directory check is POSIX-only and the refusal is opt-in, so single-user deployments are unaffected.
+- **Claude Code vs NBI chat performance benchmark suite** (#350). A standalone suite under `benchmarks/claude_perf/` compares response times between the `claude -p` terminal CLI and NBI's chat WebSocket path (time to first token, wall time, tokens, cost), with a runner that interleaves the two paths and separates cold from warm runs. Developer tooling; not shipped in the extension.
+- **Opt-in Prettier pre-commit hook and editor format-on-save** (#355). A husky + lint-staged hook formats staged files on commit, alongside EditorConfig and VS Code format-on-save settings. Developer tooling.
+
+### Changed
+
+- **Notebook-agent prompts and tool responses** (#351). Notebook editing/execution prompts now encourage incremental analysis and intermediate validation rather than generating a whole notebook in one pass; `add-code-cell` and `add-markdown-cell` return the inserted `cellIndex` for traceability; and `read_file` caps its output with UTF-8-safe truncation so large reads stay within a budget.
+- **Expandable parameter/detail boxes use a flat fill** instead of the inner-glow effect (#361), for a cleaner read in both light and dark themes.
+
+### Fixed
+
+- **Cancelling a Claude turn tears down the whole process tree** the agent spawned (#357). A cancel previously killed only the direct `claude` CLI child, leaking reparented shells, MCP servers, and dev servers that accumulated across cancels and restarts; NBI now reaps the agent's descendants, gracefully then forcefully, without signalling the Jupyter server's own process group.
+- **Claude session-resume commands are shell-quoted** (#349). Resume launches route through the shared command builder and quote the transcript-derived session id, so malicious session metadata cannot break out of `claude --resume` into shell execution.
+- **Forged upload-context paths are rejected** (#348). WebSocket upload attachments must resolve under the server upload root before an image read or Claude file mention uses the supplied path, closing the forged `isUpload` path that could point chat context at arbitrary server-readable files outside the workspace.
+- **Tool-call diffs are readable in dark theme and the tool-call group no longer flickers** (#360, #364). Diff add/remove lines use semi-transparent tints over the card so the theme's own text color stays legible in both themes (the `--jp-*-color3` fills were light pastels in both); and the streaming response keeps a stable message identity, so the tool-call group no longer expands and collapses on its own as calls arrive.
+
+## [5.0.1] - 2026-05-24
+
+A patch release: one provider-compatibility fix, one chat-rendering fix, and the npm package-scope rename. No traitlet, env-var, REST route, or on-disk-format changes; no migration steps beyond the 5.0.0 note.
+
+### Changed
+
+- **GitHub Copilot Codex chat models route through the `/responses` endpoint** (#341). Codex-family models (e.g. `gpt-5.3-codex`) are served only by Copilot's OpenAI Responses API mirror and return HTTP 400 on the standard `/chat/completions` path, so selecting one in the chat-model dropdown previously failed. NBI now picks the endpoint per model from the `/models` catalog's `supported_endpoints` field (with a `codex` substring fallback for offline sessions), translates the request and streaming events to the Responses shape, and surfaces `response.failed` / `response.error` / `response.incomplete` / `error` events instead of an empty turn. No new settings; the dispatch is internal to the GitHub Copilot provider.
+- **npm package scope renamed to `@plmbr/notebook-intelligence`** (#342), following the GitHub org rename from `notebook-intelligence` to `plmbr`. The labextension is now listed as `@plmbr/notebook-intelligence` in `jupyter labextension list`; the pip package name (`notebook-intelligence`) is unchanged, so `pip install notebook-intelligence` still works.
+
+### Fixed
+
+- **AI-generated links in the chat sidebar open in a new tab instead of replacing the JupyterLab UI** (#347). Markdown links emitted by the model previously navigated the top-level document and unloaded the whole Lab session on click. External links (`http` / `https` / `mailto`) now open with `target="_blank" rel="noopener noreferrer"`; workspace-relative paths open the referenced file through JupyterLab's document manager; fragment-only links render as inert text; and disallowed schemes (`javascript:`, traversal-escaping paths, dangerous codepoints) are blocked.
+
 ## [5.0.0] - 2026-05-22
 
 5.0.0 is a major release built on top of 4.8.0, gathering a large surface of new admin policies, accessibility work across the chat sidebar / popovers / settings tabs, several security hardening passes, and three new agent-aware UI surfaces. Most existing configuration continues to work; the version bump reflects the breadth of new admin-policy / env-var surface that operators should review, plus the dependency swap from `fastmcp` to the official `mcp` SDK.
@@ -330,7 +387,9 @@ A multi-PR accessibility pass landed across most NBI surfaces. Together these ma
 - Settings UI restructured around Claude vs default mode.
 - WebSocket connection reliability improvements.
 
-[unreleased]: https://github.com/plmbr/notebook-intelligence/compare/v5.0.0...HEAD
+[unreleased]: https://github.com/plmbr/notebook-intelligence/compare/v5.1.0...HEAD
+[5.1.0]: https://github.com/plmbr/notebook-intelligence/compare/v5.0.1...v5.1.0
+[5.0.1]: https://github.com/plmbr/notebook-intelligence/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/plmbr/notebook-intelligence/compare/v4.8.0...v5.0.0
 [4.8.0]: https://github.com/plmbr/notebook-intelligence/compare/v4.7.0...v4.8.0
 [4.7.0]: https://github.com/plmbr/notebook-intelligence/compare/v4.6.0...v4.7.0

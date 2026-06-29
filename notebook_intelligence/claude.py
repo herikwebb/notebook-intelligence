@@ -1,6 +1,7 @@
 # Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import json
+import difflib
 import os
 import sys
 import asyncio
@@ -9,20 +10,21 @@ from pathlib import Path
 from queue import Queue
 import threading
 import time
-from typing import Any
+from typing import Any, Optional, TYPE_CHECKING
 import uuid
 import re
 from anyio.abc import Process
-from anthropic import Anthropic
-from notebook_intelligence.api import AskUserQuestionData, BackendMessageType, CancelToken, ChatCommand, ChatModel, ChatRequest, ChatResponse, ClaudeToolType, CompletionContext, ConfirmationData, Host, InlineCompletionModel, MarkdownData, ProgressData, SignalImpl
+from notebook_intelligence.api import AskUserQuestionData, BackendMessageType, CancelToken, ChatCommand, ChatModel, ChatRequest, ChatResponse, ClaudeToolType, CompletionContext, ConfirmationData, Host, InlineCompletionModel, MarkdownData, ProgressData, SignalImpl, ToolCallData
 from notebook_intelligence.base_chat_participant import BaseChatParticipant
 from notebook_intelligence._version import __version__ as NBI_VERSION
 import base64
 import logging
 from claude_agent_sdk import AssistantMessage, PermissionResultAllow, PermissionResultDeny, TextBlock, ToolResultBlock, ToolUseBlock, UserMessage, create_sdk_mcp_server, ClaudeAgentOptions, ClaudeSDKClient, tool
-from anthropic.types.text_block import TextBlock as AnthropicTextBlock
 
-from notebook_intelligence.util import ThreadSafeWebSocketConnector, _emit, get_jupyter_root_dir, resolve_claude_cli_path, safe_jupyter_path
+from notebook_intelligence.util import ThreadSafeWebSocketConnector, _emit, get_jupyter_root_dir, import_litellm, resolve_claude_cli_path, safe_jupyter_path, terminate_process_tree
+
+if TYPE_CHECKING:
+    from anthropic import Anthropic
 
 log = logging.getLogger(__name__)
 
@@ -90,39 +92,61 @@ CLAUDE_AGENT_CLIENT_UPDATE_WAIT_TIME = float(os.getenv("NBI_CLAUDE_AGENT_CLIENT_
 CLAUDE_AGENT_CONNECT_TIMEOUT = float(os.getenv("NBI_CLAUDE_AGENT_CONNECT_TIMEOUT", "15"))
 CLAUDE_AGENT_HEARTBEAT_INTERVAL = float(os.getenv("NBI_CLAUDE_AGENT_HEARTBEAT_INTERVAL", "20"))
 
-# Human-readable labels for tool calls surfaced through the chat sidebar's
-# progress indicator. The keys are the SDK tool names — NBI's MCP tools
-# use the kebab-case @tool decorator names; Claude's built-ins keep their
-# CamelCase identifiers. Unknown names fall through `humanize_claude_tool_name`
-# to a generic kebab→sentence conversion rather than masking the raw name.
-_CLAUDE_TOOL_LABELS: dict[str, str] = {
+# Single source of truth for tool-call presentation: SDK tool name ->
+# (label, kind). `label` is the short human-readable progress label; `kind`
+# is the coarse card-icon category (read / edit / execute / other). NBI's MCP
+# tools use the kebab-case @tool decorator names; Claude's built-ins keep
+# their CamelCase identifiers. Unknown names fall through to a sentence-case
+# label and a keyword-heuristic kind rather than masking the raw name.
+_CLAUDE_TOOLS: dict[str, tuple[str, str]] = {
     # NBI's MCP toolset (defined in this file via @tool(...))
-    "create-new-notebook": "Creating notebook",
-    "rename-notebook": "Renaming notebook",
-    "add-markdown-cell": "Adding markdown cell",
-    "add-code-cell": "Adding code cell",
-    "get-number-of-cells": "Reading notebook",
-    "get-cell-type-and-source": "Reading cell",
-    "get-cell-output": "Reading cell output",
-    "set-cell-type-and-source": "Editing cell",
-    "delete-cell": "Deleting cell",
-    "insert-cell": "Inserting cell",
-    "run-cell": "Running cell",
-    "save-notebook": "Saving notebook",
-    "run-command-in-jupyter-terminal": "Running shell command",
-    "open-file-in-jupyter-ui": "Opening file",
+    "create-new-notebook": ("Creating notebook", "edit"),
+    "rename-notebook": ("Renaming notebook", "edit"),
+    "add-markdown-cell": ("Adding markdown cell", "edit"),
+    "add-code-cell": ("Adding code cell", "edit"),
+    "get-number-of-cells": ("Reading notebook", "read"),
+    "get-cell-type-and-source": ("Reading cell", "read"),
+    "get-cell-output": ("Reading cell output", "read"),
+    "set-cell-type-and-source": ("Editing cell", "edit"),
+    "delete-cell": ("Deleting cell", "edit"),
+    "insert-cell": ("Inserting cell", "edit"),
+    "run-cell": ("Running cell", "execute"),
+    "save-notebook": ("Saving notebook", "edit"),
+    "run-command-in-jupyter-terminal": ("Running shell command", "execute"),
+    "open-file-in-jupyter-ui": ("Opening file", "read"),
     # Claude's built-in toolset
-    "Bash": "Running shell command",
-    "Read": "Reading file",
-    "Write": "Writing file",
-    "Edit": "Editing file",
-    "Glob": "Searching files",
-    "Grep": "Searching contents",
-    "WebFetch": "Fetching URL",
-    "WebSearch": "Searching web",
-    "Task": "Spawning subagent",
-    "TodoWrite": "Updating task list",
+    "Bash": ("Running shell command", "execute"),
+    "Read": ("Reading file", "read"),
+    "Write": ("Writing file", "edit"),
+    "Edit": ("Editing file", "edit"),
+    "MultiEdit": ("Editing file", "edit"),
+    "NotebookEdit": ("Editing notebook cell", "edit"),
+    "Glob": ("Searching files", "read"),
+    "Grep": ("Searching contents", "read"),
+    "WebFetch": ("Fetching URL", "read"),
+    "WebSearch": ("Searching web", "read"),
+    "Task": ("Spawning subagent", "other"),
+    "TodoWrite": ("Updating task list", "other"),
 }
+
+
+def _inner_tool_name(name: str) -> str:
+    """Unwrap an MCP tool name (``mcp__<server>__<tool>``) to its inner tool."""
+    if name.startswith("mcp__"):
+        parts = name.split("__")
+        if len(parts) >= 3:
+            return parts[-1]
+    return name
+
+
+def _lookup_tool(name: str) -> Optional[tuple[str, str]]:
+    """Return (label, kind) for a known tool, unwrapping MCP names; else None."""
+    if name in _CLAUDE_TOOLS:
+        return _CLAUDE_TOOLS[name]
+    inner = _inner_tool_name(name)
+    if inner != name and inner in _CLAUDE_TOOLS:
+        return _CLAUDE_TOOLS[inner]
+    return None
 
 
 def humanize_claude_tool_name(name: str) -> str:
@@ -132,21 +156,115 @@ def humanize_claude_tool_name(name: str) -> str:
     tools still surface something the user can read rather than a bare
     kebab-case identifier.
     """
-    if name in _CLAUDE_TOOL_LABELS:
-        return _CLAUDE_TOOL_LABELS[name]
-    # MCP server tools come through as `mcp__<server>__<tool>` — strip
-    # the wrapper before falling back so we don't surface protocol noise.
-    inner = name
-    if name.startswith("mcp__"):
-        parts = name.split("__")
-        if len(parts) >= 3:
-            inner = parts[-1]
-            if inner in _CLAUDE_TOOL_LABELS:
-                return _CLAUDE_TOOL_LABELS[inner]
-    pretty = inner.replace("-", " ").replace("_", " ").strip()
+    entry = _lookup_tool(name)
+    if entry is not None:
+        return entry[0]
+    pretty = _inner_tool_name(name).replace("-", " ").replace("_", " ").strip()
     if not pretty:
         return name
     return pretty[:1].upper() + pretty[1:]
+
+
+def claude_tool_kind(name: str) -> str:
+    """Coarse category for a tool call (``read`` / ``edit`` / ``execute`` /
+    ``other``), used only to choose a card icon.
+
+    Known names map directly (unwrapping ``mcp__server__tool``); anything left
+    over falls back to a whole-token keyword heuristic so unfamiliar MCP tools
+    still get a sensible icon rather than always landing on ``other``.
+    """
+    entry = _lookup_tool(name)
+    if entry is not None:
+        return entry[1]
+    # Tokenize so a verb is matched as a whole word, not a substring: "widget"
+    # must not read as "get", and "command" must not read as "and".
+    tokens = {t for t in re.split(r"[^a-z0-9]+", _inner_tool_name(name).lower()) if t}
+    if tokens & {"bash", "run", "exec", "execute", "shell", "terminal", "command"}:
+        return "execute"
+    if tokens & {"write", "edit", "create", "add", "insert", "delete", "remove",
+                 "rename", "save", "set", "update", "patch", "make"}:
+        return "edit"
+    if tokens & {"read", "get", "list", "search", "grep", "glob", "fetch",
+                 "view", "open", "show", "find"}:
+        return "read"
+    return "other"
+
+
+# Cap the diff lines surfaced per tool-call card so a large edit doesn't bloat
+# the transcript or the wire payload.
+_MAX_DIFF_LINES = 60
+
+
+def _diff_lines(old: str, new: str, max_lines: int = _MAX_DIFF_LINES) -> tuple[list[dict], bool]:
+    """Line-level diff of ``old`` -> ``new`` as typed lines for a card.
+
+    Returns ``(lines, truncated)``. Each line is
+    ``{"type": "add"|"remove"|"context", "content": str}``; the list is capped
+    at ``max_lines`` so a huge edit stays compact.
+    """
+    old_lines = (old or "").splitlines()
+    new_lines = (new or "").splitlines()
+    lines: list[dict] = []
+    for raw in difflib.unified_diff(old_lines, new_lines, lineterm="", n=1):
+        if raw.startswith(("---", "+++", "@@")):
+            continue
+        if raw.startswith("+"):
+            lines.append({"type": "add", "content": raw[1:]})
+        elif raw.startswith("-"):
+            lines.append({"type": "remove", "content": raw[1:]})
+        else:
+            lines.append({"type": "context", "content": raw[1:] if raw[:1] == " " else raw})
+    truncated = len(lines) > max(0, max_lines)
+    return lines[: max(0, max_lines)], truncated
+
+
+def extract_tool_diffs(name: str, tool_input: Any) -> list[dict]:
+    """Extract inline diffs from a file-edit tool's input.
+
+    Handles Claude's Edit / Write / MultiEdit (including MCP-wrapped names).
+    Returns a list of ``{"path", "lines", "truncated"}`` entries; empty for
+    tools that aren't file edits or whose input lacks the expected fields.
+    """
+    if not isinstance(tool_input, dict):
+        return []
+    inner = _inner_tool_name(name)
+    raw_diffs: list[tuple[str, str, str]] = []  # (path, old, new)
+    if inner == "Edit":
+        raw_diffs.append((
+            tool_input.get("file_path", ""),
+            tool_input.get("old_string", ""),
+            tool_input.get("new_string", ""),
+        ))
+    elif inner == "Write":
+        raw_diffs.append((
+            tool_input.get("file_path", ""),
+            "",
+            tool_input.get("content", ""),
+        ))
+    elif inner == "MultiEdit":
+        path = tool_input.get("file_path", "")
+        for edit in tool_input.get("edits", []) or []:
+            if isinstance(edit, dict):
+                raw_diffs.append((
+                    path,
+                    edit.get("old_string", ""),
+                    edit.get("new_string", ""),
+                ))
+
+    # Budget the line cap across ALL diffs in the card, not per diff, so a
+    # MultiEdit with many edits can't blow up the payload.
+    out: list[dict] = []
+    remaining = _MAX_DIFF_LINES
+    for path, old, new in raw_diffs:
+        if remaining <= 0:
+            if out:
+                out[-1]["truncated"] = True
+            break
+        lines, truncated = _diff_lines(old, new, max_lines=remaining)
+        if lines:
+            out.append({"path": path, "lines": lines, "truncated": truncated})
+            remaining -= len(lines)
+    return out
 
 
 _current_request = None
@@ -179,6 +297,158 @@ def set_current_claude_client(client: ClaudeSDKClient):
 def get_current_claude_client() -> ClaudeSDKClient:
     global _current_claude_client
     return _current_claude_client
+
+# The subset of the SDK's PermissionMode literals NBI exposes (issue #359).
+# "dontAsk" and "auto" are deliberately excluded: both skip the
+# human-in-the-loop gate the way bypass does, without the arming UX.
+CLAUDE_PERMISSION_MODES = ("default", "acceptEdits", "plan", "bypassPermissions")
+CLAUDE_BYPASS_PERMISSION_MODE = "bypassPermissions"
+DEFAULT_PERMISSION_MODE = "default"
+
+# Claude Code's enterprise managed-settings locations, one per platform.
+_MANAGED_SETTINGS_PATHS = (
+    "/Library/Application Support/ClaudeCode/managed-settings.json",
+    "/etc/claude-code/managed-settings.json",
+    "C:\\ProgramData\\ClaudeCode\\managed-settings.json",
+)
+
+
+def _claude_managed_permissions() -> Optional[dict]:
+    """Best-effort read of the ``permissions`` block of Claude Code's
+    enterprise managed settings.
+
+    Returns ``None`` when no managed-settings file exists. A file that
+    exists but cannot be parsed returns a block that disables bypass:
+    an admin clearly tried to manage this machine, so the safe reading
+    of a corrupt file is the most restrictive one.
+    """
+    for path in _MANAGED_SETTINGS_PATHS:
+        if not os.path.isfile(path):
+            continue
+        try:
+            with open(path, encoding="utf-8") as f:
+                data = json.load(f)
+            permissions = data.get("permissions") if isinstance(data, dict) else None
+            return permissions if isinstance(permissions, dict) else {}
+        except Exception as exc:
+            log.warning(
+                f"Could not read Claude managed settings at {path}; treating bypass as disabled: {exc}"
+            )
+            return {"disableBypassPermissionsMode": True}
+    return None
+
+
+def claude_bypass_disabled_by_managed_settings() -> bool:
+    permissions = _claude_managed_permissions()
+    return bool(permissions and permissions.get("disableBypassPermissionsMode"))
+
+
+def claude_managed_default_permission_mode() -> Optional[str]:
+    """The ``permissions.defaultMode`` from managed settings, when valid."""
+    permissions = _claude_managed_permissions() or {}
+    mode = permissions.get("defaultMode")
+    return mode if mode in CLAUDE_PERMISSION_MODES else None
+
+
+def resolve_permission_mode(requested: str, allow_bypass: bool) -> str:
+    """Clamp a client-requested permission mode at the request boundary.
+
+    Fails closed: unknown modes collapse to default, and bypass is only
+    honored when both the NBI policy allows it and managed settings don't
+    forbid it, so a hand-rolled websocket request can't escalate past
+    what the selector UI offers.
+    """
+    if requested not in CLAUDE_PERMISSION_MODES:
+        return DEFAULT_PERMISSION_MODE
+    if requested == CLAUDE_BYPASS_PERMISSION_MODE and (
+        not allow_bypass or claude_bypass_disabled_by_managed_settings()
+    ):
+        return DEFAULT_PERMISSION_MODE
+    return requested
+
+
+# These module globals are written only from the single Claude client
+# thread (connect, the query loop, and the SDK-invoked permission handler
+# all run there), mirroring the existing _current_claude_client /
+# set_current_request singletons. The only cross-thread hop is
+# write_message, which marshals onto the Tornado loop. A future
+# multi-client or per-session refactor would need to revisit this.
+_current_permission_mode = DEFAULT_PERMISSION_MODE
+_permission_mode_notifier: Optional[ThreadSafeWebSocketConnector] = None
+
+
+def set_permission_mode_notifier(connector: Optional[ThreadSafeWebSocketConnector]):
+    global _permission_mode_notifier
+    _permission_mode_notifier = connector
+
+
+def get_current_permission_mode() -> str:
+    return _current_permission_mode
+
+
+def _notify_permission_mode(mode: str, reset: bool = False):
+    if _permission_mode_notifier is None:
+        return
+    try:
+        _permission_mode_notifier.write_message({
+            "type": BackendMessageType.ClaudePermissionModeChange,
+            "data": {"mode": mode, "reset": reset}
+        })
+    except Exception as e:
+        log.error(f"Error occurred while sending permission mode change to websocket: {str(e)}")
+
+
+def reset_permission_mode_tracking():
+    """A fresh SDK client starts in default mode; realign tracking and the UI.
+
+    The notification is flagged ``reset`` and carries the selector's
+    *starting* value, which honors managed settings' defaultMode. The UI
+    applies it only to retire bypass (which never survives a reset, even as
+    a managed default: re-arming is always manual) and otherwise keeps the
+    user's explicit selection, so a mid-session reconnect (skills reload, a
+    config change) doesn't clobber the chosen mode (issue #377). The next
+    request applies whatever the selector then shows.
+    """
+    global _current_permission_mode
+    _current_permission_mode = DEFAULT_PERMISSION_MODE
+    starting = claude_managed_default_permission_mode() or DEFAULT_PERMISSION_MODE
+    if starting == CLAUDE_BYPASS_PERMISSION_MODE:
+        starting = DEFAULT_PERMISSION_MODE
+    _notify_permission_mode(starting, reset=True)
+
+
+async def apply_permission_mode(sdk_client: ClaudeSDKClient, mode: str) -> bool:
+    """Switch the SDK's permission mode when it differs from the applied one.
+
+    Every switch goes through here (selector requests, the hidden plan-mode
+    slash aliases, and the plan-approval reset) so the tracked mode and the
+    UI notification can't drift from what the SDK was actually told.
+
+    Bypass is realized in NBI's own ``custom_permission_handler`` rather than
+    the CLI's ``bypassPermissions`` mode: the CLI refuses that mode unless the
+    session was launched with ``--dangerously-skip-permissions``, and that flag
+    skips ALL permission prompts for the whole session (it can't be scoped to
+    the bypass turns only), which would silently un-gate default / acceptEdits
+    / plan too (issue #377). Instead bypass keeps the CLI in ``default`` and the
+    handler auto-allows every tool while ``_current_permission_mode`` is bypass,
+    so the gate stays fully under NBI's control.
+
+    This does NOT re-check the bypass policy: callers must pass a mode that was
+    already clamped by ``resolve_permission_mode`` at the request boundary, or a
+    hardcoded non-bypass literal.
+    """
+    global _current_permission_mode
+    if mode not in CLAUDE_PERMISSION_MODES or mode == _current_permission_mode:
+        return False
+    cli_mode = (
+        DEFAULT_PERMISSION_MODE
+        if mode == CLAUDE_BYPASS_PERMISSION_MODE
+        else mode
+    )
+    await sdk_client.set_permission_mode(cli_mode)
+    _current_permission_mode = mode
+    _notify_permission_mode(mode)
+    return True
 
 def tool_text_response(text: Any, *, is_error: bool = False) -> dict[str, Any]:
     """Shape an MCP tool result. Set ``is_error=True`` for rejection paths.
@@ -228,7 +498,7 @@ def get_claude_models() -> list[dict]:
 def _get_context_window(model_id: str) -> int:
     """Get context window size for a model using litellm's model database."""
     try:
-        import litellm
+        litellm = import_litellm()
         info = litellm.get_model_info(model_id)
         return info.get("max_input_tokens", 200000)
     except Exception:
@@ -247,8 +517,9 @@ def _normalize_anthropic_credential(value: Any) -> str | None:
     return value.strip() or None
 
 
-def _create_anthropic_client(api_key: str = None, base_url: str = None) -> Anthropic:
+def _create_anthropic_client(api_key: str = None, base_url: str = None) -> "Anthropic":
     """Create an Anthropic client with normalized credentials and default headers."""
+    from anthropic import Anthropic
     api_key = _normalize_anthropic_credential(api_key)
     base_url = _normalize_anthropic_credential(base_url)
     return Anthropic(
@@ -426,6 +697,8 @@ class ClaudeCodeInlineCompletionModel(InlineCompletionModel):
     def inline_completions(self, prefix, suffix, language, filename, context: CompletionContext, cancel_token: CancelToken) -> str:
         if cancel_token.is_cancel_requested:
             return ''
+
+        from anthropic.types.text_block import TextBlock as AnthropicTextBlock
 
         message = self._client.messages.create(
             model=self._model_id,
@@ -651,6 +924,8 @@ class ClaudeCodeClient():
                 self._set_status(ClaudeAgentClientStatus.Connected)
                 self._connect_resolved.set()
                 set_current_claude_client(client)
+                set_permission_mode_notifier(self._websocket_connector)
+                reset_permission_mode_tracking()
 
                 while True:
                     queue = self._client_queue
@@ -667,6 +942,13 @@ class ClaudeCodeClient():
 
                             set_current_request(request)
                             set_current_response(response)
+                            # Refresh per query: the websocket reconnects on
+                            # every page reload while this client thread (and
+                            # its agent subprocess) persists, so the connector
+                            # captured at connect time goes stale. The
+                            # participant pushes the live connector onto this
+                            # client, so re-read it here.
+                            set_permission_mode_notifier(self._websocket_connector)
 
                             messages = request.chat_history
                             query_lines = []
@@ -680,24 +962,34 @@ class ClaudeCodeClient():
 
                             already_handled = False
 
+                            # Hidden aliases kept for one release after the
+                            # selector replaced them in the UI (issue #359);
+                            # they're filtered out of autocomplete on the
+                            # frontend but still work when typed.
                             if client_query.startswith('/enter-plan-mode'):
-                                await client.set_permission_mode("plan")
+                                await apply_permission_mode(client, "plan")
                                 response.stream(MarkdownData("&#x2713; Entered plan mode"))
                                 already_handled = True
                             elif client_query.startswith('/exit-plan-mode'):
-                                await client.set_permission_mode("default")
+                                await apply_permission_mode(client, DEFAULT_PERMISSION_MODE)
                                 response.stream(MarkdownData("&#x2713; Exit plan mode"))
                                 already_handled = True
 
                             if not already_handled and not request.cancel_token.is_cancel_requested:
+                                # The mode was clamped against the bypass
+                                # policy and managed settings at the websocket
+                                # boundary; here it only needs applying.
+                                await apply_permission_mode(
+                                    client,
+                                    request.permission_mode or DEFAULT_PERMISSION_MODE,
+                                )
                                 await client.query(client_query)
                                 # Per-query map from tool_use_id to its
-                                # humanized label so the ToolResultBlock
-                                # echo back can name the tool that just
-                                # finished. Lifetime is one query — pops
-                                # entries on completion so the dict stays
-                                # bounded.
-                                in_flight_tools: dict[str, str] = {}
+                                # (title, kind) so the ToolResultBlock echo
+                                # back can re-emit the same card with a final
+                                # status. Lifetime is one query — pops entries
+                                # on completion so the dict stays bounded.
+                                in_flight_tools: dict[str, tuple[str, str, list]] = {}
                                 async for message in client.receive_response():
                                     if request.cancel_token.is_cancel_requested:
                                         # Stop iterating once the user cancels — we'd
@@ -710,9 +1002,17 @@ class ClaudeCodeClient():
                                             if isinstance(block, TextBlock):
                                                 response.stream(MarkdownData(block.text))
                                             elif isinstance(block, ToolUseBlock):
-                                                label = humanize_claude_tool_name(block.name)
-                                                in_flight_tools[block.id] = label
-                                                response.stream(ProgressData(f"{label}…"))
+                                                title = humanize_claude_tool_name(block.name)
+                                                kind = claude_tool_kind(block.name)
+                                                diffs = extract_tool_diffs(block.name, block.input)
+                                                in_flight_tools[block.id] = (title, kind, diffs)
+                                                response.stream(ToolCallData(
+                                                    id=block.id,
+                                                    title=title,
+                                                    kind=kind,
+                                                    status='in_progress',
+                                                    diffs=diffs,
+                                                ))
                                     elif isinstance(message, UserMessage):
                                         if isinstance(message.content, str):
                                             content = message.content
@@ -729,20 +1029,45 @@ class ClaudeCodeClient():
                                                     # ToolUseBlock is anomalous (cross-
                                                     # query stragglers, sub-agent
                                                     # results routed through a parent
-                                                    # tool_use_id). A bare "Tool ✓"
-                                                    # without context is more
-                                                    # confusing than silence, so we
-                                                    # only surface results we can
-                                                    # name.
-                                                    label = in_flight_tools.pop(
+                                                    # tool_use_id). A status card with
+                                                    # no opening card to merge into
+                                                    # would be more confusing than
+                                                    # silence, so we only surface
+                                                    # results we can name.
+                                                    entry = in_flight_tools.pop(
                                                         block.tool_use_id, None
                                                     )
-                                                    if label is None:
+                                                    if entry is None:
                                                         continue
-                                                    icon = "✗" if block.is_error else "✓"
-                                                    response.stream(ProgressData(f"{label} {icon}"))
+                                                    title, kind, diffs = entry
+                                                    status = 'failed' if block.is_error else 'completed'
+                                                    response.stream(ToolCallData(
+                                                        id=block.tool_use_id,
+                                                        title=title,
+                                                        kind=kind,
+                                                        status=status,
+                                                        diffs=diffs,
+                                                    ))
                                     else:
                                         pass
+
+                                # On cancel the receive loop breaks before
+                                # these tools' results arrive. Their cards are
+                                # persistent now (unlike the old transient
+                                # progress line), so flip them out of the
+                                # spinning in_progress state to a terminal
+                                # 'cancelled' rather than leaving a perpetual
+                                # spinner in the transcript.
+                                if request.cancel_token.is_cancel_requested and in_flight_tools:
+                                    for tool_id, (title, kind, diffs) in in_flight_tools.items():
+                                        response.stream(ToolCallData(
+                                            id=tool_id,
+                                            title=title,
+                                            kind=kind,
+                                            status='cancelled',
+                                            diffs=diffs,
+                                        ))
+                                    in_flight_tools.clear()
                         except Exception as e:
                             err_msg = f"Error communicating with Claude agent: {str(e)}"
                             log.error(err_msg)
@@ -769,6 +1094,16 @@ class ClaudeCodeClient():
                         except Exception as e:
                             log.error(f"Error occurred while clearing chat history: {str(e)}")
                         finally:
+                            # A new session must not inherit an armed bypass:
+                            # realign permission tracking to default and tell the
+                            # UI, mirroring a fresh client connect. Without this,
+                            # /clear leaves _current_permission_mode at bypass and
+                            # the handler keeps auto-allowing every tool in the
+                            # supposedly fresh session (issue #377). Refresh the
+                            # notifier first since the connector goes stale across
+                            # a page reload while this thread persists.
+                            set_permission_mode_notifier(self._websocket_connector)
+                            reset_permission_mode_tracking()
                             _emit(signal, {"id": event_id, "data": "chat history cleared"})
                     elif event_type == ClaudeAgentEventType.StopClient:
                         _emit(signal, {"id": event_id, "data": "stopped"})
@@ -840,6 +1175,12 @@ class ClaudeCodeClient():
 
         start_time = time.time()
         last_heartbeat = start_time
+        # Time the agent spends blocked on a tool approval (or any user input)
+        # must not count toward the response timeout: a slow human reply isn't
+        # an unresponsive agent. Without this, a long approval wait timed out
+        # the turn and left the worker mid-request, wedging later prompts
+        # (issue #381).
+        response_obj = event_args.get("response") if event_args else None
 
         try:
             while True:
@@ -848,12 +1189,26 @@ class ClaudeCodeClient():
                 if nbi_request_obj is not None and nbi_request_obj.cancel_token.is_cancel_requested:
                     try:
                         process: Process = self._client._transport._process
-                        process.kill()
+                        # Tear down the whole process tree, not just the Claude CLI
+                        # child: the agent may have spawned shells, MCP servers, and
+                        # dev servers that a bare child-only kill would orphan. The
+                        # teardown (SIGTERM, grace, then SIGKILL on survivors) runs on
+                        # a background thread so this cancel returns immediately; the
+                        # reconnect on the next request spawns a fresh client and
+                        # subprocess that share no state with the dying tree.
+                        pid = process.pid if process is not None else None
+                        if pid:
+                            threading.Thread(
+                                target=terminate_process_tree,
+                                args=(pid,),
+                                name="nbi-claude-cancel-teardown",
+                                daemon=True,
+                            ).start()
 
                         self._reconnect_required = True
                         self._continue_conversation = True
                     except Exception as e:
-                        log.error(f"Error occurred while setting current request and response to None: {str(e)}")
+                        log.error(f"Error tearing down Claude subprocess on cancel: {str(e)}")
                     if self._reconnect_required:
                         self._mark_as_disconnected()
                     return {
@@ -878,7 +1233,10 @@ class ClaudeCodeClient():
                         "success": False,
                         "error": "Claude agent is not running",
                     }
-                if time.time() - start_time > CLAUDE_AGENT_CLIENT_RESPONSE_TIMEOUT:
+                elapsed = time.time() - start_time
+                if response_obj is not None:
+                    elapsed -= response_obj.user_input_wait_seconds
+                if elapsed > CLAUDE_AGENT_CLIENT_RESPONSE_TIMEOUT:
                     return {
                         "data": None,
                         "success": False,
@@ -995,7 +1353,9 @@ async def add_markdown_cell(args) -> str:
     """
     response = get_current_response()
     ui_cmd_response = await response.run_ui_command('notebook-intelligence:add-markdown-cell-to-active-notebook', {'source': args['source']})
-
+    cell_index = ui_cmd_response.get("cellIndex") if isinstance(ui_cmd_response, dict) else None
+    if isinstance(cell_index, int):
+        return tool_text_response(f"Added markdown cell at index {cell_index}")
     return tool_text_response(f"Added markdown cell to notebook")
 
 @tool("add-code-cell", "Adds a code cell to the notebook.", {"source": str})
@@ -1006,7 +1366,9 @@ async def add_code_cell(args) -> str:
     """
     response = get_current_response()
     ui_cmd_response = await response.run_ui_command('notebook-intelligence:add-code-cell-to-active-notebook', {'source': args['source']})
-
+    cell_index = ui_cmd_response.get("cellIndex") if isinstance(ui_cmd_response, dict) else None
+    if isinstance(cell_index, int):
+        return tool_text_response(f"Added code cell at index {cell_index}")
     return tool_text_response(f"Added code cell to notebook")
 
 @tool("get-number-of-cells", "Gets the number of cells in the notebook.", {})
@@ -1201,6 +1563,13 @@ async def custom_permission_handler(
 
     log.debug(f"Custom permission handler called for tool {tool_name} with input {input_data} and context {context}")
 
+    # Bypass Permissions: auto-allow every tool without prompting. NBI realizes
+    # bypass here rather than via the CLI's bypassPermissions mode (which needs
+    # an un-scopable launch flag); the mode only reaches here clamped against
+    # the policy at the request boundary (issue #377).
+    if get_current_permission_mode() == CLAUDE_BYPASS_PERMISSION_MODE:
+        return PermissionResultAllow()
+
     response = get_current_response()
     callback_id = str(uuid.uuid4())
 
@@ -1234,7 +1603,7 @@ async def custom_permission_handler(
         ))
         user_input = await ChatResponse.wait_for_chat_user_input(response, callback_id)
         if user_input['confirmed'] == True:
-            await get_current_claude_client().set_permission_mode("default")
+            await apply_permission_mode(get_current_claude_client(), DEFAULT_PERMISSION_MODE)
             return PermissionResultAllow(updated_input={"message": "Plan approved", "approved": True})
         else:
             return PermissionResultDeny(message="User did not confirm the plan", interrupt=True)

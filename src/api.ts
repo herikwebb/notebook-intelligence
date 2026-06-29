@@ -276,6 +276,7 @@ export type FeaturePolicyName =
   | 'skills_management'
   | 'claude_mcp_management'
   | 'claude_plugins_management'
+  | 'claude_bypass_permissions'
   | 'terminal_drag_drop'
   | 'refresh_open_files_on_disk_change';
 
@@ -388,6 +389,10 @@ export class NBIConfig {
     return this.capabilities.claude_settings;
   }
 
+  get spinnerVerbs(): { mode: string; verbs: string[] } | null {
+    return this.capabilities.spinner_verbs ?? null;
+  }
+
   get claudeModels(): IClaudeModelInfo[] {
     return (this.capabilities.claude_models ?? []).map(claudeModelFromWire);
   }
@@ -398,6 +403,10 @@ export class NBIConfig {
 
   get isClaudeCliAvailable(): boolean {
     return this.capabilities.claude_cli_available === true;
+  }
+
+  get claudePermissionDefaultMode(): string {
+    return this.capabilities.claude_permission_default_mode ?? 'default';
   }
 
   get isOpenCodeCliAvailable(): boolean {
@@ -433,6 +442,10 @@ export class NBIConfig {
 
   get chatFeedbackEnabled(): boolean {
     return this.capabilities.chat_feedback_enabled === true;
+  }
+
+  get chatFeedbackAlwaysVisible(): boolean {
+    return this.capabilities.chat_feedback_always_visible === true;
   }
 
   // Admin-supplied tour-copy overrides, served from the capabilities
@@ -497,6 +510,7 @@ export class NBIConfig {
       'skills_management',
       'claude_mcp_management',
       'claude_plugins_management',
+      'claude_bypass_permissions',
       'terminal_drag_drop',
       'refresh_open_files_on_disk_change'
     ];
@@ -576,6 +590,10 @@ export class NBIAPI {
   // The chat sidebar uses it to drive the "Generating" indicator's pulse
   // and to swap to a "server may be slow" copy when the gap stretches.
   static claudeCodeHeartbeat = new Signal<unknown, void>(this);
+  static claudePermissionModeChanged = new Signal<
+    unknown,
+    { mode: string; reset: boolean }
+  >(this);
 
   static async initialize() {
     await this.fetchCapabilities();
@@ -606,6 +624,11 @@ export class NBIAPI {
         this.skillsReloaded.emit();
       } else if (msg.type === BackendMessageType.ClaudeCodeHeartbeat) {
         this.claudeCodeHeartbeat.emit();
+      } else if (msg.type === BackendMessageType.ClaudePermissionModeChange) {
+        this.claudePermissionModeChanged.emit({
+          mode: msg.data?.mode ?? 'default',
+          reset: msg.data?.reset ?? false
+        });
       }
     });
   }
@@ -1237,7 +1260,8 @@ export class NBIAPI {
     additionalContext: IContextItem[],
     chatMode: string,
     toolSelections: IToolSelections,
-    responseEmitter: IChatCompletionResponseEmitter
+    responseEmitter: IChatCompletionResponseEmitter,
+    permissionMode: string = 'default'
   ) {
     this._subscribeUntilStreamEnd(messageId, responseEmitter);
     this._webSocket.send(
@@ -1252,7 +1276,8 @@ export class NBIAPI {
           filename,
           additionalContext,
           chatMode,
-          toolSelections
+          toolSelections,
+          permissionMode
         }
       })
     );

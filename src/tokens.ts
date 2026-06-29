@@ -36,6 +36,7 @@ export enum BackendMessageType {
   MCPServerStatusChange = 'mcp-server-status-change',
   ClaudeCodeStatusChange = 'claude-code-status-change',
   ClaudeCodeHeartbeat = 'claude-code-heartbeat',
+  ClaudePermissionModeChange = 'claude-permission-mode-change',
   SkillsReloaded = 'skills-reloaded'
 }
 
@@ -48,6 +49,7 @@ export enum ResponseStreamDataType {
   Button = 'button',
   Anchor = 'anchor',
   Progress = 'progress',
+  ToolCall = 'tool-call',
   Confirmation = 'confirmation',
   AskUserQuestion = 'ask-user-question'
 }

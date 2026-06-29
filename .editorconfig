@@ -1,0 +1,22 @@
+# EditorConfig (https://editorconfig.org) keeps basic whitespace consistent
+# across editors. It complements Prettier rather than replacing it: Prettier
+# still owns the canonical formatting enforced by `jlpm lint:check`.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Trailing whitespace is significant in Markdown (two spaces = a hard line
+# break), so do not strip it there.
+[*.md]
+trim_trailing_whitespace = false
+
+# package.json is formatted with a 4-space tab width (see the prettier
+# override in package.json), so match that here.
+[package.json]
+indent_size = 4

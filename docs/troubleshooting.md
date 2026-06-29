@@ -20,6 +20,25 @@ pip install --force-reinstall notebook-intelligence   # if the labextension is m
 
 The chat sidebar appears as a left-rail icon in the JupyterLab UI. Click it to open the panel.
 
+## "Two Notebook Intelligence icons in the sidebar"
+
+Seeing two NBI sidebar tabs with the same sparkle icon means two copies of the labextension are loaded at once. This happens after upgrading across the package rename: the labextension was renamed from `@notebook-intelligence/notebook-intelligence` to `@plmbr/notebook-intelligence` in the 5.0 line, and an upgrade installs the new one but can leave the old one behind. JupyterLab then loads both, and each registers its own sidebar tab.
+
+Confirm it:
+
+```bash
+jupyter labextension list
+```
+
+If both `@notebook-intelligence/notebook-intelligence` and `@plmbr/notebook-intelligence` are listed as enabled, the first is the stale duplicate. Remove its directory (its path is shown in the list), checking both your environment prefix and the per-user location:
+
+```bash
+rm -rf <prefix>/share/jupyter/labextensions/@notebook-intelligence
+rm -rf ~/.local/share/jupyter/labextensions/@notebook-intelligence
+```
+
+Restart JupyterLab and hard-refresh the browser; only `@plmbr/notebook-intelligence` should remain. If you would rather not delete files, `jupyter labextension disable @notebook-intelligence/notebook-intelligence` stops JupyterLab from loading the old extension reversibly. Note that `pip uninstall` does not remove the stale directory on its own, because the old labextension is no longer tracked by the current package.
+
 ## "GitHub login window doesn't open" or Copilot login does nothing
 
 NBI uses GitHub's device-flow login. The server extension prints the URL and one-time code to the JupyterLab terminal. Look there first.
@@ -92,6 +111,8 @@ ls ~/.jupyter/nbi/rules/         # ruleset files
 ls ~/.claude/skills/             # Claude skills
 ls ~/.claude/projects/           # Claude session transcripts
 ```
+
+If `CLAUDE_CONFIG_DIR` is set, the Claude CLI keeps its skills and session transcripts under `$CLAUDE_CONFIG_DIR` instead of `~/.claude`, and NBI reads from the same place.
 
 > Do not share the contents of `~/.jupyter/nbi/config.json` or `~/.jupyter/nbi/user-data.json` — they contain API keys or your encrypted GitHub token.
 

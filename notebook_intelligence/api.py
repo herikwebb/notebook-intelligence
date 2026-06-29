@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import time
 from typing import Any, Callable, Dict, Union, Optional
 from dataclasses import asdict, dataclass
 from enum import Enum
@@ -46,6 +47,7 @@ class BackendMessageType(str, Enum):
     MCPServerStatusChange = 'mcp-server-status-change'
     ClaudeCodeStatusChange = 'claude-code-status-change'
     ClaudeCodeHeartbeat = 'claude-code-heartbeat'
+    ClaudePermissionModeChange = 'claude-permission-mode-change'
     SkillsReloaded = 'skills-reloaded'
 
 class ResponseStreamDataType(str, Enum):
@@ -57,6 +59,7 @@ class ResponseStreamDataType(str, Enum):
     Button = 'button'
     Anchor = 'anchor'
     Progress = 'progress'
+    ToolCall = 'tool-call'
     Confirmation = 'confirmation'
     AskUserQuestion = 'ask-user-question'
 
@@ -142,6 +145,9 @@ class ChatRequest:
     cancel_token: CancelToken = None
     # NEW: Add context for rule evaluation
     rule_context: Optional[RuleContext] = None
+    # Claude-mode permission mode, already clamped server-side against the
+    # bypass policy and managed settings at the websocket boundary.
+    permission_mode: str = 'default'
 
 @dataclass
 class ResponseStreamData:
@@ -213,6 +219,30 @@ class ProgressData(ResponseStreamData):
         return ResponseStreamDataType.Progress
 
 @dataclass
+class ToolCallData(ResponseStreamData):
+    """A single agent tool call, surfaced as a persistent chat card.
+
+    Unlike ``ProgressData`` (a transient single line that vanishes when the
+    turn ends), a tool call is emitted twice under the same ``id`` -- once
+    when it starts and once when it finishes -- and the frontend merges the
+    two by ``id`` into one card that carries its final ``status``.
+
+    ``kind`` is a coarse category (``read`` / ``edit`` / ``execute`` /
+    ``other``) used only to pick an icon. ``status`` is one of
+    ``in_progress`` / ``completed`` / ``failed``.
+    """
+    id: str = ''
+    title: str = ''
+    kind: str = 'other'
+    status: str = 'in_progress'
+    # Inline before/after edits for file-edit tools; empty/None otherwise.
+    diffs: list = None
+
+    @property
+    def data_type(self) -> ResponseStreamDataType:
+        return ResponseStreamDataType.ToolCall
+
+@dataclass
 class ConfirmationData(ResponseStreamData):
     title: str = ''
     message: str = ''
@@ -280,6 +310,24 @@ class ChatResponse:
         self._user_input_signal: SignalImpl = SignalImpl()
         self._run_ui_command_response_signal: SignalImpl = SignalImpl()
         self.participant_id = ''
+        # Cumulative wall-clock seconds spent blocked on a user reply (tool
+        # approval, plan confirm, AskUserQuestion), plus the start of any wait
+        # currently in progress. Consumers subtract this from a response
+        # timeout so a slow human approval isn't mistaken for an unresponsive
+        # agent, which previously timed out the turn and wedged the next one
+        # (issue #381).
+        self._user_input_wait_total = 0.0
+        self._user_input_wait_started = None
+
+    @property
+    def user_input_wait_seconds(self) -> float:
+        """Total time this response has spent awaiting user input, including
+        any wait still in progress."""
+        total = self._user_input_wait_total
+        started = self._user_input_wait_started
+        if started is not None:
+            total += time.time() - started
+        return total
 
     @property
     def message_id(self) -> str:
@@ -306,12 +354,19 @@ class ChatResponse:
                 resp["data"] = data['data']
 
         response.user_input_signal.connect(_on_user_input)
+        response._user_input_wait_started = time.time()
 
-        while True:
-            if resp["data"] is not None:
-                response.user_input_signal.disconnect(_on_user_input)
-                return resp["data"]
-            await asyncio.sleep(0.1)
+        try:
+            while True:
+                if resp["data"] is not None:
+                    return resp["data"]
+                await asyncio.sleep(0.1)
+        finally:
+            response.user_input_signal.disconnect(_on_user_input)
+            started = response._user_input_wait_started
+            if started is not None:
+                response._user_input_wait_total += time.time() - started
+                response._user_input_wait_started = None
 
     async def run_ui_command(self, command: str, args: dict = {}) -> None:
         raise NotImplementedError

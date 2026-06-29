@@ -344,6 +344,114 @@
   outline: none;
 }
 
+.permission-mode-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* The armed-bypass color must out-specify the shared footer-button
+   :hover and :focus-visible rules (the button takes focus after arming),
+   so each state is listed explicitly. */
+.permission-mode-button.permission-mode-button-bypass,
+.permission-mode-button.permission-mode-button-bypass:hover,
+.permission-mode-button.permission-mode-button-bypass:focus-visible {
+  color: var(--jp-error-color1);
+}
+
+.permission-mode-menu {
+  position: absolute;
+  bottom: 32px;
+  right: 0;
+  z-index: 100;
+  min-width: 160px;
+  padding: 4px;
+  background-color: var(--jp-layout-color1);
+  border: 1px solid var(--jp-border-color1);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
+}
+
+.permission-mode-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--jp-ui-font-color1);
+  font-size: var(--jp-ui-font-size1);
+  border-radius: 2px;
+}
+
+.permission-mode-menu-item:hover,
+.permission-mode-menu-item:focus-visible {
+  background-color: var(--jp-layout-color2);
+  outline: none;
+}
+
+.permission-mode-menu-item-bypass {
+  color: var(--jp-error-color1);
+}
+
+.permission-mode-menu-check {
+  display: inline-flex;
+  width: 16px;
+  flex-shrink: 0;
+}
+
+/* Echo the trigger glyph next to each mode in the menu so the icon-only
+   footer button is learnable (issue #377). */
+.permission-mode-menu-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* Positioned via an inline style in a body-level portal (see
+   permission-mode-select.tsx) so it escapes the sidebar's stacking context:
+   an absolutely-positioned child of the sidebar gets clipped by the icon rail
+   on the left and covered by the main content panel on the right (issue #377).
+   The portal carries position/left/bottom/width inline; this rule is just the
+   look. z-index out-paints the JupyterLab shell. */
+.permission-mode-confirm {
+  z-index: 10000;
+  box-sizing: border-box;
+  padding: 10px;
+  background-color: var(--jp-layout-color1);
+  border: 1px solid var(--jp-error-color1);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
+}
+
+.permission-mode-confirm-message {
+  color: var(--jp-ui-font-color1);
+  font-size: var(--jp-ui-font-size1);
+  margin-bottom: 8px;
+}
+
+.permission-mode-confirm-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* Shrink the confirm-to-arm actions: the default jp-Dialog-button sizing is
+   oversized for this inline popover. The 24px floor keeps each target tall
+   enough (WCAG 2.5.8) even if a dense theme shrinks the UI font, while the
+   compact padding keeps it from looking like a full dialog button (#377). */
+.permission-mode-confirm-buttons .jp-Dialog-button {
+  min-width: 0;
+  min-height: 24px;
+  height: auto;
+  padding: 4px 10px;
+  font-size: var(--jp-ui-font-size1);
+  line-height: 1.4;
+}
+
 .user-input-footer-button {
   width: 24px;
   height: 24px;
@@ -643,6 +751,7 @@ pre:has(.code-block-header) {
 
 .chat-message-feedback:focus-within,
 .chat-message-feedback:has(.selected),
+.chat-message-feedback.always-visible,
 .chat-message:hover .chat-message-feedback {
   opacity: 1;
 }
@@ -777,6 +886,169 @@ pre:has(.code-block-header) {
   line-height: 24px;
   padding: 0 6px;
   margin-top: 2px;
+}
+
+.nbi-tool-call-wrapper {
+  margin: 2px 0;
+}
+
+.nbi-tool-call {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background-color: var(--jp-layout-color2);
+  font-size: var(--jp-ui-font-size1);
+}
+
+.nbi-tool-call-kind-icon {
+  flex-shrink: 0;
+  color: var(--jp-ui-font-color2);
+}
+
+.nbi-tool-call-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nbi-tool-call-status-icon {
+  flex-shrink: 0;
+  color: var(--jp-ui-font-color2);
+}
+
+.nbi-tool-call-completed .nbi-tool-call-status-icon {
+  color: var(--jp-success-color1);
+}
+
+.nbi-tool-call-failed .nbi-tool-call-status-icon {
+  color: var(--jp-error-color1);
+}
+
+.nbi-tool-call-in-progress .nbi-tool-call-status-icon {
+  animation: nbi-tool-call-spin 1s linear infinite;
+}
+
+@keyframes nbi-tool-call-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nbi-tool-call-in-progress .nbi-tool-call-status-icon {
+    animation: none;
+  }
+}
+
+.nbi-tool-call-diff-toggle {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--jp-ui-font-color2);
+  cursor: pointer;
+}
+
+.nbi-tool-call-diffs {
+  margin: 2px 0 2px 18px;
+  padding-left: 6px;
+  border-left: 2px solid var(--jp-border-color2);
+}
+
+.nbi-tool-call-diff + .nbi-tool-call-diff {
+  margin-top: 4px;
+}
+
+.nbi-tool-call-diff-path {
+  overflow: hidden;
+  font-size: var(--jp-ui-font-size0);
+  color: var(--jp-ui-font-color2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nbi-tool-call-diff-body {
+  margin: 2px 0;
+  overflow-x: auto;
+  font-family: var(--jp-code-font-family);
+  font-size: var(--jp-code-font-size);
+  line-height: 1.4;
+}
+
+.nbi-tool-call-diff-line {
+  display: flex;
+}
+
+.nbi-diff-gutter {
+  flex-shrink: 0;
+  width: 1ch;
+  user-select: none;
+  text-align: center;
+}
+
+.nbi-diff-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Semi-transparent tints rather than the solid --jp-*-color3 fills (which are
+   light pastels in BOTH themes): the tint sits over the card background so the
+   line stays readable with the theme's own (light-on-dark / dark-on-light)
+   text color instead of forcing dark text onto a pale fill. */
+.nbi-diff-add {
+  background-color: rgb(64 160 43 / 22%);
+}
+
+.nbi-diff-remove {
+  background-color: rgb(248 81 73 / 22%);
+}
+
+.nbi-diff-context {
+  color: var(--jp-ui-font-color2);
+}
+
+.nbi-tool-call-diff-truncated {
+  font-size: var(--jp-ui-font-size0);
+  font-style: italic;
+  color: var(--jp-ui-font-color2);
+}
+
+.nbi-tool-call-group {
+  margin: 2px 0;
+}
+
+.nbi-tool-call-group-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 2px 4px;
+  border: none;
+  background: none;
+  color: var(--jp-ui-font-color2);
+  font-size: var(--jp-ui-font-size0);
+  text-align: left;
+  cursor: pointer;
+}
+
+.nbi-tool-call-group-summary {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nbi-tool-call-group-body {
+  margin-left: 6px;
 }
 
 .user-input-autocomplete,
@@ -1503,12 +1775,17 @@ button.send-button:disabled:active:not(.send-button-stop) {
 .expandable-content-text {
   display: none;
   margin: 5px;
-  padding: 0 5px;
-  border: 1px solid var(--jp-border-color2);
-  border-radius: 5px;
+  padding: 8px 10px;
+  border-radius: 6px;
   max-height: 200px;
   overflow-y: auto;
-  box-shadow: inset 0 0 15px 15px rgb(23 23 23 / 50%);
+  background-color: var(--jp-layout-color2);
+}
+
+/* Inline code also fills with --jp-layout-color2, which now matches this box's
+   fill; recess nested code to --jp-layout-color1 so it stays distinct. */
+.expandable-content-text :not(pre) > code {
+  background-color: var(--jp-layout-color1);
 }
 
 .expandable-content .collapsed-icon {

@@ -80,6 +80,13 @@ import { mcpServerSettingsToEnabledState } from './components/mcp-util';
 import claudeSvgStr from '../style/icons/claude.svg';
 import { AskUserQuestion } from './components/ask-user-question';
 import { ClaudeSessionPicker } from './components/claude-session-picker';
+import {
+  BYPASS_PERMISSIONS_MODE,
+  nextPermissionModeOnNotification,
+  PermissionModeSelect
+} from './components/permission-mode-select';
+import { ToolCallGroup } from './components/tool-call-group';
+import { upsertToolCallContent } from './tool-call-stream';
 import { TourOverlay } from './tour/tour-overlay';
 import { TOUR_ANCHOR } from './tour/tour-anchors';
 import { TOUR_START_EVENT, TOUR_STOP_EVENT } from './tour/tour-events';
@@ -112,6 +119,7 @@ export interface IRunChatCompletionRequest {
   additionalContext?: IContextItem[];
   chatMode: string;
   toolSelections?: IToolSelections;
+  permissionMode?: string;
   // Optional id used by external listeners (e.g. the notebook toolbar
   // generation popover) to track progress when the chat sidebar is hidden.
   externalRequestId?: string;
@@ -522,6 +530,92 @@ function ChatResponseHTMLFrame(props: any) {
 // Memoize ChatResponse for performance
 function ChatResponse(props: any) {
   const [renderCount, setRenderCount] = useState(0);
+  const shuffledOrder = useRef<number[]>([]);
+  const shufflePos = useRef(0);
+
+  const _spinnerVerbs = NBIAPI.config.isInClaudeCodeMode
+    ? (NBIAPI.config.spinnerVerbs ?? null)
+    : null;
+  const hasCustomVerbs =
+    _spinnerVerbs?.mode === 'replace' &&
+    Array.isArray(_spinnerVerbs.verbs) &&
+    _spinnerVerbs.verbs.length > 0;
+
+  // Fisher-Yates shuffle. When `avoidFirst` is set, swap it out of
+  // position 0 so the new first verb is never the same as the last shown
+  // (prevents an identical repeat at the wrap point between passes).
+  const shuffleVerbs = (verbs: any[], avoidFirst?: number): number[] => {
+    const order = verbs.map((_, i) => i);
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    if (
+      avoidFirst !== undefined &&
+      order[0] === avoidFirst &&
+      order.length > 1
+    ) {
+      [order[0], order[1]] = [order[1], order[0]];
+    }
+    return order;
+  };
+
+  // Initialize the shuffle synchronously in useState so the correct verb
+  // is shown on the very first paint. A useEffect-based init fires after
+  // paint and causes a single-frame flash of verbs[0] before correcting.
+  const [verbIndex, setVerbIndex] = useState(() => {
+    const sv = NBIAPI.config.isInClaudeCodeMode
+      ? (NBIAPI.config.spinnerVerbs ?? null)
+      : null;
+    if (
+      !sv ||
+      sv.mode !== 'replace' ||
+      !Array.isArray(sv.verbs) ||
+      sv.verbs.length === 0
+    ) {
+      return 0;
+    }
+    const order = shuffleVerbs(sv.verbs);
+    shuffledOrder.current = order;
+    shufflePos.current = 0;
+    return order[0];
+  });
+
+  useEffect(() => {
+    if (!props.showGenerating || !hasCustomVerbs) {
+      return;
+    }
+
+    const verbs = _spinnerVerbs!.verbs;
+
+    // Shuffle already initialized by useState on mount. Only re-initialize
+    // if hasCustomVerbs just became true after a capabilities refresh
+    // (shuffledOrder would be empty because the lazy init found no verbs).
+    if (shuffledOrder.current.length === 0) {
+      shuffledOrder.current = shuffleVerbs(verbs);
+      shufflePos.current = 0;
+      setVerbIndex(shuffledOrder.current[0]);
+    }
+
+    let id: ReturnType<typeof setTimeout>;
+    const scheduleNext = () => {
+      const delay = 4000 + Math.random() * 3000;
+      id = setTimeout(() => {
+        shufflePos.current++;
+        if (shufflePos.current >= shuffledOrder.current.length) {
+          const lastShown =
+            shuffledOrder.current[shuffledOrder.current.length - 1];
+          shuffledOrder.current = shuffleVerbs(verbs, lastShown);
+          shufflePos.current = 0;
+        }
+        setVerbIndex(shuffledOrder.current[shufflePos.current]);
+        scheduleNext();
+      }, delay);
+    };
+    scheduleNext();
+    return () => clearTimeout(id);
+  }, [props.showGenerating, hasCustomVerbs]);
+
   const msg: IChatMessage = props.message;
   const timestamp = msg.date.toLocaleTimeString('en-US', { hour12: false });
 
@@ -630,6 +724,19 @@ function ChatResponse(props: any) {
       if (item.reasoningFinished) {
         lastItem.reasoningFinished = true;
       }
+    } else if (
+      item.type === ResponseStreamDataType.ToolCall &&
+      lastItemType === ResponseStreamDataType.ToolCall
+    ) {
+      // Bundle a run of consecutive tool calls into one group item so the
+      // renderer can collapse them; ToolCallGroup unwraps content.toolCalls.
+      const lastItem = groupedContents[groupedContents.length - 1];
+      lastItem.content.toolCalls.push(structuredClone(item.content));
+    } else if (item.type === ResponseStreamDataType.ToolCall) {
+      const grouped = structuredClone(item);
+      grouped.content = { toolCalls: [structuredClone(item.content)] };
+      groupedContents.push(grouped);
+      lastItemType = item.type;
     } else {
       groupedContents.push(structuredClone(item));
       lastItemType = item.type;
@@ -712,17 +819,25 @@ function ChatResponse(props: any) {
               }`}
               aria-hidden="true"
             />
-            <div
-              className="generating-label"
-              aria-live="polite"
-              aria-atomic="true"
-            >
+            <div className="generating-label" aria-hidden="true">
               {props.isStalled
                 ? 'Still working, server may be slow'
-                : 'Generating'}
+                : hasCustomVerbs
+                  ? _spinnerVerbs!.verbs[verbIndex]
+                  : 'Generating'}
               {props.showGenerating && props.elapsedSeconds > 0
                 ? ` (${formatElapsedSeconds(props.elapsedSeconds)})`
                 : ''}
+            </div>
+            {/* aria-live region contains only the verb — no elapsed suffix —
+                so screen readers announce only on verb changes, not on every
+                elapsed-seconds tick. */}
+            <div className="nbi-sr-only" aria-live="polite" aria-atomic="true">
+              {props.isStalled
+                ? 'Still working, server may be slow'
+                : hasCustomVerbs
+                  ? _spinnerVerbs!.verbs[verbIndex]
+                  : 'Generating'}
             </div>
           </div>
         </div>
@@ -857,6 +972,24 @@ function ChatResponse(props: any) {
                   {item.content}
                 </div>
               ) : null;
+            case ResponseStreamDataType.ToolCall:
+              // Unlike Progress, tool-call cards persist after the turn ends,
+              // so they render regardless of `showGenerating`. The grouping
+              // pass bundled this run's calls into content.toolCalls; the
+              // group renders a single card or a collapsible group.
+              //
+              // Key by the group item's own id (assigned once when the run's
+              // first call streamed in) so the group's identity follows its
+              // content, not its array position. An index key would remount the
+              // group (re-running its collapse heuristic) if anything were ever
+              // inserted ahead of it; belt-and-suspenders with the stable
+              // message key that is the primary #363 fix.
+              return (
+                <ToolCallGroup
+                  key={item.id}
+                  toolCalls={item.content.toolCalls}
+                />
+              );
             case ResponseStreamDataType.Confirmation:
               return answeredForms.get(item.id) ===
                 'confirmed' ? null : answeredForms.get(item.id) ===
@@ -973,9 +1106,13 @@ function ChatResponse(props: any) {
         )}
       </div>
       {msg.from === 'copilot' &&
-        !props.showGenerating &&
+        (NBIAPI.config.chatFeedbackAlwaysVisible || !props.showGenerating) &&
         NBIAPI.config.chatFeedbackEnabled && (
-          <div className="chat-message-feedback">
+          <div
+            className={`chat-message-feedback${
+              NBIAPI.config.chatFeedbackAlwaysVisible ? ' always-visible' : ''
+            }`}
+          >
             <button
               className={`chat-feedback-btn ${msg.feedback === 'positive' ? 'selected' : ''}`}
               onClick={() => {
@@ -994,9 +1131,9 @@ function ChatResponse(props: any) {
                   });
                 }
               }}
-              aria-label="Rate as helpful"
+              aria-label="Rate response as good"
               aria-pressed={msg.feedback === 'positive'}
-              title="Helpful"
+              title="Good response"
             >
               {msg.feedback === 'positive' ? (
                 <VscThumbsupFilled />
@@ -1022,9 +1159,9 @@ function ChatResponse(props: any) {
                   });
                 }
               }}
-              aria-label="Rate as unhelpful"
+              aria-label="Rate response as bad"
               aria-pressed={msg.feedback === 'negative'}
-              title="Not helpful"
+              title="Bad response"
             >
               {msg.feedback === 'negative' ? (
                 <VscThumbsdownFilled />
@@ -1056,7 +1193,8 @@ async function submitCompletionRequest(
         request.additionalContext || [],
         request.chatMode,
         request.toolSelections || {},
-        responseEmitter
+        responseEmitter,
+        request.permissionMode || 'default'
       );
     case RunChatCompletionType.ExplainThis:
     case RunChatCompletionType.FixThis: {
@@ -1263,6 +1401,15 @@ function SidebarComponent(props: any) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const telemetryEmitter: ITelemetryEmitter = props.getTelemetryEmitter();
   const [chatMode, setChatMode] = useState(NBIAPI.config.defaultChatMode);
+  const [permissionMode, setPermissionMode] = useState(
+    NBIAPI.config.claudePermissionDefaultMode
+  );
+  const [bypassPermissionsAllowed, setBypassPermissionsAllowed] = useState(
+    NBIAPI.config.featurePolicies.claude_bypass_permissions.enabled
+  );
+  // Ref mirror so memoized request handlers read the live mode without
+  // adding it to their dependency arrays.
+  const permissionModeRef = useRef(permissionMode);
 
   const [toolSelectionTitle, setToolSelectionTitle] =
     useState('Tool selection');
@@ -2190,6 +2337,41 @@ function SidebarComponent(props: any) {
     };
   }, []);
 
+  useEffect(() => {
+    permissionModeRef.current = permissionMode;
+  }, [permissionMode]);
+
+  // Track the bypass policy across capability refreshes (an armed mode must
+  // not outlive a policy flip) and follow server-driven mode changes (plan
+  // approval, the hidden plan-mode slash aliases, client restart) so the
+  // selector always shows what the next turn will use.
+  useEffect(() => {
+    const configHandler = () => {
+      const allowed =
+        NBIAPI.config.featurePolicies.claude_bypass_permissions.enabled;
+      setBypassPermissionsAllowed(allowed);
+      if (!allowed) {
+        setPermissionMode(mode =>
+          mode === BYPASS_PERMISSIONS_MODE ? 'default' : mode
+        );
+      }
+    };
+    const modeHandler = (
+      _: unknown,
+      notification: { mode: string; reset: boolean }
+    ) => {
+      setPermissionMode(current =>
+        nextPermissionModeOnNotification(current, notification)
+      );
+    };
+    NBIAPI.configChanged.connect(configHandler);
+    NBIAPI.claudePermissionModeChanged.connect(modeHandler);
+    return () => {
+      NBIAPI.configChanged.disconnect(configHandler);
+      NBIAPI.claudePermissionModeChanged.disconnect(modeHandler);
+    };
+  }, []);
+
   // Drive the elapsed-time counter while a request is in flight. The same
   // interval re-evaluates whether the heartbeat has gone stale so the
   // indicator copy can swap to "Still working..." without a second timer.
@@ -2570,8 +2752,9 @@ function SidebarComponent(props: any) {
           prefixes.push(`/${command}`);
         }
       }
-      prefixes.push('/enter-plan-mode');
-      prefixes.push('/exit-plan-mode');
+      // /enter-plan-mode and /exit-plan-mode were replaced by the
+      // permission-mode selector; they still work when typed (hidden
+      // aliases, one-release deprecation) but no longer autocomplete.
     } else {
       if (chatMode === 'ask') {
         const chatParticipants = NBIAPI.config.chatParticipants;
@@ -2805,6 +2988,12 @@ function SidebarComponent(props: any) {
       : null;
     const extractedPrompt = submitPrompt;
     const contents: IChatMessageContent[] = [];
+    // One id for this turn's response message, reused on every streamed delta.
+    // setChatMessages rebuilds the message object per delta; a fresh id each
+    // time changes its React key and remounts the whole response subtree,
+    // which re-runs ToolCallGroup's collapse heuristic and flickers the group
+    // open/closed as calls stream in (issue #363).
+    const responseMessageId = UUID.uuid4();
     const app = props.getApp();
     const additionalContext: IContextItem[] = [];
     let currentFileUsesWholeDocument = false;
@@ -2904,7 +3093,8 @@ function SidebarComponent(props: any) {
         filename: activeDocInfo.filePath,
         additionalContext,
         chatMode,
-        toolSelections: toolSelections
+        toolSelections: toolSelections,
+        permissionMode: permissionModeRef.current
       },
       {
         emit: async response => {
@@ -2920,22 +3110,33 @@ function SidebarComponent(props: any) {
             }
             if (delta['nbiContent']) {
               const nbiContent = delta['nbiContent'];
-              contents.push({
-                id: UUID.uuid4(),
-                type: nbiContent.type,
-                content: nbiContent.content || '',
-                reasoningContent: nbiContent.reasoning_content || '',
-                reasoningTag: nbiContent.reasoning_content
-                  ? '<think>'
-                  : undefined,
-                reasoningFinished:
-                  nbiContent.type === ResponseStreamDataType.Markdown &&
-                  nbiContent.reasoning_content
-                    ? true
-                    : false,
-                contentDetail: nbiContent.detail,
-                created: new Date(response.created)
-              });
+              if (nbiContent.type === ResponseStreamDataType.ToolCall) {
+                // A tool call streams twice under one id (start, then finish);
+                // merge by id so it stays one persistent card. See
+                // upsertToolCallContent.
+                upsertToolCallContent(
+                  contents,
+                  nbiContent.content,
+                  new Date(response.created)
+                );
+              } else {
+                contents.push({
+                  id: UUID.uuid4(),
+                  type: nbiContent.type,
+                  content: nbiContent.content || '',
+                  reasoningContent: nbiContent.reasoning_content || '',
+                  reasoningTag: nbiContent.reasoning_content
+                    ? '<think>'
+                    : undefined,
+                  reasoningFinished:
+                    nbiContent.type === ResponseStreamDataType.Markdown &&
+                    nbiContent.reasoning_content
+                      ? true
+                      : false,
+                  contentDetail: nbiContent.detail,
+                  created: new Date(response.created)
+                });
+              }
             } else {
               responseMessage =
                 response.data['choices']?.[0]?.['delta']?.['content'];
@@ -3017,7 +3218,7 @@ function SidebarComponent(props: any) {
           setChatMessages([
             ...newList,
             {
-              id: UUID.uuid4(),
+              id: responseMessageId,
               date: new Date(),
               from: 'copilot',
               contents: contents,
@@ -3130,6 +3331,7 @@ function SidebarComponent(props: any) {
     resetPrefixSuggestions();
     setPromptHistory([]);
     setPromptHistoryIndex(0);
+    setPermissionMode(NBIAPI.config.claudePermissionDefaultMode);
   };
 
   const onPromptKeyDown = async (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -3262,6 +3464,9 @@ function SidebarComponent(props: any) {
     (eventData: any) => {
       const request: IRunChatCompletionRequest = eventData.detail;
       request.chatId = chatId;
+      // Consolidated here so every entrypoint (sidebar input, toolbar
+      // popovers, extension-fired prompts) uses the selector's mode.
+      request.permissionMode = permissionModeRef.current;
       let message = '';
       switch (request.type) {
         case RunChatCompletionType.ExplainThis:
@@ -3345,6 +3550,10 @@ function SidebarComponent(props: any) {
       }
 
       const contents: IChatMessageContent[] = [];
+      // Stable id for this turn's response message; see the matching note in
+      // handleUserInputSubmit. Reused on every delta so the message keeps one
+      // React key and the response subtree is not remounted each chunk (#363).
+      const responseMessageId = UUID.uuid4();
 
       submitCompletionRequest(request, {
         emit: async response => {
@@ -3356,22 +3565,33 @@ function SidebarComponent(props: any) {
 
             if (delta['nbiContent']) {
               const nbiContent = delta['nbiContent'];
-              contents.push({
-                id: UUID.uuid4(),
-                type: nbiContent.type,
-                content: nbiContent.content || '',
-                reasoningContent: nbiContent.reasoning_content || '',
-                reasoningTag: nbiContent.reasoning_content
-                  ? '<think>'
-                  : undefined,
-                reasoningFinished:
-                  nbiContent.type === ResponseStreamDataType.Markdown &&
-                  nbiContent.reasoning_content
-                    ? true
-                    : false,
-                contentDetail: nbiContent.detail,
-                created: new Date(response.created)
-              });
+              if (nbiContent.type === ResponseStreamDataType.ToolCall) {
+                // A tool call streams twice under one id (start, then finish);
+                // merge by id so it stays one persistent card. See
+                // upsertToolCallContent.
+                upsertToolCallContent(
+                  contents,
+                  nbiContent.content,
+                  new Date(response.created)
+                );
+              } else {
+                contents.push({
+                  id: UUID.uuid4(),
+                  type: nbiContent.type,
+                  content: nbiContent.content || '',
+                  reasoningContent: nbiContent.reasoning_content || '',
+                  reasoningTag: nbiContent.reasoning_content
+                    ? '<think>'
+                    : undefined,
+                  reasoningFinished:
+                    nbiContent.type === ResponseStreamDataType.Markdown &&
+                    nbiContent.reasoning_content
+                      ? true
+                      : false,
+                  contentDetail: nbiContent.detail,
+                  created: new Date(response.created)
+                });
+              }
             } else {
               const responseMessage =
                 response.data['choices']?.[0]?.['delta']?.['content'];
@@ -3443,11 +3663,10 @@ function SidebarComponent(props: any) {
           if (hideInChat) {
             return;
           }
-          const messageId = UUID.uuid4();
           setChatMessages([
             ...newList,
             {
-              id: messageId,
+              id: responseMessageId,
               date: new Date(),
               from: 'copilot',
               contents: contents,
@@ -4174,6 +4393,13 @@ function SidebarComponent(props: any) {
                   <VscTools />
                   {selectedToolCount > 0 && <>{selectedToolCount}</>}
                 </button>
+              )}
+              {NBIAPI.config.isInClaudeCodeMode && (
+                <PermissionModeSelect
+                  value={permissionMode}
+                  bypassAllowed={bypassPermissionsAllowed}
+                  onModeChange={setPermissionMode}
+                />
               )}
               {NBIAPI.config.isInClaudeCodeMode && (
                 <span

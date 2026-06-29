@@ -11,7 +11,7 @@ import os
 import shutil
 import tempfile
 import time
-from typing import Union
+from typing import Optional, Union
 import uuid
 import threading
 import logging
@@ -49,7 +49,19 @@ from notebook_intelligence.mcp_config_validation import (
     MCPConfigValidationError,
     validate_mcp_config,
 )
-from notebook_intelligence.claude import ClaudeCodeChatParticipant, fetch_claude_models
+from notebook_intelligence.mcp_policy import (
+    reject_dangerous_env_keys,
+    validate_mcp_stdio_command,
+)
+from notebook_intelligence.claude import (
+    CLAUDE_BYPASS_PERMISSION_MODE,
+    ClaudeCodeChatParticipant,
+    DEFAULT_PERMISSION_MODE,
+    claude_bypass_disabled_by_managed_settings,
+    claude_managed_default_permission_mode,
+    fetch_claude_models,
+    resolve_permission_mode,
+)
 from notebook_intelligence.claude_mcp_manager import ClaudeMCPManager
 from notebook_intelligence.plugin_manager import PluginManager
 from notebook_intelligence.tour_config import load_tour_config
@@ -59,7 +71,7 @@ from notebook_intelligence.claude_sessions import (
 )
 import notebook_intelligence.github_copilot as github_copilot
 from notebook_intelligence.built_in_toolsets import built_in_toolsets
-from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_jupyter_root_dir, set_jupyter_root_dir, is_builtin_tool_enabled_in_env, is_provider_enabled_in_env, VALID_CODING_AGENT_LAUNCHERS, compute_effective_disabled_launchers, validate_coding_agent_launcher_ids, resolve_claude_cli_path, resolve_opencode_cli_path, resolve_pi_cli_path, resolve_copilot_cli_path, resolve_codex_cli_path, safe_anchor_uri, has_dangerous_text_codepoints, split_csv
+from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_claude_config_dir, get_jupyter_root_dir, set_jupyter_root_dir, is_builtin_tool_enabled_in_env, is_provider_enabled_in_env, VALID_CODING_AGENT_LAUNCHERS, compute_effective_disabled_launchers, validate_coding_agent_launcher_ids, resolve_claude_cli_path, resolve_opencode_cli_path, resolve_pi_cli_path, resolve_copilot_cli_path, resolve_codex_cli_path, safe_anchor_uri, has_dangerous_text_codepoints, split_csv
 from notebook_intelligence.context_factory import RuleContextFactory
 from notebook_intelligence.skillset import SKILL_NAME_REGEX
 
@@ -325,6 +337,11 @@ FEATURE_POLICY_SPEC = (
         "claude_plugins_management_policy",
     ),
     (
+        "claude_bypass_permissions",
+        "NBI_CLAUDE_BYPASS_PERMISSIONS_POLICY",
+        "claude_bypass_permissions_policy",
+    ),
+    (
         "terminal_drag_drop",
         "NBI_TERMINAL_DRAG_DROP_POLICY",
         "terminal_drag_drop_policy",
@@ -336,6 +353,12 @@ FEATURE_POLICY_SPEC = (
     ),
 )
 FEATURE_POLICY_NAMES = tuple(name for name, _, _ in FEATURE_POLICY_SPEC)
+
+# Fallback used when a policies dict hasn't been populated (handler classes
+# before _setup_handlers, direct construction in tests). Everything defaults
+# to user-choice except bypass, which must fail closed.
+FEATURE_POLICY_DEFAULTS = {name: POLICY_USER_CHOICE for name in FEATURE_POLICY_NAMES}
+FEATURE_POLICY_DEFAULTS["claude_bypass_permissions"] = POLICY_FORCE_OFF
 
 # ``(setting_lock_name, env_var)`` pairs for the value-presence-locks. The
 # claude_api_key entry maps to ANTHROPIC_API_KEY (the SDK's native convention)
@@ -384,6 +407,12 @@ def _build_feature_policies_response(policies: dict, nbi_config) -> dict:
         "skills_management": True,
         "claude_mcp_management": True,
         "claude_plugins_management": True,
+        # Gates only whether the Bypass Permissions option is offered in
+        # the permission-mode selector; the user still arms it per
+        # session. force-on grants the same availability as user-choice
+        # and never auto-arms bypass. Defaults to force-off, the only
+        # policy with a non-user-choice default.
+        "claude_bypass_permissions": True,
         "terminal_drag_drop": True,
         "refresh_open_files_on_disk_change": nbi_config.refresh_open_files_on_disk_change,
     }
@@ -391,10 +420,31 @@ def _build_feature_policies_response(policies: dict, nbi_config) -> dict:
     response = {}
     for name in FEATURE_POLICY_NAMES:
         enabled, locked = resolve_feature_flag(
-            policies.get(name, POLICY_USER_CHOICE), user_values[name]
+            policies.get(name, FEATURE_POLICY_DEFAULTS[name]), user_values[name]
         )
         response[name] = {"enabled": enabled, "locked": locked}
+
+    # Defense in depth: Claude Code's enterprise managed settings can
+    # disable bypass independently of the NBI policy. Fold that into the
+    # one answer the frontend reads so the selector and the server's
+    # request clamp can't disagree.
+    if claude_bypass_disabled_by_managed_settings():
+        response["claude_bypass_permissions"] = {"enabled": False, "locked": True}
     return response
+
+
+def _resolve_default_permission_mode() -> str:
+    """Starting permission mode for the selector in a new Claude session.
+
+    Honors managed settings' ``permissions.defaultMode`` except for bypass,
+    which never applies without the user arming it explicitly, no matter
+    who asks; a managed default of bypass collapses to default the same
+    way the reconnect reset does.
+    """
+    managed_default = claude_managed_default_permission_mode()
+    if managed_default is None or managed_default == CLAUDE_BYPASS_PERMISSION_MODE:
+        return DEFAULT_PERMISSION_MODE
+    return managed_default
 
 
 def _build_setting_locks_response(string_overrides: dict) -> dict:
@@ -423,6 +473,25 @@ def _scrub_credentials_for_wire(claude_settings: dict, string_overrides: dict) -
     return result
 
 
+def _read_claude_spinner_verbs() -> Optional[dict]:
+    settings_path = os.path.join(get_claude_config_dir(), 'settings.json')
+    try:
+        with open(settings_path) as f:
+            data = json.load(f)
+        sv = data.get('spinnerVerbs')
+        if (
+            isinstance(sv, dict)
+            and sv.get('mode') == 'replace'
+            and isinstance(sv.get('verbs'), list)
+            and sv['verbs']
+            and all(isinstance(v, str) for v in sv['verbs'])
+        ):
+            return sv
+        return None
+    except Exception:
+        return None
+
+
 class GetCapabilitiesHandler(APIHandler):
     disabled_tools = []
     allow_enabling_tools_with_env = False
@@ -431,6 +500,7 @@ class GetCapabilitiesHandler(APIHandler):
     disabled_coding_agent_launchers = []
     allow_enabling_coding_agent_launchers_with_env = False
     enable_chat_feedback = False
+    enable_chat_feedback_always_visible = False
     additional_skipped_workspace_directories = []
     feature_policies = {}
     string_overrides = {}
@@ -524,6 +594,7 @@ class GetCapabilitiesHandler(APIHandler):
             "claude_settings": _scrub_credentials_for_wire(
                 nbi_config.claude_settings, self.string_overrides
             ),
+            "spinner_verbs": _read_claude_spinner_verbs(),
             "claude_models": ai_service_manager.claude_models,
             # Drive launcher-tile visibility (issues #183, #260). Each flag
             # gates one tile under the "Coding Agent" category. Detection is
@@ -536,6 +607,7 @@ class GetCapabilitiesHandler(APIHandler):
             "disabled_coding_agent_launchers": effective_disabled_launchers,
             "default_chat_mode": nbi_config.default_chat_mode,
             "chat_feedback_enabled": self.enable_chat_feedback,
+            "chat_feedback_always_visible": self.enable_chat_feedback_always_visible,
             # Single source of truth lives on each domain's base handler so
             # `_setup_handlers` only writes one site per flag.
             "allow_github_skill_import": SkillsBaseHandler.allow_github_skill_import,
@@ -551,6 +623,11 @@ class GetCapabilitiesHandler(APIHandler):
                 self.feature_policies, nbi_config
             ),
             "setting_locks": _build_setting_locks_response(self.string_overrides),
+            # Starting mode for the permission-mode selector: managed
+            # settings' permissions.defaultMode when present and valid,
+            # else "default". Bypass never starts armed regardless of
+            # managed settings or policy, so it collapses to "default".
+            "claude_permission_default_mode": _resolve_default_permission_mode(),
         }
         for participant_id in ai_service_manager.chat_participants:
             participant = ai_service_manager.chat_participants[participant_id]
@@ -733,11 +810,32 @@ class MCPConfigFileHandler(APIHandler):
             self.finish(json.dumps({"status": "error", "message": str(exc)}))
             return
         try:
+            # Validate stdio entries against the same admin allowlist
+            # that the in-process loader uses, so a rejected entry
+            # cannot persist to disk and re-trigger the load-time warn
+            # on every restart. Apply the same env-key denylist that
+            # blocks PATH / LD_PRELOAD / etc. bypasses.
+            allowlist = ai_service_manager.get_mcp_stdio_command_allowlist()
+            servers = data.get("mcpServers") if isinstance(data, dict) else None
+            if isinstance(servers, dict):
+                for name, server in servers.items():
+                    if not isinstance(server, dict) or "command" not in server:
+                        continue
+                    validate_mcp_stdio_command(server.get("command", ""), allowlist)
+                    reject_dangerous_env_keys(server.get("env"))
             ai_service_manager.nbi_config.user_mcp = data
             ai_service_manager.nbi_config.save()
             ai_service_manager.nbi_config.load()
             ai_service_manager.update_mcp_servers()
             self.finish(json.dumps({"status": "ok"}))
+        except ValueError as exc:
+            # Policy rejection: surface as HTTP 400 so the Settings UI
+            # shows the operator's policy message instead of a generic
+            # 500. The body still uses the {status, message} envelope
+            # the frontend already parses.
+            self.set_status(400)
+            self.finish(json.dumps({"status": "error", "message": str(exc)}))
+            return
         except Exception as e:
             self.set_status(500)
             self.finish(json.dumps({"status": "error", "message": str(e)}))
@@ -952,10 +1050,16 @@ class ClaudeMCPBaseHandler(PolicyGatedHandler):
         FileNotFoundError: 404,
         TimeoutError: 504,
     }
+    # Set once at startup from the merged (traitlet + env) admin allowlist.
+    # Empty list means no enforcement; consult ``AIServiceManager``.
+    mcp_stdio_command_allowlist: list = []
 
     @property
     def manager(self) -> "ClaudeMCPManager":
-        return ClaudeMCPManager(working_dir=get_jupyter_root_dir() or None)
+        return ClaudeMCPManager(
+            working_dir=get_jupyter_root_dir() or None,
+            stdio_command_allowlist=self.mcp_stdio_command_allowlist,
+        )
 
 
 class ClaudeMCPListHandler(ClaudeMCPBaseHandler):
@@ -1571,6 +1675,18 @@ def _get_upload_dir() -> str:
     return _upload_dir
 
 
+def _resolve_upload_path(file_path: str) -> str | None:
+    """Return a real upload path only when it stays under NBI's upload root."""
+    upload_root = os.path.realpath(_get_upload_dir())
+    resolved = os.path.realpath(file_path)
+    try:
+        if os.path.commonpath([resolved, upload_root]) != upload_root:
+            return None
+    except ValueError:
+        return None
+    return resolved
+
+
 def _sweep_upload_dir(retention_hours: int) -> None:
     """Best-effort removal of upload subdirs past the retention window.
 
@@ -1961,6 +2077,27 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
                     }
                 ]
             }
+        elif data_type == ResponseStreamDataType.ToolCall:
+            data = {
+                "choices": [
+                    {
+                        "delta": {
+                            "nbiContent": {
+                                "type": data_type,
+                                "content": {
+                                    "id": data.id,
+                                    "title": data.title,
+                                    "kind": data.kind,
+                                    "status": data.status,
+                                    "diffs": data.diffs or []
+                                }
+                            },
+                            "content": "",
+                            "role": "assistant"
+                        }
+                    }
+                ]
+            }
         elif data_type == ResponseStreamDataType.Confirmation:
             data = {
                 "choices": [
@@ -2094,6 +2231,10 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
     # leaving the default 10 MiB headroom for memory amplification.
     max_message_size = 4 * 1024 * 1024
 
+    # Resolved from the claude_bypass_permissions policy in _setup_handlers;
+    # False (fail closed) until then.
+    claude_bypass_permissions_allowed = False
+
     # Inheritance matches Jupyter's first-party WS handlers (e.g.
     # KernelWebsocketHandler): ``WebSocketMixin`` adds ping/pong
     # keepalive plus a ``prepare`` that routes through Jupyter's
@@ -2166,6 +2307,12 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
                 mcp_server_tools=toolSelections.get('mcpServers', {}),
                 extension_tools=toolSelections.get('extensions', {})
             )
+            # Clamp at the boundary so a hand-rolled request can't reach
+            # bypass when the policy or managed settings forbid it.
+            permission_mode = resolve_permission_mode(
+                data.get('permissionMode', DEFAULT_PERMISSION_MODE),
+                self.claude_bypass_permissions_allowed,
+            )
 
             is_claude_code_mode = ai_service_manager.is_claude_code_mode
             chat_history = self.chat_history.get_history(chatId)
@@ -2219,7 +2366,16 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
                 is_upload = context.get("isUpload", False)
                 is_image = context.get("isImage", False)
                 file_path = context["filePath"]
-                if not is_upload:
+                if is_upload:
+                    resolved_upload_path = _resolve_upload_path(file_path)
+                    if resolved_upload_path is None:
+                        log.warning(
+                            "Rejecting out-of-upload-dir context path: %r",
+                            context["filePath"],
+                        )
+                        continue
+                    file_path = resolved_upload_path
+                else:
                     # Workspace-relative paths arrive verbatim from the
                     # frontend (file browser drag, @-mention picker, ...).
                     # path.join silently passes through absolute paths and
@@ -2398,7 +2554,7 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
 
             # last prompt is added later
             request_chat_history = chat_history[chat_history_initial_size:-1] if is_claude_code_mode else chat_history[:-1]
-            coro = ai_service_manager.handle_chat_request(ChatRequest(chat_mode=chat_mode, tool_selection=tool_selection, prompt=prompt, chat_history=request_chat_history, cancel_token=cancel_token, rule_context=rule_context), response_emitter)
+            coro = ai_service_manager.handle_chat_request(ChatRequest(chat_mode=chat_mode, tool_selection=tool_selection, prompt=prompt, chat_history=request_chat_history, cancel_token=cancel_token, rule_context=rule_context, permission_mode=permission_mode), response_emitter)
             thread = threading.Thread(target=self._run_request_thread, args=(coro, messageId))
             thread.start()
         elif messageType == RequestDataType.GenerateCode:
@@ -2476,11 +2632,21 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
             handlers.cancel_token.cancel_request()
  
     def on_close(self):
-        # Drop any handler entries whose worker threads outlive the
-        # websocket connection. The thread wrapper would clean these up
-        # on its own once the coro returns, but a long-running request
-        # left in-flight at disconnect would otherwise pin its emitter
-        # and cancel token for the lifetime of the worker.
+        # Cancel any requests still in flight at disconnect, then drop their
+        # handlers. Clearing alone isn't enough: a turn parked on a tool
+        # approval no longer self-resolves via the response timeout (the
+        # approval wait is excluded from it, #381), so without an explicit
+        # cancel its worker thread and the Claude subprocess would spin until
+        # the server restarts. Cancelling makes the poll loop tear the
+        # subprocess down and return.
+        # Snapshot first: a worker thread finishing its request pops its own
+        # entry (see _run_request_thread), which would otherwise raise
+        # "dictionary changed size during iteration" here on the IOLoop thread.
+        for handlers in list(self._messageCallbackHandlers.values()):
+            try:
+                handlers.cancel_token.cancel_request()
+            except Exception as e:
+                log.warning(f"Error cancelling in-flight request on close: {e}")
         self._messageCallbackHandlers.clear()
 
     async def handle_inline_completions(prefix, suffix, language, filename, response_emitter, cancel_token):
@@ -2560,6 +2726,40 @@ class NotebookIntelligence(ExtensionApp):
         config=True,
     )
 
+    mcp_stdio_command_allowlist = List(
+        trait=Unicode(),
+        default_value=None,
+        help="""
+        Regex allowlist for the stdio MCP server `command` field. When
+        non-empty, every stdio MCP server (added via Claude `mcp add`
+        and loaded from `mcp.json`) must match at least one pattern;
+        otherwise the admin gate rejects the server. Empty list (the
+        default) means no enforcement.
+
+        Patterns are matched with `re.search`. Anchor with `^...$` to
+        require an exact binary, otherwise `'uv'` matches both `uv` and
+        `uvtool`. Anchor on an absolute path (`'^/usr/local/bin/uv$'`)
+        if you want to defeat PATH-poisoning that points at a different
+        binary with the same basename. The complementary `env` denylist
+        (PATH, LD_PRELOAD, PYTHONPATH, NODE_OPTIONS, etc.) is always
+        applied to stdio servers regardless of this setting.
+
+        Patterns can be added per pod via the
+        `NBI_MCP_STDIO_COMMAND_ALLOWLIST` environment variable (CSV;
+        appends to this list).
+
+        Scope: this gate validates the binary `command` only. `args`
+        flow through unchecked, so an allowlist that permits `npx` will
+        still accept `args: ['-y', 'evil-pkg']`. Admins who need
+        argv-level control should point `command` at a wrapper script
+        they own that bakes the safe argv in.
+
+        Example: ['^uv$', '^uvx$', '^npx$', '^/usr/local/bin/.*']
+        """,
+        allow_none=True,
+        config=True,
+    )
+
     allow_enabling_coding_agent_launchers_with_env = Bool(
         default_value=False,
         help="""
@@ -2583,6 +2783,18 @@ class NotebookIntelligence(ExtensionApp):
         default_value=False,
         help="""
         Enable chat (thumb up/down) feedback feature.
+        """,
+        allow_none=True,
+        config=True,
+    )
+
+    enable_chat_feedback_always_visible = Bool(
+        default_value=False,
+        help="""
+        Show chat feedback (thumb up/down) buttons at full opacity for every
+        assistant reply, instead of revealing them only on hover. Has no
+        effect unless `enable_chat_feedback` is also True. Use this to drive
+        higher feedback engagement when the hover affordance is being missed.
         """,
         allow_none=True,
         config=True,
@@ -2779,6 +2991,24 @@ class NotebookIntelligence(ExtensionApp):
         config=True,
     )
 
+    claude_bypass_permissions_policy = TraitletEnum(
+        list(VALID_POLICIES),
+        default_value=POLICY_FORCE_OFF,
+        help="""
+        Org-wide policy for offering "Bypass Permissions" in the Claude
+        permission-mode selector. "force-off" (the default; the only
+        policy that doesn't default to user-choice) hides the option and
+        the server rejects bypass requests. "user-choice" exposes the
+        option; the user still has to arm it explicitly per session.
+        "force-on" grants the same availability as user-choice and never
+        auto-arms bypass. Independent of this policy, bypass is refused
+        whenever Claude Code's enterprise managed settings set
+        permissions.disableBypassPermissionsMode. Overridden by the
+        NBI_CLAUDE_BYPASS_PERMISSIONS_POLICY env var.
+        """,
+        config=True,
+    )
+
     terminal_drag_drop_policy = TraitletEnum(
         list(VALID_POLICIES),
         default_value=POLICY_USER_CHOICE,
@@ -2971,6 +3201,10 @@ class NotebookIntelligence(ExtensionApp):
                 log.warning(
                     "Ignoring invalid NBI_SKILLS_MANIFEST_INTERVAL=%r", interval_env
                 )
+        mcp_command_allowlist = _resolve_csv_appended(
+            "NBI_MCP_STDIO_COMMAND_ALLOWLIST",
+            self.mcp_stdio_command_allowlist,
+        )
         ai_service_manager = AIServiceManager({
             "server_root_dir": server_root_dir,
             "skills_manifest_sources": manifest_sources,
@@ -2978,6 +3212,7 @@ class NotebookIntelligence(ExtensionApp):
             "managed_skills_token": managed_token,
             "feature_policies": feature_policies,
             "string_overrides": string_overrides,
+            "mcp_stdio_command_allowlist": mcp_command_allowlist,
         })
 
     def initialize_templates(self):
@@ -3067,6 +3302,9 @@ class NotebookIntelligence(ExtensionApp):
             self.allow_enabling_coding_agent_launchers_with_env
         )
         GetCapabilitiesHandler.enable_chat_feedback = self.enable_chat_feedback
+        GetCapabilitiesHandler.enable_chat_feedback_always_visible = (
+            self.enable_chat_feedback_always_visible
+        )
         # Tour copy overrides: env var wins if set, otherwise fall back to
         # the traitlet. Pre-resolve here so the handler doesn't have to
         # re-check os.environ on every call.
@@ -3100,8 +3338,14 @@ class NotebookIntelligence(ExtensionApp):
         ClaudeMCPBaseHandler.claude_mcp_management_enabled = not is_force_off(
             feature_policies, "claude_mcp_management"
         )
+        ClaudeMCPBaseHandler.mcp_stdio_command_allowlist = (
+            ai_service_manager.get_mcp_stdio_command_allowlist()
+        )
         PluginsBaseHandler.claude_plugins_management_enabled = not is_force_off(
             feature_policies, "claude_plugins_management"
+        )
+        WebsocketCopilotHandler.claude_bypass_permissions_allowed = not is_force_off(
+            feature_policies, "claude_bypass_permissions"
         )
         PluginsBaseHandler.allow_github_plugin_import = _resolve_bool_with_env(
             "NBI_ALLOW_GITHUB_PLUGIN_IMPORT", self.allow_github_plugin_import

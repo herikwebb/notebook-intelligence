@@ -90,7 +90,11 @@ ENV/
 .venv/
 .env/
 venv*/
-.vscode/
+.vscode/*
+# Share Prettier-on-save settings and extension recommendations; keep all
+# other (per-user) VS Code files ignored.
+!.vscode/settings.json
+!.vscode/extensions.json
 # celery beat schedule file
 celerybeat-schedule
 
@@ -142,3 +146,8 @@ ui-tests/.tsbuild/
 _site/
 Gemfile.lock
 
+
+# Benchmark results (may contain cost data and environment details)
+benchmarks/claude_perf/results.json
+benchmarks/claude_perf/__pycache__/
+benchmarks/claude_perf/screenshots/

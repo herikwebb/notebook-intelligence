@@ -2,9 +2,12 @@
 
 import os
 import base64
+import logging
 import re
 import shutil
+import signal
 import subprocess
+import time
 from pathlib import Path
 from typing import Optional, Set
 from cryptography.hazmat.primitives import hashes
@@ -13,8 +16,29 @@ from cryptography.fernet import Fernet
 import asyncio
 from tornado import ioloop
 
+try:
+    import psutil
+except ImportError:  # psutil is optional; we degrade to a single-process kill
+    psutil = None
+
+log = logging.getLogger(__name__)
+
 _jupyter_root_dir: str = None
 _enabled_tools: Set[str] = None
+
+def import_litellm():
+    """Import litellm on first use instead of at server-extension import.
+
+    litellm is over a second of import time (the largest single chunk of
+    NBI's startup) and, by default, fetches its model-cost map over HTTP at
+    import, which can stall on proxied networks. Defaulting
+    LITELLM_LOCAL_MODEL_COST_MAP to true makes it read the map bundled with
+    the installed litellm instead; set the env var to false to restore the
+    remote fetch.
+    """
+    os.environ.setdefault("LITELLM_LOCAL_MODEL_COST_MAP", "true")
+    import litellm
+    return litellm
 
 def set_jupyter_root_dir(root_dir: str):
     global _jupyter_root_dir
@@ -71,6 +95,19 @@ def safe_jupyter_path(path: str) -> Path:
     return target_path
 
 
+def get_claude_config_dir() -> str:
+    """Claude Code's config dir: CLAUDE_CONFIG_DIR when set, else ``~/.claude``.
+
+    Mirrors the CLI's own override so every surface that reads CLI-owned
+    state (session transcripts, skills, settings.json) looks where the CLI
+    actually writes. Read per call rather than memoized: it's a dict lookup,
+    and tests toggle the env var between cases.
+    """
+    return os.environ.get("CLAUDE_CONFIG_DIR") or os.path.join(
+        os.path.expanduser("~"), ".claude"
+    )
+
+
 _cached_cli_paths: dict[str, Optional[str]] = {}
 
 
@@ -121,6 +158,100 @@ def invalidate_cli_cache(name: Optional[str] = None) -> None:
         _cached_cli_paths.clear()
     else:
         _cached_cli_paths.pop(name, None)
+
+
+# Seconds to wait after SIGTERM before escalating to SIGKILL during teardown.
+_TEARDOWN_GRACE_SECONDS = 3.0
+
+
+def _signal_proc(proc, *, force: bool) -> None:
+    """Signal one psutil process, swallowing the races that are expected here."""
+    try:
+        proc.kill() if force else proc.terminate()
+    except psutil.NoSuchProcess:
+        pass
+    except psutil.AccessDenied as e:
+        log.warning("No permission to signal pid %s during teardown: %s", proc.pid, e)
+
+
+def terminate_process_tree(
+    pid: Optional[int], grace_seconds: float = _TEARDOWN_GRACE_SECONDS
+) -> None:
+    """Terminate ``pid`` and every descendant, gracefully then forcefully.
+
+    Sends SIGTERM to the whole tree, waits up to ``grace_seconds`` for exits,
+    then SIGKILLs any survivors. This tears down an agent subprocess along with
+    everything it spawned (shells, MCP servers, dev servers) that a bare
+    child-only kill would orphan.
+
+    Signals are sent per-PID, never to a process group: the agent subprocess is
+    spawned inside this server's own process group, so a group signal would also
+    hit the Jupyter server. Safe to call with a missing or already-dead pid.
+    Without psutil only ``pid`` itself is terminated (descendants can't be
+    discovered), which still adds a graceful step over a bare SIGKILL.
+
+    Never raises: this is run fire-and-forget from a background thread, so any
+    unexpected failure is logged rather than propagated.
+    """
+    if not pid or pid <= 0:
+        return
+
+    if psutil is None:
+        _terminate_pid_without_psutil(pid, grace_seconds)
+        return
+
+    try:
+        try:
+            parent = psutil.Process(pid)
+        except psutil.NoSuchProcess:
+            return
+
+        # Snapshot descendants before signalling: once the parent dies its
+        # children are reparented to init and the tree linkage is lost.
+        try:
+            procs = parent.children(recursive=True)
+        except psutil.NoSuchProcess:
+            procs = []
+        procs.append(parent)
+
+        for proc in procs:
+            _signal_proc(proc, force=False)
+
+        _, alive = psutil.wait_procs(procs, timeout=max(0.0, grace_seconds))
+        for proc in alive:
+            _signal_proc(proc, force=True)
+        if alive:
+            psutil.wait_procs(alive, timeout=max(0.0, grace_seconds))
+    except Exception:
+        log.exception("Failed to terminate process tree for pid %s", pid)
+
+
+def _terminate_pid_without_psutil(pid: int, grace_seconds: float) -> None:
+    """Graceful kill of a single pid for the rare environment without psutil.
+
+    Cannot discover descendants, so this only improves on a bare SIGKILL by
+    adding a SIGTERM grace period; grandchildren may still be orphaned. This
+    path is POSIX-shaped: on Windows ``os.kill`` routes any signal through
+    TerminateProcess, so the SIGTERM grace and the SIGKILL escalation collapse
+    into a single hard kill (still terminates ``pid``, just not gracefully).
+    """
+    try:
+        os.kill(pid, signal.SIGTERM)
+    except (ProcessLookupError, OSError):
+        return
+    deadline = time.monotonic() + max(0.0, grace_seconds)
+    while time.monotonic() < deadline:
+        try:
+            os.kill(pid, 0)  # probe: raises once the process is gone
+        except OSError:
+            return
+        time.sleep(0.05)
+    sigkill = getattr(signal, "SIGKILL", None)  # absent on Windows
+    if sigkill is not None:
+        try:
+            os.kill(pid, sigkill)
+        except (ProcessLookupError, OSError):
+            pass
 
 
 def resolve_github_token() -> Optional[str]:
