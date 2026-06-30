@@ -1,14 +1,18 @@
 {
-  "schema_version": 1,
-  "repo": "herikwebb/notebook-intelligence",
-  "last_scan": "2026-06-29T12:30:00Z",
-  "scanner": "pip-audit + yarn audit",
-  "findings": [],
-  "notes": [
-    "Pass A: 23 pip-audit findings analyzed for reachability through NBI code paths.",
-    "All were either: out-of-scope packages (litellm, anthropic, openai, ollama), not imported by NBI, dev/build tools only, already pinned in pyproject.toml, or had no defensible attack path through NBI's actual usage.",
-    "Node audit: 8 moderate-severity findings, all in transitive dev dependencies (js-yaml DoS via jest). No production dependency vulnerabilities.",
-    "pyproject.toml already addresses CVE-2026-42203, CVE-2026-42208, CVE-2026-42271, CVE-2026-40217, CVE-2026-33441, CVE-2026-42561, CVE-2026-44431, CVE-2026-44432 via version pins.",
-    "cryptography CVEs (6 total) target PKCS12/RSA/X.509/ECDSA/ECDH/ASN.1/PKCS7 — NBI only uses Fernet (AES+HMAC+PBKDF2), none reachable."
-  ]
+    "schema_version": 1,
+    "repo": "herikwebb/notebook-intelligence",
+    "last_scan": "2026-06-30T12:07:00-07:00",
+    "scanner": "pip-audit + yarn audit",
+    "findings": [],
+    "notes": [
+        "Pass A (2026-06-30): pip-audit found 27 vulns in 6 system packages. yarn audit: 0 vulns across 1263 npm deps.",
+        "cryptography 41.0.7: 9 CVEs. Direct NBI dep but only Fernet/PBKDF2 used (util.py lines 13-15, 318-345). CVEs target PKCS12/RSA/X.509/ECDSA/ECDH/ASN.1/PKCS7 \u2014 none reachable through NBI. GHSA-537c-gmf6-5ccf (bundled OpenSSL) is the only wheel-level concern. Already tracked in issues #15 and #23.",
+        "idna 3.11: PYSEC-2026-215 (CVE-2026-45409). Transitive via requests, not directly imported by NBI. Already tracked in issues #12, #16, #17.",
+        "pyjwt 2.7.0: 7 CVEs. System package (/usr/lib/python3/dist-packages), NOT an NBI dependency (not in pyproject.toml, Required-by is empty). NBI does not import jwt. Not actionable from NBI.",
+        "pip 24.0, setuptools 68.1.2, wheel 0.42.0: Build/system tools. Not NBI runtime dependencies. Not imported by NBI code. System-level updates only.",
+        "urllib3: pyproject.toml pins >=2.7.0 which resolves CVE-2026-44431 and CVE-2026-44432. Confirmed 2.7.0 at runtime.",
+        "npm deps: yarn audit 0 vulnerabilities. Previous osv-scanner findings (lodash, ws, fast-uri, postcss, @babel/runtime) tracked in existing issues #10/#14/#20 (lodash), #11/#21 (ws), #22 (fast-uri), #25 (postcss), #19 (@babel/runtime). No PRs filed for any.",
+        "jupyter_server bump to 2.20.0 tracked in issue #24. No PR filed.",
+        "No new CVEs found beyond what is already tracked in existing issues."
+    ]
 }
