@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-06-30T12:20:00-07:00",
+    "last_scan": "2026-07-01T05:03:00-07:00",
     "scanner": "manual code review + automated exploration",
     "findings": [
         {
@@ -30,6 +30,21 @@
                 "pr": "#28"
             },
             "notes": "LLM prompt embeds PR diff without injection-resistant framing; unvalidated output posted as PR comment. Fix: untrusted-content delimiters, system instruction hardening, comment disclaimer."
+        },
+        {
+            "id": "NBI-2026-003",
+            "title": "list_files enumerates host files through workspace symlinks",
+            "status": "active",
+            "severity": "medium",
+            "file": "notebook_intelligence/built_in_toolsets.py",
+            "commit_hash": "d090801e18c245c3254663878a14ba0e69f6efa9",
+            "detected_at_pst": "2026-07-01T05:03:00-07:00",
+            "reported_link": "https://github.com/herikwebb/notebook-intelligence/issues/30",
+            "tracking": {
+                "issue": "#30",
+                "pr": "#31"
+            },
+            "notes": "list_files uses Path.glob() which follows symlinks without resolving matches against workspace root. Same class as #13 (search_files) but in a different function not covered by PR #26. Fix: resolve each glob match and reject outside workspace."
         }
     ],
     "surfaces_reviewed": [
@@ -47,7 +62,8 @@
         "importlib.import_module (admin-controlled nbi_extensions dir)",
         "WebSocket on_message (json.loads + KeyError fail-safe)",
         "Log/CRLF injection (json.dumps escaping, %s format strings)",
-        "TOCTOU race conditions (same-user, no privilege boundary)"
+        "TOCTOU race conditions (same-user, no privilege boundary)",
+        "list_files glob confinement (symlink traversal via Path.glob)"
     ],
-    "no_new_findings_reason": "One new medium finding: prompt injection in PR review workflow (scripts/review-pr.sh). Existing findings #13 (symlink traversal) and #18 (SSRF) confirmed still unfixed. All other attack surfaces have defense-in-depth mitigations."
+    "no_new_findings_reason": "One new medium finding: list_files symlink traversal (built_in_toolsets.py). Same class as #13 but distinct function. Existing findings #13/#18/#27 confirmed still open. All other attack surfaces remain mitigated."
 }
