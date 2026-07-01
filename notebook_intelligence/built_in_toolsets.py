@@ -412,6 +412,10 @@ async def list_files(
         include_dirs: Whether to include directories (default True)
         max_depth: Maximum recursion depth (only applies if recursive=True, default 5)
     """
+    jupyter_root_dir = get_jupyter_root_dir()
+    if jupyter_root_dir is None:
+        return "Error! Jupyter root directory is not set"
+
     try:
         list_dir = _get_safe_path(directory)
 
@@ -423,6 +427,7 @@ async def list_files(
 
         items = []
         root_rel_path = Path(directory)
+        root_dir = Path(jupyter_root_dir).expanduser().resolve()
 
         def _get_depth(item_path: Path, base_path: Path) -> int:
             """Calculate the depth of item_path relative to base_path."""
@@ -444,6 +449,11 @@ async def list_files(
 
         # Sort and filter results
         for item in sorted(matched_items):
+            try:
+                item.resolve().relative_to(root_dir)
+            except (ValueError, OSError):
+                continue
+
             # Apply max_depth filter for recursive searches
             depth = _get_depth(item, list_dir)
             if recursive and depth > max_depth:
@@ -453,7 +463,7 @@ async def list_files(
             try:
                 item_relpath = root_rel_path / item.relative_to(list_dir)
             except ValueError:
-                item_relpath = item
+                continue
 
             if item.is_dir():
                 if include_dirs:
