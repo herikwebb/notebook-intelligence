@@ -451,7 +451,7 @@ async def list_files(
         for item in sorted(matched_items):
             try:
                 item.resolve().relative_to(root_dir)
-            except (ValueError, OSError):
+            except (ValueError, OSError, RuntimeError):
                 continue
 
             # Apply max_depth filter for recursive searches
