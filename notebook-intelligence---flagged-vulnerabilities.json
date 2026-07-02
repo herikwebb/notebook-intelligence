@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-07-01T05:03:00-07:00",
+    "last_scan": "2026-07-02T05:11:56-07:00",
     "scanner": "manual code review + automated exploration",
     "findings": [
         {
@@ -65,5 +65,5 @@
         "TOCTOU race conditions (same-user, no privilege boundary)",
         "list_files glob confinement (symlink traversal via Path.glob)"
     ],
-    "no_new_findings_reason": "One new medium finding: list_files symlink traversal (built_in_toolsets.py). Same class as #13 but distinct function. Existing findings #13/#18/#27 confirmed still open. All other attack surfaces remain mitigated."
+    "no_new_findings_reason": "Pass B (2026-07-02): No code changes on main since last scan (commit d090801). All previously identified findings (#13 search_files symlink, #18 MCP SSRF, #27 prompt injection, #30 list_files symlink) remain open with fix PRs #26/#28/#31 pending review. No new attack surfaces to review."
 }
