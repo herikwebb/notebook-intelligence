@@ -62,22 +62,31 @@ jobs:
 
           head_ref="${FORK_OWNER}:${BRANCH}"
 
-          # Idempotent: never open a duplicate PR from the same branch.
+          # Derive the PR title and body from the branch's head commit message so
+          # upstream maintainers get the real context (vulnerability, attack path,
+          # fix rationale) the commit already documents, not a generic line. Title
+          # is the subject; body is everything after it, with leading blank lines
+          # dropped. Fall back to a generic body only if the commit has no body.
+          full="$(gh api "repos/${FORK_REPO}/commits/${BRANCH}" --jq '.commit.message')"
+          title="$(printf '%s\n' "${full}" | head -n1)"
+          body="$(printf '%s\n' "${full}" | tail -n +2 | awk 'NF{f=1} f{print}')"
+          if [ -z "${body}" ]; then
+            body="Automated promotion from ${head_ref} after review sign-off."
+          fi
+
+          # Idempotent: refresh the existing PR rather than opening a duplicate.
           existing="$(gh pr list --repo "${UPSTREAM}" --base "${BASE}" \
             --head "${head_ref}" --state open --json url --jq '.[0].url // ""')"
           if [ -n "${existing}" ]; then
-            echo "PR already open: ${existing}"
-            echo "Existing PR: ${existing}" >> "${GITHUB_STEP_SUMMARY}"
+            gh pr edit "${existing}" --repo "${UPSTREAM}" \
+              --title "${title}" --body "${body}"
+            echo "Updated existing PR: ${existing}"
+            echo "Updated PR: ${existing}" >> "${GITHUB_STEP_SUMMARY}"
             exit 0
           fi
 
-          # Reuse the branch's head commit subject as the PR title.
-          title="$(gh api "repos/${FORK_REPO}/commits/${BRANCH}" \
-            --jq '.commit.message' | head -n1)"
-
           url="$(gh pr create --repo "${UPSTREAM}" --base "${BASE}" \
-            --head "${head_ref}" --title "${title}" \
-            --body "Automated promotion from ${head_ref} after review sign-off.")"
+            --head "${head_ref}" --title "${title}" --body "${body}")"
 
           echo "Opened: ${url}"
           echo "Opened PR: ${url}" >> "${GITHUB_STEP_SUMMARY}"
