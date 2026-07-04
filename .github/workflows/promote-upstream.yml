@@ -75,13 +75,17 @@ jobs:
           fi
 
           # Idempotent: refresh the existing PR rather than opening a duplicate.
-          existing="$(gh pr list --repo "${UPSTREAM}" --base "${BASE}" \
-            --head "${head_ref}" --state open --json url --jq '.[0].url // ""')"
-          if [ -n "${existing}" ]; then
-            gh pr edit "${existing}" --repo "${UPSTREAM}" \
+          # Query the REST head filter (user:branch) directly; `gh pr list --head`
+          # does not reliably match a cross-fork head on the base repo, which made
+          # a re-run fall through to `gh pr create` and fail on "already exists".
+          existing_num="$(gh api -X GET "repos/${UPSTREAM}/pulls" \
+            -f head="${head_ref}" -f state=open --jq '.[0].number // ""')"
+          if [ -n "${existing_num}" ]; then
+            gh pr edit "${existing_num}" --repo "${UPSTREAM}" \
               --title "${title}" --body "${body}"
-            echo "Updated existing PR: ${existing}"
-            echo "Updated PR: ${existing}" >> "${GITHUB_STEP_SUMMARY}"
+            existing_url="$(gh api "repos/${UPSTREAM}/pulls/${existing_num}" --jq '.html_url')"
+            echo "Updated existing PR: ${existing_url}"
+            echo "Updated PR: ${existing_url}" >> "${GITHUB_STEP_SUMMARY}"
             exit 0
           fi
 
