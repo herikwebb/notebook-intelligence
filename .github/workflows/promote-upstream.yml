@@ -74,23 +74,26 @@ jobs:
             body="Automated promotion from ${head_ref} after review sign-off."
           fi
 
+          # Use the REST API throughout (not `gh pr create/edit`). gh's porcelain
+          # issues GraphQL that touches org/discussion fields needing read:org and
+          # read:discussion scopes; a least-privilege repo/public_repo PAT lacks
+          # those. REST pulls create/patch need only repo scope.
+          #
           # Idempotent: refresh the existing PR rather than opening a duplicate.
-          # Query the REST head filter (user:branch) directly; `gh pr list --head`
-          # does not reliably match a cross-fork head on the base repo, which made
-          # a re-run fall through to `gh pr create` and fail on "already exists".
+          # The head filter (user:branch) matches the cross-fork head on the base.
           existing_num="$(gh api -X GET "repos/${UPSTREAM}/pulls" \
             -f head="${head_ref}" -f state=open --jq '.[0].number // ""')"
           if [ -n "${existing_num}" ]; then
-            gh pr edit "${existing_num}" --repo "${UPSTREAM}" \
-              --title "${title}" --body "${body}"
-            existing_url="$(gh api "repos/${UPSTREAM}/pulls/${existing_num}" --jq '.html_url')"
+            existing_url="$(gh api -X PATCH "repos/${UPSTREAM}/pulls/${existing_num}" \
+              -f title="${title}" -f body="${body}" --jq '.html_url')"
             echo "Updated existing PR: ${existing_url}"
             echo "Updated PR: ${existing_url}" >> "${GITHUB_STEP_SUMMARY}"
             exit 0
           fi
 
-          url="$(gh pr create --repo "${UPSTREAM}" --base "${BASE}" \
-            --head "${head_ref}" --title "${title}" --body "${body}")"
+          url="$(gh api -X POST "repos/${UPSTREAM}/pulls" \
+            -f title="${title}" -f body="${body}" \
+            -f head="${head_ref}" -f base="${BASE}" --jq '.html_url')"
 
           echo "Opened: ${url}"
           echo "Opened PR: ${url}" >> "${GITHUB_STEP_SUMMARY}"
