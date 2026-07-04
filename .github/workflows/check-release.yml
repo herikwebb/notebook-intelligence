@@ -12,6 +12,11 @@ concurrency:
 jobs:
   check_release:
     runs-on: ubuntu-latest
+    # jupyter-releaser's check-npm asserts package.json's repository.url matches
+    # the repo the workflow runs in. On forks that URL still points at the
+    # upstream, so the check fails on every fork PR with no bearing on the
+    # change. Only run it on the canonical upstream repository.
+    if: github.repository == 'plmbr/notebook-intelligence'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
