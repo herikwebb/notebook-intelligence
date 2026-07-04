@@ -8,6 +8,9 @@ from notebook_intelligence.api import BuiltinToolset
 from pathlib import Path
 import subprocess
 import shlex
+import os
+import re
+import fnmatch
 
 from notebook_intelligence.util import (
     get_jupyter_root_dir,
@@ -40,6 +43,40 @@ def _glob_pattern_escapes(pattern: str) -> bool:
     if norm.startswith("/"):
         return True
     return ".." in norm.split("/")
+
+
+def _glob_to_regex(pattern: str) -> "re.Pattern":
+    """Compile a forward-slash glob into a full-match regex.
+
+    Mirrors ``pathlib.Path.glob`` semantics so enumeration can be done
+    with ``os.walk(followlinks=False)`` (which never crosses a symlinked
+    directory) instead of ``Path.glob`` (which does): ``*`` and ``?``
+    match within a single path segment, ``**`` matches across segments,
+    and ``**/`` matches zero or more leading segments.
+    """
+    norm = pattern.replace("\\", "/")
+    i, n = 0, len(norm)
+    out = []
+    while i < n:
+        c = norm[i]
+        if c == "*":
+            if norm[i:i + 2] == "**":
+                i += 2
+                if norm[i:i + 1] == "/":
+                    i += 1
+                    out.append("(?:[^/]+/)*")
+                else:
+                    out.append(".*")
+                continue
+            out.append("[^/]*")
+        elif c == "?":
+            out.append("[^/]")
+        elif c == "/":
+            out.append("/")
+        else:
+            out.append(re.escape(c))
+        i += 1
+    return re.compile("(?s:" + "".join(out) + r")\Z")
 
 
 log = logging.getLogger(__name__)
@@ -353,39 +390,51 @@ async def search_files(
         file_count = 0
         match_count = 0
 
-        # Enumerate candidates lexically first. Do NOT call is_file() (or any
-        # other symlink-following stat) here: that would follow an outbound
-        # workspace symlink to its target before the sandbox gate runs and
-        # leak the target's existence through the differing replies. Resolve
-        # and confirm each candidate is inside the workspace, and only then
-        # stat it.
+        # Enumerate with os.walk(followlinks=False) rather than
+        # Path.glob(): glob descends symlinked directories while expanding
+        # a pattern such as "link/*", touching the filesystem outside the
+        # workspace before any candidate can be rejected. os.walk with
+        # followlinks=False never crosses a symlinked directory, so the
+        # walk stays inside the real workspace subtree; the pattern is then
+        # applied with a glob-equivalent regex, and each surviving match is
+        # still funneled through the safe_jupyter_path gate before it is
+        # stat'd or opened.
         root_dir = Path(jupyter_root_dir).expanduser().resolve()
-        candidates = list(search_dir.glob(main_pattern))
-        # Further restrict by file_pattern if provided (matches basename)
-        if file_pattern:
-            candidates = [
-                f for f in candidates
-                if f.match(file_pattern) or f.name == file_pattern or f.match(str(search_dir / file_pattern))
-            ]
-
+        main_re = _glob_to_regex(main_pattern)
         files = []
-        for cand in candidates:
-            try:
-                rel_path = cand.relative_to(root_dir)
-            except ValueError:
-                # A glob hit outside the workspace root should not be read.
-                continue
-            try:
-                safe_file = _get_safe_path(str(rel_path))
-            except ValueError:
-                # Outbound symlinks (e.g. leak.txt -> /etc/passwd) resolve
-                # outside the workspace and are skipped here identically
-                # whether or not their target exists, so no outside-path
-                # existence can be inferred. Matches read_file's gate.
-                continue
-            # Safe to stat now: the path is confirmed inside the workspace.
-            if safe_file.is_file():
-                files.append((safe_file, rel_path))
+        for dirpath, _dirnames, filenames in os.walk(search_dir, followlinks=False):
+            dir_path = Path(dirpath)
+            for name in filenames:
+                cand = dir_path / name
+                try:
+                    rel_to_search = cand.relative_to(search_dir).as_posix()
+                except ValueError:
+                    continue
+                if not main_re.match(rel_to_search):
+                    continue
+                # Optional basename filter (matches basename), preserved.
+                if file_pattern and not (
+                    fnmatch.fnmatch(name, file_pattern) or name == file_pattern
+                ):
+                    continue
+                try:
+                    rel_path = cand.relative_to(root_dir)
+                except ValueError:
+                    continue
+                try:
+                    safe_file = _get_safe_path(str(rel_path))
+                except ValueError:
+                    # Outbound symlink file (e.g. leak.txt -> /etc/passwd)
+                    # resolves outside the workspace; skipped identically
+                    # whether or not its target exists, so no outside-path
+                    # existence can be inferred. Matches read_file's gate.
+                    continue
+                # Safe to stat now: the path is confirmed inside the workspace.
+                if safe_file.is_file():
+                    files.append((safe_file, rel_path))
+
+        # Deterministic order (os.walk yields directories in arbitrary order).
+        files.sort(key=lambda item: str(item[1]))
 
         if not files:
             pinfo = file_pattern if file_pattern else pattern

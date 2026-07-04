@@ -10,7 +10,7 @@ import asyncio
 import pytest
 
 import notebook_intelligence.built_in_toolsets as toolsets
-from notebook_intelligence.util import set_jupyter_root_dir
+from notebook_intelligence.util import get_jupyter_root_dir, set_jupyter_root_dir
 
 
 @pytest.fixture
@@ -18,8 +18,15 @@ def jupyter_root(tmp_path, monkeypatch):
     root = tmp_path / "workspace"
     root.mkdir()
     monkeypatch.setattr(toolsets, "get_jupyter_root_dir", lambda: str(root))
+    # set_jupyter_root_dir mutates process-global state, which monkeypatch
+    # cannot restore for us; save and restore it so tests stay independent
+    # of execution order.
+    previous_root = get_jupyter_root_dir()
     set_jupyter_root_dir(str(root))
-    return root
+    try:
+        yield root
+    finally:
+        set_jupyter_root_dir(previous_root)
 
 
 def _search_files(pattern: str, **kwargs) -> str:
@@ -43,7 +50,7 @@ class TestSearchFilesSymlinkSandbox:
         )
 
         assert "TOP_SECRET_DATA" not in result
-        assert "No matches found" in result
+        assert "No files found" in result
 
     def test_reads_legitimate_workspace_file(self, jupyter_root):
         target = jupyter_root / "notes.txt"
@@ -110,3 +117,28 @@ class TestSearchFilesSymlinkSandbox:
         assert present.replace("link_present", "L") == absent.replace(
             "link_absent", "L"
         )
+
+    def test_does_not_descend_outbound_symlink_directory(
+        self, jupyter_root, tmp_path
+    ):
+        # A pattern that descends a symlinked directory (link -> /outside)
+        # must not enumerate or read the outside tree. Enumeration uses
+        # os.walk(followlinks=False), so the outside contents are never
+        # matched.
+        outside_dir = tmp_path / "outside"
+        outside_dir.mkdir()
+        (outside_dir / "secret.txt").write_text("TOP_SECRET_DATA\n", encoding="utf-8")
+        (jupyter_root / "link").symlink_to(outside_dir)
+        (jupyter_root / "real.txt").write_text("in workspace\n", encoding="utf-8")
+
+        via_link = _search_files(
+            pattern="link/*.txt", directory=".", content_pattern="TOP_SECRET"
+        )
+        assert "TOP_SECRET_DATA" not in via_link
+        assert "No files found" in via_link
+
+        # A legitimate recursive search still returns in-workspace files and
+        # never the symlinked-directory target.
+        recursive = _search_files(pattern="**/*.txt", directory=".")
+        assert "real.txt" in recursive
+        assert "secret.txt" not in recursive
