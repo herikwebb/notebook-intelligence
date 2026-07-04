@@ -200,3 +200,41 @@ class TestSearchFilesSymlinkSandbox:
 
         assert "inner.py" in result
         assert "top.py" not in result
+
+    def test_in_workspace_symlink_directory_is_searchable(self, jupyter_root):
+        # A symlinked directory that resolves inside the workspace is safe and
+        # must remain searchable (Path.glob parity), unlike an outbound one.
+        real_dir = jupyter_root / "real"
+        real_dir.mkdir()
+        (real_dir / "found.txt").write_text("hello inside\n", encoding="utf-8")
+        (jupyter_root / "link").symlink_to(real_dir)
+
+        via_link = _search_files(
+            pattern="link/*.txt", directory=".", content_pattern="hello"
+        )
+        assert "hello inside" in via_link
+
+        recursive = _search_files(pattern="**/*.txt", directory=".")
+        assert "found.txt" in recursive
+
+    def test_symlink_directory_cycle_terminates(self, jupyter_root):
+        # A symlink cycle inside the workspace must not loop forever; the
+        # visited-path guard bounds the recursion. The pytest-timeout plugin
+        # would otherwise flag a hang.
+        sub = jupyter_root / "sub"
+        sub.mkdir()
+        (sub / "real.txt").write_text("data\n", encoding="utf-8")
+        # sub/loop -> sub  (a cycle when a "**" pattern recurses)
+        (sub / "loop").symlink_to(sub)
+
+        result = _search_files(pattern="**/*.txt", directory=".")
+        assert "real.txt" in result
+
+    def test_pattern_matching_is_case_sensitive_on_posix(self, jupyter_root):
+        # Platform-default case sensitivity is preserved: on POSIX, "*.PY"
+        # does not match "foo.py" (matching Path.glob, not the old always-
+        # case-sensitive fnmatchcase / a case-insensitive regression).
+        (jupyter_root / "foo.py").write_text("x\n", encoding="utf-8")
+
+        result = _search_files(pattern="*.PY", directory=".")
+        assert "foo.py" not in result
