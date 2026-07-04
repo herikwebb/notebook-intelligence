@@ -412,7 +412,14 @@ async def search_files(
         # match is still funneled through the safe_jupyter_path gate before
         # it is stat'd or opened.
         root_dir = Path(jupyter_root_dir).expanduser().resolve()
-        segments = [s for s in main_pattern.replace("\\", "/").split("/") if s]
+        # Drop empty and "." segments so a "current directory" component is a
+        # no-op, matching Path.glob's normalization of "./*.py" and
+        # "sub/./*.txt" rather than searching for an entry literally named ".".
+        segments = [
+            s
+            for s in main_pattern.replace("\\", "/").split("/")
+            if s and s != "."
+        ]
         files = []
         seen = set()
         for cand in _iter_pattern_matches(search_dir, segments):

@@ -170,3 +170,18 @@ class TestSearchFilesSymlinkSandbox:
 
         assert "top.py" in result
         assert "deep.py" not in result
+
+    def test_dot_path_components_are_normalized(self, jupyter_root):
+        # "." components are a no-op, matching Path.glob: "./*.py" scans the
+        # current directory and "sub/./*.txt" scans the subdirectory, rather
+        # than looking for an entry literally named ".".
+        (jupyter_root / "top.py").write_text("a\n", encoding="utf-8")
+        nested = jupyter_root / "sub"
+        nested.mkdir()
+        (nested / "note.txt").write_text("b\n", encoding="utf-8")
+
+        here = _search_files(pattern="./*.py", directory=".")
+        assert "top.py" in here
+
+        nested_result = _search_files(pattern="sub/./*.txt", directory=".")
+        assert "note.txt" in nested_result
