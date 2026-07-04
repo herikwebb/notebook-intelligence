@@ -55,13 +55,16 @@ def _explicit_descendable(entry, root_dir):
     """
     try:
         if entry.is_symlink():
-            if not entry.is_dir(follow_symlinks=True):
-                return False
+            # Resolve first and reject an outbound target before probing it as
+            # a directory, so an outbound symlink is never stat-followed past
+            # the workspace boundary during enumeration.
+            real = os.path.realpath(entry.path)
             try:
-                Path(os.path.realpath(entry.path)).relative_to(root_dir)
+                Path(real).relative_to(root_dir)
             except ValueError:
-                return False  # outbound symlinked directory
-            return True
+                return False  # outbound symlinked path
+            # In-workspace target: safe to confirm it is a directory.
+            return os.path.isdir(real)
         return entry.is_dir(follow_symlinks=False)
     except OSError:
         return False
