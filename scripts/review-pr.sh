@@ -156,23 +156,29 @@ if not review:
 
 review = (review or "").strip()
 if not review:
-    # A 200 response with no usable text is almost always an incomplete
-    # reasoning-model reply that spent its whole output budget on hidden
-    # reasoning tokens (status "incomplete", reason "max_output_tokens"),
-    # not a real error. Hard-failing here turned that into a red check with
-    # no posted comment, blocking the PR for a tooling reason rather than a
-    # code one. Treat it as a non-blocking pass, record the reason so a
-    # human can re-run for a substantive review, and let the normal comment
-    # and gate flow continue with an APPROVE verdict.
+    # A 200 response with no usable text is a degenerate reply -- most often
+    # an incomplete reasoning-model response that spent its whole
+    # max_output_tokens budget on reasoning (status "incomplete", reason
+    # "max_output_tokens"), but it can also mean a schema change, content
+    # filter, or transient service anomaly. An empty response is NOT a clean
+    # review, so it must not become an APPROVE: silently approving would let
+    # a tooling failure pass the promotion gate with no substantive review.
+    # Stay fail-closed like an unrecognized verdict -- but instead of
+    # crashing with no output (an opaque red check), post an explanatory
+    # comment recording the reason and pointing at the override label for an
+    # intentional bypass. The raised default max_output_tokens above makes
+    # this path rare in the first place.
     status = data.get("status")
     reason = (data.get("incomplete_details") or {}).get("reason")
     detail = f" (status: {status}, reason: {reason})" if status else ""
     with open(verdict_path, "w", encoding="utf-8") as verdict_file:
-        verdict_file.write("APPROVE")
+        verdict_file.write("CHANGES_REQUESTED")
     print(
         "_The automated reviewer returned no usable output"
-        f"{detail}. No findings were produced, so this check is not blocking "
-        "the PR. Re-run the check to request a full review._"
+        f"{detail}, so no substantive review was produced. This check stays "
+        "red (fail-closed): an empty response is not an approval. Re-run the "
+        "check for a full review, or apply the `override-review-gate` label "
+        "to merge without one._"
     )
     raise SystemExit(0)
 
