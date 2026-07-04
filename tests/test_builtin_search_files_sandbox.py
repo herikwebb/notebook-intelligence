@@ -122,8 +122,8 @@ class TestSearchFilesSymlinkSandbox:
         self, jupyter_root, tmp_path
     ):
         # A pattern that descends a symlinked directory (link -> /outside)
-        # must not enumerate or read the outside tree. Enumeration uses
-        # os.walk(followlinks=False), so the outside contents are never
+        # must not enumerate or read the outside tree. Enumeration never
+        # crosses a symlinked directory, so the outside contents are never
         # matched.
         outside_dir = tmp_path / "outside"
         outside_dir.mkdir()
@@ -142,3 +142,31 @@ class TestSearchFilesSymlinkSandbox:
         recursive = _search_files(pattern="**/*.txt", directory=".")
         assert "real.txt" in recursive
         assert "secret.txt" not in recursive
+
+    def test_supports_glob_character_classes(self, jupyter_root):
+        # Bracket expressions are standard glob syntax and must keep working.
+        (jupyter_root / "mod.pyc").write_text("x\n", encoding="utf-8")
+        (jupyter_root / "mod.pyo").write_text("y\n", encoding="utf-8")
+        (jupyter_root / "mod.py").write_text("z\n", encoding="utf-8")
+
+        result = _search_files(pattern="*.py[co]", directory=".")
+
+        assert "mod.pyc" in result
+        assert "mod.pyo" in result
+        # Plain "mod.py" is not matched by "*.py[co]".
+        assert "matching '*.py[co]'" in result
+        assert "\nFile: mod.py\n" not in result and "mod.py:" not in result
+
+    def test_nonrecursive_pattern_stays_shallow(self, jupyter_root):
+        # A pattern without "**" must only match the current directory level
+        # (as Path.glob does), so a large subtree is not walked for a simple
+        # search.
+        (jupyter_root / "top.py").write_text("a\n", encoding="utf-8")
+        nested = jupyter_root / "sub"
+        nested.mkdir()
+        (nested / "deep.py").write_text("b\n", encoding="utf-8")
+
+        result = _search_files(pattern="*.py", directory=".")
+
+        assert "top.py" in result
+        assert "deep.py" not in result
