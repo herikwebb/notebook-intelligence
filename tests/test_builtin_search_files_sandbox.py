@@ -56,3 +56,35 @@ class TestSearchFilesSymlinkSandbox:
         )
 
         assert "hello workspace" in result
+
+    def test_rejects_parent_traversal_pattern(self, jupyter_root, tmp_path):
+        # An outbound ".." pattern must be refused before glob() runs, so
+        # the tool never stats or reads outside the workspace.
+        outside = tmp_path / "secret.txt"
+        outside.write_text("TOP_SECRET_DATA\n", encoding="utf-8")
+
+        result = _search_files(
+            pattern="../secret.txt",
+            directory=".",
+            content_pattern="TOP_SECRET",
+        )
+
+        assert "TOP_SECRET_DATA" not in result
+        assert "not allowed" in result
+
+    def test_traversal_rejection_does_not_leak_existence(
+        self, jupyter_root, tmp_path
+    ):
+        # The rejection is pattern-based and must be identical whether or
+        # not the outside target exists, so it cannot be used as an
+        # existence oracle for arbitrary host paths.
+        present = tmp_path / "present.txt"
+        present.write_text("data\n", encoding="utf-8")
+
+        hit_present = _search_files(pattern="../present.txt", directory=".")
+        hit_absent = _search_files(pattern="../nope.txt", directory=".")
+
+        assert "not allowed" in hit_present
+        assert hit_present.replace("present", "X") == hit_absent.replace(
+            "nope", "X"
+        )

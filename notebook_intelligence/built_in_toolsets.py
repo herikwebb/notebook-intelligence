@@ -22,6 +22,26 @@ from notebook_intelligence.util import (
 # directly.
 _get_safe_path = safe_jupyter_path
 
+
+def _glob_pattern_escapes(pattern: str) -> bool:
+    """True if a glob pattern would range outside the search root.
+
+    ``Path.glob`` evaluates ``..`` segments (and rejects absolute
+    patterns only with an unhelpful error), so a pattern like
+    ``../secret.txt`` or ``**/../secret.txt`` makes ``glob`` enumerate
+    and stat paths outside ``jupyter_root_dir`` before the per-match
+    ``safe_jupyter_path`` gate can skip them. That both defeats the
+    workspace confinement during enumeration and leaks outside-file
+    existence through the differing "no files found" vs "found" replies.
+    Reject absolute patterns and any ``..`` component up front so the
+    boundary holds during enumeration too.
+    """
+    norm = pattern.replace("\\", "/")
+    if norm.startswith("/"):
+        return True
+    return ".." in norm.split("/")
+
+
 log = logging.getLogger(__name__)
 
 APPROX_BYTES_PER_OUTPUT_TOKEN = 4
@@ -318,6 +338,16 @@ async def search_files(
         context_lines = int(args.get('context_lines', 2))
         # Support backward-compatible defaulting, if called with only old pattern argument
         main_pattern = pattern or "**/*"
+        # Reject patterns that try to escape the search root before they
+        # reach glob(); otherwise glob would stat outside paths and the
+        # differing replies would leak outside-file existence even though
+        # the per-match gate below refuses to read the contents.
+        for pat in (main_pattern, file_pattern):
+            if pat and _glob_pattern_escapes(pat):
+                return (
+                    f"Pattern '{pat}' is not allowed: search is confined to the "
+                    f"workspace and patterns cannot traverse outside it."
+                )
         # If file_pattern is provided, use it to restrict files further after applying main_pattern
         matched_results = []
         file_count = 0
