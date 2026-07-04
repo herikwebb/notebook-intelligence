@@ -14,21 +14,41 @@ OPENAI_MODEL="${OPENAI_MODEL:-gpt-5.5}"
 OPENAI_MAX_OUTPUT_TOKENS="${OPENAI_MAX_OUTPUT_TOKENS:-3000}"
 DIFF_LIMIT_BYTES="${DIFF_LIMIT_BYTES:-120000}"
 
-# Three-dot (merge-base) range so the reviewer sees exactly what the PR would
-# introduce on merge, not unrelated commits the base has moved ahead by. A
-# two-dot "${BASE_SHA} ${HEAD_SHA}" range misreports files when the head branch
-# is based on an older commit than the PR base (e.g. a fix branched off the
-# upstream tip while the fork's main carries extra commits).
-DIFF_RANGE="${BASE_SHA}...${HEAD_SHA}"
-CHANGED_FILES="$(git diff --name-only "${DIFF_RANGE}")"
-DIFF_STAT="$(git diff --stat "${DIFF_RANGE}")"
+# Escape hatch: a maintainer-applied label lets a PR merge despite a
+# CHANGES_REQUESTED verdict. The reviewer is an LLM and will occasionally flag
+# correct or intentional code; without an override a fail-closed gate would
+# block those PRs (and any automated promotion keyed on this check) forever.
+# The review still runs and its comment is still posted for the record; only the
+# exit status is relaxed.
+OVERRIDE_LABEL="${REVIEW_GATE_OVERRIDE_LABEL:-override-review-gate}"
+OVERRIDE="false"
+if gh pr view "${PR_NUMBER}" --repo "${REPO}" --json labels \
+    --jq '.labels[].name' 2>/dev/null | grep -qx "${OVERRIDE_LABEL}"; then
+  OVERRIDE="true"
+fi
+
+# Prefer a three-dot (merge-base) range so the reviewer sees exactly what the PR
+# would introduce on merge, not unrelated commits the base has moved ahead by. A
+# two-dot range misreports files when the head branch is based on an older commit
+# than the PR base (e.g. a fix branched off the upstream tip while the fork's main
+# carries extra commits). Three-dot needs the merge base present locally; the
+# workflow checks out with fetch-depth: 0 so it normally is, but fall back to a
+# two-dot range on a shallow clone rather than erroring out.
+if git merge-base "${BASE_SHA}" "${HEAD_SHA}" >/dev/null 2>&1; then
+  DIFF_RANGE=("${BASE_SHA}...${HEAD_SHA}")
+else
+  echo "No merge base for ${BASE_SHA}...${HEAD_SHA}; falling back to two-dot range." >&2
+  DIFF_RANGE=("${BASE_SHA}" "${HEAD_SHA}")
+fi
+CHANGED_FILES="$(git diff --name-only "${DIFF_RANGE[@]}")"
+DIFF_STAT="$(git diff --stat "${DIFF_RANGE[@]}")"
 DIFF_FILE="$(mktemp)"
 PROMPT_FILE="$(mktemp)"
 REVIEW_FILE="$(mktemp)"
 VERDICT_FILE="$(mktemp)"
 trap 'rm -f "${DIFF_FILE}" "${PROMPT_FILE}" "${REVIEW_FILE}" "${VERDICT_FILE}"' EXIT
 
-git diff --find-renames --unified=80 "${DIFF_RANGE}" > "${DIFF_FILE}"
+git diff --find-renames --unified=80 "${DIFF_RANGE[@]}" > "${DIFF_FILE}"
 
 DIFF_BYTES="$(wc -c < "${DIFF_FILE}" | tr -d ' ')"
 if (( DIFF_BYTES > DIFF_LIMIT_BYTES )); then
@@ -160,11 +180,17 @@ REVIEW="$(cat "${REVIEW_FILE}")"
 VERDICT="$(cat "${VERDICT_FILE}" 2>/dev/null || echo CHANGES_REQUESTED)"
 [[ -n "${VERDICT}" ]] || VERDICT="CHANGES_REQUESTED"
 
+OVERRIDE_NOTE=""
+if [[ "${OVERRIDE}" == "true" ]]; then
+  OVERRIDE_NOTE="
+Gate override: \`${OVERRIDE_LABEL}\` label present — merge not blocked by this verdict."
+fi
+
 BODY=$(cat <<EOF
 ## Automated PR Review
 
 Model: \`${OPENAI_MODEL}\`
-Verdict: \`${VERDICT}\`
+Verdict: \`${VERDICT}\`${OVERRIDE_NOTE}
 
 Changed files:
 
@@ -187,6 +213,11 @@ gh pr comment "${PR_NUMBER}" \
 # CI status rather than string-matching the comment body.
 echo "Automated review verdict: ${VERDICT}"
 if [[ "${VERDICT}" != "APPROVE" ]]; then
+  if [[ "${OVERRIDE}" == "true" ]]; then
+    echo "Verdict is ${VERDICT}, but the '${OVERRIDE_LABEL}' label is present; overriding the gate."
+    exit 0
+  fi
   echo "::error::Automated reviewer requested changes; see the PR review comment." >&2
+  echo "::error::To merge anyway, apply the '${OVERRIDE_LABEL}' label and re-run this check." >&2
   exit 1
 fi
