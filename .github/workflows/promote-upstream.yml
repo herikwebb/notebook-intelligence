@@ -41,6 +41,11 @@ env:
 jobs:
   promote:
     runs-on: ubuntu-latest
+    # Gate the PAT behind a manual approval. This only enforces an approval if
+    # the `upstream-promotion` environment exists with required reviewers
+    # configured (Settings -> Environments); otherwise GitHub auto-creates it
+    # unprotected and the run proceeds without pausing.
+    environment: upstream-promotion
     steps:
       - name: Open cross-fork PR into upstream
         env:
