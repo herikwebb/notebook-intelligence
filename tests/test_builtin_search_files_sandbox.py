@@ -88,3 +88,25 @@ class TestSearchFilesSymlinkSandbox:
         assert hit_present.replace("present", "X") == hit_absent.replace(
             "nope", "X"
         )
+
+    def test_outbound_symlink_target_existence_not_revealed(
+        self, jupyter_root, tmp_path
+    ):
+        # is_file() must not be called on a candidate before the sandbox
+        # gate resolves it, or an outbound symlink whose target exists
+        # would be admitted-then-skipped while a broken one is filtered
+        # out earlier, leaking outside-path existence via the reply.
+        existing_target = tmp_path / "exists.txt"
+        existing_target.write_text("TOP_SECRET_DATA\n", encoding="utf-8")
+        (jupyter_root / "link_present").symlink_to(existing_target)
+        (jupyter_root / "link_absent").symlink_to(tmp_path / "missing.txt")
+
+        present = _search_files(pattern="link_present", directory=".")
+        absent = _search_files(pattern="link_absent", directory=".")
+
+        assert "TOP_SECRET_DATA" not in present
+        # Responses differ only by the echoed pattern name, never by
+        # whether the outbound target exists.
+        assert present.replace("link_present", "L") == absent.replace(
+            "link_absent", "L"
+        )

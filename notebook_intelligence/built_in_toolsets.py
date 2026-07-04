@@ -353,33 +353,45 @@ async def search_files(
         file_count = 0
         match_count = 0
 
-        # Use the main pattern for initial search
-        files = [f for f in search_dir.glob(main_pattern) if f.is_file()]
+        # Enumerate candidates lexically first. Do NOT call is_file() (or any
+        # other symlink-following stat) here: that would follow an outbound
+        # workspace symlink to its target before the sandbox gate runs and
+        # leak the target's existence through the differing replies. Resolve
+        # and confirm each candidate is inside the workspace, and only then
+        # stat it.
+        root_dir = Path(jupyter_root_dir).expanduser().resolve()
+        candidates = list(search_dir.glob(main_pattern))
         # Further restrict by file_pattern if provided (matches basename)
         if file_pattern:
-            files = [
-                f for f in files
+            candidates = [
+                f for f in candidates
                 if f.match(file_pattern) or f.name == file_pattern or f.match(str(search_dir / file_pattern))
             ]
+
+        files = []
+        for cand in candidates:
+            try:
+                rel_path = cand.relative_to(root_dir)
+            except ValueError:
+                # A glob hit outside the workspace root should not be read.
+                continue
+            try:
+                safe_file = _get_safe_path(str(rel_path))
+            except ValueError:
+                # Outbound symlinks (e.g. leak.txt -> /etc/passwd) resolve
+                # outside the workspace and are skipped here identically
+                # whether or not their target exists, so no outside-path
+                # existence can be inferred. Matches read_file's gate.
+                continue
+            # Safe to stat now: the path is confirmed inside the workspace.
+            if safe_file.is_file():
+                files.append((safe_file, rel_path))
+
         if not files:
             pinfo = file_pattern if file_pattern else pattern
             return f"No files found matching pattern '{pinfo}' in '{directory}'"
 
-        root_dir = Path(jupyter_root_dir).expanduser().resolve()
-        for file_path in files:
-            try:
-                rel_path = file_path.relative_to(root_dir)
-            except ValueError:
-                # A glob hit outside the workspace root should not be read.
-                continue
-
-            try:
-                safe_file = _get_safe_path(str(rel_path))
-            except ValueError:
-                # Outbound symlinks (e.g. leak.txt -> /etc/passwd) must be
-                # skipped, matching read_file's safe_jupyter_path gate.
-                continue
-
+        for safe_file, rel_path in files:
             try:
                 with open(safe_file, 'r', encoding='utf-8') as f:
                     lines = f.readlines()
