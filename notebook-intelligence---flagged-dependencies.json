@@ -1,8 +1,8 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-07-03T05:00:00-07:00",
-    "scanner": "pip-audit + yarn audit",
+    "last_scan": "2026-07-04T05:00:00-07:00",
+    "scanner": "pip-audit + yarn audit (upstream tip d9f76a5)",
     "findings": [],
     "notes": [
         "Pass A (2026-07-01): pip-audit found 30 vulns in 7 system packages. yarn audit: 0 vulns across 1263 npm deps.",
@@ -14,6 +14,7 @@
         "npm deps: yarn audit 0 vulnerabilities. Previous osv-scanner findings (lodash, ws, fast-uri, postcss, @babel/runtime) tracked in existing issues #10/#14/#20 (lodash), #11/#21 (ws), #22/#29 (fast-uri), #25 (postcss), #19 (@babel/runtime). No PRs filed for any.",
         "jupyter_server bump to 2.20.0 tracked in issue #24. jupyter_server 2.20.0 is available on PyPI; existing pin >=2.18.0 already picks it up. Consider bumping lower bound to >=2.20.0.",
         "Pass A (2026-07-02): No new dependency CVEs found. All previously tracked issues (#10/#11/#12/#14/#15/#16/#17/#19/#20/#21/#22/#23/#24/#25/#29) remain open. yarn audit failed (registry errors); pip-audit confirmed same CVE set as prior scan. No fix PRs merged since last scan.",
-        "Pass A (2026-07-03): No new dependency CVEs found. No code changes on main since last scan (commit d090801). pip-audit: same 30 vulns in 7 packages (cryptography 41.0.7, idna 3.11, pip 24.0, pyjwt 2.7.0, setuptools 68.1.2, urllib3 2.6.3, wheel 0.42.0). yarn audit: 0 vulnerabilities across 1263 npm deps. osv-scanner API unreachable (proxy restriction). All previously tracked issues (#10/#11/#12/#14/#15/#16/#17/#19/#20/#21/#22/#23/#24/#25/#29) remain open with no fix PRs merged. Noted: fuzy-jon==0.1.0 pinned in pyproject.toml but not found on PyPI \u2014 not a CVE but warrants supply-chain review."
+        "Pass A (2026-07-03): No new dependency CVEs found. No code changes on main since last scan (commit d090801). pip-audit: same 30 vulns in 7 packages (cryptography 41.0.7, idna 3.11, pip 24.0, pyjwt 2.7.0, setuptools 68.1.2, urllib3 2.6.3, wheel 0.42.0). yarn audit: 0 vulnerabilities across 1263 npm deps. osv-scanner API unreachable (proxy restriction). All previously tracked issues (#10/#11/#12/#14/#15/#16/#17/#19/#20/#21/#22/#23/#24/#25/#29) remain open with no fix PRs merged. Noted: fuzy-jon==0.1.0 pinned in pyproject.toml but not found on PyPI \u2014 not a CVE but warrants supply-chain review.",
+        "Pass A (2026-07-04): Scanned UPSTREAM tip plmbr/notebook-intelligence@d9f76a5 (v5.2.1); the fork's app code is byte-identical to this tip (fork only adds pr-review automation). No new dependency CVEs. pip-audit: same 30 vulns in 7 packages (cryptography 41.0.7, idna 3.11, pip 24.0, pyjwt 2.7.0, setuptools 68.1.2, urllib3 2.6.3, wheel 0.42.0) \u2014 all system/build-env packages or already-tracked transitives; the reachable ones are already pinned in pyproject.toml (urllib3>=2.7.0, mistune>=3.2.1, python-multipart>=0.0.27, jupyter_server>=2.18.0, litellm>=1.83.7) and cryptography is unpinned so a fresh install resolves to a patched wheel. yarn audit: 0 vulnerabilities across 1263 npm deps. osv-scanner/govulncheck unavailable (no Go toolchain; osv API proxy-restricted). CORRECTION to prior note: fuzy-jon==0.1.0 IS a real, published PyPI package (HTTP 200; maintainer lucemia; it is 'fuzzy-json' released under the truncated name fuzy-jon) \u2014 the earlier 'not found on PyPI' note was a false alarm from an unreachable index. It is an unused/dead dependency (not imported anywhere in notebook_intelligence/) but not a supply-chain vulnerability. All previously tracked issues (#10/#11/#12/#14/#15/#16/#17/#19/#20/#21/#22/#23/#24/#25/#29) remain open with no fix PRs merged."
     ]
 }
