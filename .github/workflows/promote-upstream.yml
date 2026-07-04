@@ -1,0 +1,78 @@
+name: Promote to upstream
+
+# Opens a cross-fork pull request from a fork branch into the upstream repo.
+#
+# Why a PAT (secrets.UPSTREAM_PAT) and not the built-in GITHUB_TOKEN: the
+# default Actions token is scoped to the repository it runs in and cannot open
+# a pull request whose base is a repo we do not own. A classic PAT with the
+# `public_repo` scope acts as the user, who can open a cross-fork PR into any
+# public upstream (write on the fork head + read on the public base) with no
+# App install or write access on upstream. Store it as a repository (or
+# environment) secret named UPSTREAM_PAT — never in code.
+#
+# Default trigger is manual (workflow_dispatch). To fully automate option-C
+# promotion, add a `workflow_run` trigger keyed on the "PR Review" workflow
+# completing with conclusion == success, and resolve the head branch from the
+# triggering run.
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Fork branch to promote (PR head)"
+        required: true
+      base:
+        description: "Upstream base branch"
+        required: false
+        default: main
+
+concurrency:
+  group: promote-${{ github.event.inputs.branch }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  UPSTREAM: plmbr/notebook-intelligence
+  FORK_REPO: ${{ github.repository }}
+  FORK_OWNER: ${{ github.repository_owner }}
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open cross-fork PR into upstream
+        env:
+          GH_TOKEN: ${{ secrets.UPSTREAM_PAT }}
+          BRANCH: ${{ github.event.inputs.branch }}
+          BASE: ${{ github.event.inputs.base }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::UPSTREAM_PAT secret is not set. Add a classic PAT with the public_repo scope as a repository secret named UPSTREAM_PAT." >&2
+            exit 1
+          fi
+
+          head_ref="${FORK_OWNER}:${BRANCH}"
+
+          # Idempotent: never open a duplicate PR from the same branch.
+          existing="$(gh pr list --repo "${UPSTREAM}" --base "${BASE}" \
+            --head "${head_ref}" --state open --json url --jq '.[0].url // ""')"
+          if [ -n "${existing}" ]; then
+            echo "PR already open: ${existing}"
+            echo "Existing PR: ${existing}" >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+
+          # Reuse the branch's head commit subject as the PR title.
+          title="$(gh api "repos/${FORK_REPO}/commits/${BRANCH}" \
+            --jq '.commit.message' | head -n1)"
+
+          url="$(gh pr create --repo "${UPSTREAM}" --base "${BASE}" \
+            --head "${head_ref}" --title "${title}" \
+            --body "Automated promotion from ${head_ref} after review sign-off.")"
+
+          echo "Opened: ${url}"
+          echo "Opened PR: ${url}" >> "${GITHUB_STEP_SUMMARY}"
