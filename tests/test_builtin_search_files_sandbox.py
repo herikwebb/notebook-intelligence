@@ -6,11 +6,37 @@ outbound workspace symlinks cannot leak host file contents.
 """
 
 import asyncio
+import os
+import tempfile
 
 import pytest
 
 import notebook_intelligence.built_in_toolsets as toolsets
 from notebook_intelligence.util import get_jupyter_root_dir, set_jupyter_root_dir
+
+
+def _symlinks_supported() -> bool:
+    """Whether this platform/process can create symlinks.
+
+    Windows only permits symlink creation with elevated privileges or
+    Developer Mode, so the symlink sandbox tests are skipped where they
+    cannot run rather than reported as spurious failures.
+    """
+    with tempfile.TemporaryDirectory() as td:
+        target = os.path.join(td, "target")
+        link = os.path.join(td, "link")
+        open(target, "w").close()
+        try:
+            os.symlink(target, link)
+            return True
+        except (OSError, NotImplementedError):
+            return False
+
+
+requires_symlinks = pytest.mark.skipif(
+    not _symlinks_supported(),
+    reason="symlink creation is not supported on this platform",
+)
 
 
 @pytest.fixture
@@ -35,6 +61,7 @@ def _search_files(pattern: str, **kwargs) -> str:
 
 
 class TestSearchFilesSymlinkSandbox:
+    @requires_symlinks
     def test_skips_outbound_symlink_when_searching_content(
         self, jupyter_root, tmp_path
     ):
@@ -96,6 +123,7 @@ class TestSearchFilesSymlinkSandbox:
             "nope", "X"
         )
 
+    @requires_symlinks
     def test_outbound_symlink_target_existence_not_revealed(
         self, jupyter_root, tmp_path
     ):
@@ -118,6 +146,7 @@ class TestSearchFilesSymlinkSandbox:
             "link_absent", "L"
         )
 
+    @requires_symlinks
     def test_does_not_descend_outbound_symlink_directory(
         self, jupyter_root, tmp_path
     ):
@@ -128,7 +157,7 @@ class TestSearchFilesSymlinkSandbox:
         outside_dir = tmp_path / "outside"
         outside_dir.mkdir()
         (outside_dir / "secret.txt").write_text("TOP_SECRET_DATA\n", encoding="utf-8")
-        (jupyter_root / "link").symlink_to(outside_dir)
+        (jupyter_root / "link").symlink_to(outside_dir, target_is_directory=True)
         (jupyter_root / "real.txt").write_text("in workspace\n", encoding="utf-8")
 
         via_link = _search_files(
@@ -201,13 +230,14 @@ class TestSearchFilesSymlinkSandbox:
         assert "inner.py" in result
         assert "top.py" not in result
 
+    @requires_symlinks
     def test_in_workspace_symlink_directory_is_searchable(self, jupyter_root):
         # A symlinked directory that resolves inside the workspace is safe and
         # must remain searchable (Path.glob parity), unlike an outbound one.
         real_dir = jupyter_root / "real"
         real_dir.mkdir()
         (real_dir / "found.txt").write_text("hello inside\n", encoding="utf-8")
-        (jupyter_root / "link").symlink_to(real_dir)
+        (jupyter_root / "link").symlink_to(real_dir, target_is_directory=True)
 
         via_link = _search_files(
             pattern="link/*.txt", directory=".", content_pattern="hello"
@@ -217,19 +247,24 @@ class TestSearchFilesSymlinkSandbox:
         recursive = _search_files(pattern="**/*.txt", directory=".")
         assert "found.txt" in recursive
 
+    @requires_symlinks
     def test_symlink_directory_cycle_terminates(self, jupyter_root):
-        # A symlink cycle inside the workspace must not loop forever; the
-        # visited-path guard bounds the recursion. The pytest-timeout plugin
-        # would otherwise flag a hang.
+        # A symlink cycle inside the workspace must not loop forever; **
+        # recursion follows real directories only, so the cycle is never
+        # entered. The pytest-timeout plugin would otherwise flag a hang.
         sub = jupyter_root / "sub"
         sub.mkdir()
         (sub / "real.txt").write_text("data\n", encoding="utf-8")
-        # sub/loop -> sub  (a cycle when a "**" pattern recurses)
-        (sub / "loop").symlink_to(sub)
+        # sub/loop -> sub  (a cycle if a "**" pattern were to follow symlinks)
+        (sub / "loop").symlink_to(sub, target_is_directory=True)
 
         result = _search_files(pattern="**/*.txt", directory=".")
         assert "real.txt" in result
 
+    @pytest.mark.skipif(
+        os.name == "nt",
+        reason="glob is case-insensitive on Windows (platform-default fnmatch)",
+    )
     def test_pattern_matching_is_case_sensitive_on_posix(self, jupyter_root):
         # Platform-default case sensitivity is preserved: on POSIX, "*.PY"
         # does not match "foo.py" (matching Path.glob, not the old always-
