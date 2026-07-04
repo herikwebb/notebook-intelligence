@@ -423,9 +423,14 @@ async def search_files(
         files = []
         seen = set()
         for cand in _iter_pattern_matches(search_dir, segments):
-            # Optional basename filter (matches basename), preserved.
+            # Optional file_pattern filter. Preserve the original path-aware
+            # behavior: Path.match is right-anchored, so a bare basename glob
+            # ("*.py") and a relative-path glob ("sub/*.py") both work, as does
+            # a pattern anchored at the search directory.
             if file_pattern and not (
-                fnmatch.fnmatch(cand.name, file_pattern) or cand.name == file_pattern
+                cand.match(file_pattern)
+                or cand.name == file_pattern
+                or cand.match(str(search_dir / file_pattern))
             ):
                 continue
             try:

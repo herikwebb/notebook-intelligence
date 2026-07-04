@@ -185,3 +185,18 @@ class TestSearchFilesSymlinkSandbox:
 
         nested_result = _search_files(pattern="sub/./*.txt", directory=".")
         assert "note.txt" in nested_result
+
+    def test_file_pattern_is_path_aware(self, jupyter_root):
+        # file_pattern keeps its original right-anchored path matching, so a
+        # relative-path glob narrows by location, not just basename.
+        (jupyter_root / "top.py").write_text("a\n", encoding="utf-8")
+        nested = jupyter_root / "sub"
+        nested.mkdir()
+        (nested / "inner.py").write_text("b\n", encoding="utf-8")
+
+        result = _search_files(
+            pattern="**/*", directory=".", file_pattern="sub/*.py"
+        )
+
+        assert "inner.py" in result
+        assert "top.py" not in result
