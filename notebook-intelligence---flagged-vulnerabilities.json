@@ -7,14 +7,19 @@
         {
             "id": "NBI-2024-001",
             "title": "search_files symlink traversal",
-            "status": "already_tracked",
+            "status": "active",
             "severity": "medium",
             "file": "notebook_intelligence/built_in_toolsets.py",
             "tracking": {
-                "issue": "#13",
-                "pr": "#26"
+                "issue": "#13 (closed not_planned by maintainer 2026-07-04)",
+                "pr": "#26 (closed without merge 2026-07-04)",
+                "re_authored_branch": "security/fix-search-files-symlink-20260704031032-3406",
+                "compare_url": "https://github.com/plmbr/notebook-intelligence/compare/main...herikwebb:security/fix-search-files-symlink-20260704031032-3406?expand=1"
             },
-            "notes": "search_files follows symlinks outside jupyter_root_dir. Still unfixed on main. PR #26 open."
+            "notes": "search_files follows an in-workspace symlink outside jupyter_root_dir: safe_jupyter_path validated only the search root, glob matches were opened directly. Re-authored the fix from closed PR #26 into a clean branch based on upstream plmbr/notebook-intelligence@d9f76a5, authored as maintainer, single commit 'fix(built-in-tools): confine search_files glob matches to workspace' + tests/test_builtin_search_files_sandbox.py (both isolated tests pass). Pushed to fork origin as security/fix-search-files-symlink-20260704031032-3406. Cross-fork PR into upstream DENIED (session GitHub scope is fork-only, App not installed on upstream) \u2014 open manually via the compare URL. Fork-only-file guard passed; git log author verified Herik Webb.",
+            "commit_hash": "d9f76a525a3c35d0220af4e6043f039a036f7534",
+            "detected_at_pst": "2026-07-04T20:20:00-07:00",
+            "reported_link": "https://github.com/plmbr/notebook-intelligence/compare/main...herikwebb:security/fix-search-files-symlink-20260704031032-3406?expand=1"
         },
         {
             "id": "NBI-2026-002",
