@@ -145,3 +145,25 @@ class TestFloatEnvParsing:
         from notebook_intelligence.api import _float_env
         monkeypatch.setenv('NBI_TEST_FLOAT', '-1')
         assert _float_env('NBI_TEST_FLOAT', 1800.0) == -1.0
+
+
+class TestNoneResultIsAValidResponse:
+    def test_none_result_resolves_the_wait(self):
+        # Void UI commands legitimately respond with result=None (JSON
+        # null). That must resolve the wait, not spin into the timeout.
+        response = ChatResponse()
+
+        async def scenario():
+            task = asyncio.ensure_future(
+                ChatResponse.wait_for_run_ui_command_response(
+                    response, 'cb-1', timeout=5
+                )
+            )
+            await asyncio.sleep(0)
+            response.on_run_ui_command_response(
+                {'callback_id': 'cb-1', 'result': None}
+            )
+            return await task
+
+        assert asyncio.run(scenario()) is None
+        assert _listeners(response) == []

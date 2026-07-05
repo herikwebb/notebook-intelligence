@@ -424,7 +424,12 @@ class ChatResponse:
         """
         if timeout is None:
             timeout = RUN_UI_COMMAND_RESPONSE_TIMEOUT
-        resp = {"result": None}
+        # Identity sentinel, not None: a void UI command legitimately
+        # responds with result=None (JSON null), and treating that as
+        # "no response yet" would spin until the timeout even though the
+        # callback arrived.
+        pending = object()
+        resp = {"result": pending}
         def _on_ui_command_response(data: dict):
             if data['callback_id'] == callback_id:
                 resp["result"] = data['result']
@@ -436,7 +441,7 @@ class ChatResponse:
 
         try:
             while True:
-                if resp["result"] is not None:
+                if resp["result"] is not pending:
                     return resp["result"]
                 if timeout > 0 and time.monotonic() - started > timeout:
                     raise TimeoutError(
