@@ -3,6 +3,7 @@
 import asyncio
 import atexit
 import base64
+import binascii
 from dataclasses import asdict, dataclass
 import json
 from os import path
@@ -1687,6 +1688,33 @@ def _resolve_upload_path(file_path: str) -> str | None:
     return resolved
 
 
+def _save_output_context_image(mime_type: str, data_b64: str) -> str | None:
+    """Persist a cell-output image bundle under the upload dir.
+
+    Used as the ``image_saver`` for ``format_output_context`` in Claude
+    Code mode: the CLI takes text-only queries, so images travel as file
+    paths the agent's Read tool can open, never as inline data-URLs.
+    Returns the absolute path, or ``None`` when decoding/writing fails so
+    the formatter can fall back to its text rendering.
+    """
+    ext = ".png" if mime_type == "image/png" else ".jpg"
+    try:
+        payload = base64.b64decode(data_b64, validate=True)
+    except (binascii.Error, ValueError) as exc:
+        log.warning("Could not decode cell-output image bundle: %s", exc)
+        return None
+    dest_dir = path.join(_get_upload_dir(), uuid.uuid4().hex[:12])
+    try:
+        os.makedirs(dest_dir, exist_ok=True)
+        dest_path = path.join(dest_dir, f"cell-output{ext}")
+        with open(dest_path, "wb") as fh:
+            fh.write(payload)
+    except OSError as exc:
+        log.warning("Could not persist cell-output image bundle: %s", exc)
+        return None
+    return dest_path
+
+
 def _sweep_upload_dir(retention_hours: int) -> None:
     """Best-effort removal of upload subdirs past the retention window.
 
@@ -2338,27 +2366,50 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
 
                 output_context = _coerce_output_context(context.get("outputContext"))
                 if output_context is not None:
-                    # Estimate cost without re-encoding the whole formatted
-                    # message: per-bundle token counts are precomputed by the
-                    # client (and capped by `coerce_payload`'s size limits);
-                    # `cellSource` we count once. ~50-token allowance for the
-                    # wrapper text is comfortably above the actual envelope.
-                    bundle_tokens = sum(
-                        b.get("sizeTokens", 0)
-                        for b in output_context.get("mimeBundles", [])
-                    )
-                    cell_source = output_context.get("cellSource", "")
-                    cell_source_tokens = _token_count(cell_source) if cell_source else 0
-                    estimated_tokens = bundle_tokens + cell_source_tokens + 50
-                    if estimated_tokens > remaining_token_budget:
-                        log.info(
-                            "Skipping output context: estimated %d tokens exceeds remaining budget %d",
-                            estimated_tokens,
-                            remaining_token_budget,
+                    if is_claude_code_mode:
+                        # The Claude Code CLI takes text-only queries: an
+                        # inline data-URL would arrive as an enormous base64
+                        # string the model pays tokens for but cannot render.
+                        # Persist image bundles to the upload dir and pass
+                        # their paths instead — the agent's Read tool views
+                        # the file natively. The formatted message is small,
+                        # so budget it by its real token count rather than
+                        # the client-side base64 estimate.
+                        context_message = _format_output_context(
+                            output_context,
+                            supports_vision=False,
+                            image_saver=_save_output_context_image,
                         )
-                        continue
-                    supports_vision = _resolve_supports_vision(ai_service_manager)
-                    context_message = _format_output_context(output_context, supports_vision=supports_vision)
+                        estimated_tokens = _token_count(context_message)
+                        if estimated_tokens > remaining_token_budget:
+                            log.info(
+                                "Skipping output context: estimated %d tokens exceeds remaining budget %d",
+                                estimated_tokens,
+                                remaining_token_budget,
+                            )
+                            continue
+                    else:
+                        # Estimate cost without re-encoding the whole formatted
+                        # message: per-bundle token counts are precomputed by the
+                        # client (and capped by `coerce_payload`'s size limits);
+                        # `cellSource` we count once. ~50-token allowance for the
+                        # wrapper text is comfortably above the actual envelope.
+                        bundle_tokens = sum(
+                            b.get("sizeTokens", 0)
+                            for b in output_context.get("mimeBundles", [])
+                        )
+                        cell_source = output_context.get("cellSource", "")
+                        cell_source_tokens = _token_count(cell_source) if cell_source else 0
+                        estimated_tokens = bundle_tokens + cell_source_tokens + 50
+                        if estimated_tokens > remaining_token_budget:
+                            log.info(
+                                "Skipping output context: estimated %d tokens exceeds remaining budget %d",
+                                estimated_tokens,
+                                remaining_token_budget,
+                            )
+                            continue
+                        supports_vision = _resolve_supports_vision(ai_service_manager)
+                        context_message = _format_output_context(output_context, supports_vision=supports_vision)
                     remaining_token_budget -= estimated_tokens
                     chat_history.append({"role": "user", "content": context_message})
                     continue

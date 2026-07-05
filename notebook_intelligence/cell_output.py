@@ -2,7 +2,7 @@
 
 import re
 import secrets
-from typing import Optional
+from typing import Callable, Optional
 
 
 _IMAGE_MIME_TYPES = ("image/png", "image/jpeg")
@@ -17,7 +17,11 @@ _MAX_CELL_SOURCE_LEN = 64 * 1024
 _MAX_TOTAL_PAYLOAD_LEN = 1024 * 1024
 
 
-def format_output_context(payload: dict, supports_vision: bool = False) -> str:
+def format_output_context(
+    payload: dict,
+    supports_vision: bool = False,
+    image_saver: Optional[Callable[[str, str], Optional[str]]] = None,
+) -> str:
     """Format an output-context bundle into a chat message string.
 
     Cell outputs are untrusted user content. They're wrapped in a nonced
@@ -29,6 +33,14 @@ def format_output_context(payload: dict, supports_vision: bool = False) -> str:
     Anywhere untrusted content lands inside the envelope, occurrences of
     "</notebook-cell-" are neutralized so an attacker can't synthesize a
     matching close tag.
+
+    ``image_saver`` takes precedence over ``supports_vision`` for image
+    bundles: it is called with ``(mime_type, cleaned_base64)`` and should
+    persist the image to disk, returning its path (or ``None`` on
+    failure). Used for text-only consumers such as the Claude Code CLI,
+    where an inline data-URL would arrive as an enormous base64 string
+    the model cannot render but a saved file can be viewed via its Read
+    tool.
     """
     cell_source = _neutralize_close_tag(str(payload.get("cellSource", "")))
     mime_bundles = payload.get("mimeBundles", [])
@@ -58,7 +70,7 @@ def format_output_context(payload: dict, supports_vision: bool = False) -> str:
     if mime_bundles:
         parts.append("\n\nCell outputs:")
         for bundle in mime_bundles:
-            parts.append(_render_bundle(bundle, supports_vision))
+            parts.append(_render_bundle(bundle, supports_vision, image_saver))
 
     if truncated:
         parts.append("\n\n(Output was truncated to fit the context window.)")
@@ -67,19 +79,34 @@ def format_output_context(payload: dict, supports_vision: bool = False) -> str:
     return "".join(parts)
 
 
-def _render_bundle(bundle: dict, supports_vision: bool) -> str:
+def _render_bundle(
+    bundle: dict,
+    supports_vision: bool,
+    image_saver: Optional[Callable[[str, str], Optional[str]]] = None,
+) -> str:
     mime = bundle.get("mimeType", "")
     data = bundle.get("data", "")
     if not data:
         return ""
-    if mime in _IMAGE_MIME_TYPES and supports_vision:
+    if mime in _IMAGE_MIME_TYPES:
         cleaned = _clean_base64(data)
         if cleaned is not None:
-            # Build the data URL server-side from validated base64 + the
-            # declared mime so a forged POST can't smuggle markdown
-            # characters into the URL. Base64 alphabet can't contain a
-            # close tag, so no further neutralization is needed here.
-            return f"\n\n![cell output](data:{mime};base64,{cleaned})"
+            if image_saver is not None:
+                saved_path = image_saver(mime, cleaned)
+                if saved_path is not None:
+                    # The path is server-generated (temp dir + random id +
+                    # fixed basename), so it is safe to embed as prose.
+                    return (
+                        f"\n\n[{mime}]\nThe image output of this cell was "
+                        f"saved to '{saved_path}'. Read that file to view "
+                        f"the image."
+                    )
+            if supports_vision:
+                # Build the data URL server-side from validated base64 + the
+                # declared mime so a forged POST can't smuggle markdown
+                # characters into the URL. Base64 alphabet can't contain a
+                # close tag, so no further neutralization is needed here.
+                return f"\n\n![cell output](data:{mime};base64,{cleaned})"
     return f"\n\n[{mime}]\n{_neutralize_close_tag(data)}"
 
 
