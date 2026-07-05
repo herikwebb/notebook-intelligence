@@ -114,3 +114,34 @@ class TestWaitForRunUICommandResponse:
             return await task
 
         assert asyncio.run(scenario()) == 'ok'
+
+
+class TestFloatEnvParsing:
+    """The timeout env var is parsed at import time — malformed values must
+    degrade to the default with a warning, never raise and block startup."""
+
+    def test_unset_returns_default(self, monkeypatch):
+        from notebook_intelligence.api import _float_env
+        monkeypatch.delenv('NBI_TEST_FLOAT', raising=False)
+        assert _float_env('NBI_TEST_FLOAT', 1800.0) == 1800.0
+
+    def test_valid_value_parsed(self, monkeypatch):
+        from notebook_intelligence.api import _float_env
+        monkeypatch.setenv('NBI_TEST_FLOAT', '42.5')
+        assert _float_env('NBI_TEST_FLOAT', 1800.0) == 42.5
+
+    def test_empty_string_returns_default(self, monkeypatch):
+        from notebook_intelligence.api import _float_env
+        monkeypatch.setenv('NBI_TEST_FLOAT', '   ')
+        assert _float_env('NBI_TEST_FLOAT', 1800.0) == 1800.0
+
+    def test_malformed_value_returns_default(self, monkeypatch):
+        from notebook_intelligence.api import _float_env
+        monkeypatch.setenv('NBI_TEST_FLOAT', '30s')
+        assert _float_env('NBI_TEST_FLOAT', 1800.0) == 1800.0
+
+    def test_negative_value_passes_through(self, monkeypatch):
+        # <= 0 is the documented "disable the bound" escape hatch.
+        from notebook_intelligence.api import _float_env
+        monkeypatch.setenv('NBI_TEST_FLOAT', '-1')
+        assert _float_env('NBI_TEST_FLOAT', 1800.0) == -1.0

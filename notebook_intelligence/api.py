@@ -18,6 +18,26 @@ from notebook_intelligence.util import ThreadSafeWebSocketConnector
 
 log = logging.getLogger(__name__)
 
+def _float_env(name: str, default: float) -> float:
+    """Parse a float env var defensively.
+
+    This runs at import time: a malformed value (``""``, ``"30s"``) must
+    degrade to the default with a warning, not raise ``ValueError`` and
+    take the whole backend down with an unrelated-looking import error.
+    """
+    raw = os.getenv(name)
+    if raw is None or raw.strip() == "":
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        log.warning(
+            "Invalid %s=%r (expected a number of seconds); using default %s",
+            name, raw, default,
+        )
+        return default
+
+
 # Upper bound on how long a run-ui-command round trip may stay unanswered.
 # The frontend is the executor for these commands (cell edits, running
 # cells, opening files); if the browser tab that must answer is gone —
@@ -26,8 +46,8 @@ log = logging.getLogger(__name__)
 # loop hangs. The default is generous (matches the Claude agent response
 # timeout) because run-cell legitimately blocks for the duration of a
 # long-running cell. ``<= 0`` disables the bound.
-RUN_UI_COMMAND_RESPONSE_TIMEOUT = float(
-    os.getenv("NBI_RUN_UI_COMMAND_RESPONSE_TIMEOUT", "1800")
+RUN_UI_COMMAND_RESPONSE_TIMEOUT = _float_env(
+    "NBI_RUN_UI_COMMAND_RESPONSE_TIMEOUT", 1800.0
 )
 
 
@@ -410,13 +430,15 @@ class ChatResponse:
                 resp["result"] = data['result']
 
         response.run_ui_command_response_signal.connect(_on_ui_command_response)
-        started = time.time()
+        # Monotonic so NTP adjustments or a VM suspend/resume can't fire
+        # the timeout early or defer it indefinitely.
+        started = time.monotonic()
 
         try:
             while True:
                 if resp["result"] is not None:
                     return resp["result"]
-                if timeout > 0 and time.time() - started > timeout:
+                if timeout > 0 and time.monotonic() - started > timeout:
                     raise TimeoutError(
                         f"No UI command response received within {int(timeout)}s "
                         f"(callback '{callback_id}'). The browser tab that ran "
