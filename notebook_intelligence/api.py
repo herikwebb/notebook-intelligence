@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import math
 import os
 import time
 from typing import Any, Callable, Dict, Union, Optional
@@ -24,18 +25,29 @@ def _float_env(name: str, default: float) -> float:
     This runs at import time: a malformed value (``""``, ``"30s"``) must
     degrade to the default with a warning, not raise ``ValueError`` and
     take the whole backend down with an unrelated-looking import error.
+    Non-finite values (``nan``, ``inf``) are rejected too — ``nan``
+    fails every ``timeout > 0`` comparison and ``inf`` never elapses,
+    either of which silently disables the bound this timeout exists to
+    enforce. The documented way to disable it is a finite ``<= 0``.
     """
     raw = os.getenv(name)
     if raw is None or raw.strip() == "":
         return default
     try:
-        return float(raw)
+        value = float(raw)
     except ValueError:
         log.warning(
             "Invalid %s=%r (expected a number of seconds); using default %s",
             name, raw, default,
         )
         return default
+    if not math.isfinite(value):
+        log.warning(
+            "Invalid %s=%r (must be finite; use <= 0 to disable); using default %s",
+            name, raw, default,
+        )
+        return default
+    return value
 
 
 # Upper bound on how long a run-ui-command round trip may stay unanswered.

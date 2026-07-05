@@ -167,3 +167,12 @@ class TestNoneResultIsAValidResponse:
 
         assert asyncio.run(scenario()) is None
         assert _listeners(response) == []
+
+    def test_non_finite_values_return_default(self, monkeypatch):
+        # nan fails every `timeout > 0` comparison and inf never elapses;
+        # either silently disables the bound. The documented disable
+        # switch is a finite <= 0.
+        from notebook_intelligence.api import _float_env
+        for raw in ('nan', 'inf', '-inf', 'Infinity'):
+            monkeypatch.setenv('NBI_TEST_FLOAT', raw)
+            assert _float_env('NBI_TEST_FLOAT', 1800.0) == 1800.0
