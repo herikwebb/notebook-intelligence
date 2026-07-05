@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import os
 import time
 from typing import Any, Callable, Dict, Union, Optional
 from dataclasses import asdict, dataclass
@@ -16,6 +17,18 @@ from notebook_intelligence.ruleset import RuleContext
 from notebook_intelligence.util import ThreadSafeWebSocketConnector
 
 log = logging.getLogger(__name__)
+
+# Upper bound on how long a run-ui-command round trip may stay unanswered.
+# The frontend is the executor for these commands (cell edits, running
+# cells, opening files); if the browser tab that must answer is gone —
+# page reload, closed websocket — no response will ever arrive, and an
+# unbounded wait leaves the request thread polling forever while the tool
+# loop hangs. The default is generous (matches the Claude agent response
+# timeout) because run-cell legitimately blocks for the duration of a
+# long-running cell. ``<= 0`` disables the bound.
+RUN_UI_COMMAND_RESPONSE_TIMEOUT = float(
+    os.getenv("NBI_RUN_UI_COMMAND_RESPONSE_TIMEOUT", "1800")
+)
 
 
 class RegistrationError(Exception):
@@ -379,19 +392,39 @@ class ChatResponse:
         self._run_ui_command_response_signal.emit(data)
 
     @staticmethod
-    async def wait_for_run_ui_command_response(response: 'ChatResponse', callback_id: str):
+    async def wait_for_run_ui_command_response(response: 'ChatResponse', callback_id: str, timeout: float = None):
+        """Wait for the frontend's response to a run-ui-command request.
+
+        Raises ``TimeoutError`` after ``timeout`` seconds (default
+        ``RUN_UI_COMMAND_RESPONSE_TIMEOUT``) so a vanished browser tab
+        can't wedge the tool loop forever. The listener is disconnected
+        on every exit path — return, timeout, and task cancellation —
+        so an abandoned wait can't leak callbacks onto the signal (the
+        sibling ``wait_for_chat_user_input`` already had this shape).
+        """
+        if timeout is None:
+            timeout = RUN_UI_COMMAND_RESPONSE_TIMEOUT
         resp = {"result": None}
         def _on_ui_command_response(data: dict):
             if data['callback_id'] == callback_id:
                 resp["result"] = data['result']
 
         response.run_ui_command_response_signal.connect(_on_ui_command_response)
+        started = time.time()
 
-        while True:
-            if resp["result"] is not None:
-                response.run_ui_command_response_signal.disconnect(_on_ui_command_response)
-                return resp["result"]
-            await asyncio.sleep(0.1)
+        try:
+            while True:
+                if resp["result"] is not None:
+                    return resp["result"]
+                if timeout > 0 and time.time() - started > timeout:
+                    raise TimeoutError(
+                        f"No UI command response received within {int(timeout)}s "
+                        f"(callback '{callback_id}'). The browser tab that ran "
+                        f"the command may have been closed or reloaded."
+                    )
+                await asyncio.sleep(0.1)
+        finally:
+            response.run_ui_command_response_signal.disconnect(_on_ui_command_response)
 
 @dataclass
 class ToolPreInvokeResponse:

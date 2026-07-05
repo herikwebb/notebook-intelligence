@@ -1,0 +1,116 @@
+# Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
+
+"""Bounded wait + listener cleanup for run-ui-command round trips.
+
+The frontend is the executor for UI commands. If the browser tab that
+must answer disappears (reload, closed websocket), no response ever
+arrives — the wait must time out instead of polling forever, and the
+signal listener must be disconnected on every exit path so abandoned
+waits can't leak callbacks.
+"""
+
+import asyncio
+
+import pytest
+
+from notebook_intelligence.api import ChatResponse
+
+
+def _listeners(response: ChatResponse) -> list:
+    return response.run_ui_command_response_signal._listeners
+
+
+class TestWaitForRunUICommandResponse:
+    def test_returns_result_and_disconnects_listener(self):
+        response = ChatResponse()
+
+        async def scenario():
+            task = asyncio.ensure_future(
+                ChatResponse.wait_for_run_ui_command_response(response, 'cb-1')
+            )
+            await asyncio.sleep(0)  # let the wait connect its listener
+            assert len(_listeners(response)) == 1
+            response.on_run_ui_command_response(
+                {'callback_id': 'cb-1', 'result': {'path': 'nb.ipynb'}}
+            )
+            return await task
+
+        result = asyncio.run(scenario())
+        assert result == {'path': 'nb.ipynb'}
+        assert _listeners(response) == []
+
+    def test_ignores_responses_for_other_callbacks(self):
+        response = ChatResponse()
+
+        async def scenario():
+            task = asyncio.ensure_future(
+                ChatResponse.wait_for_run_ui_command_response(response, 'cb-1')
+            )
+            await asyncio.sleep(0)
+            response.on_run_ui_command_response(
+                {'callback_id': 'other', 'result': 'wrong'}
+            )
+            response.on_run_ui_command_response(
+                {'callback_id': 'cb-1', 'result': 'right'}
+            )
+            return await task
+
+        assert asyncio.run(scenario()) == 'right'
+
+    def test_times_out_and_disconnects_listener(self):
+        response = ChatResponse()
+
+        async def scenario():
+            await ChatResponse.wait_for_run_ui_command_response(
+                response, 'cb-1', timeout=0.05
+            )
+
+        with pytest.raises(TimeoutError):
+            asyncio.run(scenario())
+        assert _listeners(response) == []
+
+    def test_cancellation_disconnects_listener(self):
+        response = ChatResponse()
+
+        async def scenario():
+            task = asyncio.ensure_future(
+                ChatResponse.wait_for_run_ui_command_response(response, 'cb-1')
+            )
+            await asyncio.sleep(0)
+            assert len(_listeners(response)) == 1
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+
+        asyncio.run(scenario())
+        assert _listeners(response) == []
+
+    def test_default_timeout_comes_from_module_constant(self, monkeypatch):
+        import notebook_intelligence.api as api_mod
+        monkeypatch.setattr(api_mod, 'RUN_UI_COMMAND_RESPONSE_TIMEOUT', 0.05)
+        response = ChatResponse()
+
+        async def scenario():
+            await ChatResponse.wait_for_run_ui_command_response(response, 'cb-1')
+
+        with pytest.raises(TimeoutError):
+            asyncio.run(scenario())
+
+    def test_non_positive_timeout_disables_the_bound(self):
+        response = ChatResponse()
+
+        async def scenario():
+            task = asyncio.ensure_future(
+                ChatResponse.wait_for_run_ui_command_response(
+                    response, 'cb-1', timeout=0
+                )
+            )
+            # Longer than a couple of poll intervals: with timeout=0 treated
+            # as "expired immediately" this would raise instead of waiting.
+            await asyncio.sleep(0.25)
+            response.on_run_ui_command_response(
+                {'callback_id': 'cb-1', 'result': 'ok'}
+            )
+            return await task
+
+        assert asyncio.run(scenario()) == 'ok'
