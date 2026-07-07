@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-07-06T05:06:00-07:00",
+    "last_scan": "2026-07-07T05:13:24-07:00",
     "scanner": "manual code review + automated exploration",
     "findings": [
         {
@@ -70,5 +70,5 @@
         "TOCTOU race conditions (same-user, no privilege boundary)",
         "list_files glob confinement (symlink traversal via Path.glob)"
     ],
-    "no_new_findings_reason": "Pass B (2026-07-06 05:06): Upstream tip plmbr/notebook-intelligence@d9f76a5 (v5.2.1) byte-identical to the last full review (git diff of notebook_intelligence/ and src/ vs the last-scanned tip is empty; no upstream commits since 2026-06-26), so no new attack surface was introduced. The 3 previously-filed findings (search_files symlink traversal, list_files symlink enumeration, review-pr.sh prompt injection) remain the current set. No new validated medium+ findings. Per upstream SECURITY.md, app-security disclosure is private (email mbektasgh@outlook.com) and this session's GitHub scope is fork-only, so no public upstream exploit detail was filed."
+    "no_new_findings_reason": "Pass B (2026-07-07T05:13:24-07:00): Upstream tip plmbr/notebook-intelligence@d9f76a5 (v5.2.1) is byte-identical to the last full review (git diff of notebook_intelligence/ and src/ vs d9f76a5 is empty; no upstream commits since 2026-06-26), so no new attack surface was introduced. A fresh 4-surface parallel review this run (built-in tools/path containment, HTTP+WebSocket handlers/auth+XSRF, Claude Skills+GitHub import/zip-slip+SSRF, MCP+config+secret storage) re-derived only the already-tracked search_files/list_files Path.glob containment weakness (NBI-2024-001 / NBI-2026-003) via the ..-in-pattern trigger and reproduced it against live code, but it is the same primary location + distinctive attack-path as those records (glob matches opened without resolving/re-containing against jupyter_root) and the maintainer already declined both fixes (issues #13/#30 closed not_planned; PRs #26/#31 closed without merge) \u2014 duplicate, not re-filed. Sub-bar observations noted, not filed: GET /gh-logout CSRF (forces re-login, no token deletion); skill-import gzip decompression amplification (bounded by MAX_ARCHIVE_BYTES); update_marketplace injects GITHUB_TOKEN unconditionally (source host-validated at add-time, no exfil path); telemetry DEBUG log of authenticated-owner event.data. No new validated medium+ findings. Per upstream SECURITY.md, app-security disclosure is private (email mbektasgh@outlook.com) and this session's GitHub scope is fork-only, so no public upstream exploit detail was filed."
 }
