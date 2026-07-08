@@ -40,6 +40,11 @@ DANGEROUS_MCP_ENV_KEYS: frozenset = frozenset(
         "LD_PRELOAD",
         "LD_LIBRARY_PATH",
         "LD_AUDIT",
+        # glibc loads an attacker-supplied conversion module (.so) from
+        # GCONV_PATH on the next charset conversion (any iconv / UTF-8
+        # decode), so it injects code into *any* glibc-linked allowed
+        # binary just like LD_PRELOAD does -- not only interpreters.
+        "GCONV_PATH",
         "DYLD_INSERT_LIBRARIES",
         "DYLD_LIBRARY_PATH",
         "DYLD_FALLBACK_LIBRARY_PATH",
@@ -49,6 +54,15 @@ DANGEROUS_MCP_ENV_KEYS: frozenset = frozenset(
         "PYTHONHOME",
         "NODE_OPTIONS",
         "NODE_PATH",
+        # Perl and Ruby interpreter-injection knobs, the direct analogues
+        # of PYTHONPATH / NODE_OPTIONS: PERL5OPT can smuggle "-M<module>"
+        # and PERL5LIB / RUBYLIB prepend attacker dirs to the module
+        # search path, so a "perl"/"ruby" wrapper on the allowlist runs
+        # attacker code before its own script.
+        "PERL5OPT",
+        "PERL5LIB",
+        "RUBYOPT",
+        "RUBYLIB",
         "BASH_ENV",
         "ENV",
     }

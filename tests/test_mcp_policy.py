@@ -99,6 +99,19 @@ class TestRejectDangerousEnvKeys:
         with pytest.raises(ValueError, match=f"MCP env key {key!r}"):
             reject_dangerous_env_keys({key: "/tmp/evil"})
 
+    @pytest.mark.parametrize(
+        "key",
+        ["GCONV_PATH", "PERL5OPT", "PERL5LIB", "RUBYOPT", "RUBYLIB"],
+    )
+    def test_rejects_loader_and_interpreter_bypasses(self, key):
+        # Same class as LD_PRELOAD / PYTHONPATH: these load attacker code
+        # into an otherwise-allowed binary. GCONV_PATH hits any glibc
+        # binary via iconv; PERL5OPT/PERL5LIB and RUBYOPT/RUBYLIB are the
+        # Perl/Ruby analogues of PYTHONPATH. They must be denied so the
+        # command allowlist stays a real boundary.
+        with pytest.raises(ValueError, match=f"MCP env key {key!r}"):
+            reject_dangerous_env_keys({key: "/tmp/evil"})
+
     def test_case_insensitive(self):
         # Defense in depth: the dynamic loader honors some variants case
         # insensitively, and admins making a typo benefit from a loud
