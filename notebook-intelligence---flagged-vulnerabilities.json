@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-07-07T05:13:24-07:00",
+    "last_scan": "2026-07-08T05:28:00-07:00",
     "scanner": "manual code review + automated exploration",
     "findings": [
         {
@@ -50,6 +50,23 @@
                 "pr": "#31 (closed without merge)"
             },
             "notes": "list_files uses Path.glob() which follows symlinks without resolving matches against workspace root. Same class as #13 (search_files) but in a different function not covered by PR #26. Fix: resolve each glob match and reject outside workspace. PR #31 was closed without merging by maintainer."
+        },
+        {
+            "id": "NBI-2026-003",
+            "title": "MCP stdio env denylist missing GCONV_PATH / PERL5OPT / PERL5LIB / RUBYOPT / RUBYLIB loader-injection keys",
+            "status": "active",
+            "severity": "low",
+            "file": "notebook_intelligence/mcp_policy.py",
+            "commit_hash": "d9f76a525a3c35d0220af4e6043f039a036f7534",
+            "detected_at_pst": "2026-07-08T05:28:00-07:00",
+            "reported_link": "https://github.com/herikwebb/notebook-intelligence/issues/49",
+            "tracking": {
+                "issue": "#49 (fork)",
+                "fix_branch": "security/fix-mcp-env-denylist-loader-vars-20260708122516-31416",
+                "compare_url": "https://github.com/plmbr/notebook-intelligence/compare/main...herikwebb:security/fix-mcp-env-denylist-loader-vars-20260708122516-31416?expand=1",
+                "upstream_pr": "DENIED (fork-scoped App); open manually via compare_url"
+            },
+            "notes": "DANGEROUS_MCP_ENV_KEYS backstop for the mcp_stdio_command_allowlist listed PATH/LD_PRELOAD/LD_AUDIT/DYLD_*/PYTHON*/NODE_OPTIONS/NODE_PATH/BASH_ENV/ENV but omitted same-class loader/interpreter code-injection vars. GCONV_PATH (glibc loads attacker .so on next iconv, hits ANY glibc binary like LD_PRELOAD, not just interpreters) and PERL5OPT/PERL5LIB, RUBYOPT/RUBYLIB (Perl/Ruby analogues of PYTHONPATH/NODE_OPTIONS) passed reject_dangerous_env_keys and merged into the spawned MCP server env, so a config pinning command to a trusted wrapper could still inject code. Defense-in-depth (low sev): only relevant when an admin has configured mcp_stdio_command_allowlist; prerequisites (attacker file on disk + matching wrapper) identical to the already-listed LD_PRELOAD/PYTHONPATH entries. Fix: added the 5 keys to the frozenset + parametrized test in tests/test_mcp_policy.py, based on upstream d9f76a5, authored as Herik Webb, single commit 'fix(mcp): deny GCONV_PATH and perl/ruby loader keys in stdio env denylist'. Logic verified directly (module loaded standalone; new keys rejected incl. case/whitespace forms; safe keys + existing entries unaffected; full pytest not run - env lacks tiktoken/optional deps). Pushed to fork origin. Cross-fork PR into upstream DENIED (session GitHub scope fork-only) -> open manually via compare_url. Fork-only-file guard passed; git log author verified Herik Webb. Found via 4-surface parallel Pass B review; only validated non-duplicate finding this run."
         }
     ],
     "surfaces_reviewed": [
