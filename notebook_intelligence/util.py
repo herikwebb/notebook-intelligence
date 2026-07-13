@@ -376,6 +376,41 @@ def get_enabled_builtin_tools_in_env() -> Set[str]:
 def is_builtin_tool_enabled_in_env(tool: str) -> bool:
   return tool in get_enabled_builtin_tools_in_env()
 
+
+def is_builtin_toolset_enabled(
+    tool: str,
+    disabled_tools: list[str] | None,
+    allow_enabling_tools_with_env: bool,
+) -> bool:
+    """Return whether a built-in toolset id is allowed for this deployment.
+
+    Mirrors the gate in ``GetCapabilitiesHandler``: admin ``disabled_tools``
+    is a denylist, with an optional env-based re-enable escape hatch.
+    """
+    if disabled_tools is None:
+        return True
+    if tool not in disabled_tools:
+        return True
+    return allow_enabling_tools_with_env and is_builtin_tool_enabled_in_env(tool)
+
+
+def filter_enabled_builtin_toolsets(
+    tool_ids: list[str] | None,
+    disabled_tools: list[str] | None,
+    allow_enabling_tools_with_env: bool,
+) -> list[str]:
+    """Drop built-in toolset ids the admin has disabled."""
+    if not tool_ids:
+        return []
+    return [
+        tool_id
+        for tool_id in tool_ids
+        if is_builtin_toolset_enabled(
+            tool_id, disabled_tools, allow_enabling_tools_with_env
+        )
+    ]
+
+
 def is_provider_enabled_in_env(provider_id: str) -> bool:
     enabled_providers = os.environ.get('NBI_ENABLED_PROVIDERS', '')
     return provider_id in enabled_providers.split(',')

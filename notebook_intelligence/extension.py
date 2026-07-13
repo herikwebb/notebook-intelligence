@@ -71,7 +71,7 @@ from notebook_intelligence.claude_sessions import (
 )
 import notebook_intelligence.github_copilot as github_copilot
 from notebook_intelligence.built_in_toolsets import built_in_toolsets
-from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_claude_config_dir, get_jupyter_root_dir, set_jupyter_root_dir, is_builtin_tool_enabled_in_env, is_provider_enabled_in_env, VALID_CODING_AGENT_LAUNCHERS, compute_effective_disabled_launchers, validate_coding_agent_launcher_ids, resolve_claude_cli_path, resolve_opencode_cli_path, resolve_pi_cli_path, resolve_copilot_cli_path, resolve_codex_cli_path, safe_anchor_uri, has_dangerous_text_codepoints, split_csv
+from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_claude_config_dir, get_jupyter_root_dir, set_jupyter_root_dir, filter_enabled_builtin_toolsets, is_builtin_toolset_enabled, is_builtin_tool_enabled_in_env, is_provider_enabled_in_env, VALID_CODING_AGENT_LAUNCHERS, compute_effective_disabled_launchers, validate_coding_agent_launcher_ids, resolve_claude_cli_path, resolve_opencode_cli_path, resolve_pi_cli_path, resolve_copilot_cli_path, resolve_codex_cli_path, safe_anchor_uri, has_dangerous_text_codepoints, split_csv
 from notebook_intelligence.context_factory import RuleContextFactory
 from notebook_intelligence.skillset import SKILL_NAME_REGEX
 
@@ -514,9 +514,9 @@ class GetCapabilitiesHandler(APIHandler):
         ai_service_manager.update_models_from_config()
         nbi_config = ai_service_manager.nbi_config
         def is_tool_enabled(tool: str) -> bool:
-            if self.disabled_tools is None:
-                return True
-            return tool not in self.disabled_tools or (self.allow_enabling_tools_with_env and is_builtin_tool_enabled_in_env(tool))
+            return is_builtin_toolset_enabled(
+                tool, self.disabled_tools, self.allow_enabling_tools_with_env
+            )
         def is_provider_enabled(provider_id: str) -> bool:
             if self.disabled_providers is None:
                 return True
@@ -2234,6 +2234,11 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
     # Resolved from the claude_bypass_permissions policy in _setup_handlers;
     # False (fail closed) until then.
     claude_bypass_permissions_allowed = False
+    # Admin denylist for built-in toolsets; mirrored from the extension
+    # traitlet in _setup_handlers so forged websocket toolSelections
+    # cannot bypass the same gate the capabilities endpoint applies.
+    disabled_tools = None
+    allow_enabling_tools_with_env = False
 
     # Inheritance matches Jupyter's first-party WS handlers (e.g.
     # KernelWebsocketHandler): ``WebSocketMixin`` adds ping/pong
@@ -2303,7 +2308,11 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
             chat_mode = ChatMode('agent', 'Agent') if data.get('chatMode', 'ask') == 'agent' else ChatMode('ask', 'Ask')
             toolSelections = data.get('toolSelections', {})
             tool_selection = RequestToolSelection(
-                built_in_toolsets=toolSelections.get('builtinToolsets', []),
+                built_in_toolsets=filter_enabled_builtin_toolsets(
+                    toolSelections.get('builtinToolsets', []),
+                    self.disabled_tools,
+                    self.allow_enabling_tools_with_env,
+                ),
                 mcp_server_tools=toolSelections.get('mcpServers', {}),
                 extension_tools=toolSelections.get('extensions', {})
             )
@@ -3346,6 +3355,10 @@ class NotebookIntelligence(ExtensionApp):
         )
         WebsocketCopilotHandler.claude_bypass_permissions_allowed = not is_force_off(
             feature_policies, "claude_bypass_permissions"
+        )
+        WebsocketCopilotHandler.disabled_tools = self.disabled_tools
+        WebsocketCopilotHandler.allow_enabling_tools_with_env = (
+            self.allow_enabling_tools_with_env
         )
         PluginsBaseHandler.allow_github_plugin_import = _resolve_bool_with_env(
             "NBI_ALLOW_GITHUB_PLUGIN_IMPORT", self.allow_github_plugin_import
