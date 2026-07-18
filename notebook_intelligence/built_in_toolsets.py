@@ -614,6 +614,18 @@ async def list_files(
         if not list_dir.is_dir():
             return f"'{directory}' is not a directory"
 
+        # Reject patterns that try to escape the listing root before they
+        # reach glob(). Path.glob() honors ``..`` segments and absolute
+        # patterns, so a pattern such as ``../*`` or ``/etc/*`` makes glob
+        # enumerate and stat paths outside the workspace; the differing
+        # replies would leak outside-file existence and paths even though
+        # each hit is later re-checked. Mirrors search_files().
+        if _glob_pattern_escapes(pattern):
+            return (
+                f"Pattern '{pattern}' is not allowed: listing is confined to "
+                f"the workspace and patterns cannot traverse outside it."
+            )
+
         items = []
         root_rel_path = Path(directory)
 
@@ -640,6 +652,17 @@ async def list_files(
             # Apply max_depth filter for recursive searches
             depth = _get_depth(item, list_dir)
             if recursive and depth > max_depth:
+                continue
+
+            # Funnel every match through the containment gate before it is
+            # stat'd or displayed. glob() may descend an in-workspace symlink
+            # that points outside the root (e.g. ``link/*``); safe_jupyter_path
+            # resolves symlinks and ``..`` then confirms the target is still
+            # inside the workspace, so an outbound match is skipped identically
+            # whether or not it exists. Mirrors search_files().
+            try:
+                _get_safe_path(str(item))
+            except ValueError:
                 continue
 
             # Build relative path for display
