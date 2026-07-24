@@ -1,8 +1,8 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-07-23T05:09:43-07:00",
-    "scanner": "manual code review + git-diff delta verification on 2026-07-23 at upstream tip af36c96 (v5.3.0). Application subtree (notebook_intelligence/ + src/) is BYTE-IDENTICAL to the fully-reviewed 395cba7: `git diff 395cba7 upstream/main -- notebook_intelligence/ src/` is empty; the only files changed 395cba7..af36c96 are package.json/pyproject.toml/yarn.lock.",
+    "last_scan": "2026-07-24T05:11:45-07:00",
+    "scanner": "manual code-review re-verification on 2026-07-24 at upstream tip af36c96 (v5.3.0). Upstream tip UNCHANGED since 2026-07-23; application subtree (notebook_intelligence/ + src/) remains BYTE-IDENTICAL to the fully-reviewed 395cba7: `git diff 395cba7 upstream/main -- notebook_intelligence/ src/` is empty; the only files changed 395cba7..af36c96 are package.json/pyproject.toml/yarn.lock (dependency pins, Pass A). No new application code to review. Pass B: 0 new. All prior active findings retain their reported_links.",
     "findings": [
         {
             "id": "NBI-2024-001",

@@ -1,8 +1,8 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-07-23T05:09:43-07:00",
-    "scanner": "pip-audit 2.10.1 re-run on 2026-07-23 against pyproject runtime deps resolved to latest-satisfying versions at upstream tip af36c96 (v5.3.0): 'No known vulnerabilities found'. JS state byte-identical to the 2026-07-22 scan (upstream tip unchanged; yarn.lock unmodified) \u2014 advisories build-only/unreachable. 6 LLM/agent-SDK deps (litellm, anthropic, openai, ollama, claude-agent-sdk, fastmcp) declared out-of-scope by upstream SECURITY.md. osv.dev API still proxy-blocked (403); govulncheck N/A (no Go).",
+    "last_scan": "2026-07-24T05:11:45-07:00",
+    "scanner": "pip-audit 2.10.1 re-run on 2026-07-24 against upstream tip af36c96 (v5.3.0) in-scope runtime deps resolved to latest-satisfying versions: 'No known vulnerabilities found'. Upstream tip UNCHANGED since the 2026-07-23 clean scan (git rev-parse upstream/main == af36c96; pyproject/yarn.lock byte-identical). 6 LLM/agent-SDK deps (litellm, anthropic, openai, ollama, claude-agent-sdk, fastmcp) declared out-of-scope by upstream SECURITY.md. JS/yarn.lock advisories build-only/unreachable per prior scan (state unchanged). osv.dev API proxy-blocked; govulncheck N/A (no Go). Pass A: 0 new.",
     "findings": [],
     "notes": [
         "Pass A (2026-07-01): pip-audit found 30 vulns in 7 system packages. yarn audit: 0 vulns across 1263 npm deps.",
