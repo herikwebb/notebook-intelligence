@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-08-19T05:10:54-07:00",
+    "last_scan": "2026-08-20T05:09:52-07:00",
     "scanner": "Pass B 2026-08-17: application-security re-verification of upstream tip ff9f5d5d2f868490d15b27a4b0c28399ddf6fa25 (v5.3.1) in a worktree. Tip is byte-identical (same SHA) to all scans since 2026-07-30, so no new attack surface; ran invariant spot-checks instead of a full re-review.",
     "findings": [
         {
@@ -25,7 +25,7 @@
         {
             "id": "NBI-2026-002",
             "title": "PR review workflow vulnerable to prompt injection via diff content",
-            "status": "active",
+            "status": "closed_not_planned_by_owner",
             "severity": "medium",
             "file": "scripts/review-pr.sh",
             "commit_hash": "d090801e18c245c3254663878a14ba0e69f6efa9",
@@ -40,7 +40,7 @@
         {
             "id": "NBI-2026-003",
             "title": "list_files enumerates host files through workspace symlinks",
-            "status": "active",
+            "status": "closed_not_planned_by_owner",
             "severity": "medium",
             "file": "notebook_intelligence/built_in_toolsets.py",
             "commit_hash": "d090801e18c245c3254663878a14ba0e69f6efa9",
@@ -146,6 +146,7 @@
         "Pass B (2026-08-06T05:17:42-07:00): 0 new app-security findings; nothing filed. Upstream tip ff9f5d5d2f868490d15b27a4b0c28399ddf6fa25 (v5.3.1) UNCHANGED since 2026-07-30 (same SHA as the 2026-07-30..08-05 scans; notebook_intelligence/ + src/ byte-identical to code reviewed across 8+ daily runs). Diligence this run: (1) invariant re-check -- 47 @web.authenticated decorators across extension.py handlers, WebsocketCopilotHandler still inherits JupyterHandler check_origin/ws_authenticated per its header comments; zero shell=True/os.system/pickle.load/unsafe yaml.load/eval/exec in server code; all five dangerouslySetInnerHTML sites in src/ render static SVG constants only. (2) Fresh-eyes deep read of the LESS-covered session/CLI subsystem (claude_sessions.py, _claude_cli.py, claude_mcp_manager.py, cell_output.py, context_factory.py) traced end-to-end; all candidates rejected: browser-supplied resume session_id reaches claude-agent-sdk as a discrete argv element (['--resume', value], no shell, flag-smuggling positionally consumed; handler @tornado.web.authenticated + XSRF); list_all_sessions/resume-any-id is within the single-user no-privilege-boundary model; context_factory os.path.join traversal has NO sink (RuleContext.directory used only for fnmatch comparison in ruleset.matches_directory, never opened); cell_output base64 image allowlist + ^[A-Za-z0-9+/]+=*$ validation + token_hex nonce envelope sound; _claude_cli redact_argv_for_log covers -e/-H/--env/--header secret tokens and _scrub_env_overrides scrubs stderr; claude_mcp_manager reject_flag_smuggling/validate_mcp_stdio_command/-- sentinel guards hold (known env-denylist gap already tracked as issue #49). No new attacker->input->sink->impact chain survives verification.",
         "Pass B (2026-08-07T05:55:13-07:00): 0 new app-security findings; nothing filed. Upstream tip ff9f5d5d2f868490d15b27a4b0c28399ddf6fa25 (v5.3.1) UNCHANGED since prior reviews (same SHA). Confirmed the list_files glob-escape gap in built_in_toolsets.py is still present at this tip and remains the already-tracked partially-fixed finding (search_files hardened via _glob_pattern_escapes + _safe_glob; list_files still uses raw list_dir.glob(pattern)). No new sinks: skills/upload/import/subprocess/websocket surfaces all remain hardened. Existing 5 findings and their feedback preserved unchanged.",
         "Pass B (2026-08-10T06:01:28-07:00): 0 new app-security findings; nothing filed. Upstream tip ff9f5d5d2f868490d15b27a4b0c28399ddf6fa25 (v5.3.1) UNCHANGED since 2026-07-30 (same SHA as all scans 2026-07-30..08-08; notebook_intelligence/ + src/ byte-identical to code thoroughly reviewed across 10+ daily runs). Invariant re-check this run: 47 @web.authenticated decorators in extension.py; zero shell=True/os.system/pickle.load/unsafe yaml.load/eval/exec in server code; 5 dangerouslySetInnerHTML sites in src/ unchanged (static SVG constants); list_files raw list_dir.glob(pattern) at built_in_toolsets.py:636 still present alongside hardened _glob_pattern_escapes/_safe_glob for search_files \u2014 matches the tracked partially-fixed finding. Existing 5 findings and feedback preserved verbatim; disclosure remains private per upstream SECURITY.md.",
-        "Pass B (2026-08-11T06:01:27-07:00): 0 new app-security findings. Upstream tip ff9f5d5d2f868490d15b27a4b0c28399ddf6fa25 byte-identical to the 2026-08-08/08-10 scans (single commit 'bump version to 5.3.1', no code change). Invariant spot-check passed: subprocess.run/Popen in built_in_toolsets.py & util.py remain shell=False (no shell=True/os.system); path-confinement helpers (safe_jupyter_path/_get_safe_path/resolve_bundle_path/commonpath/relative_to) intact across claude.py, built_in_toolsets.py, extension.py, skill_manager.py, skillset.py, util.py. Existing active findings unchanged and remain filed: #27 PR-review prompt-injection, #30 list_files symlink enumeration, #49 MCP stdio loader-injection denylist gap, glob-escape partial-fix; search_files symlink traversal remains fixed_upstream. No re-report."
+        "Pass B (2026-08-11T06:01:27-07:00): 0 new app-security findings. Upstream tip ff9f5d5d2f868490d15b27a4b0c28399ddf6fa25 byte-identical to the 2026-08-08/08-10 scans (single commit 'bump version to 5.3.1', no code change). Invariant spot-check passed: subprocess.run/Popen in built_in_toolsets.py & util.py remain shell=False (no shell=True/os.system); path-confinement helpers (safe_jupyter_path/_get_safe_path/resolve_bundle_path/commonpath/relative_to) intact across claude.py, built_in_toolsets.py, extension.py, skill_manager.py, skillset.py, util.py. Existing active findings unchanged and remain filed: #27 PR-review prompt-injection, #30 list_files symlink enumeration, #49 MCP stdio loader-injection denylist gap, glob-escape partial-fix; search_files symlink traversal remains fixed_upstream. No re-report.",
+        "Pass B (2026-08-20T05:09:52-07:00): 0 new application-security findings at upstream tip ff9f5d5d2f868490d15b27a4b0c28399ddf6fa25 (v5.3.1; byte-identical to the 2026-07-30..08-19 reviews, so no new attack surface). Re-verified both recorded active invariants verbatim in source: (1) built_in_toolsets.py list_files still passes the raw glob pattern to Path.glob with no containment check on results; (2) mcp_policy.py DANGEROUS_MCP_ENV_KEYS still lacks GCONV_PATH/PERL5OPT/PERL5LIB/RUBYOPT/RUBYLIB (fork issue #49 remains open). STATUS RECONCILIATION: fork issues #27 (PR-review prompt injection) and #30 (list_files symlink enumeration) were closed 2026-07-04 as not_planned by the owner with no comment -- statuses updated from active to closed_not_planned_by_owner; treat owner's not-planned closure as a below-the-bar preference signal for similar same-user-boundary enumeration/prompt-injection findings. Nothing new; nothing filed."
     ]
 }
