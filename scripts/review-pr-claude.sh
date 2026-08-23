@@ -15,7 +15,7 @@ CLAUDE_REASONING_EFFORT="${CLAUDE_REASONING_EFFORT:-high}"
 # Adaptive thinking tokens count against max_tokens, so a small cap can be
 # fully consumed by reasoning before any review text is emitted. Give it
 # enough headroom to finish.
-CLAUDE_MAX_TOKENS="${CLAUDE_MAX_TOKENS:-16000}"
+CLAUDE_MAX_TOKENS="${CLAUDE_MAX_TOKENS:-32000}"
 DIFF_LIMIT_BYTES="${DIFF_LIMIT_BYTES:-120000}"
 
 # Escape hatch: a maintainer-applied label lets a PR merge despite a
@@ -106,7 +106,7 @@ with open(prompt_path, "r", encoding="utf-8", errors="replace") as prompt_file:
 
 model = os.environ["CLAUDE_MODEL"]
 reasoning_effort = os.environ.get("CLAUDE_REASONING_EFFORT", "high")
-max_tokens = int(os.environ.get("CLAUDE_MAX_TOKENS", "16000"))
+max_tokens = int(os.environ.get("CLAUDE_MAX_TOKENS", "32000"))
 # Adaptive thinking at high/xhigh/max effort can legitimately run several
 # minutes on a large diff before the first byte of the response comes back.
 # 120s was too tight and killed genuinely-in-progress requests, not stuck
