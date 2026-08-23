@@ -90,6 +90,45 @@ class TestBaseChatParticipantIntegration:
         assert messages[0]["role"] == "system"
         assert messages[0]["content"] == "Enhanced system prompt"
 
+    def test_ask_mode_budgets_oversized_history_as_complete_turns(self):
+        mock_injector = Mock(spec=RuleInjector)
+        mock_injector.inject_rules.return_value = "Enhanced system prompt"
+        participant = BaseChatParticipant(rule_injector=mock_injector)
+
+        mock_chat_model = Mock()
+        mock_chat_model.provider.name = "test-provider"
+        mock_chat_model.provider.id = "test-provider"
+        mock_chat_model.name = "test-model"
+        mock_chat_model.context_window = 256
+        mock_host = Mock()
+        mock_host.chat_model = mock_chat_model
+
+        request = ChatRequest(
+            host=mock_host,
+            chat_mode=ChatMode("ask", "Ask"),
+            prompt="current question",
+            chat_history=[
+                {"role": "user", "content": "old question " * 500},
+                {"role": "assistant", "content": "old answer " * 500},
+                {"role": "user", "content": "recent question"},
+                {"role": "assistant", "content": "recent answer"},
+                {"role": "user", "content": "current question"},
+            ],
+            cancel_token=Mock(spec=CancelToken),
+        )
+        response = Mock(spec=ChatResponse)
+
+        asyncio.run(participant.handle_ask_mode_chat_request(request, response))
+
+        messages = mock_chat_model.completions.call_args.args[0]
+        assert messages[-1]["content"] == "current question"
+        assert any(
+            message["content"] == "recent question" for message in messages
+        )
+        assert not any(
+            message["content"] == "old question " * 500 for message in messages
+        )
+
     def test_handle_chat_request_agent_mode_with_rules(self):
         """Test agent mode chat request handling with rule injection."""
         mock_injector = Mock(spec=RuleInjector)

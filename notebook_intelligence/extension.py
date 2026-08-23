@@ -16,7 +16,6 @@ from typing import Optional, Union
 import uuid
 import threading
 import logging
-import tiktoken
 
 from jupyter_server.extension.application import ExtensionApp
 from jupyter_server.auth.decorator import ws_authenticated
@@ -72,6 +71,11 @@ from notebook_intelligence.claude import (
     resolve_permission_mode,
 )
 from notebook_intelligence.claude_mcp_manager import ClaudeMCPManager
+from notebook_intelligence.chat_history_budget import (
+    CHAT_INPUT_BUDGET_RATIO,
+    text_token_count as _token_count,
+    truncate_text as _truncate_context_content,
+)
 from notebook_intelligence.plugin_manager import PluginManager
 from notebook_intelligence.prompts import Prompts
 from notebook_intelligence.tour_config import load_tour_config
@@ -87,27 +91,7 @@ from notebook_intelligence.skillset import SKILL_NAME_REGEX
 
 ai_service_manager: AIServiceManager = None
 log = logging.getLogger(__name__)
-tiktoken_encoding = tiktoken.encoding_for_model('gpt-4o')
 thread_safe_websocket_connector: ThreadSafeWebSocketConnector = None
-
-
-def _token_count(text: str) -> int:
-    return len(tiktoken_encoding.encode(text))
-
-
-def _truncate_context_content(content: str, token_budget: int) -> str:
-    if token_budget <= 0 or content == '':
-        return ''
-
-    encoded = tiktoken_encoding.encode(content)
-    if len(encoded) <= token_budget:
-        return content
-
-    truncated = tiktoken_encoding.decode(encoded[:token_budget]).rstrip()
-    if truncated == '':
-        return ''
-
-    return truncated + "\n...[truncated]"
 
 
 def _inline_system_prompt_token_budget(
@@ -2846,7 +2830,7 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
                 chat_history.append({"role": "user", "content": current_directory_file_msg})
 
             token_limit = _resolve_context_token_limit(ai_service_manager)
-            remaining_token_budget = int(0.8 * token_limit)
+            remaining_token_budget = int(CHAT_INPUT_BUDGET_RATIO * token_limit)
 
             # Resolve once; reused for sandbox containment and for
             # workspace-relative @-mention path computation below.

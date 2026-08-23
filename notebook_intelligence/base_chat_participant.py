@@ -8,6 +8,7 @@ from notebook_intelligence.prompts import Prompts
 import base64
 import logging
 from notebook_intelligence.built_in_toolsets import built_in_toolsets
+from notebook_intelligence.chat_history_budget import budget_chat_messages
 from notebook_intelligence.rule_injector import RuleInjector
 
 from notebook_intelligence.util import extract_llm_generated_code
@@ -452,6 +453,7 @@ class BaseChatParticipant(ChatParticipant):
         language = request.language or 'python'
         messages.insert(0, {"role": "system", "content": f"You are an assistant that creates {language} code which will be used in a Jupyter notebook. Generate only {language} code and some comments for the code. You should return the code directly, without wrapping it inside ```."})
         messages.append({"role": "user", "content": f"Generate code for: {request.prompt}"})
+        messages = budget_chat_messages(messages, chat_model.context_window)
         generated = chat_model.completions(messages)
         code = generated['choices'][0]['message']['content']
         
@@ -463,6 +465,7 @@ class BaseChatParticipant(ChatParticipant):
         messages.pop()
         messages.insert(0, {"role": "system", "content": f"You are an assistant that explains the provided code using markdown. Don't include any code, just narrative markdown text. Keep it concise, only generate few lines. First create a title that suits the code and then explain the code briefly. You should return the markdown directly, without wrapping it inside ```."})
         messages.append({"role": "user", "content": f"Generate markdown that explains this code: {code}"})
+        messages = budget_chat_messages(messages, chat_model.context_window)
         generated = chat_model.completions(messages)
         markdown = generated['choices'][0]['message']['content']
 
@@ -539,6 +542,7 @@ class BaseChatParticipant(ChatParticipant):
             messages.pop()
             messages.insert(0, {"role": "system", "content": f"You are an assistant that creates Python code. You should return the code directly, without wrapping it inside ```."})
             messages.append({"role": "user", "content": f"Generate code for: {request.prompt}"})
+            messages = budget_chat_messages(messages, chat_model.context_window)
             generated = chat_model.completions(messages)
             code = generated['choices'][0]['message']['content']
             code = extract_llm_generated_code(code)
@@ -560,6 +564,7 @@ class BaseChatParticipant(ChatParticipant):
         messages = [
             {"role": "system", "content": enhanced_system_prompt},
         ] + request.chat_history
+        messages = budget_chat_messages(messages, chat_model.context_window)
 
         try:
             if chat_model.provider.id != "github-copilot":
