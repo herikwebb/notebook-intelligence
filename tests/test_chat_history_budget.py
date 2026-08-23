@@ -137,10 +137,31 @@ def test_tokenizer_warmup_starts_a_daemon_thread(monkeypatch):
     thread.start.assert_called_once()
 
 
+def test_tokenizer_thread_start_failure_uses_utf8_fallback(
+    monkeypatch,
+    caplog,
+):
+    thread = Mock()
+    thread.start.side_effect = RuntimeError("thread limit")
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
+    monkeypatch.setattr(
+        budget_module.threading,
+        "Thread",
+        Mock(return_value=thread),
+    )
+
+    with caplog.at_level(logging.WARNING):
+        result = text_token_count("abcdefgh")
+
+    assert result == 3
+    assert budget_module._tokenizer_load_in_progress is False
+    assert "Could not start the tokenizer warm-up thread" in caplog.text
+
+
 def test_unexpected_budgeting_error_fails_open(monkeypatch, caplog):
     messages = [
         {"role": "system", "content": "Be concise."},
-        {"role": "user", "content": "Question"},
+        {"role": "user", "content": "Question " * 500},
     ]
     monkeypatch.setattr(
         budget_module,
@@ -363,7 +384,7 @@ def test_oversized_image_only_request_gets_a_bounded_text_placeholder():
     )
 
 
-def test_over_budget_messages_without_a_user_request_are_dropped(caplog):
+def test_over_budget_messages_without_a_user_request_keep_bounded_tail(caplog):
     messages = [
         {"role": "system", "content": "Be concise."},
         {"role": "assistant", "content": "orphaned answer " * 500},
@@ -372,7 +393,12 @@ def test_over_budget_messages_without_a_user_request_are_dropped(caplog):
     with caplog.at_level(logging.WARNING):
         result = budget_chat_messages(messages, 128)
 
-    assert result == []
+    assert len(result) == 1
+    assert result[0]["role"] == "assistant"
+    assert result[0]["content"].endswith(TRUNCATION_MARKER)
+    assert sum(estimate_message_tokens(message) for message in result) <= int(
+        128 * CHAT_INPUT_BUDGET_RATIO
+    )
     assert "no user request" in caplog.text
 
 
@@ -402,6 +428,47 @@ def test_oversized_latest_user_request_is_truncated_as_last_resort():
     assert sum(estimate_message_tokens(message) for message in result) <= int(
         128 * CHAT_INPUT_BUDGET_RATIO
     )
+
+
+def test_truncated_latest_user_accounts_for_message_metadata():
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {
+            "role": "user",
+            "name": "named-user",
+            "content": "mandatory request " * 500,
+        },
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert result[-1]["name"] == "named-user"
+    assert result[-1]["content"].endswith(TRUNCATION_MARKER)
+    assert sum(estimate_message_tokens(message) for message in result) <= int(
+        128 * CHAT_INPUT_BUDGET_RATIO
+    )
+
+
+def test_text_message_truncation_accounts_for_tool_fields():
+    message = {
+        "role": "assistant",
+        "content": "tool explanation " * 500,
+        "tool_call_id": "call-1",
+        "tool_calls": [
+            {
+                "id": "call-2",
+                "type": "function",
+                "function": {"name": "inspect", "arguments": "{}"},
+            }
+        ],
+    }
+
+    result = budget_module._truncate_text_message(message, 128)
+
+    assert result is not None
+    assert result["tool_call_id"] == "call-1"
+    assert result["tool_calls"] == message["tool_calls"]
+    assert estimate_message_tokens(result) <= 128
 
 
 def test_invalid_context_window_leaves_messages_unchanged():

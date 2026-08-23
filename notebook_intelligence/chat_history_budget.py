@@ -1,5 +1,7 @@
 # Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
+from __future__ import annotations
+
 import logging
 import threading
 from typing import Any
@@ -65,10 +67,14 @@ def warm_tokenizer_encoding() -> None:
     )
     try:
         thread.start()
-    except Exception:
+    except Exception as error:
         with _tokenizer_lock:
             _tokenizer_load_in_progress = False
-        raise
+        log.warning(
+            "Could not start the tokenizer warm-up thread; using the UTF-8 "
+            "size fallback until a later retry succeeds: %s",
+            error,
+        )
 
 
 def _get_encoding():
@@ -173,12 +179,46 @@ def estimate_message_tokens(message: dict) -> int:
     return tokens
 
 
+def _content_token_upper_bound(content: Any) -> int:
+    """Return a cheap upper bound without invoking the tokenizer."""
+    if content is None:
+        return 0
+    if isinstance(content, str):
+        return len(content.encode("utf-8"))
+    if isinstance(content, list):
+        return sum(_content_token_upper_bound(item) for item in content)
+    if isinstance(content, dict):
+        content_type = content.get("type")
+        if content_type in {"image", "image_url"} or "image_url" in content:
+            return IMAGE_TOKEN_ESTIMATE
+        if content_type == "text" and isinstance(content.get("text"), str):
+            return len(content["text"].encode("utf-8"))
+        return sum(
+            _content_token_upper_bound(value)
+            for key, value in content.items()
+            if key != "type"
+        )
+    return len(str(content).encode("utf-8"))
+
+
+def _message_token_upper_bound(message: dict) -> int:
+    tokens = MESSAGE_OVERHEAD_TOKENS + _content_token_upper_bound(
+        message.get("content")
+    )
+    for key in ("name", "tool_call_id", "tool_calls"):
+        if key in message:
+            tokens += _content_token_upper_bound(message[key])
+    return tokens
+
+
 def _truncate_text_message(message: dict, token_budget: int) -> dict | None:
     content = message.get("content")
     if not isinstance(content, str):
         return None
 
-    content_budget = token_budget - MESSAGE_OVERHEAD_TOKENS
+    fixed_fields = message.copy()
+    fixed_fields["content"] = ""
+    content_budget = token_budget - estimate_message_tokens(fixed_fields)
     truncated_content = truncate_text(
         content,
         content_budget,
@@ -281,6 +321,9 @@ def _budget_chat_messages(
         return list(messages)
 
     input_budget = max(1, int(context_window * CHAT_INPUT_BUDGET_RATIO))
+    if sum(_message_token_upper_bound(message) for message in messages) <= input_budget:
+        return list(messages)
+
     token_cache = {}
 
     def message_tokens(message: dict) -> int:
@@ -293,8 +336,12 @@ def _budget_chat_messages(
             token_cache[cache_key] = cached
         return cached[1]
 
-    total_tokens = sum(message_tokens(message) for message in messages)
-    if total_tokens <= input_budget:
+    total_tokens = 0
+    for message in messages:
+        total_tokens += message_tokens(message)
+        if total_tokens > input_budget:
+            break
+    else:
         # Budgeting is not a general history normalizer. Preserve unusual but
         # accepted provider sequences byte-for-byte until pruning is required.
         return list(messages)
@@ -318,9 +365,19 @@ def _budget_chat_messages(
     )
     if latest_user_index is None:
         log.warning(
-            "Dropping over-budget chat history because it has no user request"
+            "Reducing over-budget chat history to its newest message because "
+            "it has no user request"
         )
-        return []
+        newest_message = messages[-1]
+        if message_tokens(newest_message) <= input_budget:
+            return [newest_message]
+        truncated_message = _truncate_mandatory_message(
+            newest_message,
+            input_budget,
+        )
+        if truncated_message is not None:
+            return [truncated_message]
+        return [newest_message]
 
     latest_user = conversation[latest_user_index]
     trailing_messages = conversation[latest_user_index + 1:]
