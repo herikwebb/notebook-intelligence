@@ -10,8 +10,9 @@ if [[ -z "${OPENAI_API_KEY:-}" ]]; then
   exit 1
 fi
 
-OPENAI_MODEL="${OPENAI_MODEL:-gpt-5.5}"
-# gpt-5.5 is a reasoning model: max_output_tokens covers hidden reasoning
+OPENAI_MODEL="${OPENAI_MODEL:-gpt-5.6}"
+OPENAI_REASONING_EFFORT="${OPENAI_REASONING_EFFORT:-high}"
+# gpt-5.6 is a reasoning model: max_output_tokens covers hidden reasoning
 # tokens too, so a small cap can be fully consumed before any review text
 # is emitted (an "incomplete" response). Give it enough headroom to finish.
 OPENAI_MAX_OUTPUT_TOKENS="${OPENAI_MAX_OUTPUT_TOKENS:-8000}"
@@ -104,10 +105,12 @@ with open(prompt_path, "r", encoding="utf-8", errors="replace") as prompt_file:
     prompt = prompt_file.read()
 
 model = os.environ["OPENAI_MODEL"]
+reasoning_effort = os.environ.get("OPENAI_REASONING_EFFORT", "high")
 max_output_tokens = int(os.environ.get("OPENAI_MAX_OUTPUT_TOKENS", "8000"))
 
 payload = {
     "model": model,
+    "reasoning": {"effort": reasoning_effort},
     "instructions": (
         "You are an expert automated pull request reviewer. "
         "Find concrete correctness, security, reliability, performance, and test-coverage issues. "
