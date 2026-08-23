@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import threading
+import time
 from typing import Any
 
 import tiktoken
@@ -24,15 +25,21 @@ TRUNCATION_MARKER = "\n...[truncated to fit model context]"
 
 log = logging.getLogger(__name__)
 _TOKENIZER_MAX_LOAD_ATTEMPTS = 3
-_IMAGE_OMISSION_TEXT = "[Image omitted to fit model context.]"
+_TOKENIZER_LOAD_TIMEOUT_SECONDS = 30
+_IMAGE_OMISSION_TEXT = "[Image omitted.]"
 _tokenizer_lock = threading.Lock()
 _tokenizer_encoding: Any | None = None
 _tokenizer_load_attempts = 0
 _tokenizer_load_in_progress = False
+_tokenizer_load_started_at = 0.0
+_tokenizer_load_generation = 0
+_tokenizer_fallback_logged = False
 
 
-def _load_tokenizer_encoding() -> None:
+def _load_tokenizer_encoding(load_generation: int) -> None:
     global _tokenizer_encoding, _tokenizer_load_in_progress
+    global _tokenizer_load_started_at
+    encoding = None
     try:
         encoding = tiktoken.encoding_for_model("gpt-4o")
     except Exception as error:
@@ -41,27 +48,50 @@ def _load_tokenizer_encoding() -> None:
             "fallback until a later retry succeeds: %s",
             error,
         )
-        encoding = None
-    with _tokenizer_lock:
-        if encoding is not None:
-            _tokenizer_encoding = encoding
-        _tokenizer_load_in_progress = False
+    finally:
+        with _tokenizer_lock:
+            if encoding is not None:
+                _tokenizer_encoding = encoding
+            if (
+                encoding is not None
+                or load_generation == _tokenizer_load_generation
+            ):
+                _tokenizer_load_in_progress = False
+                _tokenizer_load_started_at = 0.0
 
 
 def warm_tokenizer_encoding() -> None:
     """Warm tokenizer data asynchronously, retrying transient failures."""
     global _tokenizer_load_attempts, _tokenizer_load_in_progress
+    global _tokenizer_load_started_at, _tokenizer_load_generation
+    stale_load = False
     with _tokenizer_lock:
-        if (
-            _tokenizer_encoding is not None
-            or _tokenizer_load_in_progress
-            or _tokenizer_load_attempts >= _TOKENIZER_MAX_LOAD_ATTEMPTS
-        ):
+        if _tokenizer_encoding is not None:
+            return
+        now = time.monotonic()
+        if _tokenizer_load_in_progress:
+            if (
+                now - _tokenizer_load_started_at
+                < _TOKENIZER_LOAD_TIMEOUT_SECONDS
+            ):
+                return
+            stale_load = True
+            _tokenizer_load_in_progress = False
+        if _tokenizer_load_attempts >= _TOKENIZER_MAX_LOAD_ATTEMPTS:
             return
         _tokenizer_load_attempts += 1
         _tokenizer_load_in_progress = True
+        _tokenizer_load_started_at = now
+        _tokenizer_load_generation += 1
+        load_generation = _tokenizer_load_generation
+    if stale_load:
+        log.warning(
+            "Tokenizer warm-up exceeded %d seconds; starting a bounded retry",
+            _TOKENIZER_LOAD_TIMEOUT_SECONDS,
+        )
     thread = threading.Thread(
         target=_load_tokenizer_encoding,
+        args=(load_generation,),
         name="nbi-tokenizer-warmup",
         daemon=True,
     )
@@ -69,7 +99,9 @@ def warm_tokenizer_encoding() -> None:
         thread.start()
     except Exception as error:
         with _tokenizer_lock:
-            _tokenizer_load_in_progress = False
+            if load_generation == _tokenizer_load_generation:
+                _tokenizer_load_in_progress = False
+                _tokenizer_load_started_at = 0.0
         log.warning(
             "Could not start the tokenizer warm-up thread; using the UTF-8 "
             "size fallback until a later retry succeeds: %s",
@@ -87,6 +119,18 @@ def _get_encoding():
     return encoding
 
 
+def _warn_tokenizer_fallback_once() -> None:
+    global _tokenizer_fallback_logged
+    with _tokenizer_lock:
+        if _tokenizer_fallback_logged:
+            return
+        _tokenizer_fallback_logged = True
+    log.warning(
+        "Using the UTF-8 size fallback for chat context budgeting while the "
+        "gpt-4o tokenizer is unavailable"
+    )
+
+
 def _fallback_text_token_count(text: str) -> int:
     if text == "":
         return 0
@@ -99,6 +143,7 @@ def text_token_count(text: str) -> int:
     # reserve reduces, but does not eliminate, that cross-tokenizer risk.
     encoding = _get_encoding()
     if encoding is None:
+        _warn_tokenizer_fallback_once()
         return _fallback_text_token_count(text)
     return len(encoding.encode(text))
 
@@ -113,6 +158,7 @@ def truncate_text(
 
     encoding = _get_encoding()
     if encoding is None:
+        _warn_tokenizer_fallback_once()
         if _fallback_text_token_count(text) <= token_budget:
             return text
         marker_bytes = marker.encode("utf-8")
@@ -243,6 +289,7 @@ def _truncate_mandatory_message(
     if not isinstance(content, list):
         return None
     text_parts = []
+    omitted_non_text = False
     for item in content:
         if isinstance(item, str):
             text_parts.append(item)
@@ -252,13 +299,21 @@ def _truncate_mandatory_message(
             and isinstance(item.get("text"), str)
         ):
             text_parts.append(item["text"])
-    if not text_parts:
+        else:
+            omitted_non_text = True
+    if omitted_non_text:
+        text_parts.insert(0, _IMAGE_OMISSION_TEXT)
+    elif not text_parts:
         text_parts.append(_IMAGE_OMISSION_TEXT)
 
     text_message = message.copy()
     text_message["content"] = "\n".join(text_parts)
     truncated = _truncate_text_message(text_message, token_budget)
     if truncated is None:
+        return None
+    if omitted_non_text and not truncated["content"].startswith(
+        _IMAGE_OMISSION_TEXT
+    ):
         return None
     truncated["content"] = [
         {"type": "text", "text": truncated["content"]}
@@ -298,13 +353,51 @@ def _partition_turns(
 def _with_omission_notice(
     system_messages: list[dict],
     notice: str = CONTEXT_OMISSION_NOTICE,
+    prepend: bool = False,
 ) -> list[dict]:
     updated = [message.copy() for message in system_messages]
     if updated and isinstance(updated[-1].get("content"), str):
-        updated[-1]["content"] += notice
+        if prepend:
+            updated[-1]["content"] = (
+                notice.strip() + "\n\n" + updated[-1]["content"]
+            )
+        else:
+            updated[-1]["content"] += notice
     else:
         updated.append({"role": "system", "content": notice.strip()})
     return updated
+
+
+def _truncate_system_messages(
+    system_messages: list[dict],
+    token_budget: int,
+) -> list[dict]:
+    if token_budget <= 0:
+        return []
+    if sum(estimate_message_tokens(message) for message in system_messages) <= token_budget:
+        return list(system_messages)
+
+    text_parts = [
+        message["content"]
+        for message in system_messages
+        if isinstance(message.get("content"), str)
+    ]
+    if not text_parts:
+        return []
+    combined = {"role": "system", "content": "\n\n".join(text_parts)}
+    truncated = _truncate_text_message(combined, token_budget)
+    protected_notice = SHORT_CONTEXT_OMISSION_NOTICE.strip()
+    if (
+        combined["content"].startswith(protected_notice)
+        and (
+            truncated is None
+            or not truncated["content"].startswith(protected_notice)
+        )
+    ):
+        notice_message = {"role": "system", "content": protected_notice}
+        if estimate_message_tokens(notice_message) <= token_budget:
+            return [notice_message]
+    return [truncated] if truncated is not None else []
 
 
 def _budget_chat_messages(
@@ -405,22 +498,60 @@ def _budget_chat_messages(
         for message in base_mandatory_messages
     )
     if base_mandatory_tokens > input_budget:
+        candidate_system_messages = _with_omission_notice(
+            system_messages,
+            SHORT_CONTEXT_OMISSION_NOTICE,
+            prepend=True,
+        )
         non_user_mandatory_tokens = sum(
             message_tokens(message)
-            for message in system_messages
+            for message in candidate_system_messages
         )
         truncated_latest_user = _truncate_mandatory_message(
             latest_user,
             max(0, input_budget - non_user_mandatory_tokens),
         )
+        if truncated_latest_user is None:
+            # When configured system instructions consume the whole model
+            # window, reserve half the input budget for the actual request and
+            # truncate both sides. Extremely tiny windows may still be unable
+            # to fit even the per-message protocol overhead; those fall open.
+            minimum_user_budget = MESSAGE_OVERHEAD_TOKENS + text_token_count(
+                _IMAGE_OMISSION_TEXT + "\n" + TRUNCATION_MARKER
+            )
+            latest_user_tokens = message_tokens(latest_user)
+            user_budget = min(
+                input_budget,
+                latest_user_tokens
+                if latest_user_tokens <= input_budget
+                else max(minimum_user_budget, input_budget // 2),
+            )
+            candidate_system_messages = _truncate_system_messages(
+                candidate_system_messages,
+                max(0, input_budget - user_budget),
+            )
+            remaining_for_user = input_budget - sum(
+                message_tokens(message)
+                for message in candidate_system_messages
+            )
+            truncated_latest_user = _truncate_mandatory_message(
+                latest_user,
+                remaining_for_user,
+            )
+            if truncated_latest_user is None:
+                candidate_system_messages = []
+                truncated_latest_user = _truncate_mandatory_message(
+                    latest_user,
+                    input_budget,
+                )
         if truncated_latest_user is not None:
             log.warning(
-                "Truncating the newest user request because mandatory chat "
-                "context requires %d estimated tokens for a %d-token input "
-                "budget",
+                "Truncating mandatory system or user context because it "
+                "requires %d estimated tokens for a %d-token input budget",
                 base_mandatory_tokens,
                 input_budget,
             )
+            system_messages = candidate_system_messages
             latest_user = truncated_latest_user
         else:
             log.warning(
@@ -462,7 +593,7 @@ def _budget_chat_messages(
     )
 
     selected_context = []
-    for message in current_context:
+    for message in reversed(current_context):
         context_tokens = message_tokens(message)
         if context_tokens <= remaining_budget:
             selected_context.append(message)
@@ -474,6 +605,7 @@ def _budget_chat_messages(
             selected_context.append(truncated)
             remaining_budget -= message_tokens(truncated)
         continue
+    selected_context.reverse()
 
     selected_turns = []
     for turn in reversed(complete_turns):

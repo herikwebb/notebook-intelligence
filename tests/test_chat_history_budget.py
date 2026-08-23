@@ -25,11 +25,12 @@ class _CharacterEncoding:
 
 
 class _ImmediateThread:
-    def __init__(self, target, **_kwargs):
+    def __init__(self, target, args=(), **_kwargs):
         self.target = target
+        self.args = args
 
     def start(self):
-        self.target()
+        self.target(*self.args)
 
 
 @pytest.fixture(autouse=True)
@@ -41,6 +42,9 @@ def stable_tokenizer_state(monkeypatch):
     )
     monkeypatch.setattr(budget_module, "_tokenizer_load_attempts", 0)
     monkeypatch.setattr(budget_module, "_tokenizer_load_in_progress", False)
+    monkeypatch.setattr(budget_module, "_tokenizer_load_started_at", 0.0)
+    monkeypatch.setattr(budget_module, "_tokenizer_load_generation", 0)
+    monkeypatch.setattr(budget_module, "_tokenizer_fallback_logged", False)
 
 
 def test_messages_under_budget_are_unchanged():
@@ -109,6 +113,24 @@ def test_tokenizer_load_retries_are_bounded(monkeypatch):
     assert encoding_for_model.call_count == 3
 
 
+def test_stale_tokenizer_load_allows_a_bounded_retry(monkeypatch, caplog):
+    thread = Mock()
+    thread_class = Mock(return_value=thread)
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
+    monkeypatch.setattr(budget_module, "_tokenizer_load_attempts", 1)
+    monkeypatch.setattr(budget_module, "_tokenizer_load_in_progress", True)
+    monkeypatch.setattr(budget_module, "_tokenizer_load_started_at", 10.0)
+    monkeypatch.setattr(budget_module.time, "monotonic", Mock(return_value=41.0))
+    monkeypatch.setattr(budget_module.threading, "Thread", thread_class)
+
+    with caplog.at_level(logging.WARNING):
+        warm_tokenizer_encoding()
+
+    assert budget_module._tokenizer_load_attempts == 2
+    thread.start.assert_called_once_with()
+    assert "starting a bounded retry" in caplog.text
+
+
 def test_tokenizer_truncation_uses_a_bounded_number_of_encodes(monkeypatch):
     text = "a" * 1000
     encoding = Mock(wraps=_CharacterEncoding())
@@ -131,6 +153,7 @@ def test_tokenizer_warmup_starts_a_daemon_thread(monkeypatch):
 
     thread_class.assert_called_once_with(
         target=budget_module._load_tokenizer_encoding,
+        args=(1,),
         name="nbi-tokenizer-warmup",
         daemon=True,
     )
@@ -213,6 +236,22 @@ def test_current_context_is_prioritized_and_truncated():
     assert sum(estimate_message_tokens(message) for message in result) <= int(
         256 * CHAT_INPUT_BUDGET_RATIO
     )
+
+
+def test_newest_current_context_is_selected_before_older_context():
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {"role": "user", "content": "stale attachment " * 500},
+        {"role": "user", "content": "fresh attachment " * 500},
+        {"role": "user", "content": "current question"},
+    ]
+
+    result = budget_chat_messages(messages, 256)
+
+    contents = [message["content"] for message in result]
+    assert not any(content.startswith("stale") for content in contents)
+    assert any(content.startswith("fresh") for content in contents)
+    assert contents[-1] == "current question"
 
 
 def test_messages_under_budget_are_not_normalized():
@@ -350,7 +389,9 @@ def test_oversized_multimodal_request_is_reduced_to_bounded_text():
     result = budget_chat_messages(messages, 128)
 
     assert result[-1]["content"][0]["type"] == "text"
-    assert result[-1]["content"][0]["text"].endswith(TRUNCATION_MARKER)
+    bounded_text = result[-1]["content"][0]["text"]
+    assert bounded_text.startswith("[Image omitted.]")
+    assert bounded_text.endswith(TRUNCATION_MARKER)
     assert all(
         item.get("type") != "image_url"
         for item in result[-1]["content"]
@@ -377,7 +418,7 @@ def test_oversized_image_only_request_gets_a_bounded_text_placeholder():
     result = budget_chat_messages(messages, 128)
 
     assert result[-1]["content"] == [
-        {"type": "text", "text": "[Image omitted to fit model context.]"}
+        {"type": "text", "text": "[Image omitted.]"}
     ]
     assert sum(estimate_message_tokens(message) for message in result) <= int(
         128 * CHAT_INPUT_BUDGET_RATIO
@@ -424,6 +465,7 @@ def test_oversized_latest_user_request_is_truncated_as_last_resort():
 
     result = budget_chat_messages(messages, 128)
 
+    assert "Context omitted to fit model window" in result[0]["content"]
     assert result[-1]["content"].endswith(TRUNCATION_MARKER)
     assert sum(estimate_message_tokens(message) for message in result) <= int(
         128 * CHAT_INPUT_BUDGET_RATIO
@@ -469,6 +511,24 @@ def test_text_message_truncation_accounts_for_tool_fields():
     assert result["tool_call_id"] == "call-1"
     assert result["tool_calls"] == message["tool_calls"]
     assert estimate_message_tokens(result) <= 128
+
+
+def test_oversized_system_prompt_is_truncated_to_leave_room_for_user():
+    messages = [
+        {"role": "system", "content": "mandatory system instructions " * 500},
+        {"role": "user", "content": "current question"},
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert result[0]["role"] == "system"
+    assert result[0]["content"].startswith(
+        "[Context omitted to fit model window.]"
+    )
+    assert result[-1] == messages[-1]
+    assert sum(estimate_message_tokens(message) for message in result) <= int(
+        128 * CHAT_INPUT_BUDGET_RATIO
+    )
 
 
 def test_invalid_context_window_leaves_messages_unchanged():

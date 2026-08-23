@@ -30,12 +30,21 @@ class TestWebsocketHandlerIntegration:
         warm_tokenizer.assert_called_once_with()
 
     def test_context_budget_helpers_use_strict_shared_token_policy(self):
-        assert _token_count("shared token counter") > 0
-        assert _truncate_context_content("large context " * 100, 1) == ""
+        encoding = Mock()
+        encoding.encode.side_effect = lambda text: list(text.encode("utf-8"))
+        encoding.decode.side_effect = lambda tokens: bytes(tokens).decode(
+            "utf-8", errors="ignore"
+        )
+        with patch(
+            "notebook_intelligence.chat_history_budget._get_encoding",
+            return_value=encoding,
+        ):
+            assert _token_count("shared token counter") > 0
+            assert _truncate_context_content("large context " * 100, 1) == ""
 
-        truncated = _truncate_context_content("large context " * 100, 16)
-        assert truncated.endswith("\n...[truncated]")
-        assert _token_count(truncated) <= 16
+            truncated = _truncate_context_content("large context " * 100, 16)
+            assert truncated.endswith("\n...[truncated]")
+            assert _token_count(truncated) <= 16
 
     def _create_mock_application(self):
         """Create a properly mocked Tornado Application.
