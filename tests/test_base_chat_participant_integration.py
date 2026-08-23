@@ -1,5 +1,7 @@
 import asyncio
 from unittest.mock import Mock, AsyncMock
+
+import notebook_intelligence.base_chat_participant as base_participant_module
 from notebook_intelligence.base_chat_participant import BaseChatParticipant
 from notebook_intelligence.base_chat_participant import CreateNewNotebookTool
 from notebook_intelligence.base_chat_participant import ListAvailableNotebookKernelsTool
@@ -128,6 +130,37 @@ class TestBaseChatParticipantIntegration:
         assert not any(
             message["content"] == "old question " * 500 for message in messages
         )
+
+    def test_builtin_generation_paths_budget_messages(self, monkeypatch):
+        participant = BaseChatParticipant()
+        chat_model = Mock()
+        chat_model.context_window = 256
+        chat_model.completions.side_effect = [
+            {"choices": [{"message": {"content": "print('hello')"}}]},
+            {"choices": [{"message": {"content": "Generated explanation"}}]},
+            {"choices": [{"message": {"content": "print('file')"}}]},
+        ]
+        request = Mock(spec=ChatRequest)
+        request.host.chat_model = chat_model
+        request.chat_history = [{"role": "user", "content": "Generate it"}]
+        request.prompt = "Generate it"
+        budget_mock = Mock(side_effect=lambda messages, _window: messages)
+        monkeypatch.setattr(
+            base_participant_module,
+            "budget_chat_messages",
+            budget_mock,
+        )
+
+        asyncio.run(participant.generate_code_cell(request))
+        asyncio.run(participant.generate_markdown_for_code(request, "print('hello')"))
+
+        request.command = "newPythonFile"
+        response = Mock(spec=ChatResponse)
+        response.run_ui_command = AsyncMock(return_value={"path": "generated.py"})
+        asyncio.run(participant.handle_ask_mode_chat_request(request, response))
+
+        assert budget_mock.call_count == 3
+        assert all(call.args[1] == 256 for call in budget_mock.call_args_list)
 
     def test_handle_chat_request_agent_mode_with_rules(self):
         """Test agent mode chat request handling with rule injection."""

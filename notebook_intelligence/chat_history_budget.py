@@ -1,6 +1,7 @@
 # Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import logging
+import threading
 from functools import lru_cache
 from typing import Any
 
@@ -26,11 +27,40 @@ log = logging.getLogger(__name__)
 @lru_cache(maxsize=1)
 def _get_encoding():
     """Load tokenizer data on first use, not during extension import."""
-    return tiktoken.encoding_for_model("gpt-4o")
+    try:
+        return tiktoken.encoding_for_model("gpt-4o")
+    except Exception as error:
+        log.warning(
+            "Could not load the gpt-4o tokenizer; using the UTF-8 size "
+            "fallback for chat context budgeting: %s",
+            error,
+        )
+        return None
+
+
+def warm_tokenizer_encoding() -> None:
+    """Warm tokenizer data off the Jupyter server's event-loop thread."""
+    threading.Thread(
+        target=_get_encoding,
+        name="nbi-tokenizer-warmup",
+        daemon=True,
+    ).start()
+
+
+def _fallback_text_token_count(text: str) -> int:
+    if text == "":
+        return 0
+    return max(1, (len(text.encode("utf-8")) + 2) // 3)
 
 
 def text_token_count(text: str) -> int:
-    return len(_get_encoding().encode(text))
+    # TODO: select provider-specific tokenizers where a stable local encoder
+    # exists. The shared estimate is not exact for every provider; the output
+    # reserve reduces, but does not eliminate, that cross-tokenizer risk.
+    encoding = _get_encoding()
+    if encoding is None:
+        return _fallback_text_token_count(text)
+    return len(encoding.encode(text))
 
 
 def truncate_text(
@@ -41,17 +71,21 @@ def truncate_text(
     if token_budget <= 0 or text == "":
         return ""
 
-    encoding = _get_encoding()
-    encoded = encoding.encode(text)
-    if len(encoded) <= token_budget:
+    if text_token_count(text) <= token_budget:
         return text
 
+    encoding = _get_encoding()
+    encoded = encoding.encode(text) if encoding is not None else None
     low = 1
-    high = len(encoded) - 1
+    high = (len(encoded) if encoded is not None else len(text)) - 1
     best = ""
     while low <= high:
         prefix_size = (low + high) // 2
-        prefix = encoding.decode(encoded[:prefix_size]).rstrip()
+        prefix = (
+            encoding.decode(encoded[:prefix_size])
+            if encoding is not None
+            else text[:prefix_size]
+        ).rstrip()
         candidate = prefix + marker
         if text_token_count(candidate) <= token_budget:
             best = candidate
@@ -153,7 +187,7 @@ def _with_omission_notice(
     return updated
 
 
-def budget_chat_messages(
+def _budget_chat_messages(
     messages: list[dict],
     context_window: int,
 ) -> list[dict]:
@@ -167,10 +201,22 @@ def budget_chat_messages(
         return list(messages)
 
     input_budget = max(1, int(context_window * CHAT_INPUT_BUDGET_RATIO))
-    total_tokens = sum(
-        estimate_message_tokens(message) for message in messages
-    )
+    token_cache = {}
+
+    def message_tokens(message: dict) -> int:
+        cache_key = id(message)
+        cached = token_cache.get(cache_key)
+        if cached is None or cached[0] is not message:
+            cached = (message, estimate_message_tokens(message))
+            # Retaining the object alongside its estimate prevents Python
+            # from reusing its id for a later omission-notice candidate.
+            token_cache[cache_key] = cached
+        return cached[1]
+
+    total_tokens = sum(message_tokens(message) for message in messages)
     if total_tokens <= input_budget:
+        # Budgeting is not a general history normalizer. Preserve unusual but
+        # accepted provider sequences byte-for-byte until pruning is required.
         return list(messages)
 
     system_end = 0
@@ -195,6 +241,13 @@ def budget_chat_messages(
 
     latest_user = conversation[latest_user_index]
     trailing_messages = conversation[latest_user_index + 1:]
+    if trailing_messages:
+        log.warning(
+            "Dropping %d trailing non-user chat messages while pruning; "
+            "the newest user request must terminate an API chat request",
+            len(trailing_messages),
+        )
+        trailing_messages = []
     preceding_messages = conversation[:latest_user_index]
     complete_turns, trailing_sequence = _partition_turns(preceding_messages)
     current_context = (
@@ -208,17 +261,35 @@ def budget_chat_messages(
         *trailing_messages,
     ]
     base_mandatory_tokens = sum(
-        estimate_message_tokens(message)
+        message_tokens(message)
         for message in base_mandatory_messages
     )
     if base_mandatory_tokens > input_budget:
-        log.warning(
-            "Mandatory chat context requires %d estimated tokens, exceeding "
-            "the %d-token input budget; preserving the system prompt and "
-            "newest user request",
-            base_mandatory_tokens,
-            input_budget,
+        non_user_mandatory_tokens = sum(
+            message_tokens(message)
+            for message in system_messages
         )
+        truncated_latest_user = _truncate_text_message(
+            latest_user,
+            max(0, input_budget - non_user_mandatory_tokens),
+        )
+        if truncated_latest_user is not None:
+            log.warning(
+                "Truncating the newest user request because mandatory chat "
+                "context requires %d estimated tokens for a %d-token input "
+                "budget",
+                base_mandatory_tokens,
+                input_budget,
+            )
+            latest_user = truncated_latest_user
+        else:
+            log.warning(
+                "Mandatory chat context requires %d estimated tokens, "
+                "exceeding the %d-token input budget; the system prompt "
+                "leaves too little room to truncate the newest user request",
+                base_mandatory_tokens,
+                input_budget,
+            )
     else:
         for notice in (
             CONTEXT_OMISSION_NOTICE,
@@ -234,7 +305,7 @@ def budget_chat_messages(
                 *trailing_messages,
             ]
             if sum(
-                estimate_message_tokens(message)
+                message_tokens(message)
                 for message in candidate_mandatory_messages
             ) <= input_budget:
                 system_messages = candidate_system_messages
@@ -245,28 +316,28 @@ def budget_chat_messages(
         0,
         input_budget
         - sum(
-            estimate_message_tokens(message)
+            message_tokens(message)
             for message in mandatory_messages
         ),
     )
 
     selected_context = []
     for message in current_context:
-        message_tokens = estimate_message_tokens(message)
-        if message_tokens <= remaining_budget:
+        context_tokens = message_tokens(message)
+        if context_tokens <= remaining_budget:
             selected_context.append(message)
-            remaining_budget -= message_tokens
+            remaining_budget -= context_tokens
             continue
 
         truncated = _truncate_text_message(message, remaining_budget)
         if truncated is not None:
             selected_context.append(truncated)
-            remaining_budget -= estimate_message_tokens(truncated)
+            remaining_budget -= message_tokens(truncated)
         break
 
     selected_turns = []
     for turn in reversed(complete_turns):
-        turn_tokens = sum(estimate_message_tokens(message) for message in turn)
+        turn_tokens = sum(message_tokens(message) for message in turn)
         if turn_tokens > remaining_budget:
             break
         selected_turns.append(turn)
@@ -280,3 +351,17 @@ def budget_chat_messages(
         latest_user,
         *trailing_messages,
     ]
+
+
+def budget_chat_messages(
+    messages: list[dict],
+    context_window: int,
+) -> list[dict]:
+    """Fail open if estimation encounters malformed data or runtime errors."""
+    try:
+        return _budget_chat_messages(messages, context_window)
+    except Exception:
+        log.exception(
+            "Could not budget chat history; sending the original messages"
+        )
+        return list(messages)

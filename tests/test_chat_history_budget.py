@@ -9,6 +9,7 @@ from notebook_intelligence.chat_history_budget import (
     budget_chat_messages,
     estimate_message_tokens,
     text_token_count,
+    warm_tokenizer_encoding,
 )
 
 
@@ -39,6 +40,58 @@ def test_tokenizer_encoding_is_loaded_lazily_and_cached(monkeypatch):
         encoding_for_model.assert_called_once_with("gpt-4o")
     finally:
         budget_module._get_encoding.cache_clear()
+
+
+def test_tokenizer_load_failure_uses_cached_utf8_fallback(monkeypatch, caplog):
+    encoding_for_model = Mock(side_effect=RuntimeError("offline"))
+    budget_module._get_encoding.cache_clear()
+    monkeypatch.setattr(
+        budget_module.tiktoken,
+        "encoding_for_model",
+        encoding_for_model,
+    )
+
+    try:
+        with caplog.at_level(logging.WARNING):
+            assert text_token_count("abcdefgh") == 3
+            assert text_token_count("abcdefgh") == 3
+        encoding_for_model.assert_called_once_with("gpt-4o")
+        assert "using the UTF-8 size fallback" in caplog.text
+    finally:
+        budget_module._get_encoding.cache_clear()
+
+
+def test_tokenizer_warmup_starts_a_daemon_thread(monkeypatch):
+    thread = Mock()
+    thread_class = Mock(return_value=thread)
+    monkeypatch.setattr(budget_module.threading, "Thread", thread_class)
+
+    warm_tokenizer_encoding()
+
+    thread_class.assert_called_once_with(
+        target=budget_module._get_encoding,
+        name="nbi-tokenizer-warmup",
+        daemon=True,
+    )
+    thread.start.assert_called_once()
+
+
+def test_unexpected_budgeting_error_fails_open(monkeypatch, caplog):
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {"role": "user", "content": "Question"},
+    ]
+    monkeypatch.setattr(
+        budget_module,
+        "estimate_message_tokens",
+        Mock(side_effect=ValueError("malformed message")),
+    )
+
+    with caplog.at_level(logging.ERROR):
+        result = budget_chat_messages(messages, 128)
+
+    assert result == messages
+    assert "sending the original messages" in caplog.text
 
 
 def test_keeps_newest_complete_turns_and_drops_older_turns():
@@ -154,6 +207,24 @@ def test_incomplete_tool_call_turn_is_dropped_as_a_unit():
     assert result[-1]["content"] == "current question"
 
 
+def test_trailing_tool_message_is_dropped_when_pruning():
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [{"id": "call-1", "function": {"name": "inspect"}}],
+        },
+        {"role": "user", "content": "current question " * 500},
+        {"role": "tool", "content": "late result", "tool_call_id": "call-1"},
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert [message["role"] for message in result] == ["system", "user"]
+    assert result[-1]["content"].endswith(TRUNCATION_MARKER)
+
+
 def test_multimodal_context_uses_fixed_image_estimate_and_is_omitted():
     image_context = {
         "role": "user",
@@ -189,6 +260,20 @@ def test_system_and_latest_user_survive_an_extremely_small_window(caplog):
     assert result[0]["content"].startswith("mandatory system instructions")
     assert result[-1] == messages[-1]
     assert "Mandatory chat context requires" in caplog.text
+
+
+def test_oversized_latest_user_request_is_truncated_as_last_resort():
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {"role": "user", "content": "mandatory request " * 500},
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert result[-1]["content"].endswith(TRUNCATION_MARKER)
+    assert sum(estimate_message_tokens(message) for message in result) <= int(
+        128 * CHAT_INPUT_BUDGET_RATIO
+    )
 
 
 def test_invalid_context_window_leaves_messages_unchanged():

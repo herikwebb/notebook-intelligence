@@ -75,6 +75,7 @@ from notebook_intelligence.chat_history_budget import (
     CHAT_INPUT_BUDGET_RATIO,
     text_token_count as _token_count,
     truncate_text as _truncate_context_content,
+    warm_tokenizer_encoding,
 )
 from notebook_intelligence.plugin_manager import PluginManager
 from notebook_intelligence.prompts import Prompts
@@ -3724,6 +3725,7 @@ class NotebookIntelligence(ExtensionApp):
         ConfigHandler.string_overrides = string_overrides
 
     def initialize_handlers(self):
+        warm_tokenizer_encoding()
         NotebookIntelligence.root_dir = self.serverapp.root_dir
         set_jupyter_root_dir(NotebookIntelligence.root_dir)
         server_root_dir = os.path.expanduser(self.serverapp.web_app.settings["server_root_dir"])
