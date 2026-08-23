@@ -10,9 +10,9 @@ if [[ -z "${OPENAI_API_KEY:-}" ]]; then
   exit 1
 fi
 
-OPENAI_MODEL="${OPENAI_MODEL:-gpt-5.6}"
+OPENAI_MODEL="${OPENAI_MODEL:-gpt-5.6-sol}"
 OPENAI_REASONING_EFFORT="${OPENAI_REASONING_EFFORT:-high}"
-# gpt-5.6 is a reasoning model: max_output_tokens covers hidden reasoning
+# gpt-5.6-sol is a reasoning model: max_output_tokens covers hidden reasoning
 # tokens too, so a small cap can be fully consumed before any review text
 # is emitted (an "incomplete" response). Give it enough headroom to finish.
 OPENAI_MAX_OUTPUT_TOKENS="${OPENAI_MAX_OUTPUT_TOKENS:-8000}"
