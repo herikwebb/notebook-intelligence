@@ -1,0 +1,177 @@
+name: Promote to upstream
+
+# Opens a cross-fork pull request from a fork branch into the upstream repo.
+#
+# Trigger: automatic on a successful "PR Review" run (the review loop ended on
+# an APPROVE verdict, or an override label), plus manual workflow_dispatch. The
+# branch to promote is taken from the triggering review run (or the dispatch
+# input). A least-privilege PAT (secrets.UPSTREAM_PAT, a classic PAT with the
+# public_repo scope) opens the cross-fork PR: the built-in GITHUB_TOKEN cannot
+# open a PR whose base is a repo we do not own.
+#
+# Promotion is always CLEAN: it never carries fork-only automation or the
+# fork's base into upstream. The job reduces the branch to its OWN changes
+# (diff from its fork-point), drops any fork-only paths, and replays just those
+# files onto the upstream tip as a fresh promote/<branch>. A branch whose own
+# changes are entirely fork-only (e.g. a review-tooling PR) promotes nothing.
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Fork branch to promote (PR head)'
+        required: true
+      base:
+        description: 'Upstream base branch'
+        required: false
+        default: main
+  workflow_run:
+    workflows: ['PR Review']
+    types: [completed]
+
+concurrency:
+  group: promote-${{ github.event.inputs.branch || github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM: plmbr/notebook-intelligence
+  FORK_OWNER: ${{ github.repository_owner }}
+  # Automation/config that lives only on the fork and must never reach an
+  # upstream PR. A branch whose own changes are limited to these promotes
+  # nothing; when a promotable branch also happens to touch one, it is dropped.
+  FORK_ONLY_PATHS: >-
+    .github/workflows/pr-review.yml
+    .github/workflows/promote-upstream.yml
+    .github/workflows/check-release.yml
+    scripts/review-pr.sh
+    scripts/review-pr-claude.sh
+    AGENTS.md
+    yarn.lock
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    # Manual dispatch always runs. An automatic run proceeds only when the PR
+    # Review workflow it keys off finished successfully on a pull request --
+    # i.e. the review loop ended on APPROVE (or an override label).
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'pull_request')
+    # Gate the PAT behind a manual approval when the `upstream-promotion`
+    # environment is configured with required reviewers (Settings ->
+    # Environments); otherwise GitHub auto-creates it unprotected and proceeds.
+    environment: upstream-promotion
+    steps:
+      - name: Check out fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Promote branch to upstream
+        env:
+          GH_TOKEN: ${{ secrets.UPSTREAM_PAT }}
+          IN_BRANCH: ${{ github.event.inputs.branch }}
+          IN_BASE: ${{ github.event.inputs.base }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::UPSTREAM_PAT secret is not set. Add a classic PAT with the public_repo scope as a repository secret named UPSTREAM_PAT." >&2
+            exit 1
+          fi
+
+          BRANCH="${IN_BRANCH:-$RUN_BRANCH}"
+          BASE="${IN_BASE:-main}"
+          if [ -z "${BRANCH}" ]; then
+            echo "::error::Could not resolve a branch to promote." >&2
+            exit 1
+          fi
+          echo "Promoting fork branch '${BRANCH}' into ${UPSTREAM}:${BASE}"
+
+          git config user.name "Herik Webb"
+          git config user.email "herikwebb@users.noreply.github.com"
+
+          git remote add upstream "https://github.com/${UPSTREAM}.git" 2>/dev/null \
+            || git remote set-url upstream "https://github.com/${UPSTREAM}.git"
+          git fetch --no-tags upstream "${BASE}"
+          git fetch --no-tags origin main "${BRANCH}"
+
+          # The branch's OWN changes: diff from where it left the fork history.
+          # A branch based on the fork's main and one based on the upstream tip
+          # both reduce to just the commits they added, so fork baggage merely
+          # inherited from the base never enters the promotion.
+          mb="$(git merge-base "origin/${BRANCH}" origin/main 2>/dev/null || true)"
+          if [ -z "${mb}" ]; then
+            mb="$(git merge-base "origin/${BRANCH}" "upstream/${BASE}")"
+          fi
+
+          promotable=()
+          while IFS= read -r f; do
+            [ -n "${f}" ] || continue
+            drop=false
+            for p in ${FORK_ONLY_PATHS}; do
+              if [ "${f}" = "${p}" ]; then drop=true; break; fi
+            done
+            ${drop} || promotable+=("${f}")
+          done < <(git diff --name-only "${mb}...origin/${BRANCH}")
+
+          if [ "${#promotable[@]}" -eq 0 ]; then
+            echo "::notice::'${BRANCH}' has no upstream-relevant changes (fork-only); nothing to promote."
+            exit 0
+          fi
+          printf 'Promotable files:\n'
+          printf '  %s\n' "${promotable[@]}"
+
+          # Build a clean promotion branch = upstream tip + only those files, so
+          # the cross-fork PR never carries fork automation or the fork's base.
+          PROMO="promote/${BRANCH}"
+          git checkout -B "${PROMO}" "upstream/${BASE}"
+          for f in "${promotable[@]}"; do
+            if git cat-file -e "origin/${BRANCH}:${f}" 2>/dev/null; then
+              mkdir -p "$(dirname "${f}")"
+              git checkout "origin/${BRANCH}" -- "${f}"
+            else
+              git rm -q --ignore-unmatch -- "${f}"
+            fi
+          done
+
+          if git diff --cached --quiet; then
+            echo "::notice::Promotable files already match ${UPSTREAM}:${BASE}; nothing to promote."
+            exit 0
+          fi
+
+          # Derive the PR title/body from the branch's head commit so upstream
+          # gets the real context the commit already documents.
+          full="$(git log -1 --format='%B' "origin/${BRANCH}")"
+          title="$(printf '%s\n' "${full}" | head -n1)"
+          body="$(printf '%s\n' "${full}" | tail -n +2 | awk 'NF{f=1} f{print}')"
+          if [ -z "${body}" ]; then
+            body="Automated promotion of ${BRANCH} after review sign-off."
+          fi
+
+          git commit -m "${title}" -m "${body}"
+          git push -f origin "${PROMO}"
+
+          # Open (or refresh) the cross-fork PR from the clean promotion branch.
+          # REST throughout (not `gh pr create/edit`): gh's porcelain issues
+          # GraphQL that needs read:org / read:discussion scopes a least-
+          # privilege repo/public_repo PAT lacks; REST pulls need only repo scope.
+          head_ref="${FORK_OWNER}:${PROMO}"
+          existing_num="$(gh api -X GET "repos/${UPSTREAM}/pulls" \
+            -f head="${head_ref}" -f state=open --jq '.[0].number // ""')"
+          if [ -n "${existing_num}" ]; then
+            url="$(gh api -X PATCH "repos/${UPSTREAM}/pulls/${existing_num}" \
+              -f title="${title}" -f body="${body}" --jq '.html_url')"
+            echo "Updated existing PR: ${url}"
+          else
+            url="$(gh api -X POST "repos/${UPSTREAM}/pulls" \
+              -f title="${title}" -f body="${body}" \
+              -f head="${head_ref}" -f base="${BASE}" --jq '.html_url')"
+            echo "Opened: ${url}"
+          fi
+          echo "Promotion PR: ${url}" >> "${GITHUB_STEP_SUMMARY}"
