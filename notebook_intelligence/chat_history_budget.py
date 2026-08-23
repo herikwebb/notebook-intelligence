@@ -1,5 +1,7 @@
 # Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
+import logging
+from functools import lru_cache
 from typing import Any
 
 import tiktoken
@@ -7,18 +9,28 @@ import tiktoken
 
 CHAT_INPUT_BUDGET_RATIO = 0.8
 MESSAGE_OVERHEAD_TOKENS = 4
+# A deterministic cross-provider baseline. Exact vision token cost varies by
+# provider, resolution, and detail mode. The 20% output reserve reduces, but
+# cannot eliminate, that variance without provider-specific image inspection.
 IMAGE_TOKEN_ESTIMATE = 1024
 CONTEXT_OMISSION_NOTICE = (
     "\n\n[Context note: Some earlier conversation or attached context was "
     "omitted or truncated to fit the model context window.]"
 )
+SHORT_CONTEXT_OMISSION_NOTICE = "\n\n[Context omitted to fit model window.]"
 TRUNCATION_MARKER = "\n...[truncated to fit model context]"
 
-_encoding = tiktoken.encoding_for_model("gpt-4o")
+log = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=1)
+def _get_encoding():
+    """Load tokenizer data on first use, not during extension import."""
+    return tiktoken.encoding_for_model("gpt-4o")
 
 
 def text_token_count(text: str) -> int:
-    return len(_encoding.encode(text))
+    return len(_get_encoding().encode(text))
 
 
 def truncate_text(
@@ -29,19 +41,24 @@ def truncate_text(
     if token_budget <= 0 or text == "":
         return ""
 
-    encoded = _encoding.encode(text)
+    encoding = _get_encoding()
+    encoded = encoding.encode(text)
     if len(encoded) <= token_budget:
         return text
 
-    marker_tokens = text_token_count(marker)
-    prefix_size = token_budget - marker_tokens
-    while prefix_size > 0:
-        prefix = _encoding.decode(encoded[:prefix_size]).rstrip()
+    low = 1
+    high = len(encoded) - 1
+    best = ""
+    while low <= high:
+        prefix_size = (low + high) // 2
+        prefix = encoding.decode(encoded[:prefix_size]).rstrip()
         candidate = prefix + marker
         if text_token_count(candidate) <= token_budget:
-            return candidate
-        prefix_size -= 1
-    return ""
+            best = candidate
+            low = prefix_size + 1
+        else:
+            high = prefix_size - 1
+    return best
 
 
 def _content_token_count(content: Any) -> int:
@@ -95,12 +112,22 @@ def _truncate_text_message(message: dict, token_budget: int) -> dict | None:
     return truncated
 
 
-def _complete_turns(messages: list[dict]) -> list[list[dict]]:
-    """Return complete user-to-assistant turns, dropping orphaned messages."""
+def _partition_turns(
+    messages: list[dict],
+) -> tuple[list[list[dict]], list[dict]]:
+    """Split complete user turns from the unfinished trailing sequence."""
     turns = []
     current_turn = []
     for message in messages:
         role = message.get("role")
+        if role == "user" and any(
+            item.get("role") in {"assistant", "tool"}
+            for item in current_turn
+        ):
+            # A new user message cannot continue an unfinished tool-call
+            # exchange. Discard that incomplete turn and start a fresh one.
+            current_turn = [message]
+            continue
         if not current_turn:
             if role != "user":
                 continue
@@ -108,18 +135,21 @@ def _complete_turns(messages: list[dict]) -> list[list[dict]]:
         else:
             current_turn.append(message)
 
-        if role == "assistant":
+        if role == "assistant" and not message.get("tool_calls"):
             turns.append(current_turn)
             current_turn = []
-    return turns
+    return turns, current_turn
 
 
-def _with_omission_notice(system_messages: list[dict]) -> list[dict]:
+def _with_omission_notice(
+    system_messages: list[dict],
+    notice: str = CONTEXT_OMISSION_NOTICE,
+) -> list[dict]:
     updated = [message.copy() for message in system_messages]
     if updated and isinstance(updated[-1].get("content"), str):
-        updated[-1]["content"] += CONTEXT_OMISSION_NOTICE
+        updated[-1]["content"] += notice
     else:
-        updated.append({"role": "system", "content": CONTEXT_OMISSION_NOTICE.strip()})
+        updated.append({"role": "system", "content": notice.strip()})
     return updated
 
 
@@ -137,6 +167,12 @@ def budget_chat_messages(
         return list(messages)
 
     input_budget = max(1, int(context_window * CHAT_INPUT_BUDGET_RATIO))
+    total_tokens = sum(
+        estimate_message_tokens(message) for message in messages
+    )
+    if total_tokens <= input_budget:
+        return list(messages)
+
     system_end = 0
     while (
         system_end < len(messages)
@@ -160,29 +196,49 @@ def budget_chat_messages(
     latest_user = conversation[latest_user_index]
     trailing_messages = conversation[latest_user_index + 1:]
     preceding_messages = conversation[:latest_user_index]
-    last_assistant_index = next(
-        (
-            index
-            for index in range(len(preceding_messages) - 1, -1, -1)
-            if preceding_messages[index].get("role") == "assistant"
-        ),
-        -1,
+    complete_turns, trailing_sequence = _partition_turns(preceding_messages)
+    current_context = (
+        trailing_sequence
+        if all(message.get("role") == "user" for message in trailing_sequence)
+        else []
     )
-    past_messages = preceding_messages[:last_assistant_index + 1]
-    current_context = preceding_messages[last_assistant_index + 1:]
-    complete_turns = _complete_turns(past_messages)
-    normalized_past_messages = [
-        message for turn in complete_turns for message in turn
+    base_mandatory_messages = [
+        *system_messages,
+        latest_user,
+        *trailing_messages,
     ]
-    needs_pruning = (
-        sum(estimate_message_tokens(message) for message in messages)
-        > input_budget
-        or normalized_past_messages != past_messages
+    base_mandatory_tokens = sum(
+        estimate_message_tokens(message)
+        for message in base_mandatory_messages
     )
-    if not needs_pruning:
-        return list(messages)
-
-    system_messages = _with_omission_notice(system_messages)
+    if base_mandatory_tokens > input_budget:
+        log.warning(
+            "Mandatory chat context requires %d estimated tokens, exceeding "
+            "the %d-token input budget; preserving the system prompt and "
+            "newest user request",
+            base_mandatory_tokens,
+            input_budget,
+        )
+    else:
+        for notice in (
+            CONTEXT_OMISSION_NOTICE,
+            SHORT_CONTEXT_OMISSION_NOTICE,
+        ):
+            candidate_system_messages = _with_omission_notice(
+                system_messages,
+                notice,
+            )
+            candidate_mandatory_messages = [
+                *candidate_system_messages,
+                latest_user,
+                *trailing_messages,
+            ]
+            if sum(
+                estimate_message_tokens(message)
+                for message in candidate_mandatory_messages
+            ) <= input_budget:
+                system_messages = candidate_system_messages
+                break
 
     mandatory_messages = [*system_messages, latest_user, *trailing_messages]
     remaining_budget = max(

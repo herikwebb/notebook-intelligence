@@ -6,7 +6,11 @@ import json
 from unittest.mock import Mock, patch, MagicMock
 from tornado.httputil import HTTPServerRequest
 from tornado.web import Application
-from notebook_intelligence.extension import WebsocketCopilotHandler
+from notebook_intelligence.extension import (
+    WebsocketCopilotHandler,
+    _token_count,
+    _truncate_context_content,
+)
 from notebook_intelligence.api import ChatResponse
 from notebook_intelligence.claude import ClaudeCodeChatParticipant
 from notebook_intelligence.context_factory import RuleContextFactory
@@ -16,6 +20,14 @@ from notebook_intelligence.ruleset import RuleContext
 
 
 class TestWebsocketHandlerIntegration:
+    def test_context_budget_helpers_use_strict_shared_token_policy(self):
+        assert _token_count("shared token counter") > 0
+        assert _truncate_context_content("large context " * 100, 1) == ""
+
+        truncated = _truncate_context_content("large context " * 100, 16)
+        assert truncated.endswith("\n...[truncated]")
+        assert _token_count(truncated) <= 16
+
     def _create_mock_application(self):
         """Create a properly mocked Tornado Application.
 
