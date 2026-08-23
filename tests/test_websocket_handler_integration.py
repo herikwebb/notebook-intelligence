@@ -5,6 +5,7 @@ from tornado.httputil import HTTPServerRequest
 from tornado.web import Application
 from notebook_intelligence.extension import WebsocketCopilotHandler
 from notebook_intelligence.context_factory import RuleContextFactory
+from notebook_intelligence.prompts import Prompts
 from notebook_intelligence.ruleset import RuleContext
 
 
@@ -164,6 +165,11 @@ class TestWebsocketHandlerIntegration:
         
         # Verify thread was started
         mock_thread.assert_called_once()
+
+        options = mock_ai_manager.handle_chat_request.call_args.kwargs['options']
+        assert options['system_prompt'] == Prompts.inline_chat_system_prompt(
+            'python'
+        )
     
     @patch('notebook_intelligence.extension.ai_service_manager')
     @patch('notebook_intelligence.extension.NotebookIntelligence')
