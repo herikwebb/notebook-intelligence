@@ -3711,7 +3711,7 @@ class NotebookIntelligence(ExtensionApp):
     )
 
     def initialize_settings(self):
-        pass
+        warm_tokenizer_encoding()
 
     def _publish_policies(self, feature_policies: dict, string_overrides: dict) -> None:
         """Wire the resolved policies into the HTTP handlers.
@@ -3725,7 +3725,6 @@ class NotebookIntelligence(ExtensionApp):
         ConfigHandler.string_overrides = string_overrides
 
     def initialize_handlers(self):
-        warm_tokenizer_encoding()
         NotebookIntelligence.root_dir = self.serverapp.root_dir
         set_jupyter_root_dir(NotebookIntelligence.root_dir)
         server_root_dir = os.path.expanduser(self.serverapp.web_app.settings["server_root_dir"])

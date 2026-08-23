@@ -1,6 +1,8 @@
 import logging
 from unittest.mock import Mock
 
+import pytest
+
 import notebook_intelligence.chat_history_budget as budget_module
 from notebook_intelligence.chat_history_budget import (
     CHAT_INPUT_BUDGET_RATIO,
@@ -9,8 +11,36 @@ from notebook_intelligence.chat_history_budget import (
     budget_chat_messages,
     estimate_message_tokens,
     text_token_count,
+    truncate_text,
     warm_tokenizer_encoding,
 )
+
+
+class _CharacterEncoding:
+    def encode(self, text):
+        return [ord(character) for character in text]
+
+    def decode(self, tokens):
+        return "".join(chr(token) for token in tokens)
+
+
+class _ImmediateThread:
+    def __init__(self, target, **_kwargs):
+        self.target = target
+
+    def start(self):
+        self.target()
+
+
+@pytest.fixture(autouse=True)
+def stable_tokenizer_state(monkeypatch):
+    monkeypatch.setattr(
+        budget_module,
+        "_tokenizer_encoding",
+        _CharacterEncoding(),
+    )
+    monkeypatch.setattr(budget_module, "_tokenizer_load_attempts", 0)
+    monkeypatch.setattr(budget_module, "_tokenizer_load_in_progress", False)
 
 
 def test_messages_under_budget_are_unchanged():
@@ -23,53 +53,84 @@ def test_messages_under_budget_are_unchanged():
 
 
 def test_tokenizer_encoding_is_loaded_lazily_and_cached(monkeypatch):
-    encoding = Mock()
-    encoding.encode.return_value = [1, 2]
+    encoding = _CharacterEncoding()
     encoding_for_model = Mock(return_value=encoding)
-    budget_module._get_encoding.cache_clear()
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
+    monkeypatch.setattr(budget_module.threading, "Thread", _ImmediateThread)
     monkeypatch.setattr(
         budget_module.tiktoken,
         "encoding_for_model",
         encoding_for_model,
     )
 
-    try:
-        assert budget_module._get_encoding.cache_info().currsize == 0
-        assert text_token_count("first") == 2
-        assert text_token_count("second") == 2
-        encoding_for_model.assert_called_once_with("gpt-4o")
-    finally:
-        budget_module._get_encoding.cache_clear()
+    assert text_token_count("first") == 5
+    assert text_token_count("second") == 6
+    encoding_for_model.assert_called_once_with("gpt-4o")
 
 
-def test_tokenizer_load_failure_uses_cached_utf8_fallback(monkeypatch, caplog):
+def test_tokenizer_load_failure_retries_then_caches_success(
+    monkeypatch,
+    caplog,
+):
+    encoding = _CharacterEncoding()
+    encoding_for_model = Mock(
+        side_effect=[RuntimeError("offline"), encoding]
+    )
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
+    monkeypatch.setattr(budget_module.threading, "Thread", _ImmediateThread)
+    monkeypatch.setattr(
+        budget_module.tiktoken,
+        "encoding_for_model",
+        encoding_for_model,
+    )
+
+    with caplog.at_level(logging.WARNING):
+        assert text_token_count("abcdefgh") == 3
+        assert text_token_count("abcdefgh") == 8
+        assert text_token_count("abcdefgh") == 8
+
+    assert encoding_for_model.call_count == 2
+    assert "using the UTF-8 size fallback" in caplog.text
+
+
+def test_tokenizer_load_retries_are_bounded(monkeypatch):
     encoding_for_model = Mock(side_effect=RuntimeError("offline"))
-    budget_module._get_encoding.cache_clear()
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
+    monkeypatch.setattr(budget_module.threading, "Thread", _ImmediateThread)
     monkeypatch.setattr(
         budget_module.tiktoken,
         "encoding_for_model",
         encoding_for_model,
     )
 
-    try:
-        with caplog.at_level(logging.WARNING):
-            assert text_token_count("abcdefgh") == 3
-            assert text_token_count("abcdefgh") == 3
-        encoding_for_model.assert_called_once_with("gpt-4o")
-        assert "using the UTF-8 size fallback" in caplog.text
-    finally:
-        budget_module._get_encoding.cache_clear()
+    for _ in range(5):
+        text_token_count("abcdefgh")
+
+    assert encoding_for_model.call_count == 3
+
+
+def test_tokenizer_truncation_uses_a_bounded_number_of_encodes(monkeypatch):
+    text = "a" * 1000
+    encoding = Mock(wraps=_CharacterEncoding())
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", encoding)
+
+    truncated = truncate_text(text, 100)
+
+    assert truncated.endswith("\n...[truncated]")
+    assert encoding.encode.call_count <= 6
+    assert sum(call.args[0] == text for call in encoding.encode.call_args_list) == 1
 
 
 def test_tokenizer_warmup_starts_a_daemon_thread(monkeypatch):
     thread = Mock()
     thread_class = Mock(return_value=thread)
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
     monkeypatch.setattr(budget_module.threading, "Thread", thread_class)
 
     warm_tokenizer_encoding()
 
     thread_class.assert_called_once_with(
-        target=budget_module._get_encoding,
+        target=budget_module._load_tokenizer_encoding,
         name="nbi-tokenizer-warmup",
         daemon=True,
     )
@@ -122,14 +183,14 @@ def test_current_context_is_prioritized_and_truncated():
         {"role": "user", "content": "current question"},
     ]
 
-    result = budget_chat_messages(messages, 128)
+    result = budget_chat_messages(messages, 256)
 
     assert result[-1] == messages[-1]
     assert result[-2]["role"] == "user"
     assert result[-2]["content"].endswith(TRUNCATION_MARKER)
     assert len(result[-2]["content"]) < len(messages[-2]["content"])
     assert sum(estimate_message_tokens(message) for message in result) <= int(
-        128 * CHAT_INPUT_BUDGET_RATIO
+        256 * CHAT_INPUT_BUDGET_RATIO
     )
 
 
@@ -239,13 +300,80 @@ def test_multimodal_context_uses_fixed_image_estimate_and_is_omitted():
     messages = [
         {"role": "system", "content": "Be concise."},
         image_context,
+        {"role": "user", "content": "small later context"},
         {"role": "user", "content": "current question"},
     ]
 
     result = budget_chat_messages(messages, 256)
 
     assert image_context not in result
+    assert result[-2]["content"] == "small later context"
     assert result[-1]["content"] == "current question"
+
+
+def test_oversized_multimodal_request_is_reduced_to_bounded_text():
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "mandatory request " * 500},
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "data:image/png;base64,abc"},
+                },
+            ],
+        },
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert result[-1]["content"][0]["type"] == "text"
+    assert result[-1]["content"][0]["text"].endswith(TRUNCATION_MARKER)
+    assert all(
+        item.get("type") != "image_url"
+        for item in result[-1]["content"]
+    )
+    assert sum(estimate_message_tokens(message) for message in result) <= int(
+        128 * CHAT_INPUT_BUDGET_RATIO
+    )
+
+
+def test_oversized_image_only_request_gets_a_bounded_text_placeholder():
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "data:image/png;base64,abc"},
+                },
+            ],
+        },
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert result[-1]["content"] == [
+        {"type": "text", "text": "[Image omitted to fit model context.]"}
+    ]
+    assert sum(estimate_message_tokens(message) for message in result) <= int(
+        128 * CHAT_INPUT_BUDGET_RATIO
+    )
+
+
+def test_over_budget_messages_without_a_user_request_are_dropped(caplog):
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {"role": "assistant", "content": "orphaned answer " * 500},
+    ]
+
+    with caplog.at_level(logging.WARNING):
+        result = budget_chat_messages(messages, 128)
+
+    assert result == []
+    assert "no user request" in caplog.text
 
 
 def test_system_and_latest_user_survive_an_extremely_small_window(caplog):

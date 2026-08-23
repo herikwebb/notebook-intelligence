@@ -6,6 +6,10 @@ from notebook_intelligence.base_chat_participant import BaseChatParticipant
 from notebook_intelligence.base_chat_participant import CreateNewNotebookTool
 from notebook_intelligence.base_chat_participant import ListAvailableNotebookKernelsTool
 from notebook_intelligence.api import ChatRequest, ChatResponse, ChatMode, CancelToken
+from notebook_intelligence.chat_history_budget import (
+    CHAT_INPUT_BUDGET_RATIO,
+    estimate_message_tokens,
+)
 from notebook_intelligence.ruleset import RuleContext
 from notebook_intelligence.rule_injector import RuleInjector
 
@@ -131,7 +135,7 @@ class TestBaseChatParticipantIntegration:
             message["content"] == "old question " * 500 for message in messages
         )
 
-    def test_builtin_generation_paths_budget_messages(self, monkeypatch):
+    def test_builtin_generation_paths_budget_messages(self):
         participant = BaseChatParticipant()
         chat_model = Mock()
         chat_model.context_window = 256
@@ -142,14 +146,12 @@ class TestBaseChatParticipantIntegration:
         ]
         request = Mock(spec=ChatRequest)
         request.host.chat_model = chat_model
-        request.chat_history = [{"role": "user", "content": "Generate it"}]
+        request.chat_history = [
+            {"role": "user", "content": "old question " * 500},
+            {"role": "assistant", "content": "old answer " * 500},
+            {"role": "user", "content": "Generate it"},
+        ]
         request.prompt = "Generate it"
-        budget_mock = Mock(side_effect=lambda messages, _window: messages)
-        monkeypatch.setattr(
-            base_participant_module,
-            "budget_chat_messages",
-            budget_mock,
-        )
 
         asyncio.run(participant.generate_code_cell(request))
         asyncio.run(participant.generate_markdown_for_code(request, "print('hello')"))
@@ -159,11 +161,29 @@ class TestBaseChatParticipantIntegration:
         response.run_ui_command = AsyncMock(return_value={"path": "generated.py"})
         asyncio.run(participant.handle_ask_mode_chat_request(request, response))
 
-        assert budget_mock.call_count == 3
-        assert all(call.args[1] == 256 for call in budget_mock.call_args_list)
+        assert chat_model.completions.call_count == 3
+        for call in chat_model.completions.call_args_list:
+            messages = call.args[0]
+            assert not any(
+                message.get("content") == "old question " * 500
+                for message in messages
+            )
+            assert not any(
+                message.get("content") == "old answer " * 500
+                for message in messages
+            )
+            assert sum(
+                estimate_message_tokens(message) for message in messages
+            ) <= int(256 * CHAT_INPUT_BUDGET_RATIO)
 
-    def test_handle_chat_request_agent_mode_with_rules(self):
+    def test_handle_chat_request_agent_mode_with_rules(self, monkeypatch):
         """Test agent mode chat request handling with rule injection."""
+        budget_mock = Mock()
+        monkeypatch.setattr(
+            base_participant_module,
+            "budget_chat_messages",
+            budget_mock,
+        )
         mock_injector = Mock(spec=RuleInjector)
         mock_injector.inject_rules.return_value = "Enhanced agent prompt"
         
@@ -225,6 +245,7 @@ class TestBaseChatParticipantIntegration:
         
         assert "system_prompt" in options
         assert options["system_prompt"] == "Enhanced agent prompt"
+        budget_mock.assert_not_called()
 
     def test_handle_ask_mode_new_notebook_uses_request_language_and_kernel(self):
         participant = BaseChatParticipant()

@@ -2,7 +2,6 @@
 
 import logging
 import threading
-from functools import lru_cache
 from typing import Any
 
 import tiktoken
@@ -22,29 +21,64 @@ SHORT_CONTEXT_OMISSION_NOTICE = "\n\n[Context omitted to fit model window.]"
 TRUNCATION_MARKER = "\n...[truncated to fit model context]"
 
 log = logging.getLogger(__name__)
+_TOKENIZER_MAX_LOAD_ATTEMPTS = 3
+_IMAGE_OMISSION_TEXT = "[Image omitted to fit model context.]"
+_tokenizer_lock = threading.Lock()
+_tokenizer_encoding: Any | None = None
+_tokenizer_load_attempts = 0
+_tokenizer_load_in_progress = False
 
 
-@lru_cache(maxsize=1)
-def _get_encoding():
-    """Load tokenizer data on first use, not during extension import."""
+def _load_tokenizer_encoding() -> None:
+    global _tokenizer_encoding, _tokenizer_load_in_progress
     try:
-        return tiktoken.encoding_for_model("gpt-4o")
+        encoding = tiktoken.encoding_for_model("gpt-4o")
     except Exception as error:
         log.warning(
-            "Could not load the gpt-4o tokenizer; using the UTF-8 size "
-            "fallback for chat context budgeting: %s",
+            "Could not warm the gpt-4o tokenizer; using the UTF-8 size "
+            "fallback until a later retry succeeds: %s",
             error,
         )
-        return None
+        encoding = None
+    with _tokenizer_lock:
+        if encoding is not None:
+            _tokenizer_encoding = encoding
+        _tokenizer_load_in_progress = False
 
 
 def warm_tokenizer_encoding() -> None:
-    """Warm tokenizer data off the Jupyter server's event-loop thread."""
-    threading.Thread(
-        target=_get_encoding,
+    """Warm tokenizer data asynchronously, retrying transient failures."""
+    global _tokenizer_load_attempts, _tokenizer_load_in_progress
+    with _tokenizer_lock:
+        if (
+            _tokenizer_encoding is not None
+            or _tokenizer_load_in_progress
+            or _tokenizer_load_attempts >= _TOKENIZER_MAX_LOAD_ATTEMPTS
+        ):
+            return
+        _tokenizer_load_attempts += 1
+        _tokenizer_load_in_progress = True
+    thread = threading.Thread(
+        target=_load_tokenizer_encoding,
         name="nbi-tokenizer-warmup",
         daemon=True,
-    ).start()
+    )
+    try:
+        thread.start()
+    except Exception:
+        with _tokenizer_lock:
+            _tokenizer_load_in_progress = False
+        raise
+
+
+def _get_encoding():
+    with _tokenizer_lock:
+        encoding = _tokenizer_encoding
+    if encoding is None:
+        warm_tokenizer_encoding()
+        with _tokenizer_lock:
+            encoding = _tokenizer_encoding
+    return encoding
 
 
 def _fallback_text_token_count(text: str) -> int:
@@ -71,28 +105,40 @@ def truncate_text(
     if token_budget <= 0 or text == "":
         return ""
 
-    if text_token_count(text) <= token_budget:
-        return text
-
     encoding = _get_encoding()
-    encoded = encoding.encode(text) if encoding is not None else None
-    low = 1
-    high = (len(encoded) if encoded is not None else len(text)) - 1
-    best = ""
-    while low <= high:
-        prefix_size = (low + high) // 2
-        prefix = (
-            encoding.decode(encoded[:prefix_size])
-            if encoding is not None
-            else text[:prefix_size]
+    if encoding is None:
+        if _fallback_text_token_count(text) <= token_budget:
+            return text
+        marker_bytes = marker.encode("utf-8")
+        available_bytes = token_budget * 3 - len(marker_bytes)
+        if available_bytes <= 0:
+            return ""
+        prefix = text.encode("utf-8")[:available_bytes].decode(
+            "utf-8", errors="ignore"
         ).rstrip()
+        return prefix + marker if prefix else ""
+
+    encoded = encoding.encode(text)
+    if len(encoded) <= token_budget:
+        return text
+    marker_tokens = len(encoding.encode(marker))
+    prefix_size = token_budget - marker_tokens
+    if prefix_size <= 0:
+        return ""
+
+    # BPE merges at the prefix/marker boundary can make the combined candidate
+    # a few tokens larger than the sum of its parts. Correct a bounded number
+    # of times; if the boundary remains pathological, return the marker alone.
+    for _ in range(4):
+        prefix = encoding.decode(encoded[:prefix_size]).rstrip()
         candidate = prefix + marker
-        if text_token_count(candidate) <= token_budget:
-            best = candidate
-            low = prefix_size + 1
-        else:
-            high = prefix_size - 1
-    return best
+        candidate_tokens = len(encoding.encode(candidate))
+        if candidate_tokens <= token_budget:
+            return candidate
+        prefix_size -= max(1, candidate_tokens - token_budget)
+        if prefix_size <= 0:
+            break
+    return marker if marker_tokens <= token_budget else ""
 
 
 def _content_token_count(content: Any) -> int:
@@ -143,6 +189,40 @@ def _truncate_text_message(message: dict, token_budget: int) -> dict | None:
 
     truncated = message.copy()
     truncated["content"] = truncated_content
+    return truncated
+
+
+def _truncate_mandatory_message(
+    message: dict,
+    token_budget: int,
+) -> dict | None:
+    if isinstance(message.get("content"), str):
+        return _truncate_text_message(message, token_budget)
+
+    content = message.get("content")
+    if not isinstance(content, list):
+        return None
+    text_parts = []
+    for item in content:
+        if isinstance(item, str):
+            text_parts.append(item)
+        elif (
+            isinstance(item, dict)
+            and item.get("type") == "text"
+            and isinstance(item.get("text"), str)
+        ):
+            text_parts.append(item["text"])
+    if not text_parts:
+        text_parts.append(_IMAGE_OMISSION_TEXT)
+
+    text_message = message.copy()
+    text_message["content"] = "\n".join(text_parts)
+    truncated = _truncate_text_message(text_message, token_budget)
+    if truncated is None:
+        return None
+    truncated["content"] = [
+        {"type": "text", "text": truncated["content"]}
+    ]
     return truncated
 
 
@@ -237,7 +317,10 @@ def _budget_chat_messages(
         None,
     )
     if latest_user_index is None:
-        return list(messages)
+        log.warning(
+            "Dropping over-budget chat history because it has no user request"
+        )
+        return []
 
     latest_user = conversation[latest_user_index]
     trailing_messages = conversation[latest_user_index + 1:]
@@ -269,7 +352,7 @@ def _budget_chat_messages(
             message_tokens(message)
             for message in system_messages
         )
-        truncated_latest_user = _truncate_text_message(
+        truncated_latest_user = _truncate_mandatory_message(
             latest_user,
             max(0, input_budget - non_user_mandatory_tokens),
         )
@@ -333,7 +416,7 @@ def _budget_chat_messages(
         if truncated is not None:
             selected_context.append(truncated)
             remaining_budget -= message_tokens(truncated)
-        break
+        continue
 
     selected_turns = []
     for turn in reversed(complete_turns):

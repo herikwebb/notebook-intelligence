@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch, MagicMock
 from tornado.httputil import HTTPServerRequest
 from tornado.web import Application
 from notebook_intelligence.extension import (
+    NotebookIntelligence,
     WebsocketCopilotHandler,
     _token_count,
     _truncate_context_content,
@@ -20,6 +21,14 @@ from notebook_intelligence.ruleset import RuleContext
 
 
 class TestWebsocketHandlerIntegration:
+    def test_initialize_settings_warms_tokenizer(self):
+        with patch(
+            "notebook_intelligence.extension.warm_tokenizer_encoding"
+        ) as warm_tokenizer:
+            NotebookIntelligence.initialize_settings(Mock())
+
+        warm_tokenizer.assert_called_once_with()
+
     def test_context_budget_helpers_use_strict_shared_token_policy(self):
         assert _token_count("shared token counter") > 0
         assert _truncate_context_content("large context " * 100, 1) == ""
