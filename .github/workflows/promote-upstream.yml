@@ -47,6 +47,7 @@ env:
     .github/workflows/promote-upstream.yml
     .github/workflows/check-release.yml
     scripts/review-pr.sh
+    scripts/review-pr-claude.sh
     AGENTS.md
     yarn.lock
 
