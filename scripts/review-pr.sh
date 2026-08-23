@@ -107,6 +107,10 @@ with open(prompt_path, "r", encoding="utf-8", errors="replace") as prompt_file:
 model = os.environ["OPENAI_MODEL"]
 reasoning_effort = os.environ.get("OPENAI_REASONING_EFFORT", "high")
 max_output_tokens = int(os.environ.get("OPENAI_MAX_OUTPUT_TOKENS", "8000"))
+# High reasoning effort can legitimately run several minutes on a large diff
+# before the first byte of the response comes back. 120s was too tight and
+# killed genuinely-in-progress requests, not stuck ones.
+request_timeout = int(os.environ.get("OPENAI_REQUEST_TIMEOUT_SECONDS", "600"))
 
 payload = {
     "model": model,
@@ -137,7 +141,7 @@ request = urllib.request.Request(
 )
 
 try:
-    with urllib.request.urlopen(request, timeout=120) as response:
+    with urllib.request.urlopen(request, timeout=request_timeout) as response:
         data = json.loads(response.read().decode("utf-8"))
 except urllib.error.HTTPError as error:
     detail = error.read().decode("utf-8", errors="replace")

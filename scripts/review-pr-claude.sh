@@ -107,6 +107,11 @@ with open(prompt_path, "r", encoding="utf-8", errors="replace") as prompt_file:
 model = os.environ["CLAUDE_MODEL"]
 reasoning_effort = os.environ.get("CLAUDE_REASONING_EFFORT", "high")
 max_tokens = int(os.environ.get("CLAUDE_MAX_TOKENS", "16000"))
+# Adaptive thinking at high/xhigh/max effort can legitimately run several
+# minutes on a large diff before the first byte of the response comes back.
+# 120s was too tight and killed genuinely-in-progress requests, not stuck
+# ones -- match the Anthropic SDKs' own 10-minute default instead.
+request_timeout = int(os.environ.get("CLAUDE_REQUEST_TIMEOUT_SECONDS", "600"))
 
 payload = {
     "model": model,
@@ -139,7 +144,7 @@ request = urllib.request.Request(
 )
 
 try:
-    with urllib.request.urlopen(request, timeout=120) as response:
+    with urllib.request.urlopen(request, timeout=request_timeout) as response:
         data = json.loads(response.read().decode("utf-8"))
 except urllib.error.HTTPError as error:
     detail = error.read().decode("utf-8", errors="replace")
