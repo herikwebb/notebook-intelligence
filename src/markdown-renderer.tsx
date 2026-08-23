@@ -3,7 +3,6 @@
 import React from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import remarkBreaks from 'remark-breaks';
 import { Prism as SyntaxHighlighterBase } from 'react-syntax-highlighter';
 const SyntaxHighlighter =
   SyntaxHighlighterBase as unknown as React.ComponentType<any>;
@@ -17,7 +16,6 @@ import { PathExt } from '@jupyterlab/coreutils';
 import { MarkdownLink } from './components/markdown-link';
 import { isDarkTheme, writeTextToClipboard } from './utils';
 import { IActiveDocumentInfo } from './tokens';
-import { resolveCodeClassName } from './markdown-code-class';
 
 type MarkdownRendererProps = {
   children: string;
@@ -48,7 +46,7 @@ export function MarkdownRenderer({
     // node handled by `SafeAnchor` below. Any future change that enables
     // raw HTML needs to add a rehype-sanitize pass alongside.
     <Markdown
-      remarkPlugins={[remarkGfm, remarkBreaks]}
+      remarkPlugins={[remarkGfm]}
       components={{
         // CommonMark `<https://...>` autolinks, `[text](url)`, and
         // reference-style links all normalize to the same `a` node.
@@ -97,18 +95,15 @@ export function MarkdownRenderer({
           };
 
           const handleCreateNewNotebookClick = () => {
-            app.commands.execute('notebook-intelligence:create-new-notebook', {
-              language,
-              code: codeString
-            });
+            app.commands.execute(
+              'notebook-intelligence:create-new-notebook-from-py',
+              { language, code: codeString }
+            );
           };
 
           if (inline || !match) {
             return (
-              <code
-                className={resolveCodeClassName(children, className)}
-                {...props}
-              >
+              <code className={className} {...props}>
                 {children}
               </code>
             );

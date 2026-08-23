@@ -27,7 +27,6 @@ export function CheckBoxItem(props: any) {
       role="checkbox"
       aria-checked={checked}
       aria-disabled={disabled || undefined}
-      aria-describedby={props.ariaDescribedBy}
       tabIndex={disabled ? -1 : 0}
       onClick={activate}
       onKeyDown={event => {

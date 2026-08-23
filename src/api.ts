@@ -267,8 +267,6 @@ export type FeaturePolicyName =
   | 'output_followup'
   | 'output_toolbar'
   | 'claude_mode'
-  | 'acp_mode'
-  | 'acp_full_access'
   | 'claude_continue_conversation'
   | 'claude_code_tools'
   | 'claude_jupyter_ui_tools'
@@ -298,10 +296,7 @@ export type SettingLockName =
   | 'claude_chat_model'
   | 'claude_inline_completion_model'
   | 'claude_api_key'
-  | 'claude_base_url'
-  | 'acp_chat_model'
-  | 'acp_api_key'
-  | 'acp_base_url';
+  | 'claude_base_url';
 
 export type ISettingLocks = Record<SettingLockName, { locked: boolean }>;
 
@@ -394,26 +389,6 @@ export class NBIConfig {
     return this.capabilities.claude_settings;
   }
 
-  get acpSettings(): any {
-    return this.capabilities.acp_settings ?? {};
-  }
-
-  // The agent types selectable in ACP mode (settings dropdown).
-  get acpAgents(): { id: string; label: string }[] {
-    return this.capabilities.acp_agents ?? [];
-  }
-
-  // The single agent mode currently handling chat ('claude' | 'acp'), or
-  // null when the native provider path is in use. Claude mode and ACP mode
-  // are mutually exclusive.
-  get activeAgentMode(): string | null {
-    return this.capabilities.active_agent_mode ?? null;
-  }
-
-  get isInAcpMode(): boolean {
-    return this.activeAgentMode === 'acp';
-  }
-
   get spinnerVerbs(): { mode: string; verbs: string[] } | null {
     return this.capabilities.spinner_verbs ?? null;
   }
@@ -423,7 +398,7 @@ export class NBIConfig {
   }
 
   get isInClaudeCodeMode(): boolean {
-    return this.activeAgentMode === 'claude';
+    return this.claudeSettings.enabled === true;
   }
 
   get isClaudeCliAvailable(): boolean {
@@ -526,8 +501,6 @@ export class NBIConfig {
       'output_followup',
       'output_toolbar',
       'claude_mode',
-      'acp_mode',
-      'acp_full_access',
       'claude_continue_conversation',
       'claude_code_tools',
       'claude_jupyter_ui_tools',
@@ -586,10 +559,7 @@ export class NBIConfig {
       'claude_chat_model',
       'claude_inline_completion_model',
       'claude_api_key',
-      'claude_base_url',
-      'acp_chat_model',
-      'acp_api_key',
-      'acp_base_url'
+      'claude_base_url'
     ];
     const result = {} as ISettingLocks;
     for (const name of names) {
@@ -707,7 +677,6 @@ export class NBIAPI {
   static getChatEnabled() {
     return (
       this.config.isInClaudeCodeMode ||
-      this.config.isInAcpMode ||
       (this.config.chatModel.provider === GITHUB_COPILOT_PROVIDER_ID
         ? !this.getGHLoginRequired()
         : this.config.llmProviders.find(
@@ -1286,8 +1255,6 @@ export class NBIAPI {
     chatId: string,
     prompt: string,
     language: string,
-    kernelName: string,
-    kernelDisplayName: string,
     currentDirectory: string,
     filename: string,
     additionalContext: IContextItem[],
@@ -1305,8 +1272,6 @@ export class NBIAPI {
           chatId,
           prompt,
           language,
-          kernelName,
-          kernelDisplayName,
           currentDirectory,
           filename,
           additionalContext,
@@ -1340,7 +1305,6 @@ export class NBIAPI {
     suffix: string,
     existingCode: string,
     language: string,
-    kernelName: string,
     filename: string,
     responseEmitter: IChatCompletionResponseEmitter
   ) {
@@ -1356,7 +1320,6 @@ export class NBIAPI {
           suffix,
           existingCode,
           language,
-          kernelName,
           filename
         }
       })
@@ -1456,31 +1419,6 @@ export class NBIAPI {
           console.error(`Failed to resume Claude session.\n${reason}`);
           reject(reason);
         });
-    });
-  }
-
-  static async listAcpSessions(): Promise<IClaudeSessionList> {
-    interface IWireResponse {
-      sessions?: IClaudeSessionInfo[];
-      current_cwd?: string;
-      error?: string;
-    }
-    const data = await requestAPI<IWireResponse>('acp-sessions', {
-      method: 'GET'
-    });
-    if (data.error) {
-      throw new Error(data.error);
-    }
-    return {
-      sessions: data.sessions ?? [],
-      currentCwd: data.current_cwd ?? ''
-    };
-  }
-
-  static async resumeAcpSession(sessionId: string): Promise<void> {
-    await requestAPI<any>('acp-sessions/resume', {
-      method: 'POST',
-      body: JSON.stringify({ session_id: sessionId })
     });
   }
 

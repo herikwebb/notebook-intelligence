@@ -26,11 +26,6 @@ CLAUDE_SETTINGS_OVERRIDES = (
     ("claude_api_key", "api_key"),
     ("claude_base_url", "base_url"),
 )
-ACP_SETTINGS_OVERRIDES = (
-    ("acp_chat_model", "chat_model"),
-    ("acp_api_key", "api_key"),
-    ("acp_base_url", "base_url"),
-)
 
 
 def resolve_feature_flag(policy: str, user_setting: bool) -> Tuple[bool, bool]:
@@ -58,22 +53,6 @@ def is_force_off(policies: dict, name: str) -> bool:
     disabled" answer.
     """
     return policies.get(name, POLICY_USER_CHOICE) == POLICY_FORCE_OFF
-
-
-def is_external_ui_tools_active(claude_settings: dict) -> bool:
-    """True iff the Jupyter-UI tools are enabled AND served by the external MCP
-    proxy rather than the in-process sdk server.
-
-    Single source of truth for the transport decision: ``claude.py`` reads it to
-    choose which MCP server to register (and whether to hand the bridge secret to
-    the subprocess env), and ``extension.py``'s UI-tools relay reads it per request
-    to decide whether to serve or refuse. Both call sites must resolve the same
-    live ``claude_settings`` the same way, or the transport and the relay gate can
-    drift out of lockstep.
-    """
-    return JUPYTER_UI_TOOLS_ID in (claude_settings.get("tools") or []) and bool(
-        claude_settings.get("jupyter_ui_tools_external", False)
-    )
 
 
 def apply_string_overrides(target: dict, overrides: dict, mapping: tuple) -> dict:
@@ -106,28 +85,6 @@ def apply_member_policy(members: list, item: str, policy: str) -> list:
     if policy == POLICY_FORCE_OFF:
         return [m for m in members if m != item]
     return list(members)
-
-
-def apply_acp_policies(acp_settings: dict, policies: dict) -> dict:
-    """Apply admin policies to an ``acp_settings`` dict (issue #378).
-
-    Two gates: ``acp_mode`` clamps ``enabled``, and ``acp_full_access``
-    clamps ``full_access`` (the autonomous, run-without-asking posture, which
-    defaults to force-off like Claude's bypass-permissions). Used on both the
-    read path and the write-filter path, like ``apply_claude_policies``.
-    """
-    result = dict(acp_settings or {})
-    mode_policy = policies.get("acp_mode", POLICY_USER_CHOICE)
-    if mode_policy == POLICY_FORCE_ON:
-        result["enabled"] = True
-    elif mode_policy == POLICY_FORCE_OFF:
-        result["enabled"] = False
-    full_access_policy = policies.get("acp_full_access", POLICY_USER_CHOICE)
-    if full_access_policy == POLICY_FORCE_ON:
-        result["full_access"] = True
-    elif full_access_policy == POLICY_FORCE_OFF:
-        result["full_access"] = False
-    return result
 
 
 def apply_claude_policies(claude_settings: dict, policies: dict) -> dict:

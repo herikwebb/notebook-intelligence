@@ -108,8 +108,7 @@ priority: 0
         # Create context for notebook in ask mode
         context = RuleContext(
             filename="test.ipynb",
-            language="python",
-            kernel_name="python3",
+            kernel="python3",
             mode="ask"
         )
         
@@ -130,8 +129,7 @@ priority: 0
         # Create context for Python file in agent mode
         context = RuleContext(
             filename="script.py",
-            language="python",
-            kernel_name="python3",
+            kernel="python3",
             mode="agent"
         )
         
@@ -151,8 +149,7 @@ priority: 0
         
         context = RuleContext(
             filename="test.ipynb",
-            language="python",
-            kernel_name="python3",
+            kernel="python3",
             mode="ask"
         )
         
@@ -174,14 +171,12 @@ priority: 0
         context = factory.create(
             filename="notebooks/analysis.ipynb",
             language="python",
-            kernel_name="python3",
             chat_mode_id="ask",
             root_dir="/workspace"
         )
         
         assert context.filename == "notebooks/analysis.ipynb"
-        assert context.language == "python"
-        assert context.kernel_name == "python3"
+        assert context.kernel == "python"
         assert context.mode == "ask"
         assert context.directory == "/workspace/notebooks"
         assert context.basename == "analysis.ipynb"
@@ -196,8 +191,7 @@ priority: 0
         # Create mock request with context
         context = RuleContext(
             filename="test.ipynb",
-            language="python",
-            kernel_name="python3",
+            kernel="python3",
             mode="ask"
         )
         
@@ -246,8 +240,7 @@ priority: -1
         
         context = RuleContext(
             filename="test.ipynb",
-            language="python",
-            kernel_name="python3",
+            kernel="python3",
             mode="ask"
         )
         
@@ -282,8 +275,7 @@ priority: 0
         
         context = RuleContext(
             filename="test.ipynb",
-            language="python",
-            kernel_name="python3",
+            kernel="python3",
             mode="ask"
         )
         
@@ -301,8 +293,7 @@ priority: 0
         # Test with .txt file (should not match any rules)
         context = RuleContext(
             filename="document.txt",
-            language="text",
-            kernel_name="text",
+            kernel="text",
             mode="ask"
         )
         

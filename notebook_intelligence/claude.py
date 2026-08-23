@@ -4,7 +4,6 @@ import json
 import difflib
 import os
 import sys
-import secrets
 import asyncio
 from enum import Enum
 from pathlib import Path
@@ -17,12 +16,10 @@ import re
 from anyio.abc import Process
 from notebook_intelligence.api import AskUserQuestionData, BackendMessageType, CancelToken, ChatCommand, ChatModel, ChatRequest, ChatResponse, ClaudeToolType, CompletionContext, ConfirmationData, Host, InlineCompletionModel, MarkdownData, ProgressData, SignalImpl, ToolCallData
 from notebook_intelligence.base_chat_participant import BaseChatParticipant
-from notebook_intelligence.claude_sessions import CONTROL_SLASH_COMMANDS
-from notebook_intelligence.feature_flags import is_external_ui_tools_active
 from notebook_intelligence._version import __version__ as NBI_VERSION
 import base64
 import logging
-from claude_agent_sdk import AssistantMessage, PermissionResultAllow, PermissionResultDeny, ResultMessage, TextBlock, ToolResultBlock, ToolUseBlock, UserMessage, create_sdk_mcp_server, ClaudeAgentOptions, ClaudeSDKClient, tool
+from claude_agent_sdk import AssistantMessage, PermissionResultAllow, PermissionResultDeny, TextBlock, ToolResultBlock, ToolUseBlock, UserMessage, create_sdk_mcp_server, ClaudeAgentOptions, ClaudeSDKClient, tool
 
 from notebook_intelligence.util import ThreadSafeWebSocketConnector, _emit, get_jupyter_root_dir, import_litellm, resolve_claude_cli_path, safe_jupyter_path, terminate_process_tree
 
@@ -37,84 +34,14 @@ def _extract_text_from_content(content) -> str:
         return "\n".join(block["text"] for block in content if isinstance(block, dict) and block.get("type") == "text")
     return content
 
-
-def assemble_client_query(query_lines: list[str]) -> str:
-    """Join this turn's user-role lines into the query sent to the CLI.
-
-    The CLI only recognizes a slash command when the query *starts* with
-    it, but NBI appends this turn's context lines (attachment @-mentions,
-    cell pointers, output context) *before* the user's prompt. The old
-    behavior kept only the command line, silently discarding whatever the
-    user had just attached (the footgun documented in extension.py's
-    on_message). Instead:
-
-    - control-only commands (``/clear``, ``/cost``, ...) still drop the
-      context — it is meaningless to them and could break their parsing;
-    - every other command is moved to the front so the CLI still
-      recognizes it, with the context lines preserved after it (a custom
-      skill/plugin command receives them as part of its arguments).
-    """
-    if query_lines and query_lines[-1].startswith('/'):
-        command_line = query_lines[-1]
-        command_token = command_line.split(None, 1)[0].lower()
-        if command_token in CONTROL_SLASH_COMMANDS or len(query_lines) == 1:
-            query_lines = [command_line]
-        else:
-            query_lines = [command_line, *query_lines[:-1]]
-    return "\n".join(line.strip() for line in query_lines)
-
 CLAUDE_CODE_ICON_SVG = '<svg width="1200" height="1200" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg"><g id="g314"><path id="path147" fill="#d97757" stroke="#d97757" d="M 233.959793 800.214905 L 468.644287 668.536987 L 472.590637 657.100647 L 468.644287 650.738403 L 457.208069 650.738403 L 417.986633 648.322144 L 283.892639 644.69812 L 167.597321 639.865845 L 54.926208 633.825623 L 26.577238 627.785339 L 3.3e-05 592.751709 L 2.73832 575.27533 L 26.577238 559.248352 L 60.724873 562.228149 L 136.187973 567.382629 L 249.422867 575.194763 L 331.570496 580.026978 L 453.261841 592.671082 L 472.590637 592.671082 L 475.328857 584.859009 L 468.724915 580.026978 L 463.570557 575.194763 L 346.389313 495.785217 L 219.543671 411.865906 L 153.100723 363.543762 L 117.181267 339.060425 L 99.060455 316.107361 L 91.248367 266.01355 L 123.865784 230.093994 L 167.677887 233.073853 L 178.872513 236.053772 L 223.248367 270.201477 L 318.040283 343.570496 L 441.825592 434.738342 L 459.946411 449.798706 L 467.194672 444.64447 L 468.080597 441.020203 L 459.946411 427.409485 L 392.617493 305.718323 L 320.778564 181.932983 L 288.80542 130.630859 L 280.348999 99.865845 C 277.369171 87.221436 275.194641 76.590698 275.194641 63.624268 L 312.322174 13.20813 L 332.8591 6.604126 L 382.389313 13.20813 L 403.248352 31.328979 L 434.013519 101.71814 L 483.865753 212.537048 L 561.181274 363.221497 L 583.812134 407.919434 L 595.892639 449.315491 L 600.40271 461.959839 L 608.214783 461.959839 L 608.214783 454.711609 L 614.577271 369.825623 L 626.335632 265.61084 L 637.771851 131.516846 L 641.718201 93.745117 L 660.402832 48.483276 L 697.530334 24.000122 L 726.52356 37.852417 L 750.362549 72 L 747.060486 94.067139 L 732.886047 186.201416 L 705.100708 330.52356 L 686.979919 427.167847 L 697.530334 427.167847 L 709.61084 415.087341 L 758.496704 350.174561 L 840.644348 247.490051 L 876.885925 206.738342 L 919.167847 161.71814 L 946.308838 140.29541 L 997.61084 140.29541 L 1035.38269 196.429626 L 1018.469849 254.416199 L 965.637634 321.422852 L 921.825562 378.201538 L 859.006714 462.765259 L 819.785278 530.41626 L 823.409424 535.812073 L 832.75177 534.92627 L 974.657776 504.724915 L 1051.328979 490.872559 L 1142.818848 475.167786 L 1184.214844 494.496582 L 1188.724854 514.147644 L 1172.456421 554.335693 L 1074.604126 578.496765 L 959.838989 601.449829 L 788.939636 641.879272 L 786.845764 643.409485 L 789.261841 646.389343 L 866.255127 653.637634 L 899.194702 655.409424 L 979.812134 655.409424 L 1129.932861 666.604187 L 1169.154419 692.537109 L 1192.671265 724.268677 L 1188.724854 748.429688 L 1128.322144 779.194641 L 1046.818848 759.865845 L 856.590759 714.604126 L 791.355774 698.335754 L 782.335693 698.335754 L 782.335693 703.731567 L 836.69812 756.885986 L 936.322205 846.845581 L 1061.073975 962.81897 L 1067.436279 991.490112 L 1051.409424 1014.120911 L 1034.496704 1011.704712 L 924.885986 929.234924 L 882.604126 892.107544 L 786.845764 811.48999 L 780.483276 811.48999 L 780.483276 819.946289 L 802.550415 852.241699 L 919.087341 1027.409424 L 925.127625 1081.127686 L 916.671204 1098.604126 L 886.469849 1109.154419 L 853.288696 1103.114136 L 785.073914 1007.355835 L 714.684631 899.516785 L 657.906067 802.872498 L 650.979858 806.81897 L 617.476624 1167.704834 L 601.771851 1186.147705 L 565.530212 1200 L 535.328857 1177.046997 L 519.302124 1139.919556 L 535.328857 1066.550537 L 554.657776 970.792053 L 570.362488 894.68457 L 584.536926 800.134277 L 592.993347 768.724976 L 592.429626 766.630859 L 585.503479 767.516968 L 514.22821 865.369263 L 405.825531 1011.865906 L 320.053711 1103.677979 L 299.516815 1111.812256 L 263.919525 1093.369263 L 267.221497 1060.429688 L 287.114136 1031.114136 L 405.825531 880.107361 L 477.422913 786.52356 L 523.651062 732.483276 L 523.328918 724.671265 L 520.590698 724.671265 L 205.288605 929.395935 L 149.154434 936.644409 L 124.993355 914.01355 L 127.973183 876.885986 L 139.409409 864.80542 L 234.201385 799.570435 L 233.879227 799.8927 Z"/></g></svg>'
 CLAUDE_CODE_ICON_URL = f"data:image/svg+xml;base64,{base64.b64encode(CLAUDE_CODE_ICON_SVG.encode('utf-8')).decode('utf-8')}"
-# Fallbacks when the user hasn't picked a model. Chat wants the current
-# Sonnet-tier balance of quality and speed; autocomplete wants the fastest,
-# cheapest tier — a suggestion has to beat the user's next keystroke, and a
-# Sonnet-class model is both slower and several times the cost per token
-# for a surface that fires on every pause in typing.
-CLAUDE_DEFAULT_CHAT_MODEL = "claude-sonnet-5"
-CLAUDE_DEFAULT_INLINE_COMPLETION_MODEL = "claude-haiku-4-5"
-def _bounded_int_env(name: str, default: int, minimum: int, maximum: int) -> int:
-    """Parse an int env var defensively and clamp it to a sane range.
-
-    This runs at import time: a malformed value must degrade to the
-    default with a warning, not raise ``ValueError`` and block the
-    backend from starting. Out-of-range values are clamped so an
-    operator typo (``0``, ``-5``, ``10000``) can't produce failing API
-    requests or restore the unbounded behavior the cap exists to
-    prevent.
-    """
-    raw = os.getenv(name)
-    if raw is None or raw.strip() == "":
-        return default
-    try:
-        value = int(raw)
-    except ValueError:
-        log.warning(
-            "Invalid %s=%r (expected an integer); using default %d",
-            name, raw, default,
-        )
-        return default
-    clamped = max(minimum, min(maximum, value))
-    if clamped != value:
-        log.warning(
-            "%s=%d is outside the supported range [%d, %d]; clamping to %d",
-            name, value, minimum, maximum, clamped,
-        )
-    return clamped
-
-
-# Autocomplete suggestions are at most a few dozen lines; the previous
-# 10K-token ceiling let a rambling response generate for many seconds
-# before the extraction regex threw most of it away. The override is
-# clamped to [1, 4096] so it can't reintroduce that behavior or produce
-# a max_tokens value the API rejects.
-CLAUDE_INLINE_COMPLETION_MAX_TOKENS = _bounded_int_env(
-    "NBI_CLAUDE_INLINE_COMPLETION_MAX_TOKENS", 1024, 1, 4096
-)
+CLAUDE_DEFAULT_CHAT_MODEL = "claude-sonnet-4-5"
+CLAUDE_DEFAULT_INLINE_COMPLETION_MODEL = "claude-sonnet-4-5"
 CLAUDE_CODE_CHAT_PARTICIPANT_ID = "claude-code"
 CLAUDE_CODE_MAX_BUFFER_SIZE = 20 * 1024 * 1024 # 20MB
 
 JUPYTER_UI_TOOLS_SYSTEM_PROMPT = """You can interact with the JupyterLab UI (notebook / file editor, terminal, etc.) using the tools provided in 'nbi' MCP server. Tools in 'nbi' MCP server, directly interact with the JupyterLab UI, accessing notebooks and files open in the UI. When interacting with JupyterLab UI, use relative file paths for file paths. If the user has asked you to create a notebook, save it afterward.
-If you need to create a notebook in a language or kernel that is not already established by the current notebook context, first call the list-available-notebook-kernels tool and choose only from the kernels it returns. Do not guess kernel names.
 """
 
 
@@ -173,7 +100,6 @@ CLAUDE_AGENT_HEARTBEAT_INTERVAL = float(os.getenv("NBI_CLAUDE_AGENT_HEARTBEAT_IN
 # label and a keyword-heuristic kind rather than masking the raw name.
 _CLAUDE_TOOLS: dict[str, tuple[str, str]] = {
     # NBI's MCP toolset (defined in this file via @tool(...))
-    "list-available-notebook-kernels": ("Listing notebook kernels", "read"),
     "create-new-notebook": ("Creating notebook", "edit"),
     "rename-notebook": ("Renaming notebook", "edit"),
     "add-markdown-cell": ("Adding markdown cell", "edit"),
@@ -262,75 +188,6 @@ def claude_tool_kind(name: str) -> str:
                  "view", "open", "show", "find"}:
         return "read"
     return "other"
-
-
-def _format_token_count(count: int) -> str:
-    if count >= 1_000_000:
-        return f"{count / 1_000_000:.1f}M"
-    if count >= 1_000:
-        return f"{count / 1_000:.1f}K"
-    return str(count)
-
-
-def format_result_usage(result: ResultMessage, show_cost: bool = True) -> Optional[str]:
-    """One-line usage footer for a completed Claude Code turn.
-
-    The SDK ends every turn with a ``ResultMessage`` carrying duration,
-    token usage, and cost; NBI used to drop it on the floor, leaving
-    users no signal of what a turn cost short of typing ``/cost``.
-    Returns a small italic markdown line prefixed with a paragraph
-    break — the footer is streamed right after the turn's final text
-    block, and without the separator it would concatenate onto prose
-    that doesn't end in a blank line (``Done.*12.3s · ...*``), breaking
-    the emphasis markup. Returns ``None`` when there is nothing
-    meaningful to show (error results, missing usage) so the caller can
-    skip the footer entirely.
-
-    ``show_cost`` gates the ``$`` segment. The SDK's ``total_cost_usd``
-    is priced from the CLI's built-in public list rates, so it is only
-    trustworthy for a direct first-party API key; on a subscription
-    login the marginal cost is really $0, and enterprise/cloud-endpoint
-    pricing differs. The caller passes ``False`` unless NBI is running
-    against a direct API key on Anthropic's own endpoint (see
-    ``_should_show_turn_cost``) so we omit a figure we can't stand
-    behind, while still showing the always-accurate duration and token
-    counts.
-    """
-    if getattr(result, "is_error", False):
-        return None
-    usage = getattr(result, "usage", None) or {}
-    parts: list[str] = []
-
-    duration_ms = getattr(result, "duration_ms", None)
-    if isinstance(duration_ms, (int, float)) and duration_ms > 0:
-        parts.append(f"{duration_ms / 1000:.1f}s")
-
-    def _count(key: str) -> int:
-        value = usage.get(key, 0)
-        return value if isinstance(value, int) and value > 0 else 0
-
-    total_in = (
-        _count("input_tokens")
-        + _count("cache_read_input_tokens")
-        + _count("cache_creation_input_tokens")
-    )
-    output_tokens = _count("output_tokens")
-    if total_in > 0 or output_tokens > 0:
-        token_part = f"{_format_token_count(total_in)} in"
-        cache_read = _count("cache_read_input_tokens")
-        if cache_read > 0:
-            token_part += f" ({_format_token_count(cache_read)} cached)"
-        token_part += f" / {_format_token_count(output_tokens)} out"
-        parts.append(token_part)
-
-    if show_cost:
-        cost = getattr(result, "total_cost_usd", None)
-        if isinstance(cost, (int, float)) and cost > 0:
-            parts.append(f"${cost:.4f}")
-
-    if not parts:
-        return None
-    return f"\n\n*{' · '.join(parts)}*"
 
 
 # Cap the diff lines surfaced per tool-call card so a large edit doesn't bloat
@@ -632,92 +489,11 @@ def model_info_from_id(model_id: str) -> dict:
 # another doomed thread, hammering api.anthropic.com in parallel when the
 # api_key is missing or wrong.
 _claude_models_cache: list[dict] = []
-# Identity of the endpoint the cache was fetched from — (api_key,
-# base_url) after credential normalization. The cache is only
-# authoritative for that endpoint: a user can switch to a custom
-# base_url whose catalog differs, and resolving a default against
-# another endpoint's model list would send it an id it doesn't serve.
-_claude_models_cache_endpoint: Optional[tuple] = None
 _claude_models_fetch_lock = threading.Lock()
 
 def get_claude_models() -> list[dict]:
     """Return the cached list of available Claude models."""
     return _claude_models_cache
-
-
-def _endpoint_identity(api_key: str = None, base_url: str = None) -> tuple:
-    return (
-        _normalize_anthropic_credential(api_key),
-        _normalize_anthropic_credential(base_url),
-    )
-
-
-def _model_version_key(model_id: str) -> tuple:
-    """Sort key ordering model ids by their numeric version components.
-
-    Plain lexicographic order gets version-like ids wrong —
-    ``claude-sonnet-4-6`` sorts *after* ``claude-sonnet-4-10``. Compare
-    the extracted number sequences instead ([4, 6] < [4, 10] < [5]),
-    with the id itself as a deterministic tiebreak.
-    """
-    return ([int(part) for part in re.findall(r"\d+", model_id)], model_id)
-
-
-def resolve_default_model(preferred: str, tier_prefix: str, api_key: str = None, base_url: str = None) -> str:
-    """Pick a default model id, validated against the fetched model list.
-
-    The ``CLAUDE_DEFAULT_*`` constants name current first-party aliases,
-    but a custom ``base_url`` can front an endpoint that serves a
-    different catalog. When the model cache holds this endpoint's
-    catalog, prefer the constant only if the endpoint actually lists it;
-    otherwise fall back to the newest id in the same tier
-    (``claude-sonnet``/``claude-haiku`` prefix), then to the first
-    listed model. When the cache is empty — or was fetched from a
-    *different* endpoint (credentials changed, refresh still in flight)
-    — trust the constant rather than another endpoint's catalog, and
-    trigger a background refresh so later resolutions converge on this
-    endpoint's catalog.
-    """
-    models = get_claude_models()
-    endpoint_matches = _claude_models_cache_endpoint == _endpoint_identity(api_key, base_url)
-    if not models or not endpoint_matches:
-        if not endpoint_matches and _claude_models_cache_endpoint is not None:
-            # The cache demonstrably belongs to another endpoint (the
-            # credentials changed): kick off a background refresh so
-            # subsequent resolutions see this endpoint's catalog. A
-            # never-stamped cache is left to the startup fetch that
-            # update_models_from_config already fires. The single-flight
-            # lock inside fetch_claude_models dedupes concurrent
-            # attempts; failures leave the cache as-is. Deliberately
-            # never block on the network here — this runs in model
-            # constructors on the request path, and a slow or dead
-            # custom endpoint must degrade to one possibly-failing
-            # request, not a hung chat turn.
-            threading.Thread(
-                target=fetch_claude_models,
-                kwargs={"api_key": api_key, "base_url": base_url},
-                name="nbi-claude-models-refresh",
-                daemon=True,
-            ).start()
-        return preferred
-    ids = [m["id"] for m in models if isinstance(m.get("id"), str)]
-    if preferred in ids:
-        return preferred
-    tier_matches = sorted(
-        (i for i in ids if i.startswith(tier_prefix)), key=_model_version_key
-    )
-    if tier_matches:
-        fallback = tier_matches[-1]
-    elif ids:
-        fallback = ids[0]
-    else:
-        return preferred
-    log.info(
-        "Default model %r is not served by the configured endpoint; using %r",
-        preferred, fallback,
-    )
-    return fallback
-
 
 def _get_context_window(model_id: str) -> int:
     """Get context window size for a model using litellm's model database."""
@@ -739,63 +515,6 @@ def _normalize_anthropic_credential(value: Any) -> str | None:
     if not isinstance(value, str):
         return None
     return value.strip() or None
-
-
-def _is_first_party_anthropic_endpoint(base_url: Any) -> bool:
-    """True when requests go to Anthropic's own API — the only place the
-    SDK's public-list-price ``total_cost_usd`` is meaningful.
-
-    An unset ``base_url`` means the SDK uses its default
-    (``api.anthropic.com``). A custom ``base_url`` (proxy, gateway,
-    Bedrock/Vertex front, OpenAI-compatible endpoint) bills on its own
-    terms, so cost figures priced off Anthropic's list rates can't be
-    trusted there.
-    """
-    from urllib.parse import urlparse
-
-    normalized = _normalize_anthropic_credential(base_url)
-    if normalized is None:
-        return True
-    return (urlparse(normalized).hostname or "").lower() == "api.anthropic.com"
-
-
-def _resolve_effective_credential(settings_value: Any, env_var: str) -> str | None:
-    """Resolve a credential the way the Claude Code subprocess does.
-
-    NBI only overlays ``ANTHROPIC_API_KEY`` / ``ANTHROPIC_BASE_URL`` onto
-    the CLI's environment when the corresponding ``claude_settings`` field
-    is non-empty; that env is merged over the server process's own
-    ``os.environ``, so a blank setting falls through to whatever the
-    process already had. Mirror that precedence — setting wins, else the
-    ambient variable — so the cost gate reflects the endpoint/key the CLI
-    actually uses, not just what the settings panel shows.
-    """
-    resolved = _normalize_anthropic_credential(settings_value)
-    if resolved is not None:
-        return resolved
-    return _normalize_anthropic_credential(os.environ.get(env_var))
-
-
-def _should_show_turn_cost(claude_settings: dict) -> bool:
-    """Whether the per-turn footer's ``$`` cost can be trusted.
-
-    Requires both a direct API key (subscription logins report a
-    meaningless notional cost) and Anthropic's own endpoint (custom
-    ``base_url`` targets bill differently). Credentials are resolved
-    against the environment the CLI inherits, not just the settings
-    panel, so an env-provided key or a custom ``ANTHROPIC_BASE_URL`` is
-    honored. Either condition failing suppresses the dollar figure while
-    duration/tokens still render.
-    """
-    api_key = _resolve_effective_credential(
-        claude_settings.get('api_key'), 'ANTHROPIC_API_KEY'
-    )
-    if api_key is None:
-        return False
-    base_url = _resolve_effective_credential(
-        claude_settings.get('base_url'), 'ANTHROPIC_BASE_URL'
-    )
-    return _is_first_party_anthropic_endpoint(base_url)
 
 
 def _create_anthropic_client(api_key: str = None, base_url: str = None) -> "Anthropic":
@@ -828,22 +547,13 @@ def fetch_claude_models(api_key: str = None, base_url: str = None) -> list[dict]
             page = client.models.list(limit=100)
             models = []
             for model in page.data:
-                # The Models API reports the context window directly on
-                # newer SDK/service versions (max_input_tokens). Prefer it
-                # over litellm's static database, which lags new model
-                # releases and mislabels unknown ids with the 200K default.
-                context_window = getattr(model, "max_input_tokens", None)
-                if not isinstance(context_window, int) or context_window <= 0:
-                    context_window = _get_context_window(model.id)
                 models.append({
                     "id": model.id,
                     "name": model.display_name,
-                    "context_window": context_window,
+                    "context_window": _get_context_window(model.id),
                 })
-            global _claude_models_cache_endpoint
             _claude_models_cache.clear()
             _claude_models_cache.extend(models)
-            _claude_models_cache_endpoint = _endpoint_identity(api_key, base_url)
             log.info(f"Fetched {len(models)} Claude models: {[m['id'] + ' (' + m['name'] + ')' for m in models]}")
             return models
         except Exception as e:
@@ -856,7 +566,7 @@ class ClaudeChatModel(ChatModel):
     def __init__(self, model_id: str, api_key: str = None, base_url: str = None):
         super().__init__(provider=None)
         if model_id == "":
-            model_id = resolve_default_model(CLAUDE_DEFAULT_CHAT_MODEL, "claude-sonnet", api_key, base_url)
+            model_id = CLAUDE_DEFAULT_CHAT_MODEL
 
         model_info = model_info_from_id(model_id)
         self._model_id = model_id
@@ -940,7 +650,7 @@ class ClaudeCodeInlineCompletionModel(InlineCompletionModel):
     def __init__(self, model_id: str, api_key: str = None, base_url: str = None):
         super().__init__(provider=None)
         if model_id == "":
-            model_id = resolve_default_model(CLAUDE_DEFAULT_INLINE_COMPLETION_MODEL, "claude-haiku", api_key, base_url)
+            model_id = CLAUDE_DEFAULT_INLINE_COMPLETION_MODEL
 
         model_info = model_info_from_id(model_id)
         self._model_id = model_id
@@ -992,7 +702,7 @@ class ClaudeCodeInlineCompletionModel(InlineCompletionModel):
 
         message = self._client.messages.create(
             model=self._model_id,
-            max_tokens=CLAUDE_INLINE_COMPLETION_MAX_TOKENS,
+            max_tokens=10000,
             system=f"""You are a code completion assistant. Your task is to generate intelligent autocomplete suggestions for the code at the cursor position for given language and active file type. This is not an interactive session, don't ask for clarifying questions, always generate a suggestion. Don't include any explanations for your response, just generate the code. Don't return any thinking or reasoning, just generate the code. You are given a code snippet with a prefix and a suffix. You need to generate a suggestion for the code that fits best in place of <CURSOR/>. You should return only the code that fits best in place of <CURSOR/>. You should provide multiline code if needed. Enclose the code in triple backticks, just return the code in language. You should not return any other text, just the code. DO NOT INCLUDE THE PREFIX OR SUFFIX IN THE RESPONSE. .ipynb files are Jupyter notebook files and for notebook files, you generate suggestions for a cell within the notebook. A cell can be a code cell with code or a markdown cell with markdown text. If the language is markdown, only return markdown text. If you need to install a Python package within a notebook cell code (for .ipynb files), use %pip install <package_name> instead of !pip install <package_name>. Follow the tags very carefully for proper spacing and indentations.""",
             messages=[
                 {"role": "user", "content": f"""Generate a single suggestion that fits best in place of cursor. The code is below in between <CODE> tags and <CURSOR/> is the placeholder for the code to be filled in. Current language is {language} and the active file is {filename}.
@@ -1245,7 +955,10 @@ class ClaudeCodeClient():
                             for msg in messages:
                                 if msg["role"] == "user":
                                     query_lines.append(_extract_text_from_content(msg["content"]))
-                            client_query = assemble_client_query(query_lines)
+                            # if a command is present, remove other lines
+                            if len(query_lines) > 0 and query_lines[-1].startswith('/'):
+                                query_lines = query_lines[-1:]
+                            client_query = "\n".join([line.strip() for line in query_lines])
 
                             already_handled = False
 
@@ -1335,20 +1048,6 @@ class ClaudeCodeClient():
                                                         status=status,
                                                         diffs=diffs,
                                                     ))
-                                    elif isinstance(message, ResultMessage):
-                                        # End-of-turn accounting from the SDK.
-                                        # Opt-in (off by default): the footer
-                                        # is persistent per-turn noise, and its
-                                        # cost figure is only trustworthy for a
-                                        # direct API key against Anthropic's own
-                                        # endpoint, so gate the dollar amount on
-                                        # both (see _should_show_turn_cost).
-                                        claude_settings = self._host.nbi_config.claude_settings
-                                        if claude_settings.get('show_turn_usage', False):
-                                            show_cost = _should_show_turn_cost(claude_settings)
-                                            usage_line = format_result_usage(message, show_cost=show_cost)
-                                            if usage_line is not None:
-                                                response.stream(MarkdownData(usage_line))
                                     else:
                                         pass
 
@@ -1626,36 +1325,12 @@ class ClaudeCodeClient():
         self.reconnect()
 
 
-@tool(
-    "list-available-notebook-kernels",
-    "Lists Jupyter kernels available in the current frontend environment.",
-    {},
-)
-async def list_available_notebook_kernels(args) -> str:
-    response = get_current_response()
-    ui_cmd_response = await response.run_ui_command(
-        'notebook-intelligence:list-available-notebook-kernels',
-        {}
-    )
-    return tool_text_response(json.dumps(ui_cmd_response))
-
-
-@tool(
-    "create-new-notebook",
-    "Creates a new empty notebook.",
-    {"language": str, "kernel_name": str},
-)
+@tool("create-new-notebook", "Creates a new empty notebook.", {})
 async def create_new_notebook(args) -> str:
     """Creates a new empty notebook.
     """
     response = get_current_response()
-    request = get_current_request()
-    language = args.get("language") or getattr(request, "language", "") or "python"
-    kernel_name = args.get("kernel_name") or getattr(request, "kernel_name", "") or ""
-    ui_cmd_response = await response.run_ui_command(
-        'notebook-intelligence:create-new-notebook',
-        {'code': '', 'language': language, 'kernelName': kernel_name}
-    )
+    ui_cmd_response = await response.run_ui_command('notebook-intelligence:create-new-notebook-from-py', {'code': ''})
     file_path = ui_cmd_response['path']
 
     return tool_text_response(f"Created new notebook at {file_path}")
@@ -1687,7 +1362,7 @@ async def add_markdown_cell(args) -> str:
 async def add_code_cell(args) -> str:
     """Adds a code cell to notebook.
     Args:
-        source: Code source for the notebook's current language
+        source: Python code source
     """
     response = get_current_response()
     ui_cmd_response = await response.run_ui_command('notebook-intelligence:add-code-cell-to-active-notebook', {'source': args['source']})
@@ -1876,77 +1551,6 @@ async def open_file_in_jupyter_ui(args) -> str:
             f"Error opening file in Jupyter UI: {str(e)}",
             is_error=True,
         )
-
-
-# The Jupyter-UI tools above are exposed to Claude Code as an EXTERNAL stdio MCP
-# server (notebook_intelligence.mcp_ui_proxy) instead of an in-process sdk server,
-# so they survive a managed/enterprise MCP config that forbids dynamically
-# configured servers. The proxy fetches this manifest over HTTP and forwards each
-# call to invoke_ui_tool, which runs the same handlers against the live chat turn.
-JUPYTER_UI_TOOLS = [
-    list_available_notebook_kernels, create_new_notebook, add_markdown_cell,
-    add_code_cell, get_number_of_cells, get_cell_type_and_source, get_cell_output,
-    set_cell_type_and_source, delete_cell, insert_cell, run_cell, save_notebook,
-    rename_notebook, run_command_in_jupyter_terminal, open_file_in_jupyter_ui,
-]
-
-_PY_TYPE_TO_JSON = {str: "string", int: "integer", float: "number", bool: "boolean"}
-
-
-def _tool_json_schema(input_schema) -> dict:
-    """Mirror claude_agent_sdk.create_sdk_mcp_server's schema build so the manifest
-    is identical to the former in-process server (dict params, all required)."""
-    if isinstance(input_schema, dict):
-        if "type" in input_schema and "properties" in input_schema and isinstance(input_schema["type"], str):
-            return input_schema
-        props = {name: {"type": _PY_TYPE_TO_JSON.get(t, "string")} for name, t in input_schema.items()}
-        return {"type": "object", "properties": props, "required": list(props)}
-    return {"type": "object", "properties": {}}
-
-
-# Per-process shared secret proving a request came from the mcp_ui_proxy NBI spawned.
-# The proxy sends it to UIToolsHandler in a dedicated header (X-NBI-UI-Tools-Token),
-# separate from the Jupyter identity in Authorization. A bearer secret is not
-# cookie-based and is therefore XSRF-immune, so the relay uses it only to exempt the
-# request from the browser XSRF check (mirroring jupyter_server's own exemption for
-# token-authenticated requests) -- it is not a Jupyter identity. Generated once per
-# process and handed only to the proxy (via the NBI_UI_TOOLS_SECRET env var).
-_UI_TOOLS_SECRET = secrets.token_urlsafe(32)
-
-
-def get_ui_tools_secret() -> str:
-    return _UI_TOOLS_SECRET
-
-
-def get_ui_tools_manifest() -> list[dict]:
-    """MCP tool descriptors (name/description/inputSchema) for the Jupyter-UI tools."""
-    return [
-        {"name": t.name, "description": t.description, "inputSchema": _tool_json_schema(t.input_schema)}
-        for t in JUPYTER_UI_TOOLS
-    ]
-
-
-async def invoke_ui_tool(name: str, arguments: dict, timeout: float = CLAUDE_AGENT_CLIENT_RESPONSE_TIMEOUT) -> dict:
-    """Run a Jupyter-UI tool by name against the active chat turn's UI bridge.
-
-    Returns an MCP tool-result dict: {"content": [...], "is_error"?: bool}. The
-    timeout matches the agent response window so long-running cells/commands aren't
-    cut off, while still bounding the call if the frontend never replies (closed tab)."""
-    tool_def = next((t for t in JUPYTER_UI_TOOLS if t.name == name), None)
-    if tool_def is None:
-        return tool_text_response(f"Unknown tool: {name}", is_error=True)
-    if get_current_response() is None:
-        return tool_text_response(
-            "No active Notebook Intelligence chat turn; UI tools are only callable while a chat request is being handled.",
-            is_error=True,
-        )
-    try:
-        return await asyncio.wait_for(tool_def.handler(arguments or {}), timeout)
-    except asyncio.TimeoutError:
-        return tool_text_response(f"Jupyter UI command timed out after {timeout:.0f}s.", is_error=True)
-    except Exception as exc:
-        return tool_text_response(f"Jupyter UI command failed: {exc}", is_error=True)
-
 
 async def custom_permission_handler(
     tool_name: str,
@@ -2185,29 +1789,18 @@ class ClaudeCodeChatParticipant(BaseChatParticipant):
     
     def _create_client_options(self) -> ClaudeAgentOptions:
         claude_settings = self._host.nbi_config.claude_settings
+        self._jupyter_ui_tools_mcp_server = create_sdk_mcp_server(
+            name="nbi",
+            version="1.0.0",
+            tools=[create_new_notebook, add_markdown_cell, add_code_cell, get_number_of_cells, get_cell_type_and_source, get_cell_output, set_cell_type_and_source, delete_cell, insert_cell, run_cell, save_notebook, rename_notebook, run_command_in_jupyter_terminal, open_file_in_jupyter_ui]
+        )
         mcp_servers = {}
         jupyter_ui_tools_enabled = ClaudeToolType.JupyterUITools in claude_settings.get('tools', [])
-        # By default the Jupyter-UI tools run as an IN-PROCESS sdk MCP server. When
-        # 'jupyter_ui_tools_external' is set, they are instead served by an EXTERNAL
-        # MCP server (notebook_intelligence.mcp_ui_proxy) named "nbi" in the client's
-        # MCP config — required under a managed/enterprise MCP config that rejects
-        # dynamically-configured (in-process) servers. Tool names (mcp__nbi__*) and
-        # the system prompt are identical either way; only the transport differs.
-        # external_ui_tools is the single source of truth shared with the UI-tools
-        # relay (extension.UIToolsHandler); see feature_flags.is_external_ui_tools_active.
-        external_ui_tools = is_external_ui_tools_active(claude_settings)
-        if jupyter_ui_tools_enabled and not external_ui_tools:
-            mcp_servers["nbi"] = create_sdk_mcp_server(
-                name="nbi", version="1.0.0", tools=JUPYTER_UI_TOOLS
-            )
         if jupyter_ui_tools_enabled:
-            transport = "external (via managed MCP config)" if external_ui_tools else "in-process"
-            log.info(f"Jupyter UI tools: {transport} MCP server 'nbi' ({len(JUPYTER_UI_TOOLS)} tools)")
-        else:
-            log.debug("Jupyter UI tools: disabled")
+            mcp_servers["nbi"] = self._jupyter_ui_tools_mcp_server
         allowed_tools = []
         if jupyter_ui_tools_enabled:
-            allowed_tools.extend(["mcp__nbi__list-available-notebook-kernels", "mcp__nbi__create-new-notebook", "mcp__nbi__add-markdown-cell", "mcp__nbi__add-code-cell", "mcp__nbi__get-number-of-cells", "mcp__nbi__get-cell-type-and-source", "mcp__nbi__get-cell-output", "mcp__nbi__set-cell-type-and-source", "mcp__nbi__insert-cell", "mcp__nbi__save-notebook", "mcp__nbi__rename-notebook", "mcp__nbi__open-file-in-jupyter-ui"])
+            allowed_tools.extend(["mcp__nbi__create-new-notebook", "mcp__nbi__add-markdown-cell", "mcp__nbi__add-code-cell", "mcp__nbi__get-number-of-cells", "mcp__nbi__get-cell-type-and-source", "mcp__nbi__get-cell-output", "mcp__nbi__set-cell-type-and-source", "mcp__nbi__insert-cell", "mcp__nbi__save-notebook", "mcp__nbi__rename-notebook", "mcp__nbi__open-file-in-jupyter-ui"])
         setting_sources = claude_settings.get('setting_sources')
         chat_model_id = claude_settings.get('chat_model', '').strip()
         if chat_model_id == "":
@@ -2222,12 +1815,6 @@ class ClaudeCodeChatParticipant(BaseChatParticipant):
             env['ANTHROPIC_BASE_URL'] = base_url
 
         env["CLAUDE_CODE_ENTRYPOINT"] = "notebook-intelligence"
-        if external_ui_tools:
-            # Scope the bridge credential to the only mode that consumes it. Claude
-            # Code propagates its env to Bash, hooks, and MCP subprocesses, so do not
-            # expose the secret when tools are disabled or use the in-process transport.
-            # The proxy sends it in a dedicated header; see get_ui_tools_secret.
-            env["NBI_UI_TOOLS_SECRET"] = get_ui_tools_secret()
 
         continue_conversation = claude_settings.get('continue_conversation', False)
 

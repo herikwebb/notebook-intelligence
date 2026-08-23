@@ -91,8 +91,7 @@ def sample_rule_context():
     """Mock rule context for testing."""
     return RuleContext(
         filename="test.ipynb",
-        language="python",
-        kernel_name="python3",
+        kernel="python3",
         mode="ask"
     )
 
@@ -102,8 +101,7 @@ def python_file_context():
     """Mock Python file context for testing."""
     return RuleContext(
         filename="test.py",
-        language="python",
-        kernel_name="python3",
+        kernel="python3",
         mode="agent"
     )
 
@@ -143,9 +141,7 @@ scope:
   file_patterns:
     - "*.ipynb"
     - "*.py"
-  languages:
-    - python
-  kernel_names:
+  kernels:
     - python3
 active: true
 priority: 0

@@ -21,35 +21,20 @@ class TestRuleScope:
         assert scope.matches_file("notebook.ipynb") is True
         assert scope.matches_file("data.csv") is True
     
-    def test_matches_language(self):
-        scope = RuleScope(languages=["python", "r"])
+    def test_matches_kernel(self):
+        scope = RuleScope(kernels=["python3", "python"])
         
-        assert scope.matches_language("python") is True
-        assert scope.matches_language("r") is True
-        assert scope.matches_language("python3") is False
-        assert scope.matches_language("julia") is False
-
-    def test_matches_language_no_languages_matches_all(self):
-        scope = RuleScope()
+        assert scope.matches_kernel("python3") is True
+        assert scope.matches_kernel("python") is True
+        assert scope.matches_kernel("r") is False
+        assert scope.matches_kernel("julia") is False
+    
+    def test_matches_kernel_no_kernels_matches_all(self):
+        scope = RuleScope()  # No kernels specified
         
-        assert scope.matches_language("python") is True
-        assert scope.matches_language("r") is True
-        assert scope.matches_language("julia") is True
-
-    def test_matches_kernel_name(self):
-        scope = RuleScope(kernel_names=["python3", "ir"])
-        
-        assert scope.matches_kernel_name("python3") is True
-        assert scope.matches_kernel_name("ir") is True
-        assert scope.matches_kernel_name("python") is False
-        assert scope.matches_kernel_name("r") is False
-
-    def test_matches_kernel_name_no_kernel_names_matches_all(self):
-        scope = RuleScope()
-        
-        assert scope.matches_kernel_name("python3") is True
-        assert scope.matches_kernel_name("r") is True
-        assert scope.matches_kernel_name("julia-1.10") is True
+        assert scope.matches_kernel("python3") is True
+        assert scope.matches_kernel("r") is True
+        assert scope.matches_kernel("julia") is True
 
 
 class TestRule:
@@ -60,9 +45,7 @@ scope:
   file_patterns:
     - "*.py"
     - "*.ipynb"
-  languages:
-    - python
-  kernel_names:
+  kernels:
     - python3
   cell_types:
     - code
@@ -80,8 +63,7 @@ This is a test rule for validation."""
         assert rule.filename == "test_rule.md"
         assert rule.apply == "always"
         assert rule.scope.file_patterns == ["*.py", "*.ipynb"]
-        assert rule.scope.languages == ["python"]
-        assert rule.scope.kernel_names == ["python3"]
+        assert rule.scope.kernels == ["python3"]
         assert rule.scope.cell_types == ["code"]
         assert rule.active is True
         assert rule.priority == 5
@@ -140,7 +122,7 @@ active: true
             Rule.from_file("nonexistent_file.md")
     
     def test_matches_context_active_rule(self):
-        scope = RuleScope(file_patterns=["*.py"], languages=["python"], kernel_names=["python3"])
+        scope = RuleScope(file_patterns=["*.py"], kernels=["python3"])
         rule = Rule(
             filename="test.md",
             apply="always",
@@ -149,9 +131,9 @@ active: true
             content="Test content"
         )
         
-        assert rule.matches_context("test.py", "python", "python3") is True
-        assert rule.matches_context("test.ipynb", "python", "python3") is False
-        assert rule.matches_context("test.py", "r", "ir") is False
+        assert rule.matches_context("test.py", "python3") is True
+        assert rule.matches_context("test.ipynb", "python3") is False
+        assert rule.matches_context("test.py", "r") is False
     
     def test_matches_context_inactive_rule(self):
         scope = RuleScope(file_patterns=["*.py"])
@@ -181,7 +163,7 @@ active: true
         assert rule.matches_context("test.py") is True  # No mode specified
     
     def test_to_dict(self):
-        scope = RuleScope(file_patterns=["*.py"], languages=["python"], kernel_names=["python3"])
+        scope = RuleScope(file_patterns=["*.py"], kernels=["python3"])
         rule = Rule(
             filename="test.md",
             apply="always",
@@ -199,8 +181,7 @@ active: true
             'apply': 'always',
             'scope': {
                 'file_patterns': ['*.py'],
-                'languages': ['python'],
-                'kernel_names': ['python3'],
+                'kernels': ['python3'],
                 'cell_types': None,
                 'directory_patterns': []
             },
@@ -218,8 +199,7 @@ active: true
             'apply': 'auto',
             'scope': {
                 'file_patterns': ['*.ipynb'],
-                'languages': ['python'],
-                'kernel_names': ['python3'],
+                'kernels': ['python3'],
                 'cell_types': ['code']
             },
             'active': False,
@@ -233,8 +213,7 @@ active: true
         assert rule.filename == 'test.md'
         assert rule.apply == 'auto'
         assert rule.scope.file_patterns == ['*.ipynb']
-        assert rule.scope.languages == ['python']
-        assert rule.scope.kernel_names == ['python3']
+        assert rule.scope.kernels == ['python3']
         assert rule.scope.cell_types == ['code']
         assert rule.active is False
         assert rule.content == 'Test content'

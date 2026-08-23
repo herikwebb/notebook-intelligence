@@ -16,14 +16,6 @@ export interface IClaudeSessionPickerProps {
   onResume: (session: IClaudeSessionInfo) => void;
   onClose: () => void;
   fetchSessions?: () => Promise<IClaudeSessionList>;
-  // Resumes the picked session server-side before onResume fires. Overrides
-  // the default Claude resume call so the same picker serves ACP mode.
-  resumeSession?: (sessionId: string) => Promise<void>;
-  title?: string;
-  emptyMessage?: string;
-  // The copy button emits a `claude --resume` shell command; hide it for
-  // agents that have no equivalent CLI invocation.
-  showCopyCommand?: boolean;
 }
 
 function formatTimestamp(epochSeconds: number): string {
@@ -117,20 +109,15 @@ export function ClaudeSessionPicker(
       return;
     }
     setResuming(true);
-    // When a custom fetchSessions is provided without a resumeSession, the
-    // caller owns the resume lifecycle (e.g. the launcher tile opens a
-    // terminal directly), so skip the NBI sidebar API call which requires
-    // Claude Code mode to be active.
-    if (props.fetchSessions && !props.resumeSession) {
+    // When a custom fetchSessions is provided the caller owns the resume
+    // lifecycle (e.g. the launcher tile opens a terminal directly), so skip
+    // the NBI sidebar API call which requires Claude Code mode to be active.
+    if (props.fetchSessions) {
       props.onResume(session);
       return;
     }
     try {
-      if (props.resumeSession) {
-        await props.resumeSession(session.session_id);
-      } else {
-        await NBIAPI.resumeClaudeSession(session.session_id);
-      }
+      await NBIAPI.resumeClaudeSession(session.session_id);
       props.onResume(session);
     } catch (reason) {
       setError(String((reason as Error)?.message ?? reason ?? 'Unknown error'));
@@ -155,9 +142,7 @@ export function ClaudeSessionPicker(
         <div className="mode-tools-popover-header-icon">
           <VscHistory />
         </div>
-        <div className="mode-tools-popover-title">
-          {props.title ?? 'Resume Claude session'}
-        </div>
+        <div className="mode-tools-popover-title">Resume Claude session</div>
         <div style={{ flexGrow: 1 }}></div>
         <div
           className="mode-tools-popover-button mode-tools-popover-close-button"
@@ -177,8 +162,7 @@ export function ClaudeSessionPicker(
           </div>
         ) : sessions.length === 0 ? (
           <div className="workspace-file-popover-status">
-            {props.emptyMessage ??
-              'No previous Claude sessions found for this working directory.'}
+            No previous Claude sessions found for this working directory.
           </div>
         ) : (
           <ul className="claude-session-picker-list">
@@ -207,21 +191,17 @@ export function ClaudeSessionPicker(
                     >
                       {session.session_id.slice(0, 8)}
                     </span>
-                    {props.showCopyCommand !== false && (
-                      <button
-                        type="button"
-                        className={`claude-session-picker-item-copy${
-                          feedback ? ` ${feedback}` : ''
-                        }`}
-                        title={buttonLabel}
-                        aria-label={buttonLabel}
-                        onClick={event =>
-                          handleCopyResumeCommand(event, session)
-                        }
-                      >
-                        {feedback === 'copied' ? <VscCheck /> : <VscCopy />}
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className={`claude-session-picker-item-copy${
+                        feedback ? ` ${feedback}` : ''
+                      }`}
+                      title={buttonLabel}
+                      aria-label={buttonLabel}
+                      onClick={event => handleCopyResumeCommand(event, session)}
+                    >
+                      {feedback === 'copied' ? <VscCheck /> : <VscCopy />}
+                    </button>
                   </div>
                 </li>
               );

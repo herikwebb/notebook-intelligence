@@ -19,14 +19,14 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Fork branch to promote (PR head)'
+        description: "Fork branch to promote (PR head)"
         required: true
       base:
-        description: 'Upstream base branch'
+        description: "Upstream base branch"
         required: false
         default: main
   workflow_run:
-    workflows: ['PR Review']
+    workflows: ["PR Review"]
     types: [completed]
 
 concurrency:

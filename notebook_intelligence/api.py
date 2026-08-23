@@ -141,8 +141,6 @@ class ChatRequest:
     tool_selection: RequestToolSelection = None
     command: str = ''
     prompt: str = ''
-    language: str = ''
-    kernel_name: str = ''
     chat_history: list[dict] = None
     cancel_token: CancelToken = None
     # NEW: Add context for rule evaluation
@@ -389,13 +387,11 @@ class ChatResponse:
 
         response.run_ui_command_response_signal.connect(_on_ui_command_response)
 
-        try:
-            while True:
-                if resp["result"] is not None:
-                    return resp["result"]
-                await asyncio.sleep(0.1)
-        finally:
-            response.run_ui_command_response_signal.disconnect(_on_ui_command_response)
+        while True:
+            if resp["result"] is not None:
+                response.run_ui_command_response_signal.disconnect(_on_ui_command_response)
+                return resp["result"]
+            await asyncio.sleep(0.1)
 
 @dataclass
 class ToolPreInvokeResponse:
@@ -913,10 +909,7 @@ class TelemetryEventType(str, Enum):
     InlineChatRequest = 'inline-chat-request'
     ChatResponse = 'chat-response'
     InlineChatResponse = 'inline-chat-response'
-    InlineChatAccepted = 'inline-chat-accepted'
-    InlineChatDismissed = 'inline-chat-dismissed'
     InlineCompletionResponse = 'inline-completion-response'
-    InlineCompletionAccepted = 'inline-completion-accepted'
     Feedback = 'feedback'
 
 class TelemetryEvent:
