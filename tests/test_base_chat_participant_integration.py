@@ -15,6 +15,17 @@ from notebook_intelligence.rule_injector import RuleInjector
 
 
 class TestBaseChatParticipantIntegration:
+    def test_history_budget_uses_window_for_models_without_configured_flag(self):
+        class LegacyChatModel:
+            context_window = 8192
+
+        assert (
+            base_participant_module._chat_history_context_window(
+                LegacyChatModel()
+            )
+            == 8192
+        )
+
     def test_init_with_default_rule_injector(self):
         """Test BaseChatParticipant initialization with default rule injector."""
         participant = BaseChatParticipant()
@@ -134,6 +145,51 @@ class TestBaseChatParticipantIntegration:
         assert not any(
             message["content"] == "old question " * 500 for message in messages
         )
+
+    def test_ask_mode_preserves_injected_rules_when_system_prompt_is_truncated(
+        self,
+    ):
+        protected_rules = (
+            "# Additional Guidelines\n"
+            "# Repository Instructions (AGENTS.md)\n"
+            "Always use parameterized queries.\n\n"
+            "# Workspace Rules\nNever delete user data."
+        )
+        mock_injector = Mock(spec=RuleInjector)
+        mock_injector.inject_rules.return_value = (
+            "generic assistant prompt " * 500
+            + "\n\n"
+            + protected_rules
+        )
+        participant = BaseChatParticipant(rule_injector=mock_injector)
+
+        chat_model = Mock()
+        chat_model.provider.name = "test-provider"
+        chat_model.provider.id = "test-provider"
+        chat_model.name = "test-model"
+        chat_model.context_window = 256
+        host = Mock()
+        host.chat_model = chat_model
+        request = ChatRequest(
+            host=host,
+            chat_mode=ChatMode("ask", "Ask"),
+            prompt="current question",
+            chat_history=[
+                {"role": "user", "content": "current question"},
+            ],
+            cancel_token=Mock(spec=CancelToken),
+        )
+        response = Mock(spec=ChatResponse)
+
+        asyncio.run(
+            participant.handle_ask_mode_chat_request(request, response)
+        )
+
+        messages = chat_model.completions.call_args.args[0]
+        system_content = messages[0]["content"]
+        assert "Always use parameterized queries." in system_content
+        assert "Never delete user data." in system_content
+        assert "generic assistant prompt" not in system_content
 
     def test_builtin_generation_paths_budget_messages(self):
         participant = BaseChatParticipant()

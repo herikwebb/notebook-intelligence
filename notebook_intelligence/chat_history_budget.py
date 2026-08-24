@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import threading
 import time
 from typing import Any
@@ -16,8 +17,8 @@ MESSAGE_OVERHEAD_TOKENS = 4
 # a deliberately high cross-provider allowance rather than the much smaller
 # cost of a typical tiled image. Screening is higher again so image-heavy
 # requests reliably enter the full budgeting path.
-IMAGE_TOKEN_ESTIMATE = 16_384
-IMAGE_TOKEN_SCREENING_ESTIMATE = 32_768
+IMAGE_TOKEN_ESTIMATE = 4_096
+IMAGE_TOKEN_SCREENING_ESTIMATE = 8_192
 CONTEXT_OMISSION_NOTICE = (
     "\n\n[Context note: Some earlier conversation or attached context was "
     "omitted or truncated to fit the model context window.]"
@@ -30,6 +31,11 @@ _TOKENIZER_MAX_LOAD_ATTEMPTS = 3
 _TOKENIZER_LOAD_TIMEOUT_SECONDS = 30
 _TOKENIZER_RETRY_BACKOFF_SECONDS = 300
 _IMAGE_OMISSION_TEXT = "[Image omitted.]"
+_ADDITIONAL_GUIDELINES_HEADER = "# Additional Guidelines\n"
+_ADDITIONAL_GUIDELINES_MARKER = (
+    "\n\n" + _ADDITIONAL_GUIDELINES_HEADER
+)
+_CELL_OUTPUT_CLOSE_RE = re.compile(r"\n</notebook-cell-[0-9a-f]+>$")
 _tokenizer_lock = threading.Lock()
 _tokenizer_encoding: Any | None = None
 _tokenizer_load_attempts = 0
@@ -87,6 +93,7 @@ def warm_tokenizer_encoding() -> None:
                 return
             stale_load = True
             _tokenizer_load_in_progress = False
+            _tokenizer_last_load_failure_at = now
         if _tokenizer_load_attempts >= _TOKENIZER_MAX_LOAD_ATTEMPTS:
             if (
                 _tokenizer_last_load_failure_at <= 0
@@ -346,6 +353,18 @@ def _truncate_mandatory_message(
     return truncated
 
 
+def _has_protected_context_delimiter(message: dict) -> bool:
+    content = message.get("content")
+    if not isinstance(content, str):
+        return False
+    if (
+        "\n\nFile contents:\n```\n" in content
+        and content.endswith("\n```")
+    ):
+        return True
+    return _CELL_OUTPUT_CLOSE_RE.search(content) is not None
+
+
 def _partition_turns(
     messages: list[dict],
 ) -> tuple[list[list[dict]], list[dict]]:
@@ -395,6 +414,75 @@ def _with_omission_notice(
     return updated
 
 
+def _join_protected_system_sections(
+    notice: str,
+    base_prompt: str,
+    guidelines: str,
+) -> str:
+    return "\n\n".join(
+        section for section in (notice, base_prompt, guidelines) if section
+    )
+
+
+def _truncate_system_prompt_preserving_guidelines(
+    content: str,
+    token_budget: int,
+) -> dict | None:
+    guidelines_index = content.find(_ADDITIONAL_GUIDELINES_MARKER)
+    if guidelines_index < 0:
+        return None
+
+    base_prompt = content[:guidelines_index]
+    guidelines = content[
+        guidelines_index + len("\n\n"):
+    ]
+    protected_notice = SHORT_CONTEXT_OMISSION_NOTICE.strip()
+    notice = ""
+    if base_prompt.startswith(protected_notice):
+        notice = protected_notice
+        base_prompt = base_prompt[len(protected_notice):].lstrip("\n")
+    base_prompt = base_prompt.rstrip()
+
+    protected_content = _join_protected_system_sections(
+        notice,
+        "",
+        guidelines,
+    )
+    protected_message = {"role": "system", "content": protected_content}
+    protected_tokens = estimate_message_tokens(protected_message)
+    if protected_tokens > token_budget:
+        # Never silently cut repository or workspace rules. The caller will
+        # fail open if the protected rules and newest request cannot coexist.
+        return protected_message
+
+    separator_tokens = text_token_count("\n\n") if base_prompt else 0
+    base_budget = max(
+        0,
+        token_budget - protected_tokens - separator_tokens,
+    )
+    for _ in range(4):
+        truncated_base = truncate_text(
+            base_prompt,
+            base_budget,
+            TRUNCATION_MARKER,
+        )
+        candidate = {
+            "role": "system",
+            "content": _join_protected_system_sections(
+                notice,
+                truncated_base,
+                guidelines,
+            ),
+        }
+        candidate_tokens = estimate_message_tokens(candidate)
+        if candidate_tokens <= token_budget:
+            return candidate
+        base_budget -= max(1, candidate_tokens - token_budget)
+        if base_budget <= 0:
+            break
+    return protected_message
+
+
 def _truncate_system_messages(
     system_messages: list[dict],
     token_budget: int,
@@ -412,6 +500,12 @@ def _truncate_system_messages(
     if not text_parts:
         return []
     combined = {"role": "system", "content": "\n\n".join(text_parts)}
+    protected = _truncate_system_prompt_preserving_guidelines(
+        combined["content"],
+        token_budget,
+    )
+    if protected is not None:
+        return [protected]
     truncated = _truncate_text_message(combined, token_budget)
     protected_notice = SHORT_CONTEXT_OMISSION_NOTICE.strip()
     if (
@@ -601,23 +695,29 @@ def _budget_chat_messages(
                 remaining_for_user,
             )
             if truncated_latest_user is None:
-                notice_message = {
-                    "role": "system",
-                    "content": SHORT_CONTEXT_OMISSION_NOTICE.strip(),
-                }
-                candidate_system_messages = (
-                    [notice_message]
-                    if message_tokens(notice_message) < input_budget
-                    else []
+                has_protected_guidelines = any(
+                    _ADDITIONAL_GUIDELINES_HEADER
+                    in str(message.get("content", ""))
+                    for message in candidate_system_messages
                 )
-                truncated_latest_user = _truncate_mandatory_message(
-                    latest_user,
-                    input_budget
-                    - sum(
-                        message_tokens(message)
-                        for message in candidate_system_messages
-                    ),
-                )
+                if not has_protected_guidelines:
+                    notice_message = {
+                        "role": "system",
+                        "content": SHORT_CONTEXT_OMISSION_NOTICE.strip(),
+                    }
+                    candidate_system_messages = (
+                        [notice_message]
+                        if message_tokens(notice_message) < input_budget
+                        else []
+                    )
+                    truncated_latest_user = _truncate_mandatory_message(
+                        latest_user,
+                        input_budget
+                        - sum(
+                            message_tokens(message)
+                            for message in candidate_system_messages
+                        ),
+                    )
         if truncated_latest_user is not None:
             log.warning(
                 "Truncating mandatory system or user context because it "
@@ -673,6 +773,11 @@ def _budget_chat_messages(
             remaining_budget -= context_tokens
             continue
 
+        # File fences and nonced cell-output envelopes contain untrusted data.
+        # Drop them whole if they do not fit; prefix truncation would remove
+        # the closing delimiter that keeps their payload clearly bounded.
+        if _has_protected_context_delimiter(message):
+            continue
         truncated = _truncate_text_message(message, remaining_budget)
         if truncated is not None:
             selected_context.append(truncated)

@@ -165,6 +165,34 @@ def test_stale_tokenizer_load_allows_a_bounded_retry(monkeypatch, caplog):
     assert "starting a bounded retry" in caplog.text
 
 
+def test_three_stale_tokenizer_loads_recover_after_backoff(monkeypatch):
+    thread = Mock()
+    thread_class = Mock(return_value=thread)
+    monotonic = Mock(return_value=41.0)
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
+    monkeypatch.setattr(
+        budget_module,
+        "_tokenizer_load_attempts",
+        budget_module._TOKENIZER_MAX_LOAD_ATTEMPTS,
+    )
+    monkeypatch.setattr(budget_module, "_tokenizer_load_in_progress", True)
+    monkeypatch.setattr(budget_module, "_tokenizer_load_started_at", 10.0)
+    monkeypatch.setattr(budget_module.time, "monotonic", monotonic)
+    monkeypatch.setattr(budget_module.threading, "Thread", thread_class)
+
+    warm_tokenizer_encoding()
+
+    thread.start.assert_not_called()
+    assert budget_module._tokenizer_last_load_failure_at == 41.0
+
+    monotonic.return_value = (
+        41.0 + budget_module._TOKENIZER_RETRY_BACKOFF_SECONDS
+    )
+    warm_tokenizer_encoding()
+
+    thread.start.assert_called_once_with()
+
+
 def test_tokenizer_truncation_uses_a_bounded_number_of_encodes(monkeypatch):
     text = "a" * 1000
     encoding = Mock(wraps=_CharacterEncoding())
@@ -498,7 +526,7 @@ def test_multiple_images_fit_the_conservative_aggregate_bound():
         {"role": "user", "content": "Compare the retained images."},
     ]
 
-    result = budget_chat_messages(messages, 131_072)
+    result = budget_chat_messages(messages, 32_768)
 
     retained_images = sum(
         1
@@ -507,8 +535,10 @@ def test_multiple_images_fit_the_conservative_aggregate_bound():
     )
     assert 0 < retained_images < len(image_contexts)
     assert sum(estimate_message_tokens(message) for message in result) <= int(
-        131_072 * CHAT_INPUT_BUDGET_RATIO
+        32_768 * CHAT_INPUT_BUDGET_RATIO
     )
+
+    assert budget_chat_messages(messages, 131_072) == messages
 
 
 def test_oversized_multimodal_request_is_reduced_to_bounded_text():
@@ -673,6 +703,32 @@ def test_oversized_system_prompt_is_truncated_to_leave_room_for_user():
     )
 
 
+def test_current_context_with_security_delimiters_is_dropped_not_truncated():
+    cell_context = (
+        "Untrusted output:\n<notebook-cell-0123456789abcdef>\n"
+        + "output " * 500
+        + "\n</notebook-cell-0123456789abcdef>"
+    )
+    file_context = (
+        "This file was provided as additional context.\n\n"
+        "File contents:\n```\n"
+        + "file data " * 500
+        + "\n```"
+    )
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {"role": "user", "content": cell_context},
+        {"role": "user", "content": file_context},
+        {"role": "user", "content": "current question"},
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert all(message.get("content") != cell_context for message in result)
+    assert all(message.get("content") != file_context for message in result)
+    assert result[-1] == messages[-1]
+
+
 def test_multiple_system_messages_keep_omission_notice_when_truncated():
     messages = [
         {"role": "system", "content": "primary instructions " * 500},
@@ -687,6 +743,23 @@ def test_multiple_system_messages_keep_omission_notice_when_truncated():
         "[Context omitted to fit model window.]"
     )
     assert result[-1] == messages[-1]
+
+
+def test_oversized_protected_guidelines_fail_open_without_cutting_rules():
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "generic prompt\n\n# Additional Guidelines\n"
+                + "mandatory repository rule " * 500
+            ),
+        },
+        {"role": "user", "content": "current question"},
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert result == messages
 
 
 def test_short_system_notice_survives_final_mandatory_context_fallback():
