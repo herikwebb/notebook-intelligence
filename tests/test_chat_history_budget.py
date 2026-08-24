@@ -17,7 +17,7 @@ from notebook_intelligence.chat_history_budget import (
 
 
 class _CharacterEncoding:
-    def encode(self, text):
+    def encode(self, text, **_kwargs):
         return [ord(character) for character in text]
 
     def decode(self, tokens):
@@ -43,6 +43,7 @@ def stable_tokenizer_state(monkeypatch):
     monkeypatch.setattr(budget_module, "_tokenizer_load_attempts", 0)
     monkeypatch.setattr(budget_module, "_tokenizer_load_in_progress", False)
     monkeypatch.setattr(budget_module, "_tokenizer_load_started_at", 0.0)
+    monkeypatch.setattr(budget_module, "_tokenizer_last_load_failure_at", 0.0)
     monkeypatch.setattr(budget_module, "_tokenizer_load_generation", 0)
     monkeypatch.setattr(budget_module, "_tokenizer_fallback_logged", False)
 
@@ -113,6 +114,39 @@ def test_tokenizer_load_retries_are_bounded(monkeypatch):
     assert encoding_for_model.call_count == 3
 
 
+def test_tokenizer_load_retries_after_backoff(monkeypatch):
+    encoding_for_model = Mock(
+        side_effect=[
+            RuntimeError("offline"),
+            RuntimeError("offline"),
+            RuntimeError("offline"),
+            _CharacterEncoding(),
+        ]
+    )
+    monotonic = Mock(return_value=100.0)
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
+    monkeypatch.setattr(budget_module.threading, "Thread", _ImmediateThread)
+    monkeypatch.setattr(budget_module.time, "monotonic", monotonic)
+    monkeypatch.setattr(
+        budget_module.tiktoken,
+        "encoding_for_model",
+        encoding_for_model,
+    )
+
+    for _ in range(4):
+        text_token_count("retry")
+
+    assert encoding_for_model.call_count == 3
+
+    monotonic.return_value = (
+        100.0 + budget_module._TOKENIZER_RETRY_BACKOFF_SECONDS
+    )
+
+    assert text_token_count("retry") == 5
+    assert encoding_for_model.call_count == 4
+    assert budget_module._tokenizer_load_attempts == 0
+
+
 def test_stale_tokenizer_load_allows_a_bounded_retry(monkeypatch, caplog):
     thread = Mock()
     thread_class = Mock(return_value=thread)
@@ -141,6 +175,25 @@ def test_tokenizer_truncation_uses_a_bounded_number_of_encodes(monkeypatch):
     assert truncated.endswith("\n...[truncated]")
     assert encoding.encode.call_count <= 6
     assert sum(call.args[0] == text for call in encoding.encode.call_args_list) == 1
+
+
+def test_special_token_literals_are_encoded_as_plain_text(monkeypatch):
+    class _SpecialTokenEncoding(_CharacterEncoding):
+        def encode(self, text, disallowed_special="all"):
+            if "<|endoftext|>" in text and disallowed_special != ():
+                raise ValueError("disallowed special token")
+            return super().encode(text)
+
+    monkeypatch.setattr(
+        budget_module,
+        "_tokenizer_encoding",
+        _SpecialTokenEncoding(),
+    )
+
+    assert text_token_count("literal <|endoftext|> text") == 26
+    assert truncate_text("<|endoftext|> " * 20, 64).endswith(
+        "\n...[truncated]"
+    )
 
 
 def test_tokenizer_warmup_starts_a_daemon_thread(monkeypatch):
@@ -387,7 +440,7 @@ def test_trailing_tool_message_is_dropped_when_pruning():
     assert result[-1]["content"].endswith(TRUNCATION_MARKER)
 
 
-def test_multimodal_context_uses_fixed_image_estimate_and_is_omitted():
+def test_multimodal_context_uses_conservative_image_estimate_and_is_omitted():
     image_context = {
         "role": "user",
         "content": [
@@ -420,6 +473,41 @@ def test_image_screening_estimate_is_more_conservative_than_point_estimate():
 
     assert budget_module._content_token_screening_estimate(image) > (
         budget_module._content_token_count(image)
+    )
+
+
+def test_multiple_images_fit_the_conservative_aggregate_bound():
+    image_contexts = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": f"Image {index}"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,image-{index}"
+                    },
+                },
+            ],
+        }
+        for index in range(8)
+    ]
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        *image_contexts,
+        {"role": "user", "content": "Compare the retained images."},
+    ]
+
+    result = budget_chat_messages(messages, 131_072)
+
+    retained_images = sum(
+        1
+        for message in result
+        if isinstance(message.get("content"), list)
+    )
+    assert 0 < retained_images < len(image_contexts)
+    assert sum(estimate_message_tokens(message) for message in result) <= int(
+        131_072 * CHAT_INPUT_BUDGET_RATIO
     )
 
 
@@ -583,6 +671,22 @@ def test_oversized_system_prompt_is_truncated_to_leave_room_for_user():
     assert sum(estimate_message_tokens(message) for message in result) <= int(
         128 * CHAT_INPUT_BUDGET_RATIO
     )
+
+
+def test_multiple_system_messages_keep_omission_notice_when_truncated():
+    messages = [
+        {"role": "system", "content": "primary instructions " * 500},
+        {"role": "system", "content": "secondary instructions " * 500},
+        {"role": "user", "content": "current question"},
+    ]
+
+    result = budget_chat_messages(messages, 256)
+
+    assert result[0]["role"] == "system"
+    assert result[0]["content"].startswith(
+        "[Context omitted to fit model window.]"
+    )
+    assert result[-1] == messages[-1]
 
 
 def test_short_system_notice_survives_final_mandatory_context_fallback():

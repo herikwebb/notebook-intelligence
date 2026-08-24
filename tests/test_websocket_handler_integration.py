@@ -31,7 +31,9 @@ class TestWebsocketHandlerIntegration:
 
     def test_context_budget_helpers_use_strict_shared_token_policy(self):
         encoding = Mock()
-        encoding.encode.side_effect = lambda text: list(text.encode("utf-8"))
+        encoding.encode.side_effect = lambda text, **_kwargs: list(
+            text.encode("utf-8")
+        )
         encoding.decode.side_effect = lambda tokens: bytes(tokens).decode(
             "utf-8", errors="ignore"
         )

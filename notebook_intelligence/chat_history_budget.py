@@ -12,13 +12,12 @@ import tiktoken
 
 CHAT_INPUT_BUDGET_RATIO = 0.8
 MESSAGE_OVERHEAD_TOKENS = 4
-# A deterministic cross-provider baseline. Exact vision token cost varies by
-# provider, resolution, and detail mode. The 20% output reserve reduces, but
-# cannot eliminate, that variance without provider-specific image inspection.
-IMAGE_TOKEN_ESTIMATE = 1024
-# Screening deliberately uses a higher image cost than the point estimate so
-# an uncertain image-bearing request takes the full budgeting path.
-IMAGE_TOKEN_SCREENING_ESTIMATE = 2048
+# Exact vision token cost varies by provider, resolution, and detail mode. Use
+# a deliberately high cross-provider allowance rather than the much smaller
+# cost of a typical tiled image. Screening is higher again so image-heavy
+# requests reliably enter the full budgeting path.
+IMAGE_TOKEN_ESTIMATE = 16_384
+IMAGE_TOKEN_SCREENING_ESTIMATE = 32_768
 CONTEXT_OMISSION_NOTICE = (
     "\n\n[Context note: Some earlier conversation or attached context was "
     "omitted or truncated to fit the model context window.]"
@@ -29,19 +28,22 @@ TRUNCATION_MARKER = "\n...[truncated to fit model context]"
 log = logging.getLogger(__name__)
 _TOKENIZER_MAX_LOAD_ATTEMPTS = 3
 _TOKENIZER_LOAD_TIMEOUT_SECONDS = 30
+_TOKENIZER_RETRY_BACKOFF_SECONDS = 300
 _IMAGE_OMISSION_TEXT = "[Image omitted.]"
 _tokenizer_lock = threading.Lock()
 _tokenizer_encoding: Any | None = None
 _tokenizer_load_attempts = 0
 _tokenizer_load_in_progress = False
 _tokenizer_load_started_at = 0.0
+_tokenizer_last_load_failure_at = 0.0
 _tokenizer_load_generation = 0
 _tokenizer_fallback_logged = False
 
 
 def _load_tokenizer_encoding(load_generation: int) -> None:
     global _tokenizer_encoding, _tokenizer_load_in_progress
-    global _tokenizer_load_started_at
+    global _tokenizer_load_attempts, _tokenizer_load_started_at
+    global _tokenizer_last_load_failure_at
     encoding = None
     try:
         encoding = tiktoken.encoding_for_model("gpt-4o")
@@ -55,6 +57,10 @@ def _load_tokenizer_encoding(load_generation: int) -> None:
         with _tokenizer_lock:
             if encoding is not None:
                 _tokenizer_encoding = encoding
+                _tokenizer_load_attempts = 0
+                _tokenizer_last_load_failure_at = 0.0
+            elif load_generation == _tokenizer_load_generation:
+                _tokenizer_last_load_failure_at = time.monotonic()
             if (
                 encoding is not None
                 or load_generation == _tokenizer_load_generation
@@ -67,6 +73,7 @@ def warm_tokenizer_encoding() -> None:
     """Warm tokenizer data asynchronously, retrying transient failures."""
     global _tokenizer_load_attempts, _tokenizer_load_in_progress
     global _tokenizer_load_started_at, _tokenizer_load_generation
+    global _tokenizer_last_load_failure_at
     stale_load = False
     with _tokenizer_lock:
         if _tokenizer_encoding is not None:
@@ -81,7 +88,13 @@ def warm_tokenizer_encoding() -> None:
             stale_load = True
             _tokenizer_load_in_progress = False
         if _tokenizer_load_attempts >= _TOKENIZER_MAX_LOAD_ATTEMPTS:
-            return
+            if (
+                _tokenizer_last_load_failure_at <= 0
+                or now - _tokenizer_last_load_failure_at
+                < _TOKENIZER_RETRY_BACKOFF_SECONDS
+            ):
+                return
+            _tokenizer_load_attempts = 0
         _tokenizer_load_attempts += 1
         _tokenizer_load_in_progress = True
         _tokenizer_load_started_at = now
@@ -105,6 +118,7 @@ def warm_tokenizer_encoding() -> None:
             if load_generation == _tokenizer_load_generation:
                 _tokenizer_load_in_progress = False
                 _tokenizer_load_started_at = 0.0
+                _tokenizer_last_load_failure_at = time.monotonic()
         log.warning(
             "Could not start the tokenizer warm-up thread; using the UTF-8 "
             "size fallback until a later retry succeeds: %s",
@@ -143,6 +157,11 @@ def _fallback_text_token_count(text: str) -> int:
     return len(text.encode("utf-8"))
 
 
+def _encode_text(encoding, text: str):
+    """Encode special-token literals as ordinary user-provided text."""
+    return encoding.encode(text, disallowed_special=())
+
+
 def text_token_count(text: str) -> int:
     # TODO: select provider-specific tokenizers where a stable local encoder
     # exists. The shared estimate is not exact for every provider; the output
@@ -151,7 +170,7 @@ def text_token_count(text: str) -> int:
     if encoding is None:
         _warn_tokenizer_fallback_once()
         return _fallback_text_token_count(text)
-    return len(encoding.encode(text))
+    return len(_encode_text(encoding, text))
 
 
 def truncate_text(
@@ -176,10 +195,10 @@ def truncate_text(
         ).rstrip()
         return prefix + marker if prefix else ""
 
-    encoded = encoding.encode(text)
+    encoded = _encode_text(encoding, text)
     if len(encoded) <= token_budget:
         return text
-    marker_tokens = len(encoding.encode(marker))
+    marker_tokens = len(_encode_text(encoding, marker))
     prefix_size = token_budget - marker_tokens
     if prefix_size <= 0:
         return ""
@@ -190,7 +209,7 @@ def truncate_text(
     for _ in range(4):
         prefix = encoding.decode(encoded[:prefix_size]).rstrip()
         candidate = prefix + marker
-        candidate_tokens = len(encoding.encode(candidate))
+        candidate_tokens = len(_encode_text(encoding, candidate))
         if candidate_tokens <= token_budget:
             return candidate
         prefix_size -= max(1, candidate_tokens - token_budget)
@@ -362,13 +381,15 @@ def _with_omission_notice(
     prepend: bool = False,
 ) -> list[dict]:
     updated = [message.copy() for message in system_messages]
-    if updated and isinstance(updated[-1].get("content"), str):
-        if prepend:
-            updated[-1]["content"] = (
-                notice.strip() + "\n\n" + updated[-1]["content"]
+    if prepend:
+        if updated and isinstance(updated[0].get("content"), str):
+            updated[0]["content"] = (
+                notice.strip() + "\n\n" + updated[0]["content"]
             )
         else:
-            updated[-1]["content"] += notice
+            updated.insert(0, {"role": "system", "content": notice.strip()})
+    elif updated and isinstance(updated[-1].get("content"), str):
+        updated[-1]["content"] += notice
     else:
         updated.append({"role": "system", "content": notice.strip()})
     return updated
@@ -516,14 +537,13 @@ def _budget_chat_messages(
         return list(messages)
 
     latest_user = conversation[latest_user_index]
-    trailing_messages = conversation[latest_user_index + 1:]
-    if trailing_messages:
+    trailing_message_count = len(conversation) - latest_user_index - 1
+    if trailing_message_count:
         log.warning(
             "Dropping %d trailing non-user chat messages while pruning; "
             "the newest user request must terminate an API chat request",
-            len(trailing_messages),
+            trailing_message_count,
         )
-        trailing_messages = []
     preceding_messages = conversation[:latest_user_index]
     complete_turns, trailing_sequence = _partition_turns(preceding_messages)
     current_context = (
@@ -534,7 +554,6 @@ def _budget_chat_messages(
     base_mandatory_messages = [
         *system_messages,
         latest_user,
-        *trailing_messages,
     ]
     base_mandatory_tokens = sum(
         message_tokens(message)
@@ -628,7 +647,6 @@ def _budget_chat_messages(
             candidate_mandatory_messages = [
                 *candidate_system_messages,
                 latest_user,
-                *trailing_messages,
             ]
             if sum(
                 message_tokens(message)
@@ -637,7 +655,7 @@ def _budget_chat_messages(
                 system_messages = candidate_system_messages
                 break
 
-    mandatory_messages = [*system_messages, latest_user, *trailing_messages]
+    mandatory_messages = [*system_messages, latest_user]
     remaining_budget = max(
         0,
         input_budget
@@ -676,7 +694,6 @@ def _budget_chat_messages(
         *(message for turn in selected_turns for message in turn),
         *selected_context,
         latest_user,
-        *trailing_messages,
     ]
 
 
