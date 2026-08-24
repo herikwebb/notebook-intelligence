@@ -16,6 +16,9 @@ MESSAGE_OVERHEAD_TOKENS = 4
 # provider, resolution, and detail mode. The 20% output reserve reduces, but
 # cannot eliminate, that variance without provider-specific image inspection.
 IMAGE_TOKEN_ESTIMATE = 1024
+# Screening deliberately uses a higher image cost than the point estimate so
+# an uncertain image-bearing request takes the full budgeting path.
+IMAGE_TOKEN_SCREENING_ESTIMATE = 2048
 CONTEXT_OMISSION_NOTICE = (
     "\n\n[Context note: Some earlier conversation or attached context was "
     "omitted or truncated to fit the model context window.]"
@@ -134,7 +137,10 @@ def _warn_tokenizer_fallback_once() -> None:
 def _fallback_text_token_count(text: str) -> int:
     if text == "":
         return 0
-    return max(1, (len(text.encode("utf-8")) + 2) // 3)
+    # One token per byte is intentionally conservative across tokenizers. A
+    # three-bytes-per-token estimate can substantially undercount symbol-heavy
+    # text and allow the fallback path to exceed the provider context window.
+    return len(text.encode("utf-8"))
 
 
 def text_token_count(text: str) -> int:
@@ -162,7 +168,7 @@ def truncate_text(
         if _fallback_text_token_count(text) <= token_budget:
             return text
         marker_bytes = marker.encode("utf-8")
-        available_bytes = token_budget * 3 - len(marker_bytes)
+        available_bytes = token_budget - len(marker_bytes)
         if available_bytes <= 0:
             return ""
         prefix = text.encode("utf-8")[:available_bytes].decode(
@@ -219,41 +225,41 @@ def estimate_message_tokens(message: dict) -> int:
     tokens = MESSAGE_OVERHEAD_TOKENS + _content_token_count(
         message.get("content")
     )
-    for key in ("name", "tool_call_id", "tool_calls"):
-        if key in message:
-            tokens += _content_token_count(message[key])
+    for key, value in message.items():
+        if key not in {"role", "content"}:
+            tokens += _content_token_count(value)
     return tokens
 
 
-def _content_token_upper_bound(content: Any) -> int:
-    """Return a cheap upper bound without invoking the tokenizer."""
+def _content_token_screening_estimate(content: Any) -> int:
+    """Return a cheap conservative estimate without invoking the tokenizer."""
     if content is None:
         return 0
     if isinstance(content, str):
         return len(content.encode("utf-8"))
     if isinstance(content, list):
-        return sum(_content_token_upper_bound(item) for item in content)
+        return sum(_content_token_screening_estimate(item) for item in content)
     if isinstance(content, dict):
         content_type = content.get("type")
         if content_type in {"image", "image_url"} or "image_url" in content:
-            return IMAGE_TOKEN_ESTIMATE
+            return IMAGE_TOKEN_SCREENING_ESTIMATE
         if content_type == "text" and isinstance(content.get("text"), str):
             return len(content["text"].encode("utf-8"))
         return sum(
-            _content_token_upper_bound(value)
+            _content_token_screening_estimate(value)
             for key, value in content.items()
             if key != "type"
         )
     return len(str(content).encode("utf-8"))
 
 
-def _message_token_upper_bound(message: dict) -> int:
-    tokens = MESSAGE_OVERHEAD_TOKENS + _content_token_upper_bound(
+def _message_token_screening_estimate(message: dict) -> int:
+    tokens = MESSAGE_OVERHEAD_TOKENS + _content_token_screening_estimate(
         message.get("content")
     )
-    for key in ("name", "tool_call_id", "tool_calls"):
-        if key in message:
-            tokens += _content_token_upper_bound(message[key])
+    for key, value in message.items():
+        if key not in {"role", "content"}:
+            tokens += _content_token_screening_estimate(value)
     return tokens
 
 
@@ -414,7 +420,9 @@ def _budget_chat_messages(
         return list(messages)
 
     input_budget = max(1, int(context_window * CHAT_INPUT_BUDGET_RATIO))
-    if sum(_message_token_upper_bound(message) for message in messages) <= input_budget:
+    if sum(
+        _message_token_screening_estimate(message) for message in messages
+    ) <= input_budget:
         return list(messages)
 
     token_cache = {}
@@ -458,19 +466,54 @@ def _budget_chat_messages(
     )
     if latest_user_index is None:
         log.warning(
-            "Reducing over-budget chat history to its newest message because "
-            "it has no user request"
+            "Reducing over-budget chat history while preserving system "
+            "instructions because it has no user request"
         )
-        newest_message = messages[-1]
-        if message_tokens(newest_message) <= input_budget:
-            return [newest_message]
-        truncated_message = _truncate_mandatory_message(
-            newest_message,
+        if not conversation:
+            truncated_system_messages = _truncate_system_messages(
+                _with_omission_notice(
+                    system_messages,
+                    SHORT_CONTEXT_OMISSION_NOTICE,
+                    prepend=True,
+                ),
+                input_budget,
+            )
+            return truncated_system_messages or list(messages)
+
+        newest_message = conversation[-1]
+        candidate_system_messages = _with_omission_notice(
+            system_messages,
+            SHORT_CONTEXT_OMISSION_NOTICE,
+            prepend=True,
+        )
+        newest_message_tokens = message_tokens(newest_message)
+        minimum_newest_budget = MESSAGE_OVERHEAD_TOKENS + text_token_count(
+            TRUNCATION_MARKER
+        )
+        newest_message_budget = min(
             input_budget,
+            newest_message_tokens
+            if newest_message_tokens <= input_budget
+            else max(minimum_newest_budget, input_budget // 2),
+        )
+        candidate_system_messages = _truncate_system_messages(
+            candidate_system_messages,
+            max(0, input_budget - newest_message_budget),
+        )
+        remaining_for_newest = input_budget - sum(
+            message_tokens(message) for message in candidate_system_messages
+        )
+        truncated_message = (
+            newest_message
+            if newest_message_tokens <= remaining_for_newest
+            else _truncate_mandatory_message(
+                newest_message,
+                remaining_for_newest,
+            )
         )
         if truncated_message is not None:
-            return [truncated_message]
-        return [newest_message]
+            return [*candidate_system_messages, truncated_message]
+        return list(messages)
 
     latest_user = conversation[latest_user_index]
     trailing_messages = conversation[latest_user_index + 1:]
@@ -539,10 +582,22 @@ def _budget_chat_messages(
                 remaining_for_user,
             )
             if truncated_latest_user is None:
-                candidate_system_messages = []
+                notice_message = {
+                    "role": "system",
+                    "content": SHORT_CONTEXT_OMISSION_NOTICE.strip(),
+                }
+                candidate_system_messages = (
+                    [notice_message]
+                    if message_tokens(notice_message) < input_budget
+                    else []
+                )
                 truncated_latest_user = _truncate_mandatory_message(
                     latest_user,
-                    input_budget,
+                    input_budget
+                    - sum(
+                        message_tokens(message)
+                        for message in candidate_system_messages
+                    ),
                 )
         if truncated_latest_user is not None:
             log.warning(

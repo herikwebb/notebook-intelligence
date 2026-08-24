@@ -89,9 +89,9 @@ def test_tokenizer_load_failure_retries_then_caches_success(
     )
 
     with caplog.at_level(logging.WARNING):
-        assert text_token_count("abcdefgh") == 3
-        assert text_token_count("abcdefgh") == 8
-        assert text_token_count("abcdefgh") == 8
+        assert text_token_count("é") == 2
+        assert text_token_count("é") == 1
+        assert text_token_count("é") == 1
 
     assert encoding_for_model.call_count == 2
     assert "using the UTF-8 size fallback" in caplog.text
@@ -174,9 +174,9 @@ def test_tokenizer_thread_start_failure_uses_utf8_fallback(
     )
 
     with caplog.at_level(logging.WARNING):
-        result = text_token_count("abcdefgh")
+        result = text_token_count("é")
 
-    assert result == 3
+    assert result == 2
     assert budget_module._tokenizer_load_in_progress is False
     assert "Could not start the tokenizer warm-up thread" in caplog.text
 
@@ -197,6 +197,28 @@ def test_unexpected_budgeting_error_fails_open(monkeypatch, caplog):
 
     assert result == messages
     assert "sending the original messages" in caplog.text
+
+
+def test_utf8_fallback_keeps_truncated_history_within_budget(monkeypatch):
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
+    monkeypatch.setattr(
+        budget_module,
+        "_tokenizer_load_attempts",
+        budget_module._TOKENIZER_MAX_LOAD_ATTEMPTS,
+    )
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {"role": "user", "content": "🔥" * 500},
+        {"role": "assistant", "content": "old answer"},
+        {"role": "user", "content": "current question"},
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert messages[1] not in result
+    assert sum(estimate_message_tokens(message) for message in result) <= int(
+        128 * CHAT_INPUT_BUDGET_RATIO
+    )
 
 
 def test_keeps_newest_complete_turns_and_drops_older_turns():
@@ -309,6 +331,25 @@ def test_tool_call_turn_is_kept_complete_when_history_is_pruned():
     assert result[3]["tool_call_id"] == "call-1"
 
 
+def test_reasoning_content_is_counted_when_history_is_pruned():
+    messages = [
+        {"role": "system", "content": "Be concise."},
+        {"role": "user", "content": "old question"},
+        {
+            "role": "assistant",
+            "content": "old answer",
+            "reasoning_content": "private reasoning " * 500,
+        },
+        {"role": "user", "content": "current question"},
+    ]
+
+    result = budget_chat_messages(messages, 128)
+
+    assert messages[1] not in result
+    assert messages[2] not in result
+    assert result[-1] == messages[-1]
+
+
 def test_incomplete_tool_call_turn_is_dropped_as_a_unit():
     messages = [
         {"role": "system", "content": "Be concise."},
@@ -369,6 +410,17 @@ def test_multimodal_context_uses_fixed_image_estimate_and_is_omitted():
     assert image_context not in result
     assert result[-2]["content"] == "small later context"
     assert result[-1]["content"] == "current question"
+
+
+def test_image_screening_estimate_is_more_conservative_than_point_estimate():
+    image = {
+        "type": "image_url",
+        "image_url": {"url": "data:image/png;base64,abc"},
+    }
+
+    assert budget_module._content_token_screening_estimate(image) > (
+        budget_module._content_token_count(image)
+    )
 
 
 def test_oversized_multimodal_request_is_reduced_to_bounded_text():
@@ -434,9 +486,11 @@ def test_over_budget_messages_without_a_user_request_keep_bounded_tail(caplog):
     with caplog.at_level(logging.WARNING):
         result = budget_chat_messages(messages, 128)
 
-    assert len(result) == 1
-    assert result[0]["role"] == "assistant"
-    assert result[0]["content"].endswith(TRUNCATION_MARKER)
+    assert [message["role"] for message in result] == ["system", "assistant"]
+    assert result[0]["content"].startswith(
+        "[Context omitted to fit model window.]"
+    )
+    assert result[-1]["content"].endswith(TRUNCATION_MARKER)
     assert sum(estimate_message_tokens(message) for message in result) <= int(
         128 * CHAT_INPUT_BUDGET_RATIO
     )
@@ -528,6 +582,28 @@ def test_oversized_system_prompt_is_truncated_to_leave_room_for_user():
     assert result[-1] == messages[-1]
     assert sum(estimate_message_tokens(message) for message in result) <= int(
         128 * CHAT_INPUT_BUDGET_RATIO
+    )
+
+
+def test_short_system_notice_survives_final_mandatory_context_fallback():
+    messages = [
+        {"role": "system", "content": "mandatory instructions " * 500},
+        {
+            "role": "user",
+            "name": "n" * 80,
+            "content": "mandatory request " * 500,
+        },
+    ]
+
+    result = budget_chat_messages(messages, 256)
+
+    assert result[0] == {
+        "role": "system",
+        "content": "[Context omitted to fit model window.]",
+    }
+    assert result[-1]["content"].endswith(TRUNCATION_MARKER)
+    assert sum(estimate_message_tokens(message) for message in result) <= int(
+        256 * CHAT_INPUT_BUDGET_RATIO
     )
 
 
