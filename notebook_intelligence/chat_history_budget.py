@@ -30,6 +30,7 @@ log = logging.getLogger(__name__)
 _TOKENIZER_MAX_LOAD_ATTEMPTS = 3
 _TOKENIZER_LOAD_TIMEOUT_SECONDS = 30
 _TOKENIZER_RETRY_BACKOFF_SECONDS = 300
+_TOKENIZER_FALLBACK_WARNING_INTERVAL_SECONDS = 300
 _IMAGE_OMISSION_TEXT = "[Image omitted.]"
 _ADDITIONAL_GUIDELINES_HEADER = "# Additional Guidelines\n"
 _ADDITIONAL_GUIDELINES_MARKER = (
@@ -43,7 +44,7 @@ _tokenizer_load_in_progress = False
 _tokenizer_load_started_at = 0.0
 _tokenizer_last_load_failure_at = 0.0
 _tokenizer_load_generation = 0
-_tokenizer_fallback_logged = False
+_tokenizer_fallback_last_logged_at: float | None = None
 
 
 def _load_tokenizer_encoding(load_generation: int) -> None:
@@ -143,12 +144,17 @@ def _get_encoding():
     return encoding
 
 
-def _warn_tokenizer_fallback_once() -> None:
-    global _tokenizer_fallback_logged
+def _warn_tokenizer_fallback() -> None:
+    global _tokenizer_fallback_last_logged_at
+    now = time.monotonic()
     with _tokenizer_lock:
-        if _tokenizer_fallback_logged:
+        if (
+            _tokenizer_fallback_last_logged_at is not None
+            and now - _tokenizer_fallback_last_logged_at
+            < _TOKENIZER_FALLBACK_WARNING_INTERVAL_SECONDS
+        ):
             return
-        _tokenizer_fallback_logged = True
+        _tokenizer_fallback_last_logged_at = now
     log.warning(
         "Using the UTF-8 size fallback for chat context budgeting while the "
         "gpt-4o tokenizer is unavailable"
@@ -175,7 +181,7 @@ def text_token_count(text: str) -> int:
     # reserve reduces, but does not eliminate, that cross-tokenizer risk.
     encoding = _get_encoding()
     if encoding is None:
-        _warn_tokenizer_fallback_once()
+        _warn_tokenizer_fallback()
         return _fallback_text_token_count(text)
     return len(_encode_text(encoding, text))
 
@@ -190,7 +196,7 @@ def truncate_text(
 
     encoding = _get_encoding()
     if encoding is None:
-        _warn_tokenizer_fallback_once()
+        _warn_tokenizer_fallback()
         if _fallback_text_token_count(text) <= token_budget:
             return text
         marker_bytes = marker.encode("utf-8")
@@ -357,10 +363,9 @@ def _has_protected_context_delimiter(message: dict) -> bool:
     content = message.get("content")
     if not isinstance(content, str):
         return False
-    if (
-        "\n\nFile contents:\n```\n" in content
-        and content.endswith("\n```")
-    ):
+    # Any fenced context must remain whole: file attachments, inline-edit
+    # selections, and legacy selected-cell input/output all use code fences.
+    if "```" in content:
         return True
     return _CELL_OUTPUT_CLOSE_RE.search(content) is not None
 

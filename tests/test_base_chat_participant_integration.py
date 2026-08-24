@@ -2,12 +2,14 @@ import asyncio
 from unittest.mock import Mock, AsyncMock
 
 import notebook_intelligence.base_chat_participant as base_participant_module
+import notebook_intelligence.chat_history_budget as budget_module
 from notebook_intelligence.base_chat_participant import BaseChatParticipant
 from notebook_intelligence.base_chat_participant import CreateNewNotebookTool
 from notebook_intelligence.base_chat_participant import ListAvailableNotebookKernelsTool
 from notebook_intelligence.api import ChatRequest, ChatResponse, ChatMode, CancelToken
 from notebook_intelligence.chat_history_budget import (
     CHAT_INPUT_BUDGET_RATIO,
+    TRUNCATION_MARKER,
     estimate_message_tokens,
 )
 from notebook_intelligence.ruleset import RuleContext
@@ -24,6 +26,19 @@ class TestBaseChatParticipantIntegration:
                 LegacyChatModel()
             )
             == 8192
+        )
+
+    def test_history_budget_fails_open_when_window_lookup_raises(self):
+        class BrokenChatModel:
+            @property
+            def context_window(self):
+                raise NotImplementedError
+
+        assert (
+            base_participant_module._chat_history_context_window(
+                BrokenChatModel()
+            )
+            == 0
         )
 
     def test_init_with_default_rule_injector(self):
@@ -148,7 +163,20 @@ class TestBaseChatParticipantIntegration:
 
     def test_ask_mode_preserves_injected_rules_when_system_prompt_is_truncated(
         self,
+        monkeypatch,
     ):
+        class CharacterEncoding:
+            def encode(self, text, **_kwargs):
+                return [ord(character) for character in text]
+
+            def decode(self, tokens):
+                return "".join(chr(token) for token in tokens)
+
+        monkeypatch.setattr(
+            budget_module,
+            "_get_encoding",
+            lambda: CharacterEncoding(),
+        )
         protected_rules = (
             "# Additional Guidelines\n"
             "# Repository Instructions (AGENTS.md)\n"
@@ -167,7 +195,7 @@ class TestBaseChatParticipantIntegration:
         chat_model.provider.name = "test-provider"
         chat_model.provider.id = "test-provider"
         chat_model.name = "test-model"
-        chat_model.context_window = 256
+        chat_model.context_window = 512
         host = Mock()
         host.chat_model = chat_model
         request = ChatRequest(
@@ -189,7 +217,8 @@ class TestBaseChatParticipantIntegration:
         system_content = messages[0]["content"]
         assert "Always use parameterized queries." in system_content
         assert "Never delete user data." in system_content
-        assert "generic assistant prompt" not in system_content
+        assert TRUNCATION_MARKER in system_content
+        assert system_content.count("generic assistant prompt") < 500
 
     def test_builtin_generation_paths_budget_messages(self):
         participant = BaseChatParticipant()

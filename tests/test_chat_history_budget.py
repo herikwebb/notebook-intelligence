@@ -45,7 +45,11 @@ def stable_tokenizer_state(monkeypatch):
     monkeypatch.setattr(budget_module, "_tokenizer_load_started_at", 0.0)
     monkeypatch.setattr(budget_module, "_tokenizer_last_load_failure_at", 0.0)
     monkeypatch.setattr(budget_module, "_tokenizer_load_generation", 0)
-    monkeypatch.setattr(budget_module, "_tokenizer_fallback_logged", False)
+    monkeypatch.setattr(
+        budget_module,
+        "_tokenizer_fallback_last_logged_at",
+        None,
+    )
 
 
 def test_messages_under_budget_are_unchanged():
@@ -112,6 +116,31 @@ def test_tokenizer_load_retries_are_bounded(monkeypatch):
         text_token_count("abcdefgh")
 
     assert encoding_for_model.call_count == 3
+
+
+def test_tokenizer_fallback_warning_repeats_after_interval(
+    monkeypatch,
+    caplog,
+):
+    monotonic = Mock(return_value=100.0)
+    monkeypatch.setattr(budget_module, "_tokenizer_encoding", None)
+    monkeypatch.setattr(
+        budget_module,
+        "_tokenizer_load_attempts",
+        budget_module._TOKENIZER_MAX_LOAD_ATTEMPTS,
+    )
+    monkeypatch.setattr(budget_module.time, "monotonic", monotonic)
+
+    with caplog.at_level(logging.WARNING):
+        text_token_count("first")
+        text_token_count("second")
+        monotonic.return_value = (
+            100.0
+            + budget_module._TOKENIZER_FALLBACK_WARNING_INTERVAL_SECONDS
+        )
+        text_token_count("third")
+
+    assert caplog.text.count("Using the UTF-8 size fallback") == 2
 
 
 def test_tokenizer_load_retries_after_backoff(monkeypatch):
@@ -715,10 +744,16 @@ def test_current_context_with_security_delimiters_is_dropped_not_truncated():
         + "file data " * 500
         + "\n```"
     )
+    inline_context = (
+        "Generate a replacement for this existing code: ```"
+        + "selected code " * 500
+        + "```"
+    )
     messages = [
         {"role": "system", "content": "Be concise."},
         {"role": "user", "content": cell_context},
         {"role": "user", "content": file_context},
+        {"role": "user", "content": inline_context},
         {"role": "user", "content": "current question"},
     ]
 
@@ -726,6 +761,7 @@ def test_current_context_with_security_delimiters_is_dropped_not_truncated():
 
     assert all(message.get("content") != cell_context for message in result)
     assert all(message.get("content") != file_context for message in result)
+    assert all(message.get("content") != inline_context for message in result)
     assert result[-1] == messages[-1]
 
 
