@@ -1,10 +1,17 @@
+import asyncio
+from types import SimpleNamespace
+
 import pytest
 import json
 from unittest.mock import Mock, patch, MagicMock
 from tornado.httputil import HTTPServerRequest
 from tornado.web import Application
 from notebook_intelligence.extension import WebsocketCopilotHandler
+from notebook_intelligence.api import ChatResponse
+from notebook_intelligence.claude import ClaudeCodeChatParticipant
 from notebook_intelligence.context_factory import RuleContextFactory
+from notebook_intelligence.prompts import Prompts
+from notebook_intelligence.rule_injector import RuleInjector
 from notebook_intelligence.ruleset import RuleContext
 
 
@@ -100,6 +107,7 @@ class TestWebsocketHandlerIntegration:
         mock_factory.create.assert_called_once_with(
             filename='test.ipynb',
             language='python',
+            kernel_name='',
             chat_mode_id='ask',
             root_dir='/workspace'
         )
@@ -115,6 +123,9 @@ class TestWebsocketHandlerIntegration:
         # We can't easily inspect the ChatRequest object, but we can verify
         # that the thread was created with the right target
         assert mock_thread.call_args[1]['target'] is not None
+        chat_request = mock_ai_manager.handle_chat_request.call_args[0][0]
+        assert chat_request.language == 'python'
+        assert chat_request.kernel_name == ''
     
     @patch('notebook_intelligence.extension.ai_service_manager')
     @patch('notebook_intelligence.extension.NotebookIntelligence')
@@ -147,6 +158,7 @@ class TestWebsocketHandlerIntegration:
                 'suffix': '',
                 'existingCode': '',
                 'language': 'python',
+                'kernelName': 'python3',
                 'filename': 'script.py'
             }
         }
@@ -158,12 +170,126 @@ class TestWebsocketHandlerIntegration:
         mock_factory.create.assert_called_once_with(
             filename='script.py',
             language='python',
+            kernel_name='python3',
             chat_mode_id='inline-chat',  # GenerateCode uses inline-chat mode for rule matching
             root_dir='/workspace'
         )
         
         # Verify thread was started
         mock_thread.assert_called_once()
+        chat_request = mock_ai_manager.handle_chat_request.call_args[0][0]
+        assert chat_request.language == 'python'
+        assert chat_request.kernel_name == 'python3'
+
+        options = mock_ai_manager.handle_chat_request.call_args.kwargs['options']
+        assert options['system_prompt'] == (
+            "You are an assistant that generates code for 'python' language. "
+            "You generate code between existing leading and trailing code "
+            "sections. Be concise and return only code as a response. Don't "
+            "include leading content or trailing content in your response, "
+            "they are provided only for context. You can reuse methods and "
+            "symbols defined in leading and trailing content."
+        )
+        assert options["system_prompt_token_budget"] > 0
+
+    def test_generate_code_existing_edit_reaches_anthropic_system_prompt(self):
+        """Exercise handler -> Claude participant -> Anthropic SDK wiring."""
+        manager = MagicMock()
+        manager.is_claude_code_mode = True
+        manager.nbi_config = SimpleNamespace(
+            claude_settings={
+                "chat_model": "claude-sonnet-test",
+                "api_key": "test-key",
+                "base_url": "https://example.test",
+            },
+            rules_enabled=False,
+        )
+        participant = ClaudeCodeChatParticipant.__new__(
+            ClaudeCodeChatParticipant
+        )
+        participant._rule_injector = RuleInjector()
+        sdk_client = MagicMock()
+
+        class Stream:
+            text_stream = iter(["updated = True"])
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+        sdk_client.messages.stream.return_value = Stream()
+
+        async def dispatch(request, response, options=None):
+            request.host = manager
+            await participant.handle_chat_request(
+                request,
+                response,
+                options or {},
+            )
+
+        manager.handle_chat_request = dispatch
+        response = MagicMock(spec=ChatResponse)
+        context_factory = MagicMock(spec=RuleContextFactory)
+        context_factory.create.return_value = MagicMock(spec=RuleContext)
+
+        message = {
+            "id": "inline-existing",
+            "type": "generate-code",
+            "data": {
+                "chatId": "inline-chat",
+                "prompt": "set the flag",
+                "prefix": "before = True",
+                "suffix": "after = True",
+                "existingCode": "updated = False",
+                "language": "python",
+                "kernelName": "python3",
+                "filename": "script.py",
+            },
+        }
+
+        with patch(
+            "notebook_intelligence.extension.ai_service_manager",
+            manager,
+        ), patch(
+            "notebook_intelligence.extension.NotebookIntelligence.root_dir",
+            "/workspace",
+        ), patch(
+            "notebook_intelligence.extension.threading.Thread"
+        ) as thread_cls, patch(
+            "notebook_intelligence.extension.WebsocketCopilotResponseEmitter",
+            return_value=response,
+        ), patch(
+            "notebook_intelligence.claude._create_anthropic_client",
+            return_value=sdk_client,
+        ), patch(
+            "notebook_intelligence.extension.ThreadSafeWebSocketConnector"
+        ):
+            handler = WebsocketCopilotHandler(
+                self._create_mock_application(),
+                self._create_mock_request(),
+                context_factory=context_factory,
+            )
+            handler.on_message(json.dumps(message))
+            request_coro = thread_cls.call_args.kwargs["args"][0]
+            asyncio.run(request_coro)
+
+        stream_options = sdk_client.messages.stream.call_args.kwargs
+        assert stream_options["system"] == (
+            "You are an assistant that generates code for 'python' language. "
+            "You generate code between existing leading and trailing code "
+            "sections. Update the existing code section and return a modified "
+            "version. Don't just return the update, recreate the existing code "
+            "section with the update. Be concise and return only code as a "
+            "response. Don't include leading content or trailing content in "
+            "your response, they are provided only for context. You can reuse "
+            "methods and symbols defined in leading and trailing content."
+        )
+        assert stream_options["messages"][-1] == {
+            "role": "user",
+            "content": "Generate code for: set the flag",
+        }
     
     @patch('notebook_intelligence.extension.ai_service_manager')
     @patch('notebook_intelligence.extension.NotebookIntelligence')
@@ -211,6 +337,7 @@ class TestWebsocketHandlerIntegration:
         mock_factory.create.assert_called_once_with(
             filename='notebook.ipynb',
             language='python',
+            kernel_name='',
             chat_mode_id='agent',
             root_dir='/workspace'
         )
@@ -226,6 +353,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = False
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -288,6 +416,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -355,6 +484,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -421,6 +551,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -476,6 +607,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -533,6 +665,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -593,6 +726,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -617,10 +751,10 @@ class TestWebsocketHandlerIntegration:
             str(upload_root / "bad name.pdf"),
             str(upload_root / "bad‮name.pdf"),
         ]
-        for hazardous in hazardous_paths:
+        for index, hazardous in enumerate(hazardous_paths):
             mock_ai_manager.handle_chat_request.reset_mock()
             message = {
-                'id': 'test-message-id',
+                'id': f'test-message-id-{index}',
                 'type': 'chat-request',
                 'data': {
                     'chatId': 'test-chat-id',
@@ -666,6 +800,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -732,6 +867,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -796,6 +932,7 @@ class TestWebsocketHandlerIntegration:
         mock_nb_intel.root_dir = "/workspace"
         mock_ai_manager.handle_chat_request = Mock()
         mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.is_acp_mode = False
         mock_ai_manager.chat_model = Mock()
         mock_ai_manager.chat_model.context_window = 4096
 
@@ -948,3 +1085,135 @@ class TestPermissionModeClamp:
         handler = self._handler(bypass_allowed=True)
         req = self._send(handler, mock_ai_manager, mock_nb_intel, None)
         assert req.permission_mode == 'default'
+
+
+class TestContextTokenLimit:
+    """The attachment/output-context budget must come from the Claude model
+    in Claude Code mode, not from the (possibly ``None``) legacy chat_model.
+
+    Regression guard: on a Claude-only setup ``chat_model`` is ``None``, and
+    the old ``100 if chat_model is None else ...`` expression shrank the
+    budget to 80 tokens — cell-output context was skipped and every
+    attachment after the first was dropped by the budget break.
+    """
+
+    def _mock_manager(self, claude_mode: bool, chat_model):
+        manager = Mock()
+        manager.is_claude_code_mode = claude_mode
+        manager.chat_model = chat_model
+        manager.nbi_config.claude_settings = {'chat_model': ''}
+        return manager
+
+    def test_non_claude_mode_without_model_keeps_floor(self):
+        from notebook_intelligence.extension import _resolve_context_token_limit
+        assert _resolve_context_token_limit(self._mock_manager(False, None)) == 100
+
+    def test_non_claude_mode_uses_model_context_window(self):
+        from notebook_intelligence.extension import _resolve_context_token_limit
+        chat_model = Mock()
+        chat_model.context_window = 4096
+        assert _resolve_context_token_limit(self._mock_manager(False, chat_model)) == 4096
+
+    def test_claude_mode_ignores_missing_legacy_model(self):
+        from notebook_intelligence.extension import _resolve_context_token_limit
+        with patch(
+            'notebook_intelligence.extension.model_info_from_id',
+            return_value={'id': '', 'name': '', 'context_window': 123456},
+        ) as mock_info:
+            assert _resolve_context_token_limit(self._mock_manager(True, None)) == 123456
+        mock_info.assert_called_once_with('')
+
+    def test_claude_mode_passes_configured_model_id(self):
+        from notebook_intelligence.extension import _resolve_context_token_limit
+        manager = self._mock_manager(True, None)
+        manager.nbi_config.claude_settings = {'chat_model': ' claude-sonnet-4-5 '}
+        with patch(
+            'notebook_intelligence.extension.model_info_from_id',
+            return_value={'id': 'claude-sonnet-4-5', 'name': 'Sonnet', 'context_window': 200000},
+        ) as mock_info:
+            assert _resolve_context_token_limit(manager) == 200000
+        mock_info.assert_called_once_with('claude-sonnet-4-5')
+
+    def test_claude_mode_default_window_without_model_cache(self):
+        # No patching: the real model_info_from_id falls back to a 200K
+        # window for an unknown/default id, so the budget is never the
+        # legacy 100-token floor in Claude Code mode.
+        from notebook_intelligence.extension import _resolve_context_token_limit
+        assert _resolve_context_token_limit(self._mock_manager(True, None)) >= 200000
+
+    @patch('notebook_intelligence.extension.ai_service_manager')
+    @patch('notebook_intelligence.extension.NotebookIntelligence')
+    @patch('notebook_intelligence.extension.threading.Thread')
+    def test_claude_mode_output_context_survives_without_legacy_model(
+        self, mock_thread, mock_nb_intel, mock_ai_manager
+    ):
+        """A cell-output attachment larger than the legacy 80-token budget
+        must still reach chat history in Claude Code mode."""
+        mock_nb_intel.root_dir = "/workspace"
+        mock_ai_manager.handle_chat_request = Mock()
+        mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.chat_model = None  # Claude-only setup
+        mock_ai_manager.nbi_config.claude_settings = {'chat_model': ''}
+
+        mock_factory = Mock(spec=RuleContextFactory)
+        mock_factory.create.return_value = Mock(spec=RuleContext)
+
+        with patch('notebook_intelligence.extension.ThreadSafeWebSocketConnector'):
+            handler = WebsocketCopilotHandler(
+                self._create_mock_application(),
+                self._create_mock_request(),
+                context_factory=mock_factory
+            )
+
+        message = {
+            'id': 'test-message-id',
+            'type': 'chat-request',
+            'data': {
+                'chatId': 'test-chat-id',
+                'prompt': 'Explain this output',
+                'language': 'python',
+                'filename': 'notebook.ipynb',
+                'chatMode': 'agent',
+                'toolSelections': {},
+                'additionalContext': [
+                    {
+                        'filePath': 'notebook.ipynb',
+                        'outputContext': {
+                            'cellSource': 'df.describe()',
+                            'mimeBundles': [
+                                {
+                                    'mimeType': 'text/plain',
+                                    'data': 'count 100\nmean 4.2',
+                                    # Over the legacy 80-token budget: the
+                                    # old code path skipped this bundle.
+                                    'sizeTokens': 500,
+                                }
+                            ],
+                            'isError': False,
+                            'truncated': False,
+                        },
+                    }
+                ]
+            }
+        }
+
+        handler.on_message(json.dumps(message))
+
+        mock_ai_manager.handle_chat_request.assert_called_once()
+        chat_request = mock_ai_manager.handle_chat_request.call_args[0][0]
+        history_text = json.dumps(chat_request.chat_history)
+        assert 'df.describe()' in history_text
+        assert 'mean 4.2' in history_text
+
+    def _create_mock_application(self):
+        app = Mock(spec=Application)
+        app.settings = {"jinja2_env": None, "headers": {}}
+        app.ui_methods = {}
+        app.ui_modules = {}
+        app.transforms = []
+        return app
+
+    def _create_mock_request(self):
+        request = Mock(spec=HTTPServerRequest)
+        request.connection = Mock()
+        return request

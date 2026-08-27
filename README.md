@@ -105,7 +105,7 @@ Bypass Permissions never persists: starting a **New chat session** (or `/clear`)
 
 Choosing **Bypass Permissions** does not arm it immediately. It opens a confirmation step; only after you confirm does bypass take effect, and while it is active the shield turns into a red warning icon as a persistent indicator. Bypass must be re-armed each session: starting a new chat or restarting the Claude client drops back to Default. And because the server re-checks the requested mode on every message, an armed bypass can never outlive a policy that an administrator has since turned off.
 
-**Admin gating.** Bypass Permissions is **off by default** and hidden from the selector unless an administrator enables it: it is governed by the `claude_bypass_permissions` policy (`NBI_CLAUDE_BYPASS_PERMISSIONS_POLICY`), the only admin policy whose default is `force-off` rather than `user-choice`. The requested mode is also clamped on the server for every message, so the gate can't be bypassed by a hand-crafted request. Independently, NBI honors Claude Code's enterprise [managed settings](https://code.claude.com/docs/en/settings): `permissions.disableBypassPermissionsMode` removes the option regardless of the NBI policy, and `permissions.defaultMode` sets the selector's starting mode (Bypass excepted, since it never auto-arms). See [Allowing Bypass Permissions](docs/admin-guide.md#allowing-bypass-permissions-in-the-claude-permission-mode-selector) in the admin guide.
+**Admin gating.** Bypass Permissions is **off by default** and hidden from the selector unless an administrator enables it: it is governed by the `claude_bypass_permissions` policy (`NBI_CLAUDE_BYPASS_PERMISSIONS_POLICY`), one of three admin policies that default to `force-off` rather than `user-choice` (the others gate the experimental ACP agent mode and ACP full access). The requested mode is also clamped on the server for every message, so the gate can't be bypassed by a hand-crafted request. Independently, NBI honors Claude Code's enterprise [managed settings](https://code.claude.com/docs/en/settings): `permissions.disableBypassPermissionsMode` removes the option regardless of the NBI policy, and `permissions.defaultMode` sets the selector's starting mode (Bypass excepted, since it never auto-arms). See [Allowing Bypass Permissions](docs/admin-guide.md#allowing-bypass-permissions-in-the-claude-permission-mode-selector) in the admin guide.
 
 The `/enter-plan-mode` and `/exit-plan-mode` slash commands still work if typed but are no longer offered in autocomplete; the selector replaces them and will retire the commands in a future release.
 
@@ -116,6 +116,12 @@ When Claude mode is on, the chat sidebar shows a history icon next to the gear. 
 Long Claude turns surface an elapsed-time counter and a heartbeat-driven pulse with a "may be slow" copy flip after 30 seconds. Each tool the agent runs shows up as a persistent status card with a kind icon and a live in-progress / done / failed state; edits carry an inline diff, and a run of consecutive calls collapses into one expandable group, so the sidebar reflects what the agent is doing rather than appearing stuck.
 
 In Claude mode, workspace files attached as chat context arrive as `@`-mention pointers rather than inlined file contents. Claude's Read tool fetches them on demand, which means images, large files, and notebooks (cell-aware) now work where the older content-injection path silently truncated or skipped them.
+
+#### Usage footer
+
+Enable **Show usage after each turn** in the Settings dialog to append a small footer under each Claude-mode reply with the turn's duration, token counts (with a cached-input breakdown), and cost — for example `12.3s · 45.2K in (38.1K cached) / 1.2K out · $0.0842`. It is off by default.
+
+The cost figure comes from the Claude Code CLI, priced from Anthropic's public list rates. It is shown only when NBI is configured with a direct Anthropic API key on the default endpoint, and is omitted otherwise — on a subscription login (where the marginal cost is effectively $0), an enterprise-negotiated contract, or a custom **Base URL** (proxy, gateway, or non-Anthropic endpoint) — since the list-price figure would not match your actual billing. Duration and token counts are always shown.
 
 #### Claude Code launcher tile
 
@@ -178,7 +184,7 @@ NBI reloads open document tabs when their files change on disk, so edits an AI a
 
 ## Configuration
 
-Configure your provider, model, and API key from NBI Settings — the gear icon in the chat panel, the `/settings` chat command, or the JupyterLab command palette. For background, see the [provider blog post](https://plmbr.dev/blog/archive/support-for-any-llm-provider/).
+Configure your provider, model, and API key from NBI Settings — the gear icon in the chat panel, the `/settings` chat command, or the JupyterLab command palette. For background, see the [provider blog post](https://nbi.plmbr.dev/blog/archive/support-for-any-llm-provider/).
 
 <img src="media/provider-list.png" alt="Settings dialog" width=500 />
 
@@ -196,24 +202,26 @@ Most settings panel toggles can be locked by org administrators. Two shapes:
 
 **Boolean policies** use the `*_POLICY` suffix and accept three values: `user-choice` (default — user toggles freely), `force-on` (locked enabled), `force-off` (locked disabled). When forced, the panel control is disabled with a "Locked by your administrator" tooltip and any client-side write is ignored.
 
-| Env var                                        | Locks the Settings panel control for                                                                                                                                                      |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NBI_EXPLAIN_ERROR_POLICY`                     | "Explain cell errors"                                                                                                                                                                     |
-| `NBI_OUTPUT_FOLLOWUP_POLICY`                   | "Ask about cell outputs"                                                                                                                                                                  |
-| `NBI_OUTPUT_TOOLBAR_POLICY`                    | "Show output toolbar"                                                                                                                                                                     |
-| `NBI_CLAUDE_MODE_POLICY`                       | "Enable Claude mode"                                                                                                                                                                      |
-| `NBI_CLAUDE_CONTINUE_CONVERSATION_POLICY`      | "Remember conversation history"                                                                                                                                                           |
-| `NBI_CLAUDE_CODE_TOOLS_POLICY`                 | "Claude Code tools"                                                                                                                                                                       |
-| `NBI_CLAUDE_JUPYTER_UI_TOOLS_POLICY`           | "Jupyter UI tools"                                                                                                                                                                        |
-| `NBI_CLAUDE_SETTING_SOURCE_USER_POLICY`        | Setting source: User                                                                                                                                                                      |
-| `NBI_CLAUDE_SETTING_SOURCE_PROJECT_POLICY`     | Setting source: Project                                                                                                                                                                   |
-| `NBI_STORE_GITHUB_ACCESS_TOKEN_POLICY`         | "Remember my GitHub Copilot access token"                                                                                                                                                 |
-| `NBI_SKILLS_MANAGEMENT_POLICY`                 | The Skills tab (force-off hides it and 403s the API; also disables the managed-skills reconciler)                                                                                         |
-| `NBI_CLAUDE_MCP_MANAGEMENT_POLICY`             | The Claude-mode MCP Servers tab (force-off hides it and 403s `/claude-mcp/*`; independent of the non-Claude MCP Servers tab)                                                              |
-| `NBI_CLAUDE_PLUGINS_MANAGEMENT_POLICY`         | The Claude-mode Plugins tab (force-off hides it and 403s `/plugins/*`)                                                                                                                    |
-| `NBI_CLAUDE_BYPASS_PERMISSIONS_POLICY`         | "Bypass Permissions" in the Claude permission-mode selector (defaults to `force-off`, the only policy that does; `user-choice` exposes the option, which the user still arms per session) |
-| `NBI_TERMINAL_DRAG_DROP_POLICY`                | Terminal drag-drop file attach feature                                                                                                                                                    |
-| `NBI_REFRESH_OPEN_FILES_ON_DISK_CHANGE_POLICY` | "Refresh open files when changed on disk"                                                                                                                                                 |
+| Env var                                        | Locks the Settings panel control for                                                                                                                                                                                         |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NBI_EXPLAIN_ERROR_POLICY`                     | "Explain cell errors"                                                                                                                                                                                                        |
+| `NBI_OUTPUT_FOLLOWUP_POLICY`                   | "Ask about cell outputs"                                                                                                                                                                                                     |
+| `NBI_OUTPUT_TOOLBAR_POLICY`                    | "Show output toolbar"                                                                                                                                                                                                        |
+| `NBI_CLAUDE_MODE_POLICY`                       | "Enable Claude mode"                                                                                                                                                                                                         |
+| `NBI_ACP_MODE_POLICY`                          | "Enable ACP mode" (experimental agent mode over the Agent Client Protocol, with Codex as the first agent type; defaults to `force-off`, set `user-choice` to allow it)                                                       |
+| `NBI_ACP_FULL_ACCESS_POLICY`                   | "Full access" for the ACP agent: run tools without asking (defaults to `force-off`, so the agent asks before anything beyond trusted read-only commands; `user-choice` lets users opt into unattended runs)                  |
+| `NBI_CLAUDE_CONTINUE_CONVERSATION_POLICY`      | "Remember conversation history"                                                                                                                                                                                              |
+| `NBI_CLAUDE_CODE_TOOLS_POLICY`                 | "Claude Code tools"                                                                                                                                                                                                          |
+| `NBI_CLAUDE_JUPYTER_UI_TOOLS_POLICY`           | "Jupyter UI tools"                                                                                                                                                                                                           |
+| `NBI_CLAUDE_SETTING_SOURCE_USER_POLICY`        | Setting source: User                                                                                                                                                                                                         |
+| `NBI_CLAUDE_SETTING_SOURCE_PROJECT_POLICY`     | Setting source: Project                                                                                                                                                                                                      |
+| `NBI_STORE_GITHUB_ACCESS_TOKEN_POLICY`         | "Remember my GitHub Copilot access token"                                                                                                                                                                                    |
+| `NBI_SKILLS_MANAGEMENT_POLICY`                 | The Skills tab (force-off hides it and 403s the API; also disables the managed-skills reconciler)                                                                                                                            |
+| `NBI_CLAUDE_MCP_MANAGEMENT_POLICY`             | The Claude-mode MCP Servers tab (force-off hides it and 403s `/claude-mcp/*`; independent of the non-Claude MCP Servers tab)                                                                                                 |
+| `NBI_CLAUDE_PLUGINS_MANAGEMENT_POLICY`         | The Claude-mode Plugins tab (force-off hides it and 403s `/plugins/*`)                                                                                                                                                       |
+| `NBI_CLAUDE_BYPASS_PERMISSIONS_POLICY`         | "Bypass Permissions" in the Claude permission-mode selector (defaults to `force-off`, as do `NBI_ACP_MODE_POLICY` and `NBI_ACP_FULL_ACCESS_POLICY`; `user-choice` exposes the option, which the user still arms per session) |
+| `NBI_TERMINAL_DRAG_DROP_POLICY`                | Terminal drag-drop file attach feature                                                                                                                                                                                       |
+| `NBI_REFRESH_OPEN_FILES_ON_DISK_CHANGE_POLICY` | "Refresh open files when changed on disk"                                                                                                                                                                                    |
 
 The first three also have matching traitlets on `NotebookIntelligence` (`explain_error_policy`, `output_followup_policy`, `output_toolbar_policy`); add the others as needed in the same shape:
 
@@ -238,6 +246,9 @@ Per-user preferences (default on for the cell-output features) live in `config.j
 | `NBI_CLAUDE_INLINE_COMPLETION_MODEL`   | Claude → Auto-complete model                                                 |
 | `ANTHROPIC_API_KEY`                    | Claude → API Key (input is locked + blanked; the SDK reads the env directly) |
 | `ANTHROPIC_BASE_URL`                   | Claude → Base URL                                                            |
+| `NBI_ACP_CHAT_MODEL`                   | ACP → Chat model                                                             |
+| `OPENAI_API_KEY`                       | ACP → API Key (input is locked + blanked; the agent reads the env directly)  |
+| `OPENAI_BASE_URL`                      | ACP → Base URL                                                               |
 
 Provider IDs: `github-copilot`, `openai-compatible`, `litellm-compatible`, `ollama`, `none`. The `*_MODEL_ID` value is whatever the chosen provider exposes (e.g. `gpt-4o`, `llama3:latest`). Claude model IDs are the literal IDs from the Anthropic API (e.g. `claude-opus-4-7`, `claude-sonnet-4-6`); empty string = "Default (recommended)"; `NBI_CLAUDE_INLINE_COMPLETION_MODEL` also accepts `none` (no inline completion in Claude mode) or `inherit` (use the General-tab Auto-complete model).
 
@@ -401,7 +412,7 @@ c.NotebookIntelligence.enable_chat_feedback = True
 jupyter lab --NotebookIntelligence.enable_chat_feedback=true
 ```
 
-The feedback fires an in-process `telemetry` event. Nothing leaves the process by default — see the [admin guide](docs/admin-guide.md#chat-feedback-event-hook) for how to wire it into your observability stack.
+The feedback fires an in-process `telemetry` event. Nothing leaves the process by default. See the [admin guide](docs/admin-guide.md#telemetry-events) for the full set of telemetry events and how to wire them into your observability stack.
 
 The thumbs buttons reveal on hover by default. To keep them always visible, enable:
 
@@ -424,10 +435,10 @@ c.NotebookIntelligence.enable_chat_feedback_always_visible = True
 
 ## Further reading
 
-- [Introducing Notebook Intelligence!](https://plmbr.dev/blog/archive/introducing-notebook-intelligence/)
-- [Building AI Extensions for JupyterLab](https://plmbr.dev/blog/archive/building-ai-extensions-for-jupyterlab/)
-- [Building AI Agents for JupyterLab](https://plmbr.dev/blog/archive/building-ai-agents-for-jupyterlab/)
-- [Notebook Intelligence now supports any LLM Provider and AI Model!](https://plmbr.dev/blog/archive/support-for-any-llm-provider/)
+- [Introducing Notebook Intelligence!](https://nbi.plmbr.dev/blog/archive/introducing-notebook-intelligence/)
+- [Building AI Extensions for JupyterLab](https://nbi.plmbr.dev/blog/archive/building-ai-extensions-for-jupyterlab/)
+- [Building AI Agents for JupyterLab](https://nbi.plmbr.dev/blog/archive/building-ai-agents-for-jupyterlab/)
+- [Notebook Intelligence now supports any LLM Provider and AI Model!](https://nbi.plmbr.dev/blog/archive/support-for-any-llm-provider/)
 
 ## Roadmap
 

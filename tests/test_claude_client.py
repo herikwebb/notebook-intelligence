@@ -143,6 +143,27 @@ class TestClientThreadEventLoop:
 
 
 class TestSendClaudeAgentRequestDeadThread:
+    def test_subscribes_before_publishing_request(self):
+        client = _make_client()
+        live_thread = Mock()
+        live_thread.is_alive.return_value = True
+        client._client_thread = live_thread
+
+        class ImmediateResponseQueue:
+            def put(self, event):
+                client._client_thread_signal.emit({
+                    "id": event["id"],
+                    "data": "done",
+                })
+
+        client._client_queue = ImmediateResponseQueue()
+
+        result = client._send_claude_agent_request(
+            ClaudeAgentEventType.Query, {}
+        )
+
+        assert result == {"data": "done", "success": True, "error": None}
+
     def test_bails_out_quickly_when_worker_thread_dead(self, monkeypatch):
         # Make the poll loop's sleep a no-op so a slow test host doesn't mask
         # the bug: the behavior we're guarding is structural (returns without
@@ -894,6 +915,86 @@ class TestHandleChatRequestErrorHandling:
         response.finish.assert_not_called()
         response.stream.assert_not_called()
 
+    def test_inline_chat_forwards_rule_enhanced_system_prompt(self, monkeypatch):
+        participant = _make_participant()
+        participant._rule_injector.inject_rules.return_value = (
+            "inline edit prompt\n\nworkspace rule"
+        )
+        request = _make_chat_request("inline-chat")
+        request.host.nbi_config.claude_settings = {
+            "chat_model": "claude-sonnet-test",
+            "api_key": "test-key",
+            "base_url": "https://example.test",
+        }
+        request.chat_history = [{"role": "user", "content": "change this"}]
+        request.cancel_token = MagicMock()
+        response = Mock(spec=ChatResponse)
+        chat_model = MagicMock()
+        monkeypatch.setattr(
+            claude_module,
+            "ClaudeChatModel",
+            MagicMock(return_value=chat_model),
+        )
+        options = {"system_prompt": "inline edit prompt", "other": "value"}
+
+        asyncio.run(
+            participant.handle_inline_chat_request(request, response, options)
+        )
+
+        participant._rule_injector.inject_rules.assert_called_once_with(
+            "inline edit prompt",
+            request,
+        )
+        chat_model.completions.assert_called_once_with(
+            request.chat_history,
+            response=response,
+            cancel_token=request.cancel_token,
+            options={
+                "system_prompt": "inline edit prompt\n\nworkspace rule",
+                "other": "value",
+            },
+        )
+        assert options == {
+            "system_prompt": "inline edit prompt",
+            "other": "value",
+        }
+
+    def test_inline_chat_applies_system_prompt_token_budget(self, monkeypatch):
+        participant = _make_participant()
+        participant._rule_injector.inject_rules.return_value = "bounded prompt"
+        request = _make_chat_request("inline-chat")
+        request.host.nbi_config.claude_settings = {
+            "chat_model": "claude-sonnet-test",
+        }
+        request.chat_history = [{"role": "user", "content": "change this"}]
+        request.cancel_token = MagicMock()
+        response = Mock(spec=ChatResponse)
+        chat_model = MagicMock()
+        monkeypatch.setattr(
+            claude_module,
+            "ClaudeChatModel",
+            MagicMock(return_value=chat_model),
+        )
+
+        asyncio.run(
+            participant.handle_inline_chat_request(
+                request,
+                response,
+                {
+                    "system_prompt": "inline edit prompt",
+                    "system_prompt_token_budget": 500,
+                },
+            )
+        )
+
+        participant._rule_injector.inject_rules.assert_called_once_with(
+            "inline edit prompt",
+            request,
+            max_tokens=500,
+        )
+        completion_options = chat_model.completions.call_args.kwargs["options"]
+        assert completion_options == {"system_prompt": "bounded prompt"}
+
 
 class _FakeMessageStream:
     """Stand-in for the Anthropic SDK's MessageStreamManager.
@@ -970,7 +1071,21 @@ class TestClaudeChatModelStreaming:
         assert kwargs["model"] == "claude-sonnet-test"
         assert kwargs["messages"] == [{"role": "user", "content": "x"}]
         assert kwargs["max_tokens"] == 10000
+        assert "system" not in kwargs
         model._client.messages.create.assert_not_called()
+
+    def test_system_prompt_is_forwarded_to_anthropic_stream(self):
+        model, _ = _make_chat_model(["updated code"])
+        response = MagicMock()
+
+        model.completions(
+            messages=[{"role": "user", "content": "change this"}],
+            response=response,
+            options={"system_prompt": "return only replacement code"},
+        )
+
+        kwargs = model._client.messages.stream.call_args.kwargs
+        assert kwargs["system"] == "return only replacement code"
 
     def test_empty_chunks_are_skipped(self):
         # The Anthropic stream can occasionally yield empty strings between
@@ -1282,3 +1397,61 @@ class TestParticipantCommandsDedupe:
         participant._client.server_info = None
         names = [cmd.name for cmd in participant.commands]
         assert names == ["compact", "context", "cost", "clear"]
+
+
+class TestAssembleClientQuery:
+    """Slash-command queries must not silently discard this turn's context
+    lines (attachment @-mentions, cell pointers, output context).
+
+    Only control-only commands (/clear, /cost, ...) drop the context —
+    it is meaningless to them. Any other command is moved to the front
+    (the CLI only recognizes a command at the start of the query) with
+    the context preserved after it.
+    """
+
+    def test_plain_prompt_joins_all_lines(self):
+        from notebook_intelligence.claude import assemble_client_query
+        query = assemble_client_query([
+            "The user attached @data.csv. Read it if relevant to the request.",
+            "Summarize this file",
+        ])
+        assert query == (
+            "The user attached @data.csv. Read it if relevant to the request."
+            "\nSummarize this file"
+        )
+
+    def test_control_command_drops_context(self):
+        from notebook_intelligence.claude import assemble_client_query
+        query = assemble_client_query([
+            "The user attached @data.csv. Read it if relevant to the request.",
+            "/clear",
+        ])
+        assert query == "/clear"
+
+    def test_control_command_matching_is_case_insensitive_and_token_based(self):
+        from notebook_intelligence.claude import assemble_client_query
+        assert assemble_client_query(["context line", "/Cost"]) == "/Cost"
+
+    def test_custom_command_keeps_context_after_command(self):
+        from notebook_intelligence.claude import assemble_client_query
+        query = assemble_client_query([
+            "The user attached @analysis.ipynb. Read it if relevant to the request.",
+            "/review-notebook focus on performance",
+        ])
+        assert query.splitlines()[0] == "/review-notebook focus on performance"
+        assert "@analysis.ipynb" in query
+
+    def test_custom_command_without_context_is_unchanged(self):
+        from notebook_intelligence.claude import assemble_client_query
+        assert assemble_client_query(["/review-notebook"]) == "/review-notebook"
+
+    def test_empty_lines_list(self):
+        from notebook_intelligence.claude import assemble_client_query
+        assert assemble_client_query([]) == ""
+
+    def test_hidden_plan_mode_alias_still_leads_query(self):
+        # The plan-mode aliases are intercepted via client_query.startswith,
+        # so the command line must stay first even with context attached.
+        from notebook_intelligence.claude import assemble_client_query
+        query = assemble_client_query(["context line", "/enter-plan-mode"])
+        assert query.startswith("/enter-plan-mode")

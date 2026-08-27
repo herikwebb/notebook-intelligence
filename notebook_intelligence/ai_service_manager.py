@@ -132,10 +132,15 @@ class AIServiceManager(Host):
         self._websocket_connector = _websocket_connector
         self._mcp_manager.websocket_connector = _websocket_connector
         self._claude_code_chat_participant.websocket_connector = _websocket_connector
+        if self._acp_chat_participant is not None:
+            self._acp_chat_participant.websocket_connector = _websocket_connector
 
     def initialize(self):
         self.chat_participants = {}
         self._claude_code_chat_participant = ClaudeCodeChatParticipant(self)
+        # Created lazily the first time ACP mode is active so the ACP SDK
+        # import stays off the startup path (#378).
+        self._acp_chat_participant = None
         self.register_llm_provider(GitHubCopilotLLMProvider())
         self.register_llm_provider(self._openai_compatible_llm_provider)
         self.register_llm_provider(self._litellm_compatible_llm_provider)
@@ -221,7 +226,32 @@ class AIServiceManager(Host):
         else:
             self.unregister_chat_participant(self._claude_code_chat_participant)
 
+        # ACP agent mode (#378). is_acp_mode already reflects the resolved
+        # active agent, so it is exclusive with is_claude_code_mode.
+        if self.is_acp_mode:
+            self._default_chat_participant = self._ensure_acp_participant()
+        elif self._acp_chat_participant is not None:
+            self.unregister_chat_participant(self._acp_chat_participant)
+
         self.chat_participants[DEFAULT_CHAT_PARTICIPANT_ID] = self._default_chat_participant
+
+    def _ensure_acp_participant(self):
+        """Create (lazily, to defer the ACP import) and register the ACP
+        agent participant, returning it (#378)."""
+        if self._acp_chat_participant is None:
+            from notebook_intelligence.acp_agent import AcpAgentChatParticipant
+            self._acp_chat_participant = AcpAgentChatParticipant(self)
+            self._acp_chat_participant.websocket_connector = self._websocket_connector
+        if self._acp_chat_participant.id not in self.chat_participants:
+            self.register_chat_participant(self._acp_chat_participant)
+        return self._acp_chat_participant
+
+    def restart_acp_client(self):
+        """Drop the running ACP subprocess (if any) so the next request
+        relaunches it with the current acp_settings (#378). No-op when the
+        participant has never been created."""
+        if self._acp_chat_participant is not None:
+            self._acp_chat_participant.restart_client()
 
     def update_mcp_servers(self):
         self._mcp_manager.update_mcp_servers(self.nbi_config.mcp)
@@ -303,7 +333,9 @@ class AIServiceManager(Host):
 
     @property
     def default_chat_participant(self) -> ChatParticipant:
-        return self._default_chat_participant
+        # Partial construction (notably extension/test bootstrapping) may ask
+        # before update_models_from_config establishes the active default.
+        return getattr(self, "_default_chat_participant", None)
 
     @property
     def chat_model(self) -> ChatModel:
@@ -317,9 +349,41 @@ class AIServiceManager(Host):
     def embedding_model(self) -> EmbeddingModel:
         return self._embedding_model
 
+    # Agent modes that take over chat. Claude mode and ACP mode are mutually
+    # exclusive -- enabling one disables the other at the settings boundary
+    # (ConfigHandler) -- so at most one entry is normally enabled. The
+    # priority order is a safety net for a hand-edited config that enables
+    # both: Claude wins, preserving the historical behavior.
+    AGENT_MODE_PRIORITY = ("claude", "acp")
+
+    def _agent_mode_enabled(self, mode: str) -> bool:
+        if mode == "claude":
+            return bool(self.nbi_config.claude_settings.get("enabled", False))
+        if mode == "acp":
+            return bool(self.nbi_config.acp_settings.get("enabled", False))
+        return False
+
+    @property
+    def enabled_agent_modes(self) -> list[str]:
+        return [m for m in self.AGENT_MODE_PRIORITY if self._agent_mode_enabled(m)]
+
+    @property
+    def active_agent_mode(self) -> Optional[str]:
+        """The single agent mode currently handling chat.
+
+        Returns None when no agent mode is enabled (the native provider path
+        handles chat).
+        """
+        enabled = self.enabled_agent_modes
+        return enabled[0] if enabled else None
+
     @property
     def is_claude_code_mode(self) -> bool:
-        return self.nbi_config.claude_settings.get('enabled', False)
+        return self.active_agent_mode == "claude"
+
+    @property
+    def is_acp_mode(self) -> bool:
+        return self.active_agent_mode == "acp"
 
     @property
     def claude_models(self) -> list[dict]:
@@ -444,19 +508,94 @@ class AIServiceManager(Host):
             model_ids += [{"id": f"{provider.id}::{model.id}", "name": f"{provider.name} / {model.name}", "context_window": model.context_window} for model in provider.embedding_models]
         return model_ids
 
-    def get_chat_participant(self, prompt: str) -> ChatParticipant:
+    def _resolve_chat_participant(self, participant_id: str) -> Optional[ChatParticipant]:
+        """Resolve an exact participant id, including the active default.
+
+        The active default is also stored separately because model switches can
+        briefly rebuild ``chat_participants``. Only use that fallback when its
+        own id matches the requested participant so an unknown explicit
+        ``@participant`` never dispatches to the wrong handler.
+        """
+        participant = self.chat_participants.get(participant_id)
+        if participant is not None:
+            return participant
+
+        default_participant = self.default_chat_participant
+        if (
+            default_participant is not None
+            and getattr(default_participant, "id", None) == participant_id
+        ):
+            return default_participant
+        return None
+
+    def get_chat_participant(self, prompt: str) -> Optional[ChatParticipant]:
         prompt_parts = AIServiceManager.parse_prompt(prompt)
-        return self.chat_participants.get(prompt_parts.participant, DEFAULT_CHAT_PARTICIPANT_ID)
+        participant = self._resolve_chat_participant(prompt_parts.participant)
+        if participant is not None:
+            return participant
+        return self._resolve_chat_participant(DEFAULT_CHAT_PARTICIPANT_ID)
 
     async def handle_chat_request(self, request: ChatRequest, response: ChatResponse, options: dict = {}) -> None:
         is_claude_code_mode = self.is_claude_code_mode
-        if not is_claude_code_mode and self.chat_model is None:
+        is_acp_mode = self.is_acp_mode
+        if not is_claude_code_mode and not is_acp_mode and self.chat_model is None:
             response.stream(MarkdownData("Chat model is not set!"))
             response.stream(ButtonData("Configure", "notebook-intelligence:open-configuration-dialog"))
             response.finish()
             return
         request.host = self
-        prompt_parts = PromptParts(input=request.prompt, participant=CLAUDE_CODE_CHAT_PARTICIPANT_ID) if is_claude_code_mode else AIServiceManager.parse_prompt(request.prompt)
+        if is_claude_code_mode:
+            prompt_parts = PromptParts(input=request.prompt, participant=CLAUDE_CODE_CHAT_PARTICIPANT_ID)
+        elif is_acp_mode:
+            prompt_parts = PromptParts(input=request.prompt, participant=self._ensure_acp_participant().id)
+        else:
+            prompt_parts = AIServiceManager.parse_prompt(request.prompt)
+
+        participant = self._resolve_chat_participant(prompt_parts.participant)
+        if participant is None and is_claude_code_mode:
+            response.participant_id = CLAUDE_CODE_CHAT_PARTICIPANT_ID
+            log.warning(
+                "Claude Code mode is enabled but its chat participant is not available"
+            )
+            response.stream(MarkdownData(
+                "Claude Code mode is still starting. Please try again in a moment."
+            ))
+            response.finish()
+            return
+        if participant is None:
+            participant = self._resolve_chat_participant(
+                DEFAULT_CHAT_PARTICIPANT_ID
+            )
+            if participant is not None:
+                # A leading @ token can be a file mention rather than a
+                # participant id. Preserve that token alongside the already
+                # parsed input so a slash command is not duplicated in both
+                # request.command and request.prompt.
+                fallback_input = prompt_parts.input
+                stripped_prompt = request.prompt.lstrip()
+                if not is_claude_code_mode and stripped_prompt.startswith('@'):
+                    mention = stripped_prompt.split(maxsplit=1)[0]
+                    fallback_input = " ".join(
+                        part for part in (mention, prompt_parts.input) if part
+                    )
+                prompt_parts = PromptParts(
+                    input=fallback_input,
+                    participant=DEFAULT_CHAT_PARTICIPANT_ID,
+                    command=prompt_parts.command,
+                    mcp_server_name=prompt_parts.mcp_server_name,
+                    mcp_prompt_name=prompt_parts.mcp_prompt_name,
+                    mcp_arguments=prompt_parts.mcp_arguments,
+                )
+        if participant is None:
+            response.participant_id = DEFAULT_CHAT_PARTICIPANT_ID
+            log.error(
+                "No chat participant is available for request participant '%s'",
+                prompt_parts.participant,
+            )
+            response.stream(MarkdownData("No chat participant is available."))
+            response.finish()
+            return
+        response.participant_id = prompt_parts.participant
 
         # add MCP server prompt messages to chat history
         if prompt_parts.mcp_prompt_name != "":
@@ -468,15 +607,16 @@ class AIServiceManager(Host):
         else:
             request.chat_history.append({"role": "user", "content": prompt_parts.input})
     
-        participant = self.chat_participants.get(prompt_parts.participant, DEFAULT_CHAT_PARTICIPANT_ID)
         request.command = prompt_parts.command
         request.prompt = prompt_parts.input
-        response.participant_id  = prompt_parts.participant
         return await participant.handle_chat_request(request, response, options)
 
     async def get_completion_context(self, request: ContextRequest) -> CompletionContext:
         cancel_token = request.cancel_token
         context = CompletionContext([])
+
+        if request.participant is None:
+            return context
 
         allowed_context_providers = request.participant.allowed_context_providers
 

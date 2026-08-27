@@ -3,6 +3,7 @@
 import asyncio
 import atexit
 import base64
+import hmac
 from dataclasses import asdict, dataclass
 import json
 from os import path
@@ -25,13 +26,14 @@ from jupyter_server.utils import url_path_join
 import tornado
 from tornado import websocket
 from traitlets import Bool, Enum as TraitletEnum, Int, List, Unicode
-from notebook_intelligence.api import CancelToken, ChatMode, ChatResponse, ChatRequest, ContextRequest, ContextRequestType, RequestDataType, RequestToolSelection, ResponseStreamData, ResponseStreamDataType, BackendMessageType, SignalImpl
+from notebook_intelligence.api import CancelToken, ChatMode, ChatResponse, ChatRequest, ContextRequest, ContextRequestType, RequestDataType, RequestToolSelection, ResponseStreamData, ResponseStreamDataType, BackendMessageType, SignalImpl, UICommandCancelledError, UserInputCancelledError
 from notebook_intelligence.ai_service_manager import AIServiceManager
 from notebook_intelligence.cell_output import coerce_payload as _coerce_output_context, format_output_context as _format_output_context
 from notebook_intelligence.feature_flags import (
     CHAT_MODEL_OVERRIDES,
     CLAUDE_CODE_TOOLS_ID,
     CLAUDE_SETTINGS_OVERRIDES,
+    ACP_SETTINGS_OVERRIDES,
     INLINE_COMPLETION_MODEL_OVERRIDES,
     JUPYTER_UI_TOOLS_ID,
     POLICY_FORCE_OFF,
@@ -39,11 +41,14 @@ from notebook_intelligence.feature_flags import (
     POLICY_USER_CHOICE,
     VALID_POLICIES,
     apply_claude_policies,
+    apply_acp_policies,
     apply_string_overrides,
+    is_external_ui_tools_active,
     is_force_off,
     is_locked,
     resolve_feature_flag,
 )
+from notebook_intelligence.acp_registry import ACP_AGENTS
 from notebook_intelligence._claude_cli import validate_scope
 from notebook_intelligence.mcp_config_validation import (
     MCPConfigValidationError,
@@ -60,10 +65,15 @@ from notebook_intelligence.claude import (
     claude_bypass_disabled_by_managed_settings,
     claude_managed_default_permission_mode,
     fetch_claude_models,
+    get_ui_tools_manifest,
+    get_ui_tools_secret,
+    invoke_ui_tool,
+    model_info_from_id,
     resolve_permission_mode,
 )
 from notebook_intelligence.claude_mcp_manager import ClaudeMCPManager
 from notebook_intelligence.plugin_manager import PluginManager
+from notebook_intelligence.prompts import Prompts
 from notebook_intelligence.tour_config import load_tour_config
 from notebook_intelligence.claude_sessions import (
     NBI_CONTEXT_PREFIX,
@@ -98,6 +108,25 @@ def _truncate_context_content(content: str, token_budget: int) -> str:
         return ''
 
     return truncated + "\n...[truncated]"
+
+
+def _inline_system_prompt_token_budget(
+    manager,
+    chat_history: list[dict],
+    base_system_prompt: str,
+) -> int:
+    """Reserve at most 80% of context for inline history plus system text."""
+    context_budget = int(0.8 * _resolve_context_token_limit(manager))
+    history_tokens = sum(
+        _token_count(message.get("content", ""))
+        for message in chat_history
+        if isinstance(message, dict)
+        and isinstance(message.get("content", ""), str)
+    )
+    # The base code-generation instruction is essential even when the supplied
+    # code context already exceeds the target budget. In that case rules are
+    # omitted rather than trimming the behavioral contract itself.
+    return max(_token_count(base_system_prompt), context_budget - history_tokens)
 
 
 def _build_additional_context_message(
@@ -161,6 +190,27 @@ def _resolve_supports_vision(ai_service_manager) -> bool:
         return True
     chat_model = ai_service_manager.chat_model
     return chat_model.supports_vision if chat_model is not None else False
+
+
+def _resolve_context_token_limit(ai_service_manager) -> int:
+    """Token budget source for attachment/output context.
+
+    In Claude Code mode the active model is Claude, not
+    ``ai_service_manager.chat_model`` — that property still reflects the
+    user's most recent non-Claude provider selection and is ``None`` on a
+    Claude-only setup. Falling through to the legacy 100-token floor in
+    that state shrank the context budget to 80 tokens, which silently
+    dropped cell-output attachments and truncated every attachment after
+    the first. Resolve the budget from the configured Claude model
+    instead (``model_info_from_id`` falls back to a 200K window for
+    unknown or default model ids).
+    """
+    if ai_service_manager.is_claude_code_mode:
+        model_id = ai_service_manager.nbi_config.claude_settings.get('chat_model', '')
+        model_id = model_id.strip() if isinstance(model_id, str) else ''
+        return model_info_from_id(model_id)["context_window"]
+    chat_model = ai_service_manager.chat_model
+    return 100 if chat_model is None else chat_model.context_window
 
 
 def _resolve_policy_with_env(env_var_name: str, traitlet_value: str) -> str:
@@ -291,6 +341,12 @@ FEATURE_POLICY_SPEC = (
     ("output_followup", "NBI_OUTPUT_FOLLOWUP_POLICY", "output_followup_policy"),
     ("output_toolbar", "NBI_OUTPUT_TOOLBAR_POLICY", "output_toolbar_policy"),
     ("claude_mode", "NBI_CLAUDE_MODE_POLICY", "claude_mode_policy"),
+    ("acp_mode", "NBI_ACP_MODE_POLICY", "acp_mode_policy"),
+    (
+        "acp_full_access",
+        "NBI_ACP_FULL_ACCESS_POLICY",
+        "acp_full_access_policy",
+    ),
     (
         "claude_continue_conversation",
         "NBI_CLAUDE_CONTINUE_CONVERSATION_POLICY",
@@ -356,13 +412,18 @@ FEATURE_POLICY_NAMES = tuple(name for name, _, _ in FEATURE_POLICY_SPEC)
 
 # Fallback used when a policies dict hasn't been populated (handler classes
 # before _setup_handlers, direct construction in tests). Everything defaults
-# to user-choice except bypass, which must fail closed.
+# to user-choice except bypass, the experimental ACP mode, and ACP full
+# access, which must fail closed.
 FEATURE_POLICY_DEFAULTS = {name: POLICY_USER_CHOICE for name in FEATURE_POLICY_NAMES}
 FEATURE_POLICY_DEFAULTS["claude_bypass_permissions"] = POLICY_FORCE_OFF
+FEATURE_POLICY_DEFAULTS["acp_mode"] = POLICY_FORCE_OFF
+FEATURE_POLICY_DEFAULTS["acp_full_access"] = POLICY_FORCE_OFF
 
 # ``(setting_lock_name, env_var)`` pairs for the value-presence-locks. The
 # claude_api_key entry maps to ANTHROPIC_API_KEY (the SDK's native convention)
-# rather than an NBI-prefixed env var. Same for claude_base_url.
+# rather than an NBI-prefixed env var. Same for claude_base_url. The acp_*
+# entries follow the same idea against OpenAI's native env vars (the Codex
+# agent's convention; the default ACP agent).
 STRING_OVERRIDE_SPEC = (
     ("chat_model_provider", "NBI_CHAT_MODEL_PROVIDER"),
     ("chat_model_id", "NBI_CHAT_MODEL_ID"),
@@ -372,6 +433,9 @@ STRING_OVERRIDE_SPEC = (
     ("claude_inline_completion_model", "NBI_CLAUDE_INLINE_COMPLETION_MODEL"),
     ("claude_api_key", "ANTHROPIC_API_KEY"),
     ("claude_base_url", "ANTHROPIC_BASE_URL"),
+    ("acp_chat_model", "NBI_ACP_CHAT_MODEL"),
+    ("acp_api_key", "OPENAI_API_KEY"),
+    ("acp_base_url", "OPENAI_BASE_URL"),
 )
 SETTING_LOCK_NAMES = tuple(name for name, _ in STRING_OVERRIDE_SPEC)
 
@@ -384,6 +448,7 @@ def _build_feature_policies_response(policies: dict, nbi_config) -> dict:
     feature only needs an entry here plus a matching env-var resolution.
     """
     claude_settings = nbi_config.claude_settings or {}
+    acp_settings = nbi_config.acp_settings or {}
     tools = claude_settings.get("tools") or []
     sources = claude_settings.get("setting_sources") or []
 
@@ -392,6 +457,12 @@ def _build_feature_policies_response(policies: dict, nbi_config) -> dict:
         "output_followup": nbi_config.enable_output_followup,
         "output_toolbar": nbi_config.enable_output_toolbar,
         "claude_mode": bool(claude_settings.get("enabled", False)),
+        # Experimental ACP agent mode; defaults to force-off (#378).
+        "acp_mode": bool(acp_settings.get("enabled", False)),
+        # ACP agent autonomous "full access" posture; defaults to force-off
+        # so the agent asks before risky actions unless an admin opts in
+        # (#378).
+        "acp_full_access": bool(acp_settings.get("full_access", False)),
         "claude_continue_conversation": bool(
             claude_settings.get("continue_conversation", False)
         ),
@@ -410,8 +481,8 @@ def _build_feature_policies_response(policies: dict, nbi_config) -> dict:
         # Gates only whether the Bypass Permissions option is offered in
         # the permission-mode selector; the user still arms it per
         # session. force-on grants the same availability as user-choice
-        # and never auto-arms bypass. Defaults to force-off, the only
-        # policy with a non-user-choice default.
+        # and never auto-arms bypass. Defaults to force-off, like the ACP
+        # mode and full-access policies.
         "claude_bypass_permissions": True,
         "terminal_drag_drop": True,
         "refresh_open_files_on_disk_change": nbi_config.refresh_open_files_on_disk_change,
@@ -460,15 +531,18 @@ def _build_setting_locks_response(string_overrides: dict) -> dict:
     }
 
 
-def _scrub_credentials_for_wire(claude_settings: dict, string_overrides: dict) -> dict:
+def _scrub_credentials_for_wire(
+    settings: dict, string_overrides: dict, api_key_lock: str = "claude_api_key"
+) -> dict:
     """Strip the api_key from the capabilities response when locked by env.
 
-    The Anthropic SDK reads ANTHROPIC_API_KEY directly; surfacing the value
-    through the frontend would leak the credential.
+    The SDKs read their key env var directly (ANTHROPIC_API_KEY for Claude,
+    OPENAI_API_KEY for the Codex ACP agent); surfacing the value through the frontend would
+    leak the credential.
     """
-    if not string_overrides.get("claude_api_key"):
-        return claude_settings
-    result = dict(claude_settings or {})
+    if not string_overrides.get(api_key_lock):
+        return settings
+    result = dict(settings or {})
     result["api_key"] = ""
     return result
 
@@ -594,6 +668,17 @@ class GetCapabilitiesHandler(APIHandler):
             "claude_settings": _scrub_credentials_for_wire(
                 nbi_config.claude_settings, self.string_overrides
             ),
+            "acp_settings": _scrub_credentials_for_wire(
+                nbi_config.acp_settings, self.string_overrides, "acp_api_key"
+            ),
+            # The agent types selectable in ACP mode (settings dropdown).
+            "acp_agents": [
+                {"id": spec.id, "label": spec.label}
+                for spec in ACP_AGENTS.values()
+            ],
+            # The single agent mode handling chat ("claude" / "acp" / None);
+            # Claude mode and ACP mode are mutually exclusive (#378).
+            "active_agent_mode": ai_service_manager.active_agent_mode,
             "spinner_verbs": _read_claude_spinner_verbs(),
             "claude_models": ai_service_manager.claude_models,
             # Drive launcher-tile visibility (issues #183, #260). Each flag
@@ -668,6 +753,7 @@ class ConfigHandler(APIHandler):
             "inline_completion_debouncer_delay",
             "mcp_server_settings",
             "claude_settings",
+            "acp_settings",
             "enable_explain_error",
             "enable_output_followup",
             "enable_output_toolbar",
@@ -699,6 +785,15 @@ class ConfigHandler(APIHandler):
 
         has_model_change = False
         has_claude_settings_change = False
+        has_acp_settings_change = False
+        # Captured before the loop so the exclusivity check below can tell
+        # which mode this POST newly enabled.
+        prior_claude_enabled = bool(
+            (ai_service_manager.nbi_config.get("claude_settings") or {}).get("enabled", False)
+        )
+        prior_acp_enabled = bool(
+            (ai_service_manager.nbi_config.get("acp_settings") or {}).get("enabled", False)
+        )
         for key in data:
             if key in locked_keys:
                 continue
@@ -735,6 +830,24 @@ class ConfigHandler(APIHandler):
                 if self.string_overrides.get("claude_api_key"):
                     value = dict(value)
                     value["api_key"] = ""
+            elif key == "acp_settings":
+                value = apply_acp_policies(value, self.feature_policies)
+                value = apply_string_overrides(
+                    value, self.string_overrides, ACP_SETTINGS_OVERRIDES
+                )
+                # OPENAI_API_KEY is a credential; same handling as Claude above.
+                if self.string_overrides.get("acp_api_key"):
+                    value = dict(value)
+                    value["api_key"] = ""
+                # Only act when something actually changed. The settings tab
+                # re-POSTs on mount, and an unconditional restart would bounce
+                # the live ACP subprocess every time the tab is opened. Compare
+                # against the raw stored value (not the acp_settings property,
+                # which re-injects env overrides such as OPENAI_API_KEY and would
+                # never match the scrubbed value we persist).
+                has_acp_settings_change = (
+                    value != (ai_service_manager.nbi_config.get("acp_settings") or {})
+                )
             ai_service_manager.nbi_config.set(key, value)
             if key == "store_github_access_token":
                 if value:
@@ -755,14 +868,57 @@ class ConfigHandler(APIHandler):
                     # needed to disconnect
                     default_chat_participant.update_client_debounced()
 
+        # Claude mode and ACP mode are mutually exclusive: turning one on
+        # turns the other off, most-recent selection wins. Enforced here at
+        # the settings boundary so every client sees the same resolution
+        # (the frontend toggles merely reflect it after a config refresh).
+        claude_enabled = bool(
+            (ai_service_manager.nbi_config.get("claude_settings") or {}).get("enabled", False)
+        )
+        acp_enabled = bool(
+            (ai_service_manager.nbi_config.get("acp_settings") or {}).get("enabled", False)
+        )
+        if claude_enabled and acp_enabled:
+            # ACP wins only when this POST newly enabled it and did not also
+            # newly enable Claude; every tie (both newly on, or a hand-edited
+            # config with both on) goes to Claude, matching AGENT_MODE_PRIORITY.
+            acp_newly_enabled = acp_enabled and not prior_acp_enabled
+            claude_newly_enabled = claude_enabled and not prior_claude_enabled
+            if acp_newly_enabled and not claude_newly_enabled:
+                claude_settings = dict(ai_service_manager.nbi_config.get("claude_settings") or {})
+                claude_settings["enabled"] = False
+                ai_service_manager.nbi_config.set("claude_settings", claude_settings)
+                has_claude_settings_change = True
+                # Disconnect the live Claude client now: after
+                # update_models_from_config below, the default participant is
+                # the ACP one, so the isinstance-gated disconnect at the end
+                # of this handler would silently skip and leave the Claude
+                # SDK subprocess running alongside the ACP agent.
+                default_chat_participant = ai_service_manager.default_chat_participant
+                if isinstance(default_chat_participant, ClaudeCodeChatParticipant):
+                    default_chat_participant.update_client_debounced()
+            else:
+                acp_settings = dict(ai_service_manager.nbi_config.get("acp_settings") or {})
+                acp_settings["enabled"] = False
+                ai_service_manager.nbi_config.set("acp_settings", acp_settings)
+                has_acp_settings_change = True
+
         ai_service_manager.nbi_config.save()
-        if has_model_change or has_claude_settings_change:
+        if (
+            has_model_change
+            or has_claude_settings_change
+            or has_acp_settings_change
+        ):
             ai_service_manager.update_models_from_config()
         if has_claude_settings_change:
             default_chat_participant = ai_service_manager.default_chat_participant
             if isinstance(default_chat_participant, ClaudeCodeChatParticipant):
                 # needed to reconnect / update
                 default_chat_participant.update_client_debounced()
+        if has_acp_settings_change:
+            # The agent reads its key/model from acp_settings at launch, so the
+            # running ACP subprocess must restart to pick up the new values.
+            ai_service_manager.restart_acp_client()
 
         self.finish(json.dumps({}))
 
@@ -1888,6 +2044,97 @@ class ClaudeSessionsResumeHandler(APIHandler):
 
         self.finish(json.dumps({"success": True, "session_id": session_id}))
 
+
+def _acp_participant_or_none():
+    """The active ACP participant, or None when ACP mode is not active."""
+    if not ai_service_manager.is_acp_mode:
+        return None
+    participant = ai_service_manager.default_chat_participant
+    if not callable(getattr(participant, "list_sessions", None)):
+        return None
+    return participant
+
+
+class AcpSessionsListHandler(APIHandler):
+    """Lists the ACP agent's stored sessions for the current workspace.
+
+    Backed by the agent's own ``session/list`` (codex-acp implements it), so
+    the picker shows the same sessions the agent CLI would resume. Unlike the
+    Claude handler there is no scope switch: the agent call is already
+    filtered to the Jupyter cwd on the client side.
+    """
+
+    @tornado.web.authenticated
+    async def get(self):
+        participant = _acp_participant_or_none()
+        if participant is None:
+            self.set_status(404)
+            self.finish(json.dumps({"error": "ACP mode is not enabled"}))
+            return
+        try:
+            # list_sessions may cold-start the agent subprocess (up to a
+            # minute through npx); keep the IO loop free while it does.
+            loop = asyncio.get_event_loop()
+            sessions, error = await loop.run_in_executor(
+                None, participant.list_sessions
+            )
+            if error:
+                self.finish(json.dumps({
+                    "sessions": [], "current_cwd": "", "error": error,
+                }))
+                return
+            cwd = get_jupyter_root_dir()
+            self.finish(json.dumps({
+                "sessions": sessions,
+                "current_cwd": os.path.realpath(cwd) if cwd else "",
+            }))
+        except Exception as e:
+            log.exception("Failed to list ACP sessions")
+            self.set_status(500)
+            self.finish(json.dumps({"error": str(e)}))
+
+
+class AcpSessionsResumeHandler(APIHandler):
+    """Resumes an ACP session via the agent's ``session/load``."""
+
+    @tornado.web.authenticated
+    async def post(self):
+        participant = _acp_participant_or_none()
+        if participant is None:
+            self.set_status(404)
+            self.finish(json.dumps({"error": "ACP mode is not enabled"}))
+            return
+
+        try:
+            body = json.loads(self.request.body or b"{}")
+        except json.JSONDecodeError:
+            self.set_status(400)
+            self.finish(json.dumps({"error": "Request body must be JSON"}))
+            return
+
+        session_id = body.get("session_id")
+        if not isinstance(session_id, str) or not session_id:
+            self.set_status(400)
+            self.finish(json.dumps({"error": "session_id is required"}))
+            return
+
+        try:
+            loop = asyncio.get_event_loop()
+            error = await loop.run_in_executor(
+                None, participant.resume_session, session_id
+            )
+        except Exception as e:
+            log.exception("Failed to resume ACP session %s", session_id)
+            self.set_status(500)
+            self.finish(json.dumps({"error": str(e)}))
+            return
+        if error:
+            self.set_status(500)
+            self.finish(json.dumps({"error": error}))
+            return
+
+        self.finish(json.dumps({"success": True, "session_id": session_id}))
+
 class ChatHistory:
     """
     History of chat messages, key is chat id, value is list of messages
@@ -1939,6 +2186,12 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
         self.chat_history = chat_history
         self.streamed_contents = []
         self.streamed_reasoning_contents = []
+        self._lifecycle_lock = threading.RLock()
+        self._finished = False
+        self._finishing = False
+        self._warned_after_finish = False
+        # Lock order is lifecycle -> UI-command/user-input state. State
+        # callbacks never acquire the lifecycle lock in the reverse order.
         # Capture the Tornado IOLoop the websocket lives on. stream() /
         # finish() / run_ui_command() get called from worker threads
         # (Claude SDK, MCP, base chat participant); writing directly to
@@ -1950,9 +2203,55 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
         self._io_loop = tornado.ioloop.IOLoop.current()
 
     def _send_async(self, message: dict) -> None:
-        self._io_loop.asyncio_loop.call_soon_threadsafe(
-            self.websocket_handler.write_message, message
-        )
+        def _write_if_open(pending_message: dict) -> None:
+            if getattr(self.websocket_handler, "ws_connection", None) is None:
+                log.debug(
+                    "Ignoring response %s after websocket closed",
+                    self.messageId,
+                )
+                return
+            try:
+                self.websocket_handler.write_message(pending_message)
+            except websocket.WebSocketClosedError:
+                log.debug(
+                    "Ignoring response %s after websocket closed",
+                    self.messageId,
+                )
+
+        try:
+            self._io_loop.asyncio_loop.call_soon_threadsafe(
+                _write_if_open, message
+            )
+        except RuntimeError:
+            log.debug(
+                "Ignoring response %s after event loop closed",
+                self.messageId,
+            )
+
+    def stream_transient_markdown(self, content: str) -> None:
+        """Stream a user-facing notice without adding it to model history."""
+        with self._lifecycle_lock:
+            if self._finished:
+                return
+            self._send_async({
+                "id": self.messageId,
+                "participant": self.participant_id,
+                "type": BackendMessageType.StreamMessage,
+                "data": {
+                    "choices": [{
+                        "delta": {
+                            "nbiContent": {
+                                "type": ResponseStreamDataType.MarkdownPart,
+                                "content": content,
+                                "reasoning_content": None,
+                            },
+                            "content": "",
+                            "role": "assistant",
+                        }
+                    }]
+                },
+                "created": dt.datetime.now().isoformat(),
+            })
 
     @property
     def chat_id(self) -> str:
@@ -1963,6 +2262,18 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
         return self.messageId
 
     def stream(self, data: Union[ResponseStreamData, dict]):
+        with self._lifecycle_lock:
+            if self._finished:
+                if not self._warned_after_finish:
+                    self._warned_after_finish = True
+                    log.warning(
+                        "Ignoring stream data after response %s finished",
+                        self.messageId,
+                    )
+                return
+            self._stream_unlocked(data)
+
+    def _stream_unlocked(self, data: Union[ResponseStreamData, dict]):
         data_type = ResponseStreamDataType.LLMRaw if type(data) is dict else data.data_type
 
         if data_type == ResponseStreamDataType.Markdown:
@@ -2163,18 +2474,18 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
                 ]
             }
             if content is not None:
-                self.streamed_contents.append(content)
+                self.streamed_contents.append(str(content))
             if reasoning_content is not None:
-                self.streamed_reasoning_contents.append(reasoning_content)
+                self.streamed_reasoning_contents.append(str(reasoning_content))
         else: # ResponseStreamDataType.LLMRaw
             if len(data.get("choices", [])) > 0:
                 delta = data["choices"][0].get("delta", {})
                 content = delta.get("content", "")
                 reasoning_content = delta.get("reasoning_content", "")
                 if content is not None:
-                    self.streamed_contents.append(content)
+                    self.streamed_contents.append(str(content))
                 if reasoning_content is not None:
-                    self.streamed_reasoning_contents.append(reasoning_content)
+                    self.streamed_reasoning_contents.append(str(reasoning_content))
 
         self._send_async({
             "id": self.messageId,
@@ -2185,29 +2496,93 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
         })
 
     def finish(self) -> None:
-        self.chat_history.add_message(self.chatId, {"role": "assistant", "content": "".join(self.streamed_contents), "reasoning_content": "".join(self.streamed_reasoning_contents)})
-        self.streamed_contents = []
-        self.streamed_reasoning_contents = []
-        self._send_async({
-            "id": self.messageId,
-            "participant": self.participant_id,
-            "type": BackendMessageType.StreamEnd,
-            "data": {}
-        })
+        with self._lifecycle_lock:
+            if self._finished or self._finishing:
+                return
+            self._finishing = True
+            try:
+                content = "".join(str(part) for part in self.streamed_contents)
+                reasoning_content = "".join(
+                    str(part) for part in self.streamed_reasoning_contents
+                )
+                self.streamed_contents = []
+                self.streamed_reasoning_contents = []
+                if content or reasoning_content:
+                    try:
+                        self.chat_history.add_message(self.chatId, {
+                            "role": "assistant",
+                            "content": content,
+                            "reasoning_content": reasoning_content,
+                        })
+                    except Exception:
+                        log.exception(
+                            "Failed to persist response %s before finalizing",
+                            self.messageId,
+                        )
+                try:
+                    self.cancel_pending_ui_commands(
+                        f"Response {self.messageId} finished before the UI command completed"
+                    )
+                except Exception:
+                    log.exception(
+                        "Failed to cancel UI commands for response %s",
+                        self.messageId,
+                    )
+                try:
+                    self.cancel_pending_user_inputs(
+                        f"Response {self.messageId} finished before user input arrived"
+                    )
+                except Exception:
+                    log.exception(
+                        "Failed to cancel user input for response %s",
+                        self.messageId,
+                    )
+                self._send_async({
+                    "id": self.messageId,
+                    "participant": self.participant_id,
+                    "type": BackendMessageType.StreamEnd,
+                    "data": {}
+                })
+                self._finished = True
+            finally:
+                self._finishing = False
 
-    async def run_ui_command(self, command: str, args: dict = {}) -> None:
+    async def run_ui_command(self, command: str, args: dict = {}) -> dict:
         callback_id = str(uuid.uuid4())
-        self._send_async({
-            "id": self.messageId,
-            "participant": self.participant_id,
-            "type": BackendMessageType.RunUICommand,
-            "data": {
-                "callback_id": callback_id,
-                "commandId": command,
-                "args": args
-            }
-        })
-        response = await ChatResponse.wait_for_run_ui_command_response(self, callback_id)
+        with self._lifecycle_lock:
+            if self._finished:
+                error = (
+                    f"Cannot run UI command '{command}' after response "
+                    f"{self.messageId} finished"
+                )
+                log.warning(
+                    "Rejecting UI command: %s",
+                    error,
+                )
+                raise UICommandCancelledError(error)
+            pending = self.prepare_run_ui_command_response(callback_id)
+            try:
+                if not pending.done():
+                    self._send_async({
+                        "id": self.messageId,
+                        "participant": self.participant_id,
+                        "type": BackendMessageType.RunUICommand,
+                        "data": {
+                            "callback_id": callback_id,
+                            "commandId": command,
+                            "args": args
+                        }
+                    })
+            except Exception:
+                with self._run_ui_command_state_lock:
+                    self._pending_ui_commands.pop(callback_id, None)
+                pending.cancel()
+                raise
+        response = await ChatResponse.wait_for_run_ui_command_response(
+            self,
+            callback_id,
+            pending,
+        )
         return response
 
 class CancelTokenImpl(CancelToken):
@@ -2218,6 +2593,81 @@ class CancelTokenImpl(CancelToken):
     def cancel_request(self) -> None:
         self._cancellation_requested = True
         self._cancellation_signal.emit()
+
+
+class UIToolsHandler(APIHandler):
+    """Bridges the Jupyter-UI tools to an external stdio MCP server
+    (notebook_intelligence.mcp_ui_proxy), so they work under a managed/enterprise
+    MCP config that forbids dynamically configured (in-process) servers.
+
+    GET  -> the tool manifest (name/description/inputSchema).
+    POST {"name", "arguments"} -> run the tool against the active chat turn's UI
+    bridge and return its MCP tool-result ({"content": [...], "is_error"?: bool}).
+    """
+
+    def check_xsrf_cookie(self):
+        # mcp_ui_proxy proves it is the proxy NBI spawned with a per-process bearer
+        # secret (claude.get_ui_tools_secret), sent in the X-NBI-UI-Tools-Token header
+        # — separate from the Jupyter identity in Authorization, which @authenticated
+        # still enforces. A bearer secret is not cookie-based and so is XSRF-immune;
+        # exempt those requests from the XSRF check exactly as jupyter_server exempts
+        # token-authenticated ones. Every other caller still gets the normal check.
+        provided = self.request.headers.get("X-NBI-UI-Tools-Token", "")
+        expected = get_ui_tools_secret()
+        if expected and provided and hmac.compare_digest(provided, expected):
+            return
+        return super().check_xsrf_cookie()
+
+    def _external_mode_enabled(self) -> bool:
+        # Resolved per request (not at boot): jupyter_ui_tools_external is mutable via
+        # ConfigHandler.post, and _create_client_options reads it per request too, so
+        # the relay must track the live setting to stay in lockstep with the transport.
+        # Shared predicate (see feature_flags.is_external_ui_tools_active) — both sides
+        # must resolve the same claude_settings the same way or they can drift apart.
+        return is_external_ui_tools_active(ai_service_manager.nbi_config.claude_settings or {})
+
+    @tornado.web.authenticated
+    async def get(self):
+        if not self._external_mode_enabled():
+            raise tornado.web.HTTPError(404)
+        tools = get_ui_tools_manifest()
+        log.debug(f"UI tools relay: served manifest ({len(tools)} tools)")
+        self.finish(json.dumps({"tools": tools}))
+
+    @tornado.web.authenticated
+    async def post(self):
+        if not self._external_mode_enabled():
+            raise tornado.web.HTTPError(404)
+        try:
+            data = json.loads(self.request.body or b"{}")
+        except json.JSONDecodeError as exc:
+            self.set_status(400)
+            self.finish(json.dumps({"error": f"Invalid JSON: {exc}"}))
+            return
+        name = data.get("name")
+        if not isinstance(name, str) or not name:
+            self.set_status(400)
+            self.finish(json.dumps({"error": "name is required"}))
+            return
+        # Run as a cancellable task so a client disconnect (turn cancelled / tab
+        # closed) tears down the pending run_ui_command instead of polling for the
+        # full timeout window.
+        log.info(f"UI tools relay: invoking '{name}'")
+        self._invoke_task = asyncio.ensure_future(
+            invoke_ui_tool(name, data.get("arguments") or {})
+        )
+        try:
+            result = await self._invoke_task
+        except asyncio.CancelledError:
+            return
+        self.finish(json.dumps(result))
+
+    def on_connection_close(self):
+        task = getattr(self, "_invoke_task", None)
+        if task is not None and not task.done():
+            task.cancel()
+        super().on_connection_close()
+
 
 @dataclass
 class MessageCallbackHandlers:
@@ -2262,9 +2712,18 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
         ai_service_manager.websocket_connector = ws_connector
         github_copilot.websocket_connector = ws_connector
 
-    def _run_request_thread(self, coro, message_id):
-        """Worker-thread entrypoint that pops the messageId from
-        `_messageCallbackHandlers` on completion (success or failure).
+    def _run_request_thread(self, coro, message_id, response_emitter):
+        """Worker-thread entrypoint that finalizes the explicit emitter and
+        pops the messageId on completion (success or failure).
+
+        Passing the emitter directly keeps terminal delivery independent of a
+        concurrent cancellation removing the callback-handler entry before
+        this worker starts.
+
+        Participant handlers must finish streaming before their awaited
+        coroutine returns. Background work that retains an emitter after
+        return is unsupported because this wrapper closes the response stream.
+
         The dict entry is only needed while the request is in flight —
         ChatUserInput / RunUICommandResponse / Cancel messages from the
         client are routed to the emitter by messageId, and the client
@@ -2272,8 +2731,32 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
         """
         try:
             asyncio.run(coro)
+        except (UICommandCancelledError, UserInputCancelledError) as error:
+            log.debug("Request %s cancelled: %s", message_id, error)
+        except Exception:
+            log.exception("Unhandled error while processing request %s", message_id)
+            try:
+                response_emitter.stream_transient_markdown(
+                    "\n\nOops! There was a problem handling this request. "
+                    "Please try again. Check the server logs for details."
+                )
+            except Exception:
+                log.exception(
+                    "Failed to stream terminal notice for request %s",
+                    message_id,
+                )
         finally:
-            self._messageCallbackHandlers.pop(message_id, None)
+            try:
+                if response_emitter is not None:
+                    response_emitter.finish()
+            except Exception:
+                log.exception("Failed to finalize request %s", message_id)
+            handlers = self._messageCallbackHandlers.get(message_id)
+            if (
+                handlers is not None
+                and handlers.response_emitter is response_emitter
+            ):
+                self._messageCallbackHandlers.pop(message_id, None)
 
     @ws_authenticated
     def open(self):
@@ -2293,11 +2776,32 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
 
         messageId = msg['id']
         messageType = msg['type']
+        handlers = self._messageCallbackHandlers.get(messageId)
+        if handlers is not None and messageType in (
+            RequestDataType.ChatRequest,
+            RequestDataType.GenerateCode,
+            RequestDataType.InlineCompletionRequest,
+        ):
+            log.warning("Rejecting duplicate active request id %s", messageId)
+            # The id cannot identify a separate terminal response for the
+            # duplicate without also terminating the original request. Keep
+            # the registered request alive and discard only the duplicate.
+            if (
+                messageType != RequestDataType.InlineCompletionRequest
+                and handlers.response_emitter is not None
+            ):
+                handlers.response_emitter.stream_transient_markdown(
+                    "\n\nA duplicate submission with this message ID was ignored; "
+                    "the original request is still running."
+                )
+            return
         if messageType == RequestDataType.ChatRequest:
             data = msg['data']
             chatId = data['chatId']
             prompt = data['prompt']
             language = data['language']
+            kernel_name = data.get('kernelName', '')
+            kernel_display_name = data.get('kernelDisplayName', '')
             filename = data['filename']
             additionalContext = data.get('additionalContext', [])
             chat_mode = ChatMode('agent', 'Agent') if data.get('chatMode', 'ask') == 'agent' else ChatMode('ask', 'Ask')
@@ -2315,17 +2819,33 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
             )
 
             is_claude_code_mode = ai_service_manager.is_claude_code_mode
+            # ACP agents hold the conversation in their own session, exactly
+            # like the Claude SDK client, so they share Claude's context
+            # framing and per-turn history slicing below.
+            is_agent_session_mode = is_claude_code_mode or ai_service_manager.is_acp_mode
             chat_history = self.chat_history.get_history(chatId)
             chat_history_initial_size = len(chat_history)
 
             current_directory = data.get('currentDirectory')
-            if (is_claude_code_mode or chat_mode.id == 'agent') and current_directory is not None:
+            if (is_agent_session_mode or chat_mode.id == 'agent') and current_directory is not None:
                 current_directory_file_msg = f"{NBI_CONTEXT_PREFIX} '{current_directory}'"
                 if filename != '':
                     current_directory_file_msg += f" and current file is: '{filename}'"
+                if language:
+                    current_directory_file_msg += (
+                        f" and active programming language is: '{language}'"
+                    )
+                if kernel_name:
+                    current_directory_file_msg += (
+                        f" with active kernel name: '{kernel_name}'"
+                    )
+                if kernel_display_name:
+                    current_directory_file_msg += (
+                        f" ({kernel_display_name})"
+                    )
                 chat_history.append({"role": "user", "content": current_directory_file_msg})
 
-            token_limit = 100 if ai_service_manager.chat_model is None else ai_service_manager.chat_model.context_window
+            token_limit = _resolve_context_token_limit(ai_service_manager)
             remaining_token_budget = int(0.8 * token_limit)
 
             # Resolve once; reused for sandbox containment and for
@@ -2400,8 +2920,9 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
                 context_filename = path.basename(file_path)
 
                 if is_image:
-                    if is_claude_code_mode:
-                        # Claude Code CLI takes text only; pass file path so agent can read the image
+                    if is_agent_session_mode:
+                        # Agent CLIs take text prompts only; pass the file
+                        # path so the agent can read the image itself.
                         chat_history.append({
                             "role": "user",
                             "content": f"The user pasted an image. It is saved at this path: '{file_path}'. Please read and analyze it."
@@ -2423,12 +2944,12 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
                             log.warning(f"Failed to read pasted image '{file_path}': {e}")
                     continue
 
-                if is_claude_code_mode:
+                if is_agent_session_mode:
                     # Hand the agent an @-mention rather than the file's
-                    # contents: Claude's Read tool handles partial reads,
-                    # notebook cell structure, and binary formats natively,
-                    # and avoids the 80% context-window truncation the
-                    # content-injection path would otherwise apply.
+                    # contents: an agent's own read tool handles partial
+                    # reads, notebook cell structure, and binary formats
+                    # natively, and avoids the 80% context-window truncation
+                    # the content-injection path would otherwise apply.
                     if is_upload:
                         mention_path = file_path
                     else:
@@ -2548,14 +3069,15 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
             rule_context = self._context_factory.create(
                 filename=filename,
                 language=language,
+                kernel_name=kernel_name,
                 chat_mode_id=chat_mode.id,
                 root_dir=NotebookIntelligence.root_dir
             )
 
             # last prompt is added later
-            request_chat_history = chat_history[chat_history_initial_size:-1] if is_claude_code_mode else chat_history[:-1]
-            coro = ai_service_manager.handle_chat_request(ChatRequest(chat_mode=chat_mode, tool_selection=tool_selection, prompt=prompt, chat_history=request_chat_history, cancel_token=cancel_token, rule_context=rule_context, permission_mode=permission_mode), response_emitter)
-            thread = threading.Thread(target=self._run_request_thread, args=(coro, messageId))
+            request_chat_history = chat_history[chat_history_initial_size:-1] if is_agent_session_mode else chat_history[:-1]
+            coro = ai_service_manager.handle_chat_request(ChatRequest(chat_mode=chat_mode, tool_selection=tool_selection, prompt=prompt, language=language, kernel_name=kernel_name, chat_history=request_chat_history, cancel_token=cancel_token, rule_context=rule_context, permission_mode=permission_mode), response_emitter)
+            thread = threading.Thread(target=self._run_request_thread, args=(coro, messageId, response_emitter))
             thread.start()
         elif messageType == RequestDataType.GenerateCode:
             data = msg['data']
@@ -2565,6 +3087,7 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
             suffix = data['suffix']
             existing_code = data['existingCode']
             language = data['language']
+            kernel_name = data.get('kernelName', '')
             filename = data['filename']
             is_claude_code_mode = ai_service_manager.is_claude_code_mode
             chat_mode = ChatMode('inline-chat', 'Inline Chat') if is_claude_code_mode else ChatMode('ask', 'Ask')
@@ -2578,19 +3101,32 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
             response_emitter = WebsocketCopilotResponseEmitter(chatId, messageId, self, self.chat_history)
             cancel_token = CancelTokenImpl()
             self._messageCallbackHandlers[messageId] = MessageCallbackHandlers(response_emitter, cancel_token)
-            existing_code_message = " Update the existing code section and return a modified version. Don't just return the update, recreate the existing code section with the update." if existing_code != '' else ''
-            
             # Create rule context for rule evaluation
             # Note: Using 'inline-chat' mode for rule matching even though chat_mode is 'ask' for handler compatibility
             rule_context = self._context_factory.create(
                 filename=filename,
                 language=language,
+                kernel_name=kernel_name,
                 chat_mode_id='inline-chat',
                 root_dir=NotebookIntelligence.root_dir
             )
             
-            coro = ai_service_manager.handle_chat_request(ChatRequest(chat_mode=chat_mode, prompt=prompt, chat_history=self.chat_history.get_history(chatId), cancel_token=cancel_token, rule_context=rule_context), response_emitter, options={"system_prompt": f"You are an assistant that generates code for '{language}' language. You generate code between existing leading and trailing code sections.{existing_code_message} Be concise and return only code as a response. Don't include leading content or trailing content in your response, they are provided only for context. You can reuse methods and symbols defined in leading and trailing content."})
-            thread = threading.Thread(target=self._run_request_thread, args=(coro, messageId))
+            system_prompt = Prompts.inline_chat_system_prompt(
+                language,
+                modifying_existing_code=existing_code != '',
+            )
+            request_history = self.chat_history.get_history(chatId)
+            completion_options = {"system_prompt": system_prompt}
+            if is_claude_code_mode:
+                completion_options["system_prompt_token_budget"] = (
+                    _inline_system_prompt_token_budget(
+                        ai_service_manager,
+                        request_history,
+                        system_prompt,
+                    )
+                )
+            coro = ai_service_manager.handle_chat_request(ChatRequest(chat_mode=chat_mode, prompt=prompt, language=language, kernel_name=kernel_name, chat_history=request_history, cancel_token=cancel_token, rule_context=rule_context), response_emitter, options=completion_options)
+            thread = threading.Thread(target=self._run_request_thread, args=(coro, messageId, response_emitter))
             thread.start()
         elif messageType == RequestDataType.InlineCompletionRequest:
             data = msg['data']
@@ -2606,7 +3142,7 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
             self._messageCallbackHandlers[messageId] = MessageCallbackHandlers(response_emitter, cancel_token)
 
             coro = WebsocketCopilotHandler.handle_inline_completions(prefix, suffix, language, filename, response_emitter, cancel_token)
-            thread = threading.Thread(target=self._run_request_thread, args=(coro, messageId))
+            thread = threading.Thread(target=self._run_request_thread, args=(coro, messageId, response_emitter))
             thread.start()
         elif messageType == RequestDataType.ChatUserInput:
             handlers = self._messageCallbackHandlers.get(messageId)
@@ -2614,11 +3150,24 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
                 return
             handlers.response_emitter.on_user_input(msg['data'])
         elif messageType == RequestDataType.ClearChatHistory:
-            is_claude_code_mode = ai_service_manager.is_claude_code_mode
-            if is_claude_code_mode:
+            if ai_service_manager.is_claude_code_mode:
                 default_chat_participant = ai_service_manager.default_chat_participant
                 if isinstance(default_chat_participant, ClaudeCodeChatParticipant):
                     default_chat_participant.clear_chat_history()
+            elif ai_service_manager.is_acp_mode:
+                default_chat_participant = ai_service_manager.default_chat_participant
+                clear = getattr(default_chat_participant, "clear_chat_history", None)
+                if callable(clear):
+                    # The ACP session swap round-trips to the agent subprocess
+                    # (up to the start timeout); run it off the websocket
+                    # thread so a slow agent cannot stall the IO loop. A
+                    # failed swap already forces a client restart; surface it
+                    # in the log since there is no UI channel here.
+                    def _clear_acp_session():
+                        error = clear()
+                        if error:
+                            log.warning("ACP new session failed: %s", error)
+                    threading.Thread(target=_clear_acp_session, daemon=True).start()
             self.chat_history.clear()
         elif messageType == RequestDataType.RunUICommandResponse:
             handlers = self._messageCallbackHandlers.get(messageId)
@@ -2629,6 +3178,12 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
             handlers = self._messageCallbackHandlers.get(messageId)
             if handlers is None:
                 return
+            handlers.response_emitter.cancel_pending_ui_commands(
+                "Request cancelled before the UI command completed"
+            )
+            handlers.response_emitter.cancel_pending_user_inputs(
+                "Request cancelled before user input arrived"
+            )
             handlers.cancel_token.cancel_request()
  
     def on_close(self):
@@ -2644,6 +3199,12 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
         # "dictionary changed size during iteration" here on the IOLoop thread.
         for handlers in list(self._messageCallbackHandlers.values()):
             try:
+                handlers.response_emitter.cancel_pending_ui_commands(
+                    "WebSocket closed before the UI command completed"
+                )
+                handlers.response_emitter.cancel_pending_user_inputs(
+                    "WebSocket closed before user input arrived"
+                )
                 handlers.cancel_token.cancel_request()
             except Exception as e:
                 log.warning(f"Error cancelling in-flight request on close: {e}")
@@ -2873,6 +3434,31 @@ class NotebookIntelligence(ExtensionApp):
         help="""
         Org-wide policy for whether Claude mode is enabled. Same semantics as
         explain_error_policy. Overridden by the NBI_CLAUDE_MODE_POLICY env var.
+        """,
+        config=True,
+    )
+
+    acp_mode_policy = TraitletEnum(
+        list(VALID_POLICIES),
+        default_value=POLICY_FORCE_OFF,
+        help="""
+        Org-wide policy for whether the experimental ACP agent mode (Codex and
+        future Agent Client Protocol agents) is available (#378). Defaults to
+        force-off; set to user-choice to let users enable it. Overridden by
+        the NBI_ACP_MODE_POLICY env var.
+        """,
+        config=True,
+    )
+
+    acp_full_access_policy = TraitletEnum(
+        list(VALID_POLICIES),
+        default_value=POLICY_FORCE_OFF,
+        help="""
+        Org-wide policy for ACP agent "full access" (#378): running tools
+        autonomously without asking. Defaults to force-off, so the agent is
+        pinned to ask before anything beyond trusted read-only commands. Set
+        to user-choice to let users opt into unattended runs, or force-on to
+        require it. Overridden by the NBI_ACP_FULL_ACCESS_POLICY env var.
         """,
         config=True,
     )
@@ -3229,6 +3815,7 @@ class NotebookIntelligence(ExtensionApp):
         base_url = web_app.settings["base_url"]
         route_pattern_capabilities = url_path_join(base_url, "notebook-intelligence", "capabilities")
         route_pattern_config = url_path_join(base_url, "notebook-intelligence", "config")
+        route_pattern_ui_tools = url_path_join(base_url, "notebook-intelligence", "ui-tools")
         route_pattern_update_provider_models = url_path_join(base_url, "notebook-intelligence", "update-provider-models")
         route_pattern_mcp_config_file = url_path_join(base_url, "notebook-intelligence", "mcp-config-file")
         route_pattern_reload_mcp_servers = url_path_join(base_url, "notebook-intelligence", "reload-mcp-servers")
@@ -3258,6 +3845,8 @@ class NotebookIntelligence(ExtensionApp):
         route_pattern_upload_file = url_path_join(base_url, "notebook-intelligence", "upload-file")
         route_pattern_claude_sessions = url_path_join(base_url, "notebook-intelligence", "claude-sessions")
         route_pattern_claude_sessions_resume = url_path_join(base_url, "notebook-intelligence", "claude-sessions", "resume")
+        route_pattern_acp_sessions = url_path_join(base_url, "notebook-intelligence", "acp-sessions")
+        route_pattern_acp_sessions_resume = url_path_join(base_url, "notebook-intelligence", "acp-sessions", "resume")
         route_pattern_claude_mcp = url_path_join(base_url, "notebook-intelligence", "claude-mcp")
         route_pattern_claude_mcp_detail = url_path_join(
             base_url, "notebook-intelligence", "claude-mcp", r"(user|project|local)", r"([^/]+)"
@@ -3372,6 +3961,10 @@ class NotebookIntelligence(ExtensionApp):
         NotebookIntelligence.handlers = [
             (route_pattern_capabilities, GetCapabilitiesHandler),
             (route_pattern_config, ConfigHandler),
+            # Always register the relay: jupyter_ui_tools_external is runtime-mutable.
+            # UIToolsHandler gates every request against the live setting, so changing
+            # transport after boot cannot leave route registration out of sync.
+            (route_pattern_ui_tools, UIToolsHandler),
             (route_pattern_update_provider_models, UpdateProviderModelsHandler),
             (route_pattern_mcp_config_file, MCPConfigFileHandler),
             (route_pattern_reload_mcp_servers, ReloadMCPServersHandler),
@@ -3403,6 +3996,8 @@ class NotebookIntelligence(ExtensionApp):
             (route_pattern_upload_file, FileUploadHandler),
             (route_pattern_claude_sessions_resume, ClaudeSessionsResumeHandler),
             (route_pattern_claude_sessions, ClaudeSessionsListHandler),
+            (route_pattern_acp_sessions_resume, AcpSessionsResumeHandler),
+            (route_pattern_acp_sessions, AcpSessionsListHandler),
             # Claude-MCP routes: detail before list so {scope}/{name} doesn't
             # shadow specialized URLs added later (parallels the skills order).
             (route_pattern_claude_mcp_detail, ClaudeMCPDetailHandler),

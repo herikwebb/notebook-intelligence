@@ -7,6 +7,8 @@ import { Token } from '@lumino/coreutils';
 export interface IActiveDocumentInfo {
   activeWidget: Widget | null;
   language: string;
+  kernelName?: string;
+  kernelDisplayName?: string;
   filename: string;
   filePath: string;
   activeCellIndex: number;
@@ -75,8 +77,10 @@ export enum MCPServerStatus {
   Connected = 'connected',
   UpdatingToolList = 'updating-tool-list',
   UpdatedToolList = 'updated-tool-list',
+  FailedToUpdateToolList = 'failed-to-update-tool-list',
   UpdatingPromptList = 'updating-prompt-list',
-  UpdatedPromptList = 'updated-prompt-list'
+  UpdatedPromptList = 'updated-prompt-list',
+  FailedToUpdatePromptList = 'failed-to-update-prompt-list'
 }
 
 export interface IContextItem {
@@ -144,7 +148,10 @@ export enum TelemetryEventType {
   InlineChatRequest = 'inline-chat-request',
   ChatResponse = 'chat-response',
   InlineChatResponse = 'inline-chat-response',
+  InlineChatAccepted = 'inline-chat-accepted',
+  InlineChatDismissed = 'inline-chat-dismissed',
   InlineCompletionResponse = 'inline-completion-response',
+  InlineCompletionAccepted = 'inline-completion-accepted',
   Feedback = 'feedback'
 }
 

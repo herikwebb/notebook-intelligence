@@ -729,7 +729,7 @@ pre:has(.code-block-header) {
   font-size: 13px;
 }
 
-.chat-message-content :not(pre) > code {
+.chat-message-content code.inline-code {
   background-color: var(--jp-layout-color2);
   padding: 1px 4px;
   border-radius: 3px;
@@ -1461,6 +1461,12 @@ pre:has(.code-block-header) {
   color: #d97757;
 }
 
+.acp-agent-icon svg {
+  width: 16px;
+  height: 16px;
+  color: #0a84ff;
+}
+
 .send-button {
   display: flex;
   align-items: center;
@@ -1659,6 +1665,10 @@ button.send-button:disabled:active:not(.send-button-stop) {
   font-size: 15px;
 }
 
+.config-warning {
+  color: var(--jp-warn-color1);
+}
+
 .model-config-section-body {
   padding-left: 10px;
   display: flex;
@@ -1784,7 +1794,7 @@ button.send-button:disabled:active:not(.send-button-stop) {
 
 /* Inline code also fills with --jp-layout-color2, which now matches this box's
    fill; recess nested code to --jp-layout-color1 so it stays distinct. */
-.expandable-content-text :not(pre) > code {
+.expandable-content-text code.inline-code {
   background-color: var(--jp-layout-color1);
 }
 
@@ -2034,7 +2044,9 @@ svg.access-token-warning {
 }
 
 .server-status-indicator.not-connected,
-.server-status-indicator.failed-to-connect {
+.server-status-indicator.failed-to-connect,
+.server-status-indicator.failed-to-update-tool-list,
+.server-status-indicator.failed-to-update-prompt-list {
   background-color: var(--jp-error-color1);
 }
 
@@ -2939,6 +2951,13 @@ svg.access-token-warning {
 }
 
 .chat-mode-widgets-container .claude-icon svg {
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+}
+
+/* The ACP-agent footer badge matches the Claude badge size. */
+.chat-mode-widgets-container .acp-agent-icon svg {
   margin-top: 4px;
   width: 18px;
   height: 18px;
