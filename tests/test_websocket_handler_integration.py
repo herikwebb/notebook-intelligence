@@ -948,3 +948,224 @@ class TestPermissionModeClamp:
         handler = self._handler(bypass_allowed=True)
         req = self._send(handler, mock_ai_manager, mock_nb_intel, None)
         assert req.permission_mode == 'default'
+
+
+class TestClaudeModeImageOutputContext:
+    """In Claude Code mode, image output bundles must reach the agent as
+    saved files referenced by path, never as inline base64 data-URLs —
+    the CLI takes text-only queries, so a data-URL is an enormous blob
+    the model pays tokens for but cannot render."""
+
+    def _create_mock_application(self):
+        app = Mock(spec=Application)
+        app.settings = {"jinja2_env": None, "headers": {}}
+        app.ui_methods = {}
+        app.ui_modules = {}
+        app.transforms = []
+        return app
+
+    def _create_mock_request(self):
+        request = Mock(spec=HTTPServerRequest)
+        request.connection = Mock()
+        return request
+
+    @patch('notebook_intelligence.extension.ai_service_manager')
+    @patch('notebook_intelligence.extension.NotebookIntelligence')
+    @patch('notebook_intelligence.extension.threading.Thread')
+    def test_image_bundle_saved_to_file_and_referenced_by_path(
+        self, mock_thread, mock_nb_intel, mock_ai_manager, tmp_path
+    ):
+        import base64 as b64
+        mock_nb_intel.root_dir = "/workspace"
+        mock_ai_manager.handle_chat_request = Mock()
+        mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.chat_model = Mock()
+        mock_ai_manager.chat_model.context_window = 200000
+
+        mock_factory = Mock(spec=RuleContextFactory)
+        mock_factory.create.return_value = Mock(spec=RuleContext)
+
+        with patch('notebook_intelligence.extension.ThreadSafeWebSocketConnector'):
+            handler = WebsocketCopilotHandler(
+                self._create_mock_application(),
+                self._create_mock_request(),
+                context_factory=mock_factory
+            )
+
+        png_bytes = b"\x89PNG\r\n\x1a\nfakeplotbytes"
+        png_b64 = b64.b64encode(png_bytes).decode("ascii")
+        message = {
+            'id': 'test-message-id',
+            'type': 'chat-request',
+            'data': {
+                'chatId': 'test-chat-id',
+                'prompt': 'Explain this chart',
+                'language': 'python',
+                'filename': 'notebook.ipynb',
+                'chatMode': 'agent',
+                'toolSelections': {},
+                'additionalContext': [
+                    {
+                        'filePath': 'notebook.ipynb',
+                        'outputContext': {
+                            'cellSource': 'df.plot()',
+                            'mimeBundles': [
+                                {
+                                    'mimeType': 'image/png',
+                                    'data': png_b64,
+                                    'sizeTokens': 4000,
+                                }
+                            ],
+                            'isError': False,
+                            'truncated': False,
+                        },
+                    }
+                ]
+            }
+        }
+
+        with patch('notebook_intelligence.extension._upload_dir', str(tmp_path)):
+            handler.on_message(json.dumps(message))
+
+        mock_ai_manager.handle_chat_request.assert_called_once()
+        chat_request = mock_ai_manager.handle_chat_request.call_args[0][0]
+        history_text = json.dumps(chat_request.chat_history)
+
+        # No inline base64 — the bundle became a file reference.
+        assert 'data:image/png' not in history_text
+        assert png_b64 not in history_text
+        assert str(tmp_path) in history_text
+        assert 'cell-output.png' in history_text
+
+        # The referenced file exists and holds the decoded image bytes.
+        saved = list(tmp_path.rglob('cell-output.png'))
+        assert len(saved) == 1
+        assert saved[0].read_bytes() == png_bytes
+
+
+class TestDeferredOutputImageSaver:
+    """Image files must only be written after the token budget accepts the
+    context (review finding: a direct-write saver let over-budget —
+    rejected — contexts persist files, an unbounded disk-growth vector
+    for any authenticated caller), and committed files must participate
+    in the upload dir's retention sweeps."""
+
+    def _base_message(self, png_b64, cell_source='df.plot()'):
+        return {
+            'id': 'test-message-id',
+            'type': 'chat-request',
+            'data': {
+                'chatId': 'test-chat-id',
+                'prompt': 'Explain this chart',
+                'language': 'python',
+                'filename': 'notebook.ipynb',
+                'chatMode': 'agent',
+                'toolSelections': {},
+                'additionalContext': [
+                    {
+                        'filePath': 'notebook.ipynb',
+                        'outputContext': {
+                            'cellSource': cell_source,
+                            'mimeBundles': [
+                                {
+                                    'mimeType': 'image/png',
+                                    'data': png_b64,
+                                    'sizeTokens': 4000,
+                                }
+                            ],
+                            'isError': False,
+                            'truncated': False,
+                        },
+                    }
+                ]
+            }
+        }
+
+    def _handler(self, mock_ai_manager, mock_nb_intel, context_window):
+        mock_nb_intel.root_dir = "/workspace"
+        mock_ai_manager.handle_chat_request = Mock()
+        mock_ai_manager.is_claude_code_mode = True
+        mock_ai_manager.chat_model = Mock()
+        mock_ai_manager.chat_model.context_window = context_window
+
+        mock_factory = Mock(spec=RuleContextFactory)
+        mock_factory.create.return_value = Mock(spec=RuleContext)
+
+        with patch('notebook_intelligence.extension.ThreadSafeWebSocketConnector'):
+            return WebsocketCopilotHandler(
+                self._create_mock_application(),
+                self._create_mock_request(),
+                context_factory=mock_factory
+            )
+
+    @patch('notebook_intelligence.extension.ai_service_manager')
+    @patch('notebook_intelligence.extension.NotebookIntelligence')
+    @patch('notebook_intelligence.extension.threading.Thread')
+    def test_rejected_context_writes_no_files(
+        self, mock_thread, mock_nb_intel, mock_ai_manager, tmp_path
+    ):
+        import base64 as b64
+        handler = self._handler(mock_ai_manager, mock_nb_intel, context_window=100)
+        png_b64 = b64.b64encode(b"\x89PNG\r\n\x1a\nfakeplotbytes").decode("ascii")
+        # A long cell source pushes the formatted message over the
+        # 80-token budget implied by context_window=100.
+        message = self._base_message(
+            png_b64, cell_source='df.plot()  # ' + 'very long comment ' * 60
+        )
+
+        with patch('notebook_intelligence.extension._upload_dir', str(tmp_path)):
+            handler.on_message(json.dumps(message))
+
+        chat_request = mock_ai_manager.handle_chat_request.call_args[0][0]
+        history_text = json.dumps(chat_request.chat_history)
+        assert 'cell-output.png' not in history_text
+        assert list(tmp_path.rglob('*')) == []
+
+    @patch('notebook_intelligence.extension.ai_service_manager')
+    @patch('notebook_intelligence.extension.NotebookIntelligence')
+    @patch('notebook_intelligence.extension.threading.Thread')
+    def test_accepted_context_triggers_retention_sweep(
+        self, mock_thread, mock_nb_intel, mock_ai_manager, tmp_path
+    ):
+        import base64 as b64
+        handler = self._handler(mock_ai_manager, mock_nb_intel, context_window=200000)
+        png_b64 = b64.b64encode(b"\x89PNG\r\n\x1a\nfakeplotbytes").decode("ascii")
+
+        with patch('notebook_intelligence.extension._upload_dir', str(tmp_path)), \
+             patch('notebook_intelligence.extension._sweep_upload_dir') as mock_sweep:
+            handler.on_message(json.dumps(self._base_message(png_b64)))
+
+        assert len(list(tmp_path.rglob('cell-output.png'))) == 1
+        mock_sweep.assert_called_once()
+
+    @patch('notebook_intelligence.extension.ai_service_manager')
+    @patch('notebook_intelligence.extension.NotebookIntelligence')
+    @patch('notebook_intelligence.extension.threading.Thread')
+    def test_rejected_context_triggers_no_sweep(
+        self, mock_thread, mock_nb_intel, mock_ai_manager, tmp_path
+    ):
+        import base64 as b64
+        handler = self._handler(mock_ai_manager, mock_nb_intel, context_window=100)
+        png_b64 = b64.b64encode(b"\x89PNG\r\n\x1a\nfakeplotbytes").decode("ascii")
+        message = self._base_message(
+            png_b64, cell_source='df.plot()  # ' + 'very long comment ' * 60
+        )
+
+        with patch('notebook_intelligence.extension._upload_dir', str(tmp_path)), \
+             patch('notebook_intelligence.extension._sweep_upload_dir') as mock_sweep:
+            handler.on_message(json.dumps(message))
+
+        mock_sweep.assert_not_called()
+
+    def _create_mock_application(self):
+        app = Mock(spec=Application)
+        app.settings = {"jinja2_env": None, "headers": {}}
+        app.ui_methods = {}
+        app.ui_modules = {}
+        app.transforms = []
+        return app
+
+    def _create_mock_request(self):
+        request = Mock(spec=HTTPServerRequest)
+        request.connection = Mock()
+        return request

@@ -245,3 +245,69 @@ class TestCoercePayload:
         bundle = coerced["mimeBundles"][0]
         assert bundle["mimeType"] == "text/plain"
         assert bundle["data"] == "ok"
+
+
+class TestImageSaver:
+    """Image bundles route through ``image_saver`` when provided — used by
+    Claude Code mode, where the CLI takes text-only queries and inline
+    data-URLs would be unreadable base64 blobs."""
+
+    def _image_bundle(self, data="aGVsbG8="):
+        return _bundle(
+            mimeBundles=[
+                {"mimeType": "image/png", "data": data, "sizeTokens": 10}
+            ]
+        )
+
+    def test_saver_replaces_data_url_with_path_prose(self):
+        calls = []
+
+        def saver(mime, cleaned):
+            calls.append((mime, cleaned))
+            return "/tmp/nbi-uploads-x/abc/cell-output.png"
+
+        message = format_output_context(
+            self._image_bundle(), supports_vision=False, image_saver=saver
+        )
+        assert calls == [("image/png", "aGVsbG8=")]
+        assert "/tmp/nbi-uploads-x/abc/cell-output.png" in message
+        assert "Read that file" in message
+        assert "data:image/png" not in message
+        assert "aGVsbG8=" not in message
+
+    def test_saver_wins_over_supports_vision(self):
+        message = format_output_context(
+            self._image_bundle(),
+            supports_vision=True,
+            image_saver=lambda mime, data: "/tmp/out.png",
+        )
+        assert "/tmp/out.png" in message
+        assert "data:image/png" not in message
+
+    def test_saver_failure_falls_back_to_text_rendering(self):
+        message = format_output_context(
+            self._image_bundle(), supports_vision=False,
+            image_saver=lambda mime, data: None,
+        )
+        # Same fallback as a non-vision model: raw bundle as text.
+        assert "[image/png]" in message
+        assert "aGVsbG8=" in message
+
+    def test_saver_not_called_for_invalid_base64(self):
+        calls = []
+        message = format_output_context(
+            self._image_bundle(data="not base64!!"),
+            supports_vision=False,
+            image_saver=lambda mime, data: calls.append(1),
+        )
+        assert calls == []
+        assert "[image/png]" in message
+
+    def test_saver_not_called_for_text_bundles(self):
+        calls = []
+        message = format_output_context(
+            _bundle(), supports_vision=False,
+            image_saver=lambda mime, data: calls.append(1),
+        )
+        assert calls == []
+        assert "1" in message

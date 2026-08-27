@@ -3,6 +3,7 @@
 import asyncio
 import atexit
 import base64
+import binascii
 from dataclasses import asdict, dataclass
 import json
 from os import path
@@ -1687,6 +1688,61 @@ def _resolve_upload_path(file_path: str) -> str | None:
     return resolved
 
 
+class _DeferredOutputImageSaver:
+    """Persist cell-output image bundles under the upload dir — deferred.
+
+    Used as the ``image_saver`` for ``format_output_context`` in Claude
+    Code mode: the CLI takes text-only queries, so images travel as file
+    paths the agent's Read tool can open, never as inline data-URLs.
+
+    Writes are deferred to ``commit()`` because formatting runs *before*
+    the token-budget check: a direct-write saver would persist files for
+    contexts that are then rejected, letting an authenticated caller
+    grow the upload dir without bound by spamming over-budget contexts.
+    ``__call__`` only decodes (bounded by ``coerce_payload``'s size
+    caps) and reserves a path; nothing touches disk until the context
+    is accepted. Committed files trigger the same retention sweep as
+    the upload handler so they share its cleanup lifecycle.
+    """
+
+    def __init__(self, retention_hours: int = None):
+        self._retention_hours = (
+            retention_hours
+            if retention_hours is not None
+            else FileUploadHandler.upload_retention_hours
+        )
+        self._pending: list[tuple[str, bytes]] = []
+
+    def __call__(self, mime_type: str, data_b64: str) -> str | None:
+        """Decode and reserve a path; returns ``None`` on decode failure
+        so the formatter falls back to its text rendering."""
+        ext = ".png" if mime_type == "image/png" else ".jpg"
+        try:
+            payload = base64.b64decode(data_b64, validate=True)
+        except (binascii.Error, ValueError) as exc:
+            log.warning("Could not decode cell-output image bundle: %s", exc)
+            return None
+        dest_path = path.join(
+            _get_upload_dir(), uuid.uuid4().hex[:12], f"cell-output{ext}"
+        )
+        self._pending.append((dest_path, payload))
+        return dest_path
+
+    def commit(self) -> None:
+        """Write the reserved files. Call only after budget acceptance."""
+        if not self._pending:
+            return
+        for dest_path, payload in self._pending:
+            try:
+                os.makedirs(path.dirname(dest_path), exist_ok=True)
+                with open(dest_path, "wb") as fh:
+                    fh.write(payload)
+            except OSError as exc:
+                log.warning("Could not persist cell-output image bundle: %s", exc)
+        self._pending.clear()
+        _sweep_upload_dir(self._retention_hours)
+
+
 def _sweep_upload_dir(retention_hours: int) -> None:
     """Best-effort removal of upload subdirs past the retention window.
 
@@ -2338,27 +2394,54 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
 
                 output_context = _coerce_output_context(context.get("outputContext"))
                 if output_context is not None:
-                    # Estimate cost without re-encoding the whole formatted
-                    # message: per-bundle token counts are precomputed by the
-                    # client (and capped by `coerce_payload`'s size limits);
-                    # `cellSource` we count once. ~50-token allowance for the
-                    # wrapper text is comfortably above the actual envelope.
-                    bundle_tokens = sum(
-                        b.get("sizeTokens", 0)
-                        for b in output_context.get("mimeBundles", [])
-                    )
-                    cell_source = output_context.get("cellSource", "")
-                    cell_source_tokens = _token_count(cell_source) if cell_source else 0
-                    estimated_tokens = bundle_tokens + cell_source_tokens + 50
-                    if estimated_tokens > remaining_token_budget:
-                        log.info(
-                            "Skipping output context: estimated %d tokens exceeds remaining budget %d",
-                            estimated_tokens,
-                            remaining_token_budget,
+                    if is_claude_code_mode:
+                        # The Claude Code CLI takes text-only queries: an
+                        # inline data-URL would arrive as an enormous base64
+                        # string the model pays tokens for but cannot render.
+                        # Persist image bundles to the upload dir and pass
+                        # their paths instead — the agent's Read tool views
+                        # the file natively. The formatted message is small,
+                        # so budget it by its real token count rather than
+                        # the client-side base64 estimate. The saver defers
+                        # disk writes until the budget accepts the context,
+                        # so rejected contexts leave no files behind.
+                        image_saver = _DeferredOutputImageSaver()
+                        context_message = _format_output_context(
+                            output_context,
+                            supports_vision=False,
+                            image_saver=image_saver,
                         )
-                        continue
-                    supports_vision = _resolve_supports_vision(ai_service_manager)
-                    context_message = _format_output_context(output_context, supports_vision=supports_vision)
+                        estimated_tokens = _token_count(context_message)
+                        if estimated_tokens > remaining_token_budget:
+                            log.info(
+                                "Skipping output context: estimated %d tokens exceeds remaining budget %d",
+                                estimated_tokens,
+                                remaining_token_budget,
+                            )
+                            continue
+                        image_saver.commit()
+                    else:
+                        # Estimate cost without re-encoding the whole formatted
+                        # message: per-bundle token counts are precomputed by the
+                        # client (and capped by `coerce_payload`'s size limits);
+                        # `cellSource` we count once. ~50-token allowance for the
+                        # wrapper text is comfortably above the actual envelope.
+                        bundle_tokens = sum(
+                            b.get("sizeTokens", 0)
+                            for b in output_context.get("mimeBundles", [])
+                        )
+                        cell_source = output_context.get("cellSource", "")
+                        cell_source_tokens = _token_count(cell_source) if cell_source else 0
+                        estimated_tokens = bundle_tokens + cell_source_tokens + 50
+                        if estimated_tokens > remaining_token_budget:
+                            log.info(
+                                "Skipping output context: estimated %d tokens exceeds remaining budget %d",
+                                estimated_tokens,
+                                remaining_token_budget,
+                            )
+                            continue
+                        supports_vision = _resolve_supports_vision(ai_service_manager)
+                        context_message = _format_output_context(output_context, supports_vision=supports_vision)
                     remaining_token_budget -= estimated_tokens
                     chat_history.append({"role": "user", "content": context_message})
                     continue
