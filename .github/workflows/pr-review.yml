@@ -1,8 +1,22 @@
 name: PR Review
 
+# DISABLED on this fork: automated PR reviews no longer run.
+#
+# The workflow is parked rather than deleted so it can be switched back on by
+# deleting the `workflow_dispatch` line below and uncommenting the
+# `pull_request` trigger. A workflow must declare at least one event, hence the
+# placeholder, and both jobs are gated on the pull_request event so a stray
+# manual run is a clean no-op: scripts/review-pr.sh and
+# scripts/review-pr-claude.sh need the PR number and base/head SHAs that only
+# the pull_request event supplies.
+#
+# Note: with no pull_request trigger there is no "PR Review" workflow_run
+# event, so promote-upstream.yml no longer promotes automatically -- run it
+# via workflow_dispatch instead.
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+  # pull_request:
+  #   types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
@@ -11,7 +25,9 @@ permissions:
 
 jobs:
   review:
-    if: github.event.pull_request.draft == false
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.draft == false
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +49,9 @@ jobs:
         run: bash scripts/review-pr.sh
 
   review-claude:
-    if: github.event.pull_request.draft == false
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.draft == false
     runs-on: ubuntu-latest
 
     steps:
