@@ -3,6 +3,7 @@
 import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
+import { MarkdownImage } from '../../src/components/markdown-image';
 import { MarkdownLink } from '../../src/components/markdown-link';
 
 function fakeApp(execute: jest.Mock) {
@@ -243,5 +244,40 @@ describe('MarkdownLink (issue #344)', () => {
       'title',
       'See the project README'
     );
+  });
+});
+
+describe('MarkdownImage', () => {
+  it('renders no img element for a remote src', () => {
+    const { container } = render(<MarkdownImage alt="chart" title="a chart" />);
+    expect(container.querySelector('img')).toBeNull();
+    expect(screen.getByText('chart')).toBeInTheDocument();
+    expect(screen.getByText(/image blocked/)).toHaveClass('nbi-sr-only');
+  });
+
+  it('never puts a src attribute in the DOM', () => {
+    // The rendered node is the only thing standing between an LLM-chosen
+    // URL and an automatic outbound GET, so assert on the markup rather
+    // than on the component's props.
+    const { container } = render(<MarkdownImage alt="x" />);
+    expect(container.innerHTML).not.toContain('src');
+  });
+
+  it('drops an alt carrying bidi-override codepoints', () => {
+    render(<MarkdownImage alt={'safe‮txt.exe'} />);
+    expect(screen.queryByText(/safe/)).toBeNull();
+    expect(screen.getByText(/image blocked/)).toHaveClass('nbi-sr-only');
+  });
+
+  it('drops a title carrying dangerous codepoints', () => {
+    const { container } = render(
+      <MarkdownImage alt="chart" title={'hover‮txt'} />
+    );
+    expect(container.querySelector('span')).not.toHaveAttribute('title');
+  });
+
+  it('renders only the blocked note when the image has no alt text', () => {
+    render(<MarkdownImage alt="" />);
+    expect(screen.getByText(/image blocked/)).toHaveClass('nbi-sr-only');
   });
 });
