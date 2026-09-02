@@ -27,7 +27,7 @@ import base64
 import logging
 from claude_agent_sdk import AssistantMessage, PermissionResultAllow, PermissionResultDeny, ResultMessage, SdkMcpTool, TextBlock, ToolResultBlock, ToolUseBlock, UserMessage, create_sdk_mcp_server, ClaudeAgentOptions, ClaudeSDKClient, tool
 
-from notebook_intelligence.util import ThreadSafeWebSocketConnector, _emit, get_jupyter_root_dir, import_litellm, resolve_claude_cli_path, safe_jupyter_path, terminate_process_tree
+from notebook_intelligence.util import ThreadSafeWebSocketConnector, _emit, get_jupyter_root_dir, import_litellm, redact_env_secrets, resolve_claude_cli_path, safe_jupyter_path, terminate_process_tree
 
 if TYPE_CHECKING:
     from anthropic import Anthropic
@@ -2110,7 +2110,11 @@ async def run_command_in_jupyter_terminal(args) -> str:
             'command': args['command'],
             'cwd': str(work_dir),
         })
-        return bounded_text_tool_response(ui_cmd_response)
+        # Mirror the scrub the built-in shell tools apply: this return value
+        # is the tool result, so the terminal's raw PTY output would otherwise
+        # carry the user's secret-bearing env values into chat history and on
+        # to the model provider.
+        return bounded_text_tool_response(redact_env_secrets(str(ui_cmd_response)))
     except Exception as e:
         return bounded_text_tool_response(
             f"Error running command in Jupyter terminal: {str(e)}",

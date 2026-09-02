@@ -907,7 +907,14 @@ async def run_command_in_jupyter_terminal(command: str, working_directory: str =
             'command': command,
             'cwd': str(work_dir)
         })
-        return ui_cmd_response
+        # The UI command replays the terminal's raw PTY output back here and
+        # this return value becomes the tool result, so it lands in chat
+        # history and is sent to the model provider on the next turn. Scrub
+        # it the way execute_command and the embedded-terminal tool already
+        # scrub theirs; without this, an `env` / `printenv` / credential-
+        # helper trace run through this tool pastes GITHUB_TOKEN /
+        # ANTHROPIC_API_KEY / etc. straight into the transcript.
+        return redact_env_secrets(str(ui_cmd_response))
     except Exception as e:
         return f"Error running command in Jupyter terminal: {str(e)}"
 
