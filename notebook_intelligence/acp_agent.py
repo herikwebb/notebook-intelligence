@@ -59,7 +59,11 @@ from notebook_intelligence.acp_registry import (
 )
 from notebook_intelligence.base_chat_participant import BaseChatParticipant
 from notebook_intelligence.claude_sessions import CONTROL_SLASH_COMMANDS
-from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_jupyter_root_dir
+from notebook_intelligence.util import (
+    ThreadSafeWebSocketConnector,
+    get_jupyter_root_dir,
+    safe_jupyter_path,
+)
 
 log = logging.getLogger(__name__)
 
@@ -232,17 +236,37 @@ class _NbiAcpClient(acp.Client):
 
     # fs/*: implemented so an agent that delegates file ops (e.g. claude-acp)
     # routes through NBI. codex-acp self-applies, so these may not fire for it.
-    async def read_text_file(self, path, session_id, limit=None, line=None, **kw):
+    #
+    # The `path` on these requests is chosen by the agent's model, so it is
+    # LLM-supplied input and gets the same treatment as every other tool path:
+    # `safe_jupyter_path` resolves it against the workspace root the session
+    # was opened with (`session/new` cwd) and rejects anything that lands
+    # outside. Without the gate an absolute path or a `..` traversal reads or
+    # overwrites any file the Jupyter user owns, with no approval prompt --
+    # fs/* is a direct client method and never reaches `request_permission`.
+    @staticmethod
+    def _contained_path(path):
+        """Resolve an agent-supplied fs/* path inside the workspace root."""
         try:
-            with open(path, encoding="utf-8") as f:
+            return safe_jupyter_path(path)
+        except ValueError as e:
+            raise acp.RequestError.invalid_params(str(e))
+        except RuntimeError as e:
+            raise acp.RequestError.internal_error(str(e))
+
+    async def read_text_file(self, path, session_id, limit=None, line=None, **kw):
+        target = self._contained_path(path)
+        try:
+            with open(target, encoding="utf-8") as f:
                 return acp.ReadTextFileResponse(content=f.read())
         except Exception as e:
             raise acp.RequestError.internal_error(str(e))
 
     async def write_text_file(self, content, path, session_id, **kw):
+        target = self._contained_path(path)
         try:
-            os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
-            with open(path, "w", encoding="utf-8") as f:
+            os.makedirs(os.path.dirname(target) or ".", exist_ok=True)
+            with open(target, "w", encoding="utf-8") as f:
                 f.write(content)
             return acp.WriteTextFileResponse()
         except Exception as e:
