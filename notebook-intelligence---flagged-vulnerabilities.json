@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-09-06T05:11:18-07:00",
+    "last_scan": "2026-09-07T05:42:31-07:00",
     "scanner": "manual trace-based application-security review",
     "findings": [
         {
@@ -150,6 +150,31 @@
                 "pr": "not opened - session GitHub scope is fork-only, App not installed on upstream",
                 "fix_branch": "security/fix-bash-approval-fence-injection-20260903123826-40",
                 "compare_url": "https://github.com/plmbr/notebook-intelligence/compare/main...herikwebb:security/fix-bash-approval-fence-injection-20260903123826-40?expand=1"
+            }
+        },
+        {
+            "id": "NBI-2026-009",
+            "title": "ACP client fs/read_text_file and fs/write_text_file pass the agent-supplied path straight to open(), so an LLM-chosen absolute path or '..' traversal reads or overwrites any file the Jupyter user owns, with no approval prompt",
+            "status": "active",
+            "severity": "high",
+            "primary_location": "notebook_intelligence/acp_agent.py",
+            "commit_hash": "f0e73e13f0f8920ab9596da2c04e056b4c9cb204",
+            "detected_at_pst": "2026-09-07T05:42:31-07:00",
+            "reported_link": "https://github.com/plmbr/notebook-intelligence/compare/main...herikwebb:security/fix-acp-fs-path-containment-20260907123750-3094?expand=1",
+            "attacker_model": "Indirect prompt injection against the ACP-mode agent (poisoned notebook, README, dependency doc, or fetched web content the agent reads while working in the workspace).",
+            "attacker_controlled_input": "The `path` argument on ACP fs/read_text_file and fs/write_text_file requests, chosen by the agent's model.",
+            "attack_path": "AcpAgentClient._serve advertises schema.FileSystemCapabilities(read_text_file=True, write_text_file=True) at initialize and opens the session with cwd=get_jupyter_root_dir(). fs/* are ACP CLIENT methods invoked by the agent directly -- they never pass through _NbiAcpClient.request_permission, so nothing prompts the user. _NbiAcpClient.read_text_file did `open(path)` and write_text_file did `os.makedirs(os.path.dirname(path)); open(path,'w')` with no containment check, ignoring the session cwd. safe_jupyter_path -- whose own docstring calls it 'the single chokepoint every tool / handler should funnel an LLM-supplied path through' -- was not applied.",
+            "impact": "Arbitrary host-filesystem read as the Jupyter user (e.g. ~/.ssh/id_rsa, ~/.jupyter/nbi/user-data.json holding the stored GitHub token) with the contents returned into the agent's model context; and arbitrary write, which escalates to persistent code execution by overwriting ~/.jupyter/nbi/mcp.json (MCP server command definitions), ~/.claude/settings.json, or shell rc files.",
+            "evidence": "acp_agent.py:235-249 at f0e73e1 (pre-fix). Reproduced: tests/test_acp_fs_sandbox.py against the unpatched tree -> test_rejects_absolute_path_outside_root DID NOT RAISE for both read and write (6 failed / 2 passed); against the patched tree all 8 pass. Full Python suite 1807 passed with the fix.",
+            "reachability_note": "NBI opts in by advertising the fs capability, so any connected agent that honors it reaches this. The in-tree comment notes codex-acp (the only registered agent) self-applies file ops so these 'may not fire for it'; claude-acp and any adapter pointed at via the documented NBI_ACP_AGENT_COMMAND override do delegate. The client-side boundary is missing regardless of which agent is attached.",
+            "fix": "Route both handlers through util.safe_jupyter_path via a _contained_path helper; reject out-of-root paths as an ACP invalid_params error, before makedirs so a blocked write leaves no stray directories.",
+            "tracking": {
+                "issue": "none - upstream SECURITY.md mandates private disclosure (mbektasgh@outlook.com) for app-security findings; no public issue filed",
+                "advisory": "NOT filed: no GitHub advisory-creation tool is available to this session; exploit detail kept in this memory record and out of the public branch/PR text",
+                "pr": "not opened - session GitHub scope is herikwebb/notebook-intelligence only; the Claude App is not installed on upstream plmbr/notebook-intelligence",
+                "fix_branch": "security/fix-acp-fs-path-containment-20260907123750-3094",
+                "compare_url": "https://github.com/plmbr/notebook-intelligence/compare/main...herikwebb:security/fix-acp-fs-path-containment-20260907123750-3094?expand=1",
+                "validation": "pytest tests/ -> 1807 passed (fix worktree, upstream tip f0e73e1 base). Fork-only-file guard passed; git log -1 author = Herik Webb <herikwebb@gmail.com>."
             }
         }
     ],
