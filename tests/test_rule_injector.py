@@ -1,4 +1,7 @@
+import os
 from unittest.mock import Mock, patch
+
+import pytest
 
 import notebook_intelligence.chat_history_budget as budget_module
 from notebook_intelligence.api import ChatRequest
@@ -181,3 +184,78 @@ class TestRuleInjector:
         assert 'Prefer small changes' in result
         assert '# Test Rules' in result
         assert 'Add tests' in result
+
+    @staticmethod
+    def _symlink_or_skip(target, link_path):
+        try:
+            os.symlink(target, link_path)
+        except (OSError, NotImplementedError):
+            pytest.skip('symlinks are not supported on this platform')
+
+    def test_agents_md_symlink_outside_root_is_ignored(self, tmp_path):
+        injector = RuleInjector()
+        request = Mock(spec=ChatRequest)
+        request.rule_context = None
+        request.host.nbi_config.rules_enabled = True
+
+        root = tmp_path / 'root'
+        root.mkdir()
+        outside = tmp_path / 'outside' / 'secret.txt'
+        outside.parent.mkdir()
+        outside.write_text('SECRET_TOKEN=abc123\n', encoding='utf-8')
+        self._symlink_or_skip(outside, root / 'AGENTS.md')
+
+        with patch('notebook_intelligence.rule_injector.get_jupyter_root_dir', return_value=str(root)):
+            result = injector.inject_rules('BASE', request)
+
+        assert result == 'BASE'
+        assert 'SECRET_TOKEN' not in result
+
+    def test_agents_md_relative_symlink_outside_root_is_ignored(self, tmp_path):
+        injector = RuleInjector()
+        request = Mock(spec=ChatRequest)
+        request.rule_context = None
+        request.host.nbi_config.rules_enabled = True
+
+        root = tmp_path / 'root'
+        root.mkdir()
+        (tmp_path / 'secret.txt').write_text('SECRET_TOKEN=abc123\n', encoding='utf-8')
+        self._symlink_or_skip(os.path.join('..', 'secret.txt'), root / 'AGENTS.md')
+
+        with patch('notebook_intelligence.rule_injector.get_jupyter_root_dir', return_value=str(root)):
+            result = injector.inject_rules('BASE', request)
+
+        assert result == 'BASE'
+
+    def test_agents_md_symlink_inside_root_is_honored(self, tmp_path):
+        injector = RuleInjector()
+        request = Mock(spec=ChatRequest)
+        request.rule_context = None
+        request.host.nbi_config.rules_enabled = True
+
+        root = tmp_path / 'root'
+        (root / 'docs').mkdir(parents=True)
+        target = root / 'docs' / 'guidelines.md'
+        target.write_text('# Repo Rules\n- Keep notebooks tidy\n', encoding='utf-8')
+        self._symlink_or_skip(target, root / 'AGENTS.md')
+
+        with patch('notebook_intelligence.rule_injector.get_jupyter_root_dir', return_value=str(root)):
+            result = injector.inject_rules('BASE', request)
+
+        assert 'Repository Instructions (AGENTS.md)' in result
+        assert 'Keep notebooks tidy' in result
+
+    def test_agents_md_dangling_symlink_is_ignored(self, tmp_path):
+        injector = RuleInjector()
+        request = Mock(spec=ChatRequest)
+        request.rule_context = None
+        request.host.nbi_config.rules_enabled = True
+
+        root = tmp_path / 'root'
+        root.mkdir()
+        self._symlink_or_skip(tmp_path / 'missing.md', root / 'AGENTS.md')
+
+        with patch('notebook_intelligence.rule_injector.get_jupyter_root_dir', return_value=str(root)):
+            result = injector.inject_rules('BASE', request)
+
+        assert result == 'BASE'

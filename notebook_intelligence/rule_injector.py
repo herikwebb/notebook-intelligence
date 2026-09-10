@@ -23,12 +23,26 @@ class RuleInjector:
         if not project_root:
             return ''
 
-        agents_path = Path(project_root) / 'AGENTS.md'
+        root_dir = Path(project_root).expanduser().resolve()
+        agents_path = root_dir / 'AGENTS.md'
         if not agents_path.is_file():
             return ''
 
+        # AGENTS.md is repository content. Mirror safe_jupyter_path: resolve
+        # symlinks before the containment check so a checked-in symlink that
+        # points outside the workspace root is ignored instead of being read
+        # into every system prompt.
         try:
-            return agents_path.read_text(encoding='utf-8').strip()
+            resolved_path = agents_path.resolve(strict=True)
+            resolved_path.relative_to(root_dir)
+        except (OSError, ValueError):
+            log.warning(
+                f"Ignoring AGENTS.md at {agents_path}: it resolves outside the Jupyter root directory"
+            )
+            return ''
+
+        try:
+            return resolved_path.read_text(encoding='utf-8').strip()
         except Exception as e:
             log.warning(f"Failed to read AGENTS.md from {agents_path}: {e}")
             return ''
