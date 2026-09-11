@@ -376,6 +376,40 @@ def get_enabled_builtin_tools_in_env() -> Set[str]:
 def is_builtin_tool_enabled_in_env(tool: str) -> bool:
   return tool in get_enabled_builtin_tools_in_env()
 
+
+def is_builtin_tool_allowed(tool: str, disabled_tools, allow_enabling_with_env: bool) -> bool:
+    """Resolve the ``disabled_tools`` denylist for one built-in toolset ID.
+
+    The traitlet denylist is the floor; an entry is re-enabled only when both
+    ``allow_enabling_tools_with_env`` is True and the ID appears in
+    ``NBI_ENABLED_BUILTIN_TOOLS``. Shared by the capabilities response (what
+    the sidebar offers) and the chat-request boundary (what a request may
+    actually select) so the two cannot drift apart.
+    """
+    if not disabled_tools:
+        return True
+    if tool not in disabled_tools:
+        return True
+    return bool(allow_enabling_with_env) and is_builtin_tool_enabled_in_env(tool)
+
+
+def filter_builtin_toolset_selection(requested, disabled_tools, allow_enabling_with_env: bool) -> list:
+    """Drop admin-disabled built-in toolsets from a request's selection.
+
+    ``toolSelections.builtinToolsets`` is client-supplied, so a hand-rolled
+    websocket message (or a frontend code path that hardcodes its own
+    selection) could otherwise hand the agent a toolset the deployment
+    denylisted. Clamp at the boundary, matching ``resolve_permission_mode``.
+    """
+    if not isinstance(requested, list):
+        return []
+    return [
+        toolset_id
+        for toolset_id in requested
+        if isinstance(toolset_id, str)
+        and is_builtin_tool_allowed(toolset_id, disabled_tools, allow_enabling_with_env)
+    ]
+
 def is_provider_enabled_in_env(provider_id: str) -> bool:
     enabled_providers = os.environ.get('NBI_ENABLED_PROVIDERS', '')
     return provider_id in enabled_providers.split(',')
