@@ -2350,6 +2350,37 @@ def _untrusted_code_block(text: Any, info: str = "") -> str:
     return f"{fence}{info}\n{body}\n{fence}"
 
 
+# Claude Code tools whose input names a filesystem target. A per-request
+# ("Approve for this request") approval of one of these is confined to the
+# Jupyter root: a target outside it always prompts again, so approving one
+# in-workspace edit cannot silently authorize writes anywhere on disk for
+# the rest of the turn. Mirrors the CLI's own acceptEdits scope, which is
+# limited to the working directories.
+_FILE_TARGET_TOOLS = frozenset({"Write", "Edit", "MultiEdit", "NotebookEdit"})
+_FILE_TARGET_KEYS = ("file_path", "notebook_path")
+
+
+def _session_approval_covers(tool_name: str, input_data: dict) -> bool:
+    """Whether a standing per-request approval of ``tool_name`` may be
+    applied to this specific call without asking the user again."""
+    if tool_name not in _FILE_TARGET_TOOLS:
+        return True
+    input_data = input_data if isinstance(input_data, dict) else {}
+    target = None
+    for key in _FILE_TARGET_KEYS:
+        value = input_data.get(key)
+        if isinstance(value, str) and value:
+            target = value
+            break
+    if target is None:
+        return False
+    try:
+        safe_jupyter_path(target)
+    except (ValueError, RuntimeError):
+        return False
+    return True
+
+
 async def custom_permission_handler(
     tool_name: str,
     input_data: dict,
@@ -2490,7 +2521,9 @@ async def _custom_permission_handler(
         if _approved_tools_response_id != response.message_id:
             _approved_tools_for_response.clear()
 
-        if tool_name in _approved_tools_for_response:
+        if tool_name in _approved_tools_for_response and _session_approval_covers(
+            tool_name, input_data
+        ):
             return PermissionResultAllow()
         response.stream(MarkdownData(f"&#x2713; Calling tool '{tool_name}'...", detail={"title": "Parameters", "content": json.dumps(input_data)}))
         pending_user_input = response.stream_user_input_request(
