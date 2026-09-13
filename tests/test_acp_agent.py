@@ -488,3 +488,94 @@ class TestSingleFlight:
         assert client.current_response is None
         assert client._turn_lock.acquire(blocking=False)
         client._turn_lock.release()
+
+
+class TestMcpServerLaunchArgv:
+    """The NBI MCP server is spawned by the ACP adapter with the JupyterLab
+    root as its cwd. ``python -m`` puts that directory first on ``sys.path``,
+    so a workspace shipping ``notebook_intelligence/__init__.py`` used to be
+    imported (and executed) in place of the installed package as soon as a
+    session was created -- before any approval prompt. The launch argv must
+    keep the cwd off ``sys.path``."""
+
+    MODULE = "notebook_intelligence.acp_mcp_server"
+
+    @staticmethod
+    def _decoy_workspace(tmp_path):
+        """A workspace whose ``notebook_intelligence`` package drops a marker
+        file when imported, standing in for a hostile checkout."""
+        marker = tmp_path / "decoy-imported"
+        pkg = tmp_path / "notebook_intelligence"
+        pkg.mkdir()
+        (pkg / "__init__.py").write_text(
+            "import pathlib\n"
+            f"pathlib.Path({str(marker)!r}).write_text('shadowed')\n"
+            "raise SystemExit(0)\n"
+        )
+        return marker
+
+    @staticmethod
+    def _run_in(workspace, argv):
+        import os
+        import subprocess
+        import sys
+        import notebook_intelligence
+
+        # Make the real package resolvable via PYTHONPATH (as an installed
+        # package is via site-packages) so only the cwd entry is in question.
+        env = dict(os.environ)
+        env["PYTHONPATH"] = os.path.dirname(os.path.dirname(notebook_intelligence.__file__))
+        env.pop("PYTHONSAFEPATH", None)
+        return subprocess.run(
+            [sys.executable, *argv], cwd=str(workspace), env=env,
+            stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=20,
+        )
+
+    def test_plain_dash_m_is_shadowed_by_the_workspace(self, tmp_path):
+        """Control: the decoy really does hijack the unsafe launch form."""
+        marker = self._decoy_workspace(tmp_path)
+        self._run_in(tmp_path, ["-m", self.MODULE])
+        assert marker.exists()
+
+    def test_session_mcp_server_argv_is_not_shadowed_by_the_workspace(self, tmp_path):
+        from notebook_intelligence.acp_agent import AcpAgentClient
+
+        host = SimpleNamespace(
+            websocket_connector=None,
+            nbi_config=SimpleNamespace(acp_settings={"enabled": True}),
+        )
+        (server,) = AcpAgentClient(host)._mcp_servers()
+        assert server.name == "nbi"
+
+        marker = self._decoy_workspace(tmp_path)
+        proc = self._run_in(tmp_path, list(server.args))
+        assert not marker.exists(), proc.stderr
+        # The real server saw EOF on stdin and exited cleanly.
+        assert proc.returncode == 0, proc.stderr
+
+    def test_legacy_bootstrap_form_is_not_shadowed_either(self, tmp_path):
+        """The ``-c`` form used on interpreters without ``-P``."""
+        from notebook_intelligence import acp_agent
+
+        real = acp_agent.sys.version_info
+        acp_agent.sys.version_info = (3, 10, 0)
+        try:
+            argv = acp_agent.python_module_argv(self.MODULE)
+        finally:
+            acp_agent.sys.version_info = real
+        assert argv[0] == "-c" and self.MODULE in argv[1]
+
+        marker = self._decoy_workspace(tmp_path)
+        proc = self._run_in(tmp_path, argv)
+        assert not marker.exists(), proc.stderr
+        assert proc.returncode == 0, proc.stderr
+
+    def test_current_interpreter_uses_safe_path_flag(self):
+        import sys
+        from notebook_intelligence.acp_agent import python_module_argv
+
+        argv = python_module_argv(self.MODULE)
+        if sys.version_info >= (3, 11):
+            assert argv == ["-P", "-m", self.MODULE]
+        else:
+            assert argv[0] == "-c"

@@ -605,11 +605,13 @@ For that case NBI ships a standalone stdio MCP server that exposes the same tool
   "mcpServers": {
     "nbi": {
       "command": "python",
-      "args": ["-m", "notebook_intelligence.mcp_ui_proxy"]
+      "args": ["-P", "-m", "notebook_intelligence.mcp_ui_proxy"]
     }
   }
 }
 ```
+
+Keep the `-P` flag: MCP servers are launched with the JupyterLab root as their working directory, and plain `python -m` puts that directory first on `sys.path`, so a checkout that ships a `notebook_intelligence/` directory would be imported (and run) in place of the installed package. `-P` needs Python 3.11 or newer; on older interpreters point `command` at a wrapper that removes the empty entry from `sys.path` before importing.
 
 The CLI-visible tool prefix (`mcp__<key>__*`) comes from the config entry's key, not from the server's own handshake name, so name the entry `nbi` unless you have a reason not to.
 

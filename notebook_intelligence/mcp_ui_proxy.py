@@ -10,8 +10,10 @@ vars (or an explicit override), and the backend speaks a minimal JSON protocol:
     GET  <endpoint>                 -> {"tools": [{name, description, inputSchema}]}
     POST <endpoint> {"name","arguments"} -> {"content": [...], "is_error"?: bool}
 
-Launch from an MCP config entry:
-    {"command": "python", "args": ["-m", "notebook_intelligence.mcp_ui_proxy"]}
+Launch from an MCP config entry (``-P`` keeps the launch cwd -- the JupyterLab
+root, which may be an untrusted checkout -- off ``sys.path`` so a workspace
+``notebook_intelligence/`` directory cannot shadow this package):
+    {"command": "python", "args": ["-P", "-m", "notebook_intelligence.mcp_ui_proxy"]}
 
 Environment (all optional; discovery falls back to the Jupyter runtime file):
     NBI_UI_TOOLS_URL        full endpoint URL (overrides discovery)

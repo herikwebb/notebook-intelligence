@@ -70,6 +70,31 @@ _POLL = 0.2
 
 _MAX_DIFF_LINES = 60
 
+ACP_MCP_SERVER_MODULE = "notebook_intelligence.acp_mcp_server"
+
+
+def python_module_argv(module: str) -> list[str]:
+    """Interpreter arguments (after ``sys.executable``) that run ``module`` as
+    ``__main__`` without putting the process cwd on ``sys.path``.
+
+    ``python -m`` prepends the current directory to ``sys.path``, and the ACP
+    adapter spawns the NBI MCP server inside the JupyterLab root. A workspace
+    that ships a ``notebook_intelligence/`` directory (a hostile checkout, or
+    a group-writable shared root) would therefore be imported, and its
+    ``__init__.py`` executed, in place of the installed package before the
+    agent has asked for anything. ``-P`` (Python 3.11+) leaves the cwd off
+    ``sys.path``; older interpreters get the same effect through a ``-c``
+    bootstrap that drops the implicit cwd entry before importing.
+    """
+    if sys.version_info >= (3, 11):
+        return ["-P", "-m", module]
+    bootstrap = (
+        "import runpy, sys; "
+        "sys.path[:] = [p for p in sys.path if p != '']; "
+        f"runpy.run_module({module!r}, run_name='__main__', alter_sys=True)"
+    )
+    return ["-c", bootstrap]
+
 
 def _diff_lines(old: str, new: str, max_lines: int = _MAX_DIFF_LINES) -> tuple[list[dict], bool]:
     """Line-level diff as typed lines for a tool-call card.
@@ -361,11 +386,16 @@ class AcpAgentClient:
         self._turn_lock = threading.Lock()
 
     def _mcp_servers(self) -> list:
-        """The NBI MCP server config passed to every session create/load."""
+        """The NBI MCP server config passed to every session create/load.
+
+        The server is launched with the workspace as its cwd, so the argv
+        must not let that directory shadow the installed package (see
+        ``python_module_argv``).
+        """
         return [
             schema.McpServerStdio(
                 name="nbi", command=sys.executable,
-                args=["-m", "notebook_intelligence.acp_mcp_server"], env=[],
+                args=python_module_argv(ACP_MCP_SERVER_MODULE), env=[],
             )
         ]
 
