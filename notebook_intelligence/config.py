@@ -103,8 +103,13 @@ class NBIConfig:
         # TODO: save only diff
         os.makedirs(self.nbi_user_dir, exist_ok=True)
 
-        _atomic_write_json(self.user_config_file, self.user_config)
-        _atomic_write_json(self.user_mcp_file, self.user_mcp)
+        # Both files carry credentials (provider / Claude / ACP api_key values,
+        # MCP remote-server headers and stdio env values), so force 0o600 on
+        # every write like user-data.json does. Preserving a pre-existing mode
+        # would keep a file first written under a permissive umask by an older
+        # release group/world-readable on shared-home hosts.
+        _atomic_write_json(self.user_config_file, self.user_config, mode=0o600)
+        _atomic_write_json(self.user_mcp_file, self.user_mcp, mode=0o600)
 
     def get(self, key, default=None):
         return self.user_config.get(key, self.env_config.get(key, default))
@@ -291,9 +296,11 @@ def _atomic_write_json(target: str, payload: dict, *, mode: Optional[int] = None
     Mode handling:
       - ``mode`` argument set: the file is written with exactly that mode,
         regardless of any existing mode. Callers that handle secrets (the
-        encrypted GitHub token at ``~/.jupyter/nbi/user-data.json``) pass
-        ``0o600`` so the file is never world-readable, even if a prior
-        umask-default write or a manual chmod widened the perms.
+        encrypted GitHub token at ``~/.jupyter/nbi/user-data.json``, and
+        ``NBIConfig.save()`` for ``config.json`` / ``mcp.json``, which hold
+        provider API keys and MCP headers) pass ``0o600`` so the file is
+        never world-readable, even if a prior umask-default write or a
+        manual chmod widened the perms.
       - ``mode=None`` (default): ``mkstemp`` returns a 0o600 file; if the
         existing target has different permissions (e.g. 0o644 for a
         shared install), re-apply them after the swap so the user's
