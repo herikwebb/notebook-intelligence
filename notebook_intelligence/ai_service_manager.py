@@ -23,7 +23,7 @@ from notebook_intelligence.mcp_manager import MCPManager
 from notebook_intelligence.rule_manager import RuleManager
 from notebook_intelligence.skill_manager import SkillManager
 from notebook_intelligence.skill_reconciler import SkillReconciler
-from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_jupyter_root_dir
+from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_jupyter_root_dir, is_provider_enabled_in_env
 
 log = logging.getLogger(__name__)
 
@@ -166,7 +166,12 @@ class AIServiceManager(Host):
         self.initialize_extensions()
 
     def update_models_from_config(self):
-        using_github_copilot_service = self.nbi_config.using_github_copilot_service
+        # A denylisted Copilot provider must not log in either: the login
+        # is only useful to serve a model that is refused below.
+        using_github_copilot_service = (
+            self.nbi_config.using_github_copilot_service
+            and self.is_provider_enabled('github-copilot')
+        )
         if using_github_copilot_service:
             github_copilot.login_with_existing_credentials(self._nbi_config.store_github_access_token)
         github_copilot.enable_github_login_status_change_updater(using_github_copilot_service)
@@ -553,9 +558,30 @@ class AIServiceManager(Host):
         return PromptParts(participant=participant, command=command, input=input, mcp_server_name=mcp_server_name, mcp_prompt_name=mcp_prompt_name, mcp_arguments=mcp_arguments)
 
     
+    def is_provider_enabled(self, provider_id: str) -> bool:
+        """Whether an admin lets ``provider_id`` serve requests.
+
+        The single source of truth for the ``disabled_providers`` traitlet
+        and its ``allow_enabling_providers_with_env`` / NBI_ENABLED_PROVIDERS
+        re-enable. The capabilities response shapes its picker with this
+        predicate, and ``get_llm_provider`` applies it so the chat and
+        inline models configured in ``config.json`` (whether written by the
+        settings panel, a hand-rolled POST, or a hand edit) cannot resolve
+        to a provider the admin switched off.
+        """
+        disabled = self._options.get("disabled_providers")
+        if not disabled:
+            return True
+        if provider_id not in disabled:
+            return True
+        return bool(self._options.get("allow_enabling_providers_with_env")) \
+            and is_provider_enabled_in_env(provider_id)
+
     def get_llm_provider(self, provider_id: str) -> LLMProvider:
+        if not self.is_provider_enabled(provider_id):
+            return None
         return self.llm_providers.get(provider_id)
-    
+
     def get_llm_provider_for_model_ref(self, model_ref: str) -> LLMProvider:
         parts = model_ref.split('::')
         if len(parts) < 2:

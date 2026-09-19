@@ -779,11 +779,10 @@ class GetCapabilitiesHandler(APIHandler):
             if self.disabled_tools is None:
                 return True
             return tool not in self.disabled_tools or (self.allow_enabling_tools_with_env and is_builtin_tool_enabled_in_env(tool))
-        def is_provider_enabled(provider_id: str) -> bool:
-            if self.disabled_providers is None:
-                return True
-            return provider_id not in self.disabled_providers or \
-                   (self.allow_enabling_providers_with_env and is_provider_enabled_in_env(provider_id))
+        # One predicate for the picker and for model resolution: the
+        # service manager owns it so update_models_from_config above refuses
+        # the same providers this response hides.
+        is_provider_enabled = ai_service_manager.is_provider_enabled
         # Frontend gets the resolved set (denylist plus the per-pod re-enable
         # env, gated by the explicit opt-in flag). Computed once per request
         # in `util.compute_effective_disabled_launchers` so tests can pin the
@@ -4613,6 +4612,10 @@ class NotebookIntelligence(ExtensionApp):
             "feature_policies": feature_policies,
             "string_overrides": string_overrides,
             "mcp_stdio_command_allowlist": mcp_command_allowlist,
+            "disabled_providers": list(self.disabled_providers or []),
+            "allow_enabling_providers_with_env": bool(
+                self.allow_enabling_providers_with_env
+            ),
         })
         # Apply env-var perf policy/locks immediately at boot, mirroring the
         # comment above about acp_mode: don't wait for the first config POST
