@@ -25,6 +25,7 @@ import {
   parseChatbookExecutionMode,
   promptHasChatbookMention,
   chatbookAllowsSessionCachedCode,
+  revealBidiControls,
   CHATBOOK_EXECUTION_MODES
 } from '../../src/chatbook-core';
 import {
@@ -34,6 +35,20 @@ import {
 import { NBIConfig } from '../../src/api';
 
 describe('chatbook-core', () => {
+  it('reveals bidirectional controls without touching other text', () => {
+    // RIGHT-TO-LEFT OVERRIDE inside a string literal (Trojan Source).
+    expect(revealBidiControls('label = "total\u202e"  # sum')).toBe(
+      'label = "total\\u{202E}"  # sum'
+    );
+    expect(revealBidiControls('x = "\u2066a\u2069\u200f\u061c"')).toBe(
+      'x = "\\u{2066}a\\u{2069}\\u{200F}\\u{061C}"'
+    );
+    // Right-to-left letters, emoji and astral codepoints are not controls.
+    const plain = 'name = "\u05e9\u05dc\u05d5\u05dd"  # \u{1f600} caf\u00e9\n';
+    expect(revealBidiControls(plain)).toBe(plain);
+    expect(revealBidiControls('')).toBe('');
+  });
+
   it('recognizes the chatbook kernel name', () => {
     expect(isChatbookKernelName('chatbook')).toBe(true);
     expect(isChatbookKernelName('python3')).toBe(false);

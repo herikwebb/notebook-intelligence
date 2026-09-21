@@ -7,7 +7,10 @@ from __future__ import annotations
 import ast
 import json
 import re
+import unicodedata
 from typing import Any, Iterable, Optional
+
+from notebook_intelligence.util import BIDI_CONTROL_CODEPOINTS
 
 DANGER_LEVEL_CLEAN = "clean"
 DANGER_LEVEL_RISKY = "risky"
@@ -49,6 +52,7 @@ def scan_generated_python(source: str) -> dict[str, Any]:
     """Return ``{level, reasons}``. Parse failure is risky (fail closed)."""
     reasons: list[str] = []
     text = source or ""
+    reasons.extend(_scan_hidden_controls(text))
     reasons.extend(_scan_magics(text))
     try:
         tree = ast.parse(text)
@@ -67,10 +71,33 @@ def scan_generated_code(source: str, language: str = "python") -> dict[str, Any]
     if lang in {"python", "py"}:
         return scan_generated_python(source)
     label = (language or "code").strip() or "unknown language"
-    return {
-        "level": DANGER_LEVEL_RISKY,
-        "reasons": [f"No static scanner for {label} code"],
-    }
+    return _result(
+        [f"No static scanner for {label} code"]
+        + _scan_hidden_controls(source or "")
+    )
+
+
+def _scan_hidden_controls(source: str) -> list[str]:
+    """Flag bidirectional formatting controls, whatever the language.
+
+    Code carrying them can display in a different order from the order the
+    interpreter reads it, so the confirm bar could show something other than
+    what would run. The same policy refuses them in Claude-mode Bash and ACP
+    approvals; here they are named so the bar can never auto-run past them and
+    the reason tells the user what is hidden.
+    """
+    found = dict.fromkeys(
+        ord(character)
+        for character in source
+        if ord(character) in BIDI_CONTROL_CODEPOINTS
+    )
+    if not found:
+        return []
+    names = ", ".join(
+        f"U+{codepoint:04X} {unicodedata.name(chr(codepoint))}"
+        for codepoint in found
+    )
+    return [f"Hidden Unicode bidirectional controls ({names})"]
 
 
 def merge_danger_scans(*scans: Optional[dict[str, Any]]) -> dict[str, Any]:

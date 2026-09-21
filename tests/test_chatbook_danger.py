@@ -3,6 +3,7 @@
 from notebook_intelligence.chatbook_kernel.danger import (
     merge_danger_scans,
     parse_llm_danger_response,
+    scan_generated_code,
     scan_generated_python,
 )
 from notebook_intelligence.chatbook_kernel.execution import (
@@ -47,6 +48,40 @@ def test_scan_parse_failure_is_risky():
     scan = scan_generated_python("def (\n")
     assert scan["level"] == "risky"
     assert scan["reasons"]
+
+
+def test_scan_flags_hidden_bidi_controls():
+    # Trojan-Source style: the string literal carries a RIGHT-TO-LEFT OVERRIDE
+    # so the line displays in a different order from how Python reads it.
+    # Otherwise clean analysis code must still confirm, and the reason must
+    # name the control so the confirm bar can show what is hidden.
+    hidden = 'label = "total\u202e"  # sum\ntotal = sum(values)\n'
+    scan = scan_generated_python(hidden)
+    assert scan["level"] == "risky"
+    assert scan["reasons"] == [
+        "Hidden Unicode bidirectional controls "
+        "(U+202E RIGHT-TO-LEFT OVERRIDE)"
+    ]
+
+    several = scan_generated_python("x = '\u2066a\u2069\u202e\u2066'\n")
+    assert several["level"] == "risky"
+    assert several["reasons"] == [
+        "Hidden Unicode bidirectional controls (U+2066 LEFT-TO-RIGHT ISOLATE, "
+        "U+2069 POP DIRECTIONAL ISOLATE, U+202E RIGHT-TO-LEFT OVERRIDE)"
+    ]
+
+    # Plain right-to-left text is not a control and stays clean.
+    assert scan_generated_python('name = "\u05e9\u05dc\u05d5\u05dd"\n') == {
+        "level": "clean",
+        "reasons": [],
+    }
+
+    # Non-Python backends already fail closed; the hidden control is still
+    # named alongside the missing-scanner reason.
+    other = scan_generated_code("x <- '\u202e'\n", "r")
+    assert other["level"] == "risky"
+    assert other["reasons"][0] == "No static scanner for r code"
+    assert other["reasons"][1].startswith("Hidden Unicode bidirectional controls")
 
 
 def test_merge_and_llm_parse():

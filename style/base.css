@@ -4201,6 +4201,9 @@ svg.access-token-warning {
   font: 13px/1.4 var(--jp-ui-font-family);
 }
 
+/* Characters display in the order the kernel reads them, so right-to-left
+   text cannot reorder the code the user is approving (same rule as the chat
+   confirmation card's command block). */
 .nbi-chatbook-confirm-code {
   margin: 0 0 8px;
   max-height: 12rem;
@@ -4212,6 +4215,8 @@ svg.access-token-warning {
   font-family: var(--jp-code-font-family);
   font-size: var(--jp-code-font-size);
   white-space: pre-wrap;
+  direction: ltr;
+  unicode-bidi: bidi-override;
 }
 
 .nbi-chatbook-confirm-reasons {

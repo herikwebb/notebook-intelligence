@@ -108,6 +108,37 @@ export function chatbookExecutionModeSummary(
   return CHATBOOK_EXECUTION_MODE_SUMMARIES[mode];
 }
 
+/**
+ * Unicode bidirectional formatting controls. Mirrors the Python
+ * `BIDI_CONTROL_CODEPOINTS` set in util.py: text carrying them can display in
+ * a different order from the order an interpreter reads it.
+ */
+function isBidiControlCodepoint(code: number): boolean {
+  return (
+    code === 0x061c ||
+    code === 0x200e ||
+    code === 0x200f ||
+    (code >= 0x202a && code <= 0x202e) ||
+    (code >= 0x2066 && code <= 0x2069)
+  );
+}
+
+/**
+ * Make every bidirectional control in `text` explicit as `\u{XXXX}` so the
+ * confirm bar shows generated code in the order the kernel will read it. The
+ * code that runs is untouched; only what is displayed changes.
+ */
+export function revealBidiControls(text: string): string {
+  let out = '';
+  for (const character of text) {
+    const code = character.codePointAt(0) ?? 0;
+    out += isBidiControlCodepoint(code)
+      ? `\\u{${code.toString(16).toUpperCase().padStart(4, '0')}}`
+      : character;
+  }
+  return out;
+}
+
 export const CHATBOOK_CONTEXT_MAX_FIELD_CHARS = 8000;
 export const CHATBOOK_CONTEXT_MAX_OUTPUT_CHARS = 4000;
 

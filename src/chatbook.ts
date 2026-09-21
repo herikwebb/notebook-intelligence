@@ -38,6 +38,7 @@ import {
   parseChatbookExecutionMode,
   promptHasChatbookMention,
   chatbookAllowsSessionCachedCode,
+  revealBidiControls,
   type ChatbookCellMode,
   type ChatbookDangerLevel,
   type ChatbookExecutionMode,
@@ -951,7 +952,11 @@ function renderChatbookConfirmBar(
     <div class="nbi-chatbook-confirm-header">${escapeChatbookHtml(
       'Review generated code before running it in this kernel.'
     )}</div>
-    <pre class="nbi-chatbook-confirm-code">${escapeChatbookHtml(pending.code)}</pre>
+    <pre class="nbi-chatbook-confirm-code">${escapeChatbookHtml(
+      // Shown in read order, with any bidi control made visible, so the code
+      // the user approves is the code the kernel runs (`current.code` below).
+      revealBidiControls(pending.code)
+    )}</pre>
     ${reasons}
     <div class="nbi-chatbook-confirm-footer">
       <div class="nbi-chatbook-confirm-actions"></div>
