@@ -58,6 +58,10 @@ from notebook_intelligence.feature_flags import (
 )
 from notebook_intelligence.acp_registry import ACP_AGENTS
 from notebook_intelligence._claude_cli import validate_scope
+from notebook_intelligence.mcp_config_secrets import (
+    redact_mcp_secrets,
+    restore_mcp_secrets,
+)
 from notebook_intelligence.mcp_config_validation import (
     MCPConfigValidationError,
     validate_mcp_config,
@@ -1378,7 +1382,10 @@ class MCPConfigFileHandler(APIHandler):
         mcp_config = ai_service_manager.nbi_config.mcp.copy()
         if "mcpServers" not in mcp_config:
             mcp_config["mcpServers"] = {}
-        self.finish(json.dumps(mcp_config))
+        # The frontend writes this response into a temp file under the
+        # Jupyter root for the file editor, so credentials in `headers` /
+        # `env` must not leave the server; post() restores the placeholders.
+        self.finish(json.dumps(redact_mcp_secrets(mcp_config)))
 
     @tornado.web.authenticated
     def post(self):
@@ -1414,16 +1421,20 @@ class MCPConfigFileHandler(APIHandler):
                         continue
                     validate_mcp_stdio_command(server.get("command", ""), allowlist)
                     reject_dangerous_env_keys(server.get("env"))
+            # Credentials get() masked come back as placeholders; swap the
+            # stored values back in so the edit never persists the mask
+            # (a placeholder with nothing stored is a ValueError -> 400).
+            data = restore_mcp_secrets(data, ai_service_manager.nbi_config.mcp)
             ai_service_manager.nbi_config.user_mcp = data
             ai_service_manager.nbi_config.save()
             ai_service_manager.nbi_config.load()
             ai_service_manager.update_mcp_servers()
             self.finish(json.dumps({"status": "ok"}))
         except ValueError as exc:
-            # Policy rejection: surface as HTTP 400 so the Settings UI
-            # shows the operator's policy message instead of a generic
-            # 500. The body still uses the {status, message} envelope
-            # the frontend already parses.
+            # Policy rejection (or an unrestorable credential placeholder):
+            # surface as HTTP 400 so the Settings UI shows the operator's
+            # policy message instead of a generic 500. The body still uses
+            # the {status, message} envelope the frontend already parses.
             self.set_status(400)
             self.finish(json.dumps({"status": "error", "message": str(exc)}))
             return

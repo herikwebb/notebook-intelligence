@@ -341,7 +341,7 @@ In multi-tenant deployments, `nbi-command-execute` and `nbi-file-edit` are effec
 
 NBI integrates with [MCP](https://modelcontextprotocol.io) servers. It supports both stdio and Streamable HTTP transports. **Tools and prompts are supported; resources are not.** A server's prompts appear in the chat input's slash-command autocomplete as `/mcp:<server>:<prompt>`.
 
-Add MCP servers by editing `~/.jupyter/nbi/mcp.json`. An environment-wide base file at `<env-prefix>/share/jupyter/nbi/mcp.json` is also supported.
+Add MCP servers by editing `~/.jupyter/nbi/mcp.json`. An environment-wide base file at `<env-prefix>/share/jupyter/nbi/mcp.json` is also supported. When you open the config from the Settings dialog's **MCP Servers** tab instead, credential values under `headers` and `env` (`Authorization`, `*_API_KEY`, `*_TOKEN`, and the like) show as `<redacted>`; leave the placeholder to keep the stored value, or type a new value to replace it.
 
 > [!NOTE]
 > MCP requires an LLM model with tool-calling capability. All GitHub Copilot models in NBI support this. For other providers, choose a tool-calling-capable model.
