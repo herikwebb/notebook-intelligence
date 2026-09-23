@@ -14,6 +14,7 @@ import fnmatch
 
 from notebook_intelligence.util import (
     get_jupyter_root_dir,
+    open_confined,
     redact_env_secrets,
     safe_jupyter_path,
 )
@@ -751,7 +752,7 @@ async def read_file(
         if start_line < 1:
             return "start_line must be >= 1"
         # Read all lines
-        with open(target_file, 'r', encoding='utf-8') as f:
+        with open_confined(target_file) as f:
             lines = f.readlines()
         total_lines = len(lines)
         # Adjust end_line for Python indexing
@@ -793,9 +794,9 @@ async def insert_content(file_path: str, line_number: int, content: str, **args)
             return f"'{file_path}' is not a file"
         
         # Read existing content
-        with open(target_file, 'r', encoding='utf-8') as f:
+        with open_confined(target_file) as f:
             lines = f.readlines()
-        
+
         # Validate line number
         if line_number < 1 or line_number > len(lines) + 1:
             return f"Invalid line number {line_number}. File has {len(lines)} lines"
@@ -806,8 +807,9 @@ async def insert_content(file_path: str, line_number: int, content: str, **args)
             content += '\n'
         lines.insert(insert_index, content)
         
-        # Write back to file
-        with open(target_file, 'w', encoding='utf-8') as f:
+        # Write back to file; open_confined refuses a symlink swapped in
+        # after the containment check instead of following it.
+        with open_confined(target_file, write=True) as f:
             f.writelines(lines)
         
         return f"Inserted content at line {line_number} in '{file_path}'"
@@ -828,8 +830,9 @@ async def write_to_file(file_path: str, content: str, **args) -> str:
         # Create parent directories if they don't exist
         target_file.parent.mkdir(parents=True, exist_ok=True)
         
-        # Write content to file
-        with open(target_file, 'w', encoding='utf-8') as f:
+        # Write content to file; open_confined refuses a symlink swapped in
+        # after the containment check instead of following it.
+        with open_confined(target_file, write=True) as f:
             f.write(content)
         
         return f"Wrote content to '{file_path}'"

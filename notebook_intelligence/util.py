@@ -1,11 +1,13 @@
 # Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
+import errno
 import os
 import base64
 import logging
 import re
 import shutil
 import signal
+import stat
 import subprocess
 import time
 from pathlib import Path
@@ -93,6 +95,73 @@ def safe_jupyter_path(path: str) -> Path:
         )
 
     return target_path
+
+
+def _opened_fd_path(fd: int) -> Optional[str]:
+    """Best-effort path of the file an open descriptor actually refers to.
+
+    Linux exposes it through ``/proc/self/fd``; macOS through
+    ``fcntl(F_GETPATH)``. Returns ``None`` where neither is available so
+    the caller can fall back to the ``O_NOFOLLOW`` guarantee alone.
+    """
+    try:
+        return os.readlink(f"/proc/self/fd/{fd}")
+    except OSError:
+        pass
+    try:
+        import fcntl
+
+        f_getpath = getattr(fcntl, "F_GETPATH", None)
+        if f_getpath is not None:
+            raw = fcntl.fcntl(fd, f_getpath, b"\0" * 1024)
+            return os.fsdecode(raw.split(b"\0", 1)[0])
+    except (ImportError, OSError):
+        pass
+    return None
+
+
+def open_confined(target: Path, write: bool = False):
+    """Open a path returned by :func:`safe_jupyter_path` without following
+    a symlink swapped in after that check.
+
+    ``safe_jupyter_path`` resolves and confines a path, but a plain
+    ``open(target)`` afterwards resolves it a second time by name. A file
+    or directory component replaced by a symlink between the two
+    resolutions is followed by the second, so a write meant for the
+    workspace could land on any file the server user can write. The open
+    here refuses a symlink in the final component (``O_NOFOLLOW``), never
+    truncates before checking, and compares the path the kernel actually
+    opened against ``target``; on mismatch the descriptor is closed and
+    ``ValueError`` is raised. Only regular files are accepted.
+
+    Returns a text-mode file object (UTF-8) positioned like ``open(target,
+    "w")`` or ``open(target, "r")``.
+    """
+    flags = os.O_WRONLY | os.O_CREAT if write else os.O_RDONLY
+    flags |= getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_CLOEXEC", 0)
+    try:
+        fd = os.open(target, flags, 0o644)
+    except OSError as exc:
+        # ELOOP is what O_NOFOLLOW reports for a symlink final component.
+        if exc.errno == errno.ELOOP:
+            raise ValueError(
+                f"Path '{target}' changed to a symbolic link while it was being opened"
+            ) from exc
+        raise
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise ValueError(f"'{target}' is not a regular file")
+        opened = _opened_fd_path(fd)
+        if opened is not None and os.path.realpath(opened) != str(target):
+            raise ValueError(
+                f"Path '{target}' changed while it was being opened; refusing to use it"
+            )
+        if write:
+            os.ftruncate(fd, 0)
+        return os.fdopen(fd, "w" if write else "r", encoding="utf-8")
+    except BaseException:
+        os.close(fd)
+        raise
 
 
 def get_claude_config_dir() -> str:
