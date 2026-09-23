@@ -161,6 +161,34 @@ CLAUDE_TOOL_RESULT_MAX_OUTPUT_TOKENS = (
 CLAUDE_CODE_CHAT_PARTICIPANT_ID = "claude-code"
 CLAUDE_CODE_MAX_BUFFER_SIZE = 20 * 1024 * 1024 # 20MB
 
+# Claude Code's own built-in tool set, used only as the fallback denylist
+# when the installed SDK predates ``ClaudeAgentOptions.tools``. With a
+# current SDK ``tools=[]`` is the authoritative "no built-in tools" base set.
+CLAUDE_CODE_BUILT_IN_TOOL_NAMES = [
+    "Agent", "Bash", "BashOutput", "Edit", "ExitPlanMode", "Glob", "Grep",
+    "KillShell", "MultiEdit", "NotebookEdit", "NotebookRead", "Read", "Skill",
+    "Task", "TodoWrite", "WebFetch", "WebSearch", "Write",
+]
+
+
+def _built_in_tool_restrictions(claude_settings: dict) -> dict:
+    """Extra ``ClaudeAgentOptions`` kwargs that enforce the Claude Code tools grant.
+
+    ``claude_settings['tools']`` is the policy-applied grant list: the
+    ``claude_code_tools`` admin policy (``NBI_CLAUDE_CODE_TOOLS_POLICY``)
+    strips ``ClaudeToolType.ClaudeCodeTools`` from it when forced off. That
+    list already shapes the capabilities response and the config write
+    filter, but the agent has to be told as well, or the CLI starts with its
+    full built-in set (Bash, Edit, Write, WebFetch, ...) regardless of the
+    lock. MCP-served tools such as the Jupyter UI tools are unaffected.
+    """
+    if ClaudeToolType.ClaudeCodeTools in claude_settings.get('tools', []):
+        return {}
+    option_fields = {f.name for f in dataclasses.fields(ClaudeAgentOptions)}
+    if "tools" in option_fields:
+        return {"tools": []}
+    return {"disallowed_tools": list(CLAUDE_CODE_BUILT_IN_TOOL_NAMES)}
+
 JUPYTER_UI_TOOLS_SYSTEM_PROMPT = """You can interact with the JupyterLab UI (notebook / file editor, terminal, etc.) using the tools provided in 'nbi' MCP server. Tools in 'nbi' MCP server, directly interact with the JupyterLab UI, accessing notebooks and files open in the UI. When interacting with JupyterLab UI, use relative file paths for file paths. If the user has asked you to create a notebook, save it afterward.
 If you need to create a notebook in a language or kernel that is not already established by the current notebook context, first call the list-available-notebook-kernels tool and choose only from the kernels it returns. Do not guess kernel names.
 """
@@ -3010,7 +3038,8 @@ class ClaudeCodeChatParticipant(BaseChatParticipant):
             env=env,
             max_buffer_size=CLAUDE_CODE_MAX_BUFFER_SIZE,
             continue_conversation=continue_conversation,
-            cli_path=resolve_claude_cli_path()
+            cli_path=resolve_claude_cli_path(),
+            **_built_in_tool_restrictions(claude_settings),
         )
         return client_options
 
