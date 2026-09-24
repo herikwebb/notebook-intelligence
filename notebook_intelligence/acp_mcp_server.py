@@ -6,10 +6,13 @@ ACP's ``session/new`` takes stdio/socket MCP servers, not the in-process SDK
 MCP server Claude mode uses (``create_sdk_mcp_server``), so NBI's tools must run
 as a real subprocess for the agent-mode framework (issue #378, Phase 1). This
 module is that subprocess: newline-delimited JSON-RPC over stdio, launched as
-``python <path to this file>`` with its cwd set to the JupyterLab working
-directory by the participant. It runs by path rather than ``-m`` so that a
-package planted in that working directory cannot shadow it (see
-``AcpAgentClient._mcp_servers``), which is also why it imports only the stdlib.
+``python <path to this file>`` by the agent, which inherits the participant's
+process cwd. It runs by path rather than ``-m`` so that a package planted in
+the workspace cannot shadow it (see ``AcpAgentClient._mcp_servers``), which is
+also why it imports only the stdlib. The workspace root arrives in the
+``NBI_WORKSPACE_ROOT`` environment variable the participant sets on the server
+entry, because the process cwd is deliberately not the workspace (see
+``AcpAgentClient._adapter_cwd``).
 
 Phase 1 ships one safe, dependency-free tool (``nbi_workspace_root``) so the
 end-to-end MCP path is exercised; richer Jupyter UI tools that need the live
@@ -21,6 +24,10 @@ import os
 import sys
 
 PROTOCOL_VERSION = "2025-06-18"
+
+# Set by the participant on the McpServerStdio entry; the cwd is the fallback
+# for a launch that predates it.
+WORKSPACE_ROOT_ENV = "NBI_WORKSPACE_ROOT"
 
 TOOLS = [
     {
@@ -49,7 +56,8 @@ def _error(mid, code, message):
 
 def _call_tool(name, arguments):
     if name == "nbi_workspace_root":
-        return {"content": [{"type": "text", "text": os.getcwd()}]}
+        root = os.environ.get(WORKSPACE_ROOT_ENV) or os.getcwd()
+        return {"content": [{"type": "text", "text": root}]}
     raise KeyError(name)
 
 

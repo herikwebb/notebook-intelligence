@@ -795,10 +795,17 @@ class AcpAgentClient:
         # first on sys.path, so a ``notebook_intelligence`` package the agent
         # wrote into the workspace would run in place of this one.
         from notebook_intelligence import acp_mcp_server
+        # The server answers ``nbi_workspace_root`` from this variable: the
+        # adapter, which starts the server, no longer runs in the workspace
+        # (see ``_adapter_cwd``), so the server's cwd is not the workspace.
         return [
             schema.McpServerStdio(
                 name="nbi", command=sys.executable,
-                args=[os.path.abspath(acp_mcp_server.__file__)], env=[],
+                args=[os.path.abspath(acp_mcp_server.__file__)],
+                env=[schema.EnvVariable(
+                    name=acp_mcp_server.WORKSPACE_ROOT_ENV,
+                    value=get_jupyter_root_dir() or "",
+                )],
             )
         ]
 
@@ -870,7 +877,7 @@ class AcpAgentClient:
         try:
             self._proc = await asyncio.create_subprocess_exec(
                 *cmd, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE, cwd=workdir, env=env,
+                stderr=asyncio.subprocess.PIPE, cwd=self._adapter_cwd(), env=env,
             )
             self._stderr_task = asyncio.create_task(self._drain_stderr())
             self._client = _NbiAcpClient(self)
@@ -906,6 +913,29 @@ class AcpAgentClient:
     def _api_key(self, spec: AcpAgentSpec) -> str:
         return (self.acp_settings.get("api_key") or "").strip() \
             or os.environ.get(spec.api_key_env, "").strip()
+
+    def _adapter_cwd(self) -> str:
+        """The directory the adapter process is started in.
+
+        Not the workspace. The default adapter command is ``npx -y <package>``,
+        and npm resolves what that runs from its current directory: a
+        ``node_modules/<package>`` already there that satisfies the pinned
+        version is executed in place of the registry release, and an
+        ``.npmrc`` found by walking up from the cwd sets the registry the
+        package is fetched from. Starting the adapter in the workspace
+        therefore let a checkout opened as the JupyterLab root decide what
+        runs, on session creation and before any approval prompt (the same
+        class as the ``-m`` shadowing ``_mcp_servers`` closes). The
+        workspace still reaches the agent, but only as the explicit ``cwd``
+        of ``session/new`` / ``session/load``; it is not the process cwd.
+
+        NBI's own user directory is user-owned, has no npm project above it
+        that an opened checkout could supply, and already exists by the time
+        a session starts.
+        """
+        cwd = self._host.nbi_config.nbi_user_dir
+        os.makedirs(cwd, exist_ok=True)
+        return cwd
 
     def _child_env(self, spec: AcpAgentSpec) -> dict:
         env = {k: v for k, v in os.environ.items()

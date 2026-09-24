@@ -1211,6 +1211,161 @@ class TestNbiMcpServerLaunch:
         reply = json.loads(proc.stdout.splitlines()[0])
         assert reply["result"]["serverInfo"]["name"] == "nbi"
 
+    def test_workspace_root_travels_in_the_server_env(self, monkeypatch, tmp_path):
+        import notebook_intelligence.acp_agent as mod
+        from notebook_intelligence import acp_mcp_server
+
+        workspace = tmp_path / "workspace"
+        workspace.mkdir()
+        monkeypatch.setattr(mod, "get_jupyter_root_dir", lambda: str(workspace))
+        server = self._server()
+
+        env = {e.name: e.value for e in server.env}
+        assert env[acp_mcp_server.WORKSPACE_ROOT_ENV] == str(workspace)
+
+    def test_nbi_workspace_root_answers_from_the_env_not_the_cwd(self, tmp_path):
+        """The adapter (and so this server) no longer runs in the workspace,
+        so the tool must not report whatever directory it happens to be in."""
+        from notebook_intelligence import acp_mcp_server
+
+        elsewhere = tmp_path / "elsewhere"
+        elsewhere.mkdir()
+        server = self._server()
+        env = dict(os.environ, **{acp_mcp_server.WORKSPACE_ROOT_ENV: "/srv/workspace"})
+        request = json.dumps({
+            "jsonrpc": "2.0", "id": 1, "method": "tools/call",
+            "params": {"name": "nbi_workspace_root", "arguments": {}},
+        })
+
+        proc = subprocess.run(
+            [server.command, *server.args],
+            input=request + "\n", cwd=elsewhere, env=env,
+            capture_output=True, text=True, timeout=30,
+        )
+
+        reply = json.loads(proc.stdout.splitlines()[0])
+        assert reply["result"]["content"][0]["text"] == "/srv/workspace"
+
+
+class TestAdapterLaunchCwd:
+    """The adapter is `npx -y <package>` by default, and npm resolves what
+    that runs from its cwd (a satisfying local node_modules package, a
+    project .npmrc's registry), so the adapter must not start inside the
+    workspace: a checkout opened as the JupyterLab root would otherwise
+    choose what runs on session creation, before any approval prompt."""
+
+    @staticmethod
+    def _captured_launch(monkeypatch, tmp_path):
+        import notebook_intelligence.acp_agent as mod
+
+        workspace = tmp_path / "workspace"
+        workspace.mkdir()
+        user_dir = tmp_path / "nbi-user-dir"
+        monkeypatch.setattr(mod, "get_jupyter_root_dir", lambda: str(workspace))
+        host = SimpleNamespace(
+            websocket_connector=None,
+            nbi_config=SimpleNamespace(
+                acp_settings={"api_key": ""}, nbi_user_dir=str(user_dir)
+            ),
+        )
+        client = mod.AcpAgentClient(host)
+        captured = {}
+
+        async def fake_exec(*cmd, **kw):
+            captured["cmd"] = list(cmd)
+            captured["cwd"] = kw.get("cwd")
+            raise RuntimeError("test: launch captured, subprocess intentionally not started")
+
+        monkeypatch.setattr(mod.asyncio, "create_subprocess_exec", fake_exec)
+        asyncio.run(client._serve())
+        assert "cmd" in captured, "_serve returned before launching the adapter"
+        return captured, str(workspace), str(user_dir)
+
+    def test_adapter_starts_in_the_nbi_user_dir_not_the_workspace(self, monkeypatch, tmp_path):
+        captured, workspace, user_dir = self._captured_launch(monkeypatch, tmp_path)
+
+        assert captured["cwd"] == user_dir
+        assert os.path.realpath(captured["cwd"]) != os.path.realpath(workspace)
+        assert os.path.isdir(user_dir), "the launch cwd must exist before spawn"
+
+    def test_workspace_still_reaches_the_agent_as_the_session_cwd(self, monkeypatch, tmp_path):
+        """Moving the process cwd must not move the agent's workspace."""
+        import notebook_intelligence.acp_agent as mod
+
+        workspace = tmp_path / "workspace"
+        workspace.mkdir()
+        monkeypatch.setattr(mod, "get_jupyter_root_dir", lambda: str(workspace))
+        client = mod.AcpAgentClient(SimpleNamespace(
+            websocket_connector=None,
+            nbi_config=SimpleNamespace(
+                acp_settings={}, nbi_user_dir=str(tmp_path / "nbi-user-dir")
+            ),
+        ))
+        calls = {}
+
+        class FakeConn:
+            async def new_session(self, **kw):
+                calls.update(kw)
+                return SimpleNamespace(session_id="s-1")
+
+        client._conn = FakeConn()
+        asyncio.run(client._new_session_coro())
+
+        assert calls["cwd"] == str(workspace)
+        assert client._session_id == "s-1"
+
+    @pytest.mark.skipif(
+        __import__("shutil").which("npx") is None, reason="npx not on PATH"
+    )
+    def test_npm_resolves_the_adapter_from_its_cwd(self, tmp_path):
+        """Control for the mechanism the cwd change closes: from a workspace
+        that ships node_modules/<package> at the pinned version, npx runs that
+        copy; from anywhere else it goes to the registry for it."""
+        from notebook_intelligence.acp_registry import ACP_AGENTS
+
+        package = ACP_AGENTS["codex"].package          # "@scope/name@x.y.z"
+        name, _, version = package.rpartition("@")
+        bin_name = name.rpartition("/")[2]
+        workspace = tmp_path / "workspace"
+        planted = workspace / "node_modules" / name
+        planted.mkdir(parents=True)
+        (planted / "package.json").write_text(json.dumps({
+            "name": name, "version": version, "bin": {bin_name: "./planted.js"},
+        }))
+        (planted / "planted.js").write_text(
+            "#!/usr/bin/env node\nconsole.log('PLANTED ADAPTER RAN');\n"
+        )
+        (planted / "planted.js").chmod(0o755)
+        bin_dir = workspace / "node_modules" / ".bin"
+        bin_dir.mkdir()
+        (bin_dir / bin_name).symlink_to(planted / "planted.js")
+        elsewhere = tmp_path / "elsewhere"
+        elsewhere.mkdir()
+        # A registry nothing listens on, an empty cache, and no retries: the
+        # only way the planted adapter runs is npm picking it from the cwd.
+        env = dict(
+            os.environ,
+            npm_config_registry="http://127.0.0.1:9/",
+            npm_config_fetch_retries="0",
+            npm_config_cache=str(tmp_path / "npm-cache"),
+            npm_config_update_notifier="false",
+        )
+
+        def run(cwd):
+            return subprocess.run(
+                ["npx", "-y", package], cwd=cwd, env=env,
+                capture_output=True, text=True, timeout=25, stdin=subprocess.DEVNULL,
+            )
+
+        from_workspace = run(workspace)
+        from_elsewhere = run(elsewhere)
+
+        assert "PLANTED ADAPTER RAN" in from_workspace.stdout, (
+            from_workspace.stdout + from_workspace.stderr
+        )
+        assert "PLANTED ADAPTER RAN" not in from_elsewhere.stdout + from_elsewhere.stderr
+        assert from_elsewhere.returncode != 0
+
 
 class TestAssembleQuery:
     """The turn's context lines (attachments, current-file pointer, output
