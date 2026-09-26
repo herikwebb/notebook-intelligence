@@ -1061,6 +1061,54 @@ def test_resolve_file_and_directory_mentions_with_soft_failures(tmp_path):
         set_jupyter_root_dir(old_root)
 
 
+def test_resolve_mentions_do_not_follow_workspace_symlinks(tmp_path):
+    # A hidden or skipped location must stay unavailable however the token
+    # reaches it. Symlinks inside the workspace are never offered by the
+    # picker, and a typed mention that walks through one is refused rather
+    # than resolved, so a link cannot re-point a plain-looking token at a
+    # dotfile the literal check already rejects.
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / '.private').mkdir()
+        (tmp_path / '.private' / 'config.json').write_text('{"key": "hidden"}')
+        (tmp_path / '.private' / 'id_key').write_text('hidden key')
+        (tmp_path / 'data').mkdir()
+        (tmp_path / 'data' / 'plain.txt').write_text('plain')
+        (tmp_path / 'node_modules').mkdir()
+        (tmp_path / 'node_modules' / 'secret.txt').write_text('hidden')
+        (tmp_path / 'shared').mkdir()
+        (tmp_path / 'shared' / 'cfg').symlink_to(
+            tmp_path / '.private', target_is_directory=True
+        )
+        (tmp_path / 'shared' / 'deps').symlink_to(
+            tmp_path / 'node_modules', target_is_directory=True
+        )
+        (tmp_path / 'shared' / 'link.txt').symlink_to(
+            tmp_path / 'data' / 'plain.txt'
+        )
+
+        resolved = resolve_chatbook_mentions(
+            'Read @file:shared/cfg/config.json @dir:shared/cfg '
+            '@file:shared/cfg/id_key @file:shared/deps/secret.txt '
+            '@file:shared/link.txt and @file:data/plain.txt'
+        )
+        by_token = {item['token']: item for item in resolved}
+        for token in (
+            '@file:shared/cfg/config.json',
+            '@dir:shared/cfg',
+            '@file:shared/cfg/id_key',
+            '@file:shared/deps/secret.txt',
+            '@file:shared/link.txt',
+        ):
+            assert by_token[token]['available'] == 'false', token
+            assert by_token[token]['content'] == '[unavailable]', token
+        assert 'hidden' not in json.dumps(resolved)
+        assert by_token['@file:data/plain.txt']['content'] == 'plain'
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
 def test_format_chatbook_mention_context_marks_content_untrusted():
     text = format_chatbook_mention_context([
         {

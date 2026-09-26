@@ -47,6 +47,10 @@ def _relative_display(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
+def _is_hidden_or_skipped(parts: Iterable[str], skipped: set[str]) -> bool:
+    return any(part.startswith(".") or part in skipped for part in parts)
+
+
 def _safe_relative_path(
     value: str, skipped_directories: Iterable[str] = ()
 ) -> Path:
@@ -57,11 +61,25 @@ def _safe_relative_path(
         not value
         or Path(value).is_absolute()
         or has_dangerous_text_codepoints(value)
-        or any(part.startswith(".") for part in parts)
-        or any(part in skipped for part in parts)
+        or _is_hidden_or_skipped(parts, skipped)
     ):
         raise ValueError("unsafe mention path")
-    return safe_jupyter_path(value)
+    root = _root_path()
+    # The picker never offers a symlink (see list_filesystem_mentions), so a
+    # mention must not follow one either: a link inside the workspace would
+    # otherwise re-point a plain-looking token at a hidden or skipped
+    # location that the literal check above already refused.
+    probe = root
+    for part in parts:
+        probe = probe / part
+        if probe.is_symlink():
+            raise ValueError("unsafe mention path")
+    path = safe_jupyter_path(value)
+    # Re-check the rules against the path as it resolved, not only as it was
+    # typed, so the hidden/skipped policy holds however the target was reached.
+    if _is_hidden_or_skipped(path.relative_to(root).parts, skipped):
+        raise ValueError("unsafe mention path")
+    return path
 
 
 def list_filesystem_mentions(
