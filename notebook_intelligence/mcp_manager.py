@@ -922,10 +922,12 @@ class MCPServerImpl(MCPServer):
 
     def _create_client(self) -> Client:
         if self._stdio_params is not None:
+            cwd = self._stdio_params.cwd
             return Client(transport=StdioTransport(
                 command=self._stdio_params.command,
                 args=self._stdio_params.args,
-                env=self._stdio_params.env
+                env=self._stdio_params.env,
+                cwd=str(cwd) if cwd is not None else None,
             ), client_info=self._mcp_client_info)
         elif self._streamable_http_params is not None:
             return Client(transport=StreamableHttpTransport(
@@ -1261,8 +1263,25 @@ def _config_section(mcp_config: dict, key: str) -> dict:
     return {}
 
 
+def default_stdio_server_cwd() -> str:
+    """The directory stdio MCP servers are started in when none is given.
+
+    NBI's own user directory (``~/.jupyter/nbi``), the same place
+    ``NBIConfig.nbi_user_dir`` names. It is user-owned and has no project
+    tree above it, which is what makes it a safe process cwd: see
+    ``MCPManager`` for why the servers must not inherit the Jupyter
+    server's working directory.
+    """
+    return os.path.join(os.path.expanduser("~"), ".jupyter", "nbi")
+
+
 class MCPManager:
-    def __init__(self, mcp_config: dict, stdio_command_allowlist: Optional[list[str]] = None):
+    def __init__(
+        self,
+        mcp_config: dict,
+        stdio_command_allowlist: Optional[list[str]] = None,
+        stdio_cwd: Optional[str] = None,
+    ):
         self._websocket_connector: ThreadSafeWebSocketConnector = None
         self._mcp_participants: list[MCPChatParticipant] = []
         self._mcp_servers: list[MCPServer] = []
@@ -1270,7 +1289,22 @@ class MCPManager:
         # (the default), matching ClaudeMCPManager so the two MCP entry
         # points stay consistent.
         self._stdio_command_allowlist: list[str] = list(stdio_command_allowlist or [])
+        # Where stdio servers are started. Not the Jupyter server's cwd:
+        # that is the JupyterLab root in the documented ``jupyter lab``
+        # flow, and tools like ``npx`` resolve what they run from their
+        # cwd (a ``node_modules/<package>`` found there is executed in
+        # place of the registry release, and an ``.npmrc`` found by walking
+        # up chooses the registry), as does ``python -m`` through
+        # ``sys.path[0]``. Servers are started on extension load, so a
+        # checkout opened as the root would otherwise decide what runs,
+        # with the entry's ``env`` block handed to it. Same class as the
+        # ACP adapter's ``_adapter_cwd``.
+        self._stdio_cwd: str = stdio_cwd or default_stdio_server_cwd()
         self.update_mcp_servers(mcp_config)
+
+    @property
+    def stdio_cwd(self) -> str:
+        return self._stdio_cwd
 
     @property
     def websocket_connector(self) -> ThreadSafeWebSocketConnector:
@@ -1367,10 +1401,12 @@ class MCPManager:
                 server_env = mcp_get_default_environment()
                 server_env.update(env)
 
+            os.makedirs(self._stdio_cwd, exist_ok=True)
             return MCPServerImpl(self, server_name, stdio_params=StdioServerParameters(
                 command = command,
                 args = args,
-                env = server_env
+                env = server_env,
+                cwd = self._stdio_cwd,
                 ), auto_approve_tools = auto_approve_tools)
         elif "url" in server_config:
             server_url = server_config["url"]

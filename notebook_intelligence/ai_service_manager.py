@@ -181,6 +181,7 @@ class AIServiceManager(Host):
         self._mcp_manager = MCPManager(
             self.nbi_config.mcp,
             stdio_command_allowlist=self._options.get("mcp_stdio_command_allowlist") or [],
+            stdio_cwd=self.nbi_config.nbi_user_dir,
         )
         for participant in self._mcp_manager.get_mcp_participants():
             # A duplicate / reserved id from one MCP server should not block

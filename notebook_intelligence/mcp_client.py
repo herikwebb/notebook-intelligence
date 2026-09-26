@@ -48,11 +48,16 @@ except ImportError:  # mcp < 2.0
 
 @dataclass
 class StdioTransport:
-    """Constructor-shape parity with ``fastmcp.client.StdioTransport``."""
+    """Constructor-shape parity with ``fastmcp.client.StdioTransport``.
+
+    ``cwd`` is the directory the server process starts in. ``None`` keeps
+    the SDK default, which is to inherit the caller's working directory.
+    """
 
     command: str
     args: List[str] = field(default_factory=list)
     env: Dict[str, str] = field(default_factory=dict)
+    cwd: Optional[str] = None
 
 
 @dataclass
@@ -117,6 +122,7 @@ class Client:
                     command=self._transport.command,
                     args=list(self._transport.args),
                     env=dict(self._transport.env) if self._transport.env else None,
+                    cwd=self._transport.cwd,
                 )
                 read, write = await stack.enter_async_context(stdio_client(params))
             elif isinstance(self._transport, StreamableHttpTransport):

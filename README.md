@@ -343,6 +343,8 @@ NBI integrates with [MCP](https://modelcontextprotocol.io) servers. It supports 
 
 Add MCP servers by editing `~/.jupyter/nbi/mcp.json`. An environment-wide base file at `<env-prefix>/share/jupyter/nbi/mcp.json` is also supported.
 
+stdio servers are started with `~/.jupyter/nbi` as their working directory, not the JupyterLab root, so a relative `command` or a relative path in `args` resolves there. Use absolute paths for anything that lives in your workspace.
+
 > [!NOTE]
 > MCP requires an LLM model with tool-calling capability. All GitHub Copilot models in NBI support this. For other providers, choose a tool-calling-capable model.
 

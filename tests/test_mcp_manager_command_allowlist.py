@@ -11,11 +11,19 @@ behavior.
 
 from __future__ import annotations
 
+import os
+import tempfile
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from notebook_intelligence.mcp_manager import MCPManager
+
+
+def _stdio_cwd() -> str:
+    # ``create_mcp_server`` pins a cwd on every stdio server and creates it;
+    # keep the tests' out of the real ``~/.jupyter/nbi``.
+    return os.path.join(tempfile.gettempdir(), "nbi-allowlist-test-cwd")
 
 
 def _make_manager(allowlist=None):
@@ -26,6 +34,7 @@ def _make_manager(allowlist=None):
     manager._mcp_participants = []
     manager._mcp_servers = []
     manager._stdio_command_allowlist = list(allowlist or [])
+    manager._stdio_cwd = _stdio_cwd()
     return manager
 
 
@@ -124,6 +133,7 @@ class TestMCPManagerOptionPlumbing:
         manager._mcp_participants = []
         manager._mcp_servers = []
         manager._stdio_command_allowlist = list(resolved)
+        manager._stdio_cwd = _stdio_cwd()
 
         with patch(
             "notebook_intelligence.mcp_manager.MCPServerImpl"
