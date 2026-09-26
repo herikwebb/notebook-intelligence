@@ -154,6 +154,7 @@ import {
 } from './notebook-kernels';
 
 import { CommandIDs } from './command-ids';
+import { disarmAgentMarkdown } from './agent-markdown';
 import {
   CHATBOOK_KERNEL_NAME,
   CHATBOOK_LANGUAGE,
@@ -1999,7 +2000,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       model.insertCell(newCellIndex, {
         cell_type: cellType,
         metadata: { trusted: true },
-        source
+        source: cellType === 'markdown' ? disarmAgentMarkdown(source) : source
       });
 
       return true;
@@ -2097,7 +2098,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         model.insertCell(newCellIndex, {
           cell_type: 'markdown',
           metadata: { trusted: true },
-          source: args.source as string
+          source: disarmAgentMarkdown(args.source as string)
         });
 
         return { cellIndex: newCellIndex };
@@ -2151,12 +2152,13 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         const cellIndex = args.cellIndex as number;
         const cellType = args.cellType as 'code' | 'markdown';
         const cell = model.getCell(cellIndex);
+        const source = args.source as string;
 
         model.deleteCell(cellIndex);
         model.insertCell(cellIndex, {
           cell_type: cellType,
           metadata: cell.metadata,
-          source: args.source as string
+          source: cellType === 'markdown' ? disarmAgentMarkdown(source) : source
         });
 
         return true;
@@ -2204,11 +2206,12 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         const model = np.model.sharedModel;
         const cellIndex = args.cellIndex as number;
         const cellType = args.cellType as 'code' | 'markdown';
+        const source = args.source as string;
 
         model.insertCell(cellIndex, {
           cell_type: cellType,
           metadata: { trusted: true },
-          source: args.source as string
+          source: cellType === 'markdown' ? disarmAgentMarkdown(source) : source
         });
 
         return true;
