@@ -673,7 +673,6 @@ describe('convert to chatbook', () => {
           chatbook: {
             prompt: 'Add up the values',
             codeHash,
-            summaryError: 'old',
             contextHash: 'x'
           }
         }
@@ -727,6 +726,158 @@ describe('convert to chatbook', () => {
     })) as any;
     expect(stale.metadata.nbi.chatbook.prompt).toBeUndefined();
     expect(stale.metadata.nbi.chatbook.codeHash).toBeUndefined();
+
+    // An English prompt whose recorded code was edited after export.
+    const edited = (await convertCodeCellToChatbook({
+      cell_type: 'code',
+      source: 'total = sum(values) * 2',
+      metadata: {
+        nbi: {
+          chatbook: {
+            mode: 'prompt',
+            prompt: fromPrompt,
+            promptHash,
+            generatedCode: src
+          }
+        }
+      }
+    })) as any;
+    expect(edited.metadata.nbi.chatbook.prompt).toBeUndefined();
+    expect(edited.metadata.nbi.chatbook.mode).toBe('code');
+
+    // A refresh that failed leaves the old description beside the new hash.
+    const failed = (await convertCodeCellToChatbook({
+      cell_type: 'code',
+      source: src,
+      metadata: {
+        nbi: {
+          chatbook: {
+            prompt: 'Add up the old values',
+            codeHash,
+            summaryError: 'rate limited'
+          }
+        }
+      }
+    })) as any;
+    expect(failed.metadata.nbi.chatbook.prompt).toBeUndefined();
+    expect(failed.metadata.nbi.chatbook.summaryError).toBeUndefined();
+
+    // A code cell made from a prompt whose code was then edited and run: the
+    // prompt no longer describes the code, though its hash still matches.
+    const editedCode = (await convertCodeCellToChatbook({
+      cell_type: 'code',
+      source: src,
+      metadata: {
+        nbi: {
+          chatbook: {
+            mode: 'code',
+            origin: 'prompt',
+            prompt: fromPrompt,
+            promptHash,
+            generatedCode: src
+          }
+        }
+      }
+    })) as any;
+    expect(editedCode.metadata.nbi.chatbook.prompt).toBeUndefined();
+
+    // A prompt edited after its code was generated.
+    const editedPrompt = (await convertCodeCellToChatbook({
+      cell_type: 'code',
+      source: src,
+      metadata: {
+        nbi: {
+          chatbook: {
+            mode: 'prompt',
+            prompt: 'add up the values twice',
+            promptHash,
+            generatedCode: src
+          }
+        }
+      }
+    })) as any;
+    expect(editedPrompt.metadata.nbi.chatbook.prompt).toBeUndefined();
+  });
+
+  it('leaves the run prompt cells of a Chatbook switched to another kernel alone', async () => {
+    // A natural-language cell that has run records no mode.
+    const promptCell = {
+      id: 'p1',
+      cell_type: 'code',
+      source: 'Plot the sales by month',
+      metadata: {
+        nbi: {
+          chatbook: {
+            origin: 'prompt',
+            prompt: 'Plot the sales by month',
+            promptHash: 'h',
+            generatedCode: 'df.plot()'
+          }
+        }
+      },
+      outputs: [],
+      execution_count: 2
+    };
+    const out = (await buildChatbookFromCodeNotebook({
+      nbformat: 4,
+      metadata: { kernelspec: { name: 'python3', language: 'python' } },
+      cells: [JSON.parse(JSON.stringify(promptCell))]
+    })) as any;
+    expect(out.cells[0]).toEqual(promptCell);
+  });
+
+  it('brings a Chatbook back through export with its prompts intact', async () => {
+    const prompt = 'Plot the sales by month';
+    const code = 'df.plot()';
+    const promptHash = await sha256Hex(prompt);
+    const chatbook = {
+      nbformat: 4,
+      metadata: {
+        kernelspec: { name: 'chatbook', language: 'chatbook' }
+      },
+      cells: [
+        {
+          id: 'p1',
+          cell_type: 'code',
+          source: prompt,
+          metadata: {
+            nbi: {
+              chatbook: {
+                mode: 'prompt',
+                origin: 'prompt',
+                prompt,
+                promptHash,
+                generatedCode: code
+              }
+            }
+          },
+          outputs: [],
+          execution_count: 1
+        }
+      ]
+    };
+    const exported = await buildCodeNotebookFromChatbook(chatbook, {
+      name: 'python3',
+      display_name: 'Python 3',
+      language: 'python'
+    });
+    const back = (await buildChatbookFromCodeNotebook(exported)) as any;
+    const meta = back.cells[0].metadata.nbi.chatbook;
+    expect(back.cells[0].source).toBe(code);
+    expect(meta).toMatchObject({
+      mode: 'code',
+      origin: 'prompt',
+      prompt,
+      promptHash,
+      codeSource: code
+    });
+    expect(
+      switchChatbookCellMode({
+        source: back.cells[0].source,
+        meta,
+        nextMode: 'prompt'
+      }).source
+    ).toBe(prompt);
   });
 
   it('round-trips through Export as code notebook without losing code', async () => {
@@ -788,6 +939,17 @@ describe('convert to chatbook', () => {
       displayName: '',
       language: ''
     });
+    // An empty kernelspec language falls through, and py is Python.
+    expect(
+      chatbookSourceKernel({
+        kernelspec: { name: 'ir', language: '' },
+        language_info: { name: 'R' }
+      }).language
+    ).toBe('r');
+    expect(
+      chatbookSourceKernel({ kernelspec: { name: 'env', language: 'py' } })
+        .language
+    ).toBe('python');
   });
 
   it('compares the notebook language with the Chatbook backend', () => {
@@ -798,5 +960,11 @@ describe('convert to chatbook', () => {
     expect(fit('conda-env', 'python')).toBe('same-language');
     expect(fit('', '')).toBe('unknown');
     expect(fit('ir', 'r')).toBe('different-language');
+    expect(
+      chatbookConversionFit(
+        { name: 'env', displayName: '', language: 'python' },
+        { kernelName: 'python3', language: 'Python' }
+      )
+    ).toBe('same-language');
   });
 });

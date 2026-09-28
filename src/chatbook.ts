@@ -1089,7 +1089,7 @@ export async function convertNotebookToChatbook(
   return saveNotebookCopy(contents, panel.context.path, 'chatbook', content);
 }
 
-/** Save `content` as `<stem>-<slug>.ipynb` beside `sourcePath`, never overwriting. */
+/** Save `content` beside `sourcePath` as `<stem>-<slug>.ipynb`, numbered past names in use. */
 async function saveNotebookCopy(
   contents: Contents.IManager,
   sourcePath: string,

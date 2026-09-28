@@ -16,6 +16,7 @@ import {
 } from './chatbook';
 import {
   chatbookConversionFit,
+  chatbookLanguageId,
   chatbookSourceKernel,
   isChatbookKernelName
 } from './chatbook-core';
@@ -51,7 +52,12 @@ export const convertToChatbookIcon = new LabIcon({
 
 /** Whether a notebook panel is a candidate for Convert to Chatbook. */
 export function canConvertToChatbook(panel: NotebookPanel): boolean {
-  if (!panel.model || isChatbookSession(panel.sessionContext)) {
+  if (
+    !NBIAPI.config.chatbookEnabled ||
+    !panel.model ||
+    !panel.context.isReady ||
+    isChatbookSession(panel.sessionContext)
+  ) {
     return false;
   }
   // A Chatbook opened with No Kernel is still a Chatbook.
@@ -60,6 +66,23 @@ export function canConvertToChatbook(panel: NotebookPanel): boolean {
   });
   return !isChatbookKernelName(kernel.name);
 }
+
+/** A language id as people write it: `r` is R, `python` is Python. */
+function languageLabel(language: string): string {
+  const known: Record<string, string> = {
+    python: 'Python',
+    r: 'R',
+    julia: 'Julia',
+    javascript: 'JavaScript',
+    typescript: 'TypeScript',
+    sql: 'SQL'
+  };
+  return (
+    known[language] ?? language.charAt(0).toUpperCase() + language.slice(1)
+  );
+}
+
+let converting = false;
 
 /**
  * Ask, then write a Chatbook copy of `panel` next to it and open it. Blocks
@@ -70,9 +93,21 @@ export async function confirmConvertToChatbook(
   app: JupyterFrontEnd,
   panel: NotebookPanel
 ): Promise<void> {
-  if (!NBIAPI.config.chatbookEnabled || !canConvertToChatbook(panel)) {
+  if (converting || !canConvertToChatbook(panel)) {
     return;
   }
+  converting = true;
+  try {
+    await runConvertToChatbook(app, panel);
+  } finally {
+    converting = false;
+  }
+}
+
+async function runConvertToChatbook(
+  app: JupyterFrontEnd,
+  panel: NotebookPanel
+): Promise<void> {
   const kernels = sharedKernelSpecManager();
   await kernels.ready;
   const specs = kernels.specs?.kernelspecs;
@@ -81,29 +116,32 @@ export async function confirmConvertToChatbook(
     NBIAPI.config.chatbookBackendKernel
   );
   const source = chatbookSourceKernel(panel.model!.metadata);
-  const sourceLabel =
-    source.displayName || source.language || 'another language';
   const fit = chatbookConversionFit(source, backend);
 
   if (fit === 'different-language') {
+    const language = languageLabel(source.language);
     const installed = listChatbookBackendProfiles(specs).some(
-      profile => profile.language.toLowerCase() === source.language
+      profile => chatbookLanguageId(profile.language) === source.language
     );
     const result = await showDialog({
-      title: `Chatbook runs code in ${backend.displayName}`,
+      title: "Can't convert this notebook yet",
       body:
-        `This notebook uses ${sourceLabel}, but Chatbook runs code in ` +
-        `${backend.displayName}, so its code cells would fail. ` +
+        `This notebook is written in ${language}, but Chatbook runs all ` +
+        `code in ${backend.displayName}, so its code cells would fail. ` +
         (installed
-          ? `To convert it, choose a kernel for ${sourceLabel} in Settings > ` +
-            'Chatbook > Execution kernel. That setting applies to every Chatbook.'
-          : `No ${sourceLabel} kernel is installed for Chatbook to use.`),
+          ? 'To convert it, set Settings > Chatbook > Execution kernel to ' +
+            `a kernel for ${language}, then convert again. That setting applies ` +
+            'to every Chatbook, so your existing Chatbooks would run ' +
+            `${language} too.`
+          : `No ${language} kernel is installed for Chatbook to use. ` +
+            'Install one, then choose it in Settings > Chatbook > ' +
+            'Execution kernel.'),
       buttons: installed
         ? [
             Dialog.cancelButton(),
             Dialog.okButton({ label: 'Open Chatbook settings' })
           ]
-        : [Dialog.okButton({ label: 'Close' })]
+        : [Dialog.cancelButton({ label: 'Close' })]
     });
     if (installed && result.button.accept) {
       void app.commands.execute(CommandIDs.openConfigurationDialog, {
@@ -113,20 +151,25 @@ export async function confirmConvertToChatbook(
     return;
   }
 
-  const kernelNote =
-    fit === 'same-language'
-      ? ` Its code will run in ${backend.displayName}, the Chatbook execution kernel, instead of ${sourceLabel}.`
-      : fit === 'unknown'
-        ? ` Its code will run in ${backend.displayName}, the Chatbook execution kernel.`
-        : '';
+  let kernelNote = '';
+  const from =
+    source.displayName && source.displayName !== backend.displayName
+      ? source.displayName
+      : source.name;
+  if (fit === 'same-language' && from) {
+    kernelNote = ` Its code will run in ${backend.displayName}, the Chatbook execution kernel, instead of ${from}.`;
+  } else if (fit !== 'same-kernel') {
+    kernelNote = ` Its code will run in ${backend.displayName}, the Chatbook execution kernel.`;
+  }
   const result = await showDialog({
     title: 'Convert to Chatbook',
     body:
-      'Create a Chatbook copy of this notebook, with every code cell as a ' +
-      'code cell you can later switch to natural language. The original ' +
-      `notebook is left unchanged and outputs are kept.${kernelNote} ` +
-      'Nothing is sent to the model now; the first time each code cell runs, ' +
-      'its code is sent to the model for a one-line English description.',
+      'Creates a Chatbook copy of this notebook next to it and opens it, ' +
+      'including any unsaved changes. Code cells become Chatbook code cells ' +
+      'and run exactly as written; outputs and markdown are kept. The ' +
+      `original is not changed.${kernelNote} Nothing is sent to the model ` +
+      'now. The first time each code cell runs successfully, its code is ' +
+      'sent to the model for a one-line English description.',
     buttons: [Dialog.cancelButton(), Dialog.okButton({ label: 'Convert' })]
   });
   if (!result.button.accept) {
@@ -144,15 +187,16 @@ export async function confirmConvertToChatbook(
     });
     return;
   }
-  await app.commands.execute('docmanager:open', {
-    path,
-    kernel: { name: 'chatbook' }
-  });
   void app.commands.execute('apputils:notify', {
-    message: `Converted to Chatbook: ${path}`,
+    message: `Created Chatbook copy: ${path}`,
     type: 'success',
     options: { autoClose: true }
   });
+  try {
+    await app.commands.execute('docmanager:open', { path });
+  } catch (error) {
+    console.error(`Could not open ${path}`, error);
+  }
 }
 
 export async function confirmConvertChatbookNotebook(
@@ -267,6 +311,17 @@ class ChatbookToolbarController {
     panel.sessionContext.kernelChanged.connect(this.sync, this);
     panel.sessionContext.sessionChanged.connect(this.sync, this);
     void panel.sessionContext.ready.then(() => this.sync());
+    // The kernelspec metadata changes after the kernel does, and a model is
+    // empty until the file loads; both decide the Convert button.
+    panel.model?.metadataChanged.connect(this._scheduleSync);
+    NBIAPI.configChanged.connect(this._scheduleSync);
+    panel.context.ready
+      .then(() => {
+        if (!this._disposed) {
+          this.sync();
+        }
+      })
+      .catch(() => undefined);
     this.sync();
   }
 
@@ -301,6 +356,9 @@ class ChatbookToolbarController {
   dispose(): void {
     this._panel.sessionContext.kernelChanged.disconnect(this.sync, this);
     this._panel.sessionContext.sessionChanged.disconnect(this.sync, this);
+    this._disposed = true;
+    this._panel.model?.metadataChanged.disconnect(this._scheduleSync);
+    NBIAPI.configChanged.disconnect(this._scheduleSync);
     if (this._contentChangedConnected) {
       this._panel.model?.contentChanged.disconnect(this._scheduleSync);
       this._contentChangedConnected = false;
@@ -320,6 +378,7 @@ class ChatbookToolbarController {
   private _convertButton: ToolbarButton;
   private _toChatbookButton: ToolbarButton;
   private _contentChangedConnected = false;
+  private _disposed = false;
   private _syncFrame = 0;
   private _scheduleSync = (): void => {
     if (this._syncFrame) {

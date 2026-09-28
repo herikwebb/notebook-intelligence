@@ -99,6 +99,7 @@ describe('convertNotebookToChatbook', () => {
     expect(saved[0].content.cells[0].metadata.nbi.chatbook.mode).toBe('code');
     // The notebook it was made from is untouched.
     expect((notebook.cells[0].metadata as any).nbi).toBeUndefined();
+    expect(notebook.metadata.kernelspec.name).toBe('python3');
     expect(summarizeChatbookCell).not.toHaveBeenCalled();
     expect(fetchSpy).not.toHaveBeenCalled();
   });

@@ -1627,16 +1627,15 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         : null;
     };
     app.commands.addCommand(CommandIDs.convertNotebookToChatbook, {
-      label: 'Convert Notebook to Chatbook',
+      label: 'Convert notebook to Chatbook',
       caption:
         'Create a Chatbook copy of this notebook, leaving the original unchanged',
       icon: convertToChatbookIcon,
-      isEnabled: () =>
-        NBIAPI.config.chatbookEnabled && currentConvertibleNotebook() !== null,
+      isEnabled: () => currentConvertibleNotebook() !== null,
       isVisible: () => NBIAPI.config.chatbookEnabled,
       execute: async () => {
         const panel = currentConvertibleNotebook();
-        if (!NBIAPI.config.chatbookEnabled || !panel) {
+        if (!panel) {
           return;
         }
         await confirmConvertToChatbook(app, panel);

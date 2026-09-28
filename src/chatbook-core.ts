@@ -504,10 +504,17 @@ export function chatbookSourceKernel(metadata: unknown): IChatbookSourceKernel {
   return {
     name: String(spec.name ?? '').trim(),
     displayName: String(spec.display_name ?? '').trim(),
-    language: String(spec.language ?? info.name ?? '')
-      .trim()
-      .toLowerCase()
+    language: chatbookLanguageId(String(spec.language || info.name || ''))
   };
+}
+
+/**
+ * A kernel language as a comparable id: `Python` and `py` are `python`. An
+ * unknown language stays empty.
+ */
+export function chatbookLanguageId(raw: string): string {
+  const language = raw.trim().toLowerCase();
+  return language === 'py' ? 'python' : language;
 }
 
 /**
@@ -532,7 +539,7 @@ export function chatbookConversionFit(
   if (!source.language) {
     return 'unknown';
   }
-  return source.language === backend.language.trim().toLowerCase()
+  return source.language === chatbookLanguageId(backend.language)
     ? 'same-language'
     : 'different-language';
 }
@@ -541,12 +548,22 @@ export function chatbookConversionFit(
  * A code cell as a Chatbook code cell. An English description is kept only
  * when it is known to describe this exact code, as for a Chatbook that was
  * exported and is converted back; anything else describes different code.
+ * A natural-language cell from a Chatbook whose kernel was switched holds its
+ * prompt, not code, and is left as it is. An exported natural-language cell
+ * holds code or a comment instead, and is converted.
  */
 export async function convertCodeCellToChatbook(
   cell: Record<string, unknown>
 ): Promise<Record<string, unknown>> {
-  const source = cellSourceToString(cell.source);
   const previous = getChatbookCellMeta(cell.metadata);
+  const source = cellSourceToString(cell.source);
+  if (
+    getChatbookCellMode(previous) === 'prompt' &&
+    source.trim() &&
+    source === previous.prompt
+  ) {
+    return cell;
+  }
   const meta: IChatbookCellMeta = {
     mode: 'code',
     origin: 'code',
@@ -554,11 +571,14 @@ export async function convertCodeCellToChatbook(
     generatedCode: source
   };
   const prompt = previous.prompt ?? '';
-  if (prompt.trim()) {
+  // A failed refresh leaves the old description beside the new code's hash.
+  if (prompt.trim() && !previous.summaryError) {
     const codeHash = await sha256Hex(source);
     const describesThisCode =
       previous.codeHash === codeHash ||
-      (previous.generatedCode === source &&
+      // An exported natural-language cell carries the code its prompt made.
+      (getChatbookCellMode(previous) === 'prompt' &&
+        previous.generatedCode === source &&
         Boolean(previous.promptHash) &&
         previous.promptHash === (await sha256Hex(prompt)));
     if (describesThisCode) {
@@ -587,8 +607,8 @@ export async function convertCodeCellToChatbook(
 /**
  * A copy of a code notebook as a Chatbook: every code cell becomes a Chatbook
  * code cell, and everything else (markdown, outputs, execution counts, ids,
- * attachments, notebook metadata) is kept. The source kernel is recorded so
- * the notebook's own language is not lost.
+ * attachments, other notebook metadata) is kept. The kernelspec becomes
+ * Chatbook's, and the source kernel's name, when it has one, is recorded.
  */
 export async function buildChatbookFromCodeNotebook(
   notebook: Record<string, unknown>
@@ -611,9 +631,9 @@ export async function buildChatbookFromCodeNotebook(
   metadata.kernelspec = {
     name: CHATBOOK_KERNEL_NAME,
     display_name: 'Chatbook',
-    language: CHATBOOK_KERNEL_NAME
+    language: CHATBOOK_LANGUAGE
   };
-  metadata.language_info = { name: CHATBOOK_KERNEL_NAME };
+  metadata.language_info = { name: CHATBOOK_LANGUAGE };
   if (source.name) {
     const nbi =
       metadata.nbi && typeof metadata.nbi === 'object'
