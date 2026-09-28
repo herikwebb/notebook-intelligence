@@ -33,7 +33,26 @@ MAX_PROVIDER_CONTEXT_CHARS = 16_000
 MAX_DIRECTORY_ITEMS = 100
 BUILTIN_SKIPPED_DIRECTORIES = frozenset({"__pycache__", "node_modules"})
 
-MENTION_TOKEN_RE = re.compile(r"(?<![\w@])@([^\s@]+)")
+# A mention is either quoted, `@file:"data/my notes.md"`, which is how a path
+# containing whitespace or `@` is written, or unquoted and runs to the next
+# whitespace. The quoted form follows Claude Code (`@"path"`) and Codex, which
+# quotes a picked path containing whitespace. NUI's mention parser
+# (plmbr/nui internal/mentions) is meant to accept the same tokens (#503), so
+# change the two together.
+MENTION_TOKEN_RE = re.compile(
+    r'(?<![\w@])@(?:(file|dir|ext):"([^"\n\r\x85\u2028\u2029]+)"(?![\w"])|([^\s@]+))'
+)
+# Sentence punctuation typed after an unquoted file or dir mention
+# (`see @file:notes.md,`) is not part of the path. This follows Claude Code,
+# but only for sentence punctuation: `+` or `-` stay part of the name. The
+# characters are removed one at a time, at most a few, stopping at the first
+# candidate that exists, so a name that really ends in one of them still
+# resolves and a shorter, unrelated name is never reached past it.
+TRAILING_PUNCTUATION = frozenset(
+    ".,;:!?)]}'\"\u2026\u201d\u2019\u00bb"
+    "\u3002\u3001\uff0c\uff1b\uff1a\uff01\uff1f\uff09\u300d\u300f"
+)
+MAX_TRAILING_PUNCTUATION = 5
 
 
 def _root_path() -> Path:
@@ -217,24 +236,70 @@ def list_chatbook_mentions(
     )
 
 
-def parse_chatbook_mentions(prompt: str) -> list[tuple[str, str]]:
-    """Return unique (kind, relative path) mentions, preserving prompt order."""
-    result: list[tuple[str, str]] = []
-    seen: set[tuple[str, str]] = set()
+def _parse_mention_tokens(prompt: str) -> list[tuple[str, str, bool, str]]:
+    """Return (kind, value, quoted, token as written), once each, in order."""
+    result: list[tuple[str, str, bool, str]] = []
+    seen: set[tuple[str, str, bool]] = set()
     for match in MENTION_TOKEN_RE.finditer(prompt or ""):
-        value = match.group(1)
-        if value.startswith("file:"):
-            item = ("file", value.removeprefix("file:"))
-        elif value.startswith("dir:"):
-            item = ("dir", value.removeprefix("dir:"))
-        elif value.startswith(EXTENSION_ROOT_PREFIX):
-            item = ("ext", value.removeprefix(EXTENSION_ROOT_PREFIX))
+        if match.group(1):
+            kind, value, quoted = match.group(1), match.group(2), True
         else:
-            continue
-        if item not in seen:
-            seen.add(item)
-            result.append(item)
+            raw = match.group(3)
+            kind, separator, value = raw.partition(":")
+            if kind not in ("file", "dir", "ext") or not separator:
+                continue
+            quoted = False
+        if (kind, value, quoted) not in seen:
+            seen.add((kind, value, quoted))
+            result.append((kind, value, quoted, match.group(0)))
     return result
+
+
+def _path_candidates(value: str, quoted: bool) -> list[str]:
+    """The path as written, then with trailing punctuation removed one by one."""
+    candidates = [value]
+    if quoted:
+        return candidates
+    while (
+        len(candidates) <= MAX_TRAILING_PUNCTUATION
+        and len(candidates[-1]) > 1
+        and candidates[-1][-1] in TRAILING_PUNCTUATION
+    ):
+        candidates.append(candidates[-1][:-1])
+    return candidates
+
+
+def _locate_mention_path(
+    kind: str,
+    value: str,
+    quoted: bool,
+    root: Path,
+    skipped_directories: Iterable[str],
+) -> tuple[Path | None, tuple[str, str]]:
+    """Find the path a file or dir mention names, and the key to dedupe it on.
+
+    Returns the first candidate that exists, even if it later cannot be read.
+    A refused candidate ends the search, so trimming never steps past it.
+    """
+    candidates = _path_candidates(value, quoted)
+    for candidate in candidates:
+        try:
+            path = _safe_relative_path(candidate, skipped_directories)
+            if path.exists():
+                return path, (kind, _relative_display(path, root))
+        except (OSError, RuntimeError, UnicodeError, ValueError):
+            return None, (kind, candidate)
+    return None, (kind, candidates[-1])
+
+
+def parse_chatbook_mentions(prompt: str) -> list[tuple[str, str]]:
+    """Return (kind, value as written) for each mention, in prompt order.
+
+    A value is not yet a path: trailing punctuation is trimmed only when the
+    mention is resolved. The same text written quoted and unquoted appears
+    twice, because the two can resolve differently.
+    """
+    return [(kind, value) for kind, value, _, _ in _parse_mention_tokens(prompt)]
 
 
 def resolve_chatbook_mentions(
@@ -248,7 +313,7 @@ def resolve_chatbook_mentions(
     context_hash: str = "",
 ) -> list[dict[str, str]]:
     """Resolve mention tokens into bounded, soft-failing reference context."""
-    mentions = parse_chatbook_mentions(prompt)
+    mentions = _parse_mention_tokens(prompt)
     if not mentions:
         return []
     root = _root_path()
@@ -256,9 +321,13 @@ def resolve_chatbook_mentions(
     current = (notebook_context or {}).get("current") or {}
     cell_index = current.get("index") if isinstance(current, dict) else None
     resolved: list[dict[str, str]] = []
-    for kind, relative in mentions:
-        token = f"@{kind}:{relative}"
+    resolved_keys: set[tuple[str, str]] = set()
+    for kind, relative, quoted, token in mentions:
         if kind == "ext":
+            # Quoted and unquoted spellings name the same provider value.
+            if ("ext", relative) in resolved_keys:
+                continue
+            resolved_keys.add(("ext", relative))
             provider_id, value = _split_extension_mention(relative)
             provider = provider_by_id.get(provider_id)
             try:
@@ -302,32 +371,29 @@ def resolve_chatbook_mentions(
                     }
                 )
             continue
-        try:
-            path = _safe_relative_path(relative, skipped_directories)
-            display = _relative_display(path, root)
-            if kind == "file":
-                content = _read_text_file(path)
-            else:
-                content = _list_directory(path)
-            resolved.append(
-                {
-                    "token": token,
-                    "kind": kind,
-                    "path": display,
-                    "content": content,
-                    "available": "true",
-                }
-            )
-        except (OSError, RuntimeError, UnicodeError, ValueError):
-            resolved.append(
-                {
-                    "token": token,
-                    "kind": kind,
-                    "path": relative,
-                    "content": "[unavailable]",
-                    "available": "false",
-                }
-            )
+        path, key = _locate_mention_path(
+            kind, relative, quoted, root, skipped_directories
+        )
+        if key in resolved_keys:
+            continue
+        resolved_keys.add(key)
+        entry = {
+            "token": token,
+            "kind": kind,
+            "path": key[1] if path is not None else relative,
+            "content": "[unavailable]",
+            "available": "false",
+        }
+        if path is not None:
+            try:
+                if kind == "file":
+                    content = _read_text_file(path)
+                else:
+                    content = _list_directory(path)
+                entry.update(content=content, available="true")
+            except (OSError, RuntimeError, UnicodeError, ValueError):
+                pass
+        resolved.append(entry)
     return resolved
 
 
