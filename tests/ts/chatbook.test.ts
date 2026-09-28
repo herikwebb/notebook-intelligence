@@ -16,6 +16,7 @@ import {
   mergeChatbookCellMeta,
   promptAsHashComment,
   chatbookExportNotebookPath,
+  chatbookSummaryHash,
   resolveChatbookPrompt,
   sha256Hex,
   switchChatbookCellMode,
@@ -27,6 +28,7 @@ import {
   chatbookAllowsSessionCachedCode,
   CHATBOOK_EXECUTION_MODES
 } from '../../src/chatbook-core';
+import type { IChatbookCellMeta } from '../../src/chatbook-core';
 import {
   mimeTypeForNotebookLanguage,
   resolveChatbookBackendProfile
@@ -299,6 +301,142 @@ describe('chatbook-core', () => {
     expect(converted.meta.prompt).toBe('drop the customers table');
     expect(converted.meta.generatedCode).toBeUndefined();
     expect(converted.meta.promptHash).toBeUndefined();
+  });
+
+  describe('a code cell switched to natural language', () => {
+    const code = 'x = 1';
+    const described = async (prompt = 'Set x to 1', forCode = code) => ({
+      mode: 'code' as const,
+      origin: 'code' as const,
+      prompt,
+      codeHash: await sha256Hex(forCode),
+      summaryHash: await chatbookSummaryHash(prompt, forCode)
+    });
+    const toNL = (meta: IChatbookCellMeta, source = code) =>
+      switchChatbookCellMode({ source, meta, nextMode: 'prompt' });
+    const exported = async (cell: {
+      source: string;
+      meta: IChatbookCellMeta;
+    }) => (await convertChatbookCellToCode(cell)).source;
+
+    it('exports its code under its unedited description', async () => {
+      const out = await convertChatbookCellToCode(toNL(await described()));
+      expect(out.source).toBe(code);
+      expect(out.meta.prompt).toBe('Set x to 1');
+      expect(out.meta.generatedCode).toBe(code);
+    });
+
+    it('exports its code when it has no description yet', async () => {
+      expect(await exported(toNL({ mode: 'code', origin: 'code' }))).toBe(code);
+    });
+
+    it('comments English edited after the switch', async () => {
+      const nl = toNL(await described());
+      expect(await exported({ ...nl, source: 'Set x to 2' })).toBe(
+        '# Set x to 2'
+      );
+    });
+
+    it('comments English edited and carried back through code mode', async () => {
+      const nl = toNL(await described());
+      const back = switchChatbookCellMode({
+        source: 'Set x to 2',
+        meta: nl.meta,
+        nextMode: 'code'
+      });
+      expect(await exported(toNL(back.meta, back.source))).toBe('# Set x to 2');
+    });
+
+    it('comments a description made for other code', async () => {
+      // The code was edited after it was described, and not refreshed.
+      expect(await exported(toNL(await described('Set x to 1', 'x = 0')))).toBe(
+        '# Set x to 1'
+      );
+    });
+
+    it('comments a description recorded without a summary hash', async () => {
+      const { summaryHash: _, ...legacy } = await described();
+      expect(await exported(toNL(legacy))).toBe('# Set x to 1');
+    });
+
+    it('exports through a whole-notebook export', async () => {
+      const nl = toNL(await described());
+      const out = await buildCodeNotebookFromChatbook(
+        {
+          nbformat: 4,
+          metadata: {},
+          cells: [
+            {
+              cell_type: 'code',
+              source: nl.source,
+              metadata: { nbi: { chatbook: nl.meta } },
+              outputs: []
+            }
+          ]
+        },
+        { name: 'python3', display_name: 'Python 3', language: 'python' }
+      );
+      expect((out.cells as any)[0].source).toBe(code);
+    });
+
+    it('does not export the code of a prompt cell whose English was cleared', async () => {
+      expect(
+        await exported({
+          source: '',
+          meta: {
+            origin: 'prompt',
+            prompt: 'plot sales',
+            promptHash: await sha256Hex('plot sales'),
+            generatedCode: 'df.plot()'
+          }
+        })
+      ).toBe('# <empty Chatbook prompt>');
+      // Even when the kernel left no prompt hash behind.
+      expect(
+        await exported({
+          source: '',
+          meta: { prompt: 'plot sales', generatedCode: 'df.plot()' }
+        })
+      ).toBe('# <empty Chatbook prompt>');
+    });
+
+    it('does not export code a prompt made once its English is cleared', async () => {
+      // A code cell that later ran as a prompt holds that prompt's code.
+      expect(
+        await exported({
+          source: '',
+          meta: {
+            origin: 'code',
+            prompt: 'plot sales',
+            promptHash: await sha256Hex('plot sales'),
+            generatedCode: 'df.plot()'
+          }
+        })
+      ).toBe('# <empty Chatbook prompt>');
+    });
+
+    it('keeps the English and the code apart in the hash', async () => {
+      expect(
+        await exported({
+          source: 'Set x to 1x',
+          meta: {
+            origin: 'code',
+            prompt: 'Set x to 1',
+            summaryHash: await chatbookSummaryHash('Set x to 1', 'x = 1'),
+            generatedCode: ' = 1'
+          }
+        })
+      ).toBe('# Set x to 1x');
+    });
+
+    it('still marks an empty cell with no code at all', async () => {
+      expect(await exported(toNL({ mode: 'code', origin: 'code' }, ''))).toBe(
+        '# <empty Chatbook prompt>'
+      );
+      expect(await exported({ source: '', meta: {} })).toBe(
+        '# <empty Chatbook prompt>'
+      );
+    });
   });
 
   it('exports code-authored cells without rewriting their source', async () => {

@@ -120,6 +120,8 @@ export interface IChatbookCellMeta {
   generatedCode?: string;
   codeSource?: string;
   codeHash?: string;
+  // Hash of the English description together with the code it describes.
+  summaryHash?: string;
   summaryError?: string;
   contextHash?: string;
   generatedAt?: string;
@@ -417,6 +419,24 @@ export async function convertChatbookCellToCode(options: {
     meta.generatedCode = snapshot.generatedCode;
     return { source: snapshot.generatedCode, meta };
   }
+  // A code cell switched to natural language has no matching `promptHash`
+  // until it runs as a prompt: its English was written from the code, not the
+  // other way round. Its code still stands while the English is the
+  // description made from exactly this code, or is empty on a cell that has
+  // only ever been code.
+  const code = snapshot.generatedCode;
+  const describesCode =
+    code.trim() &&
+    ((Boolean(options.meta.summaryHash) &&
+      options.meta.summaryHash ===
+        (await chatbookSummaryHash(snapshot.prompt, code))) ||
+      (!snapshot.prompt.trim() &&
+        !options.meta.promptHash &&
+        getChatbookCellOrigin(options.meta) === 'code'));
+  if (describesCode) {
+    meta.generatedCode = code;
+    return { source: code, meta };
+  }
   meta.generatedCode = undefined;
   meta.promptHash = undefined;
   meta.contextHash = undefined;
@@ -665,6 +685,14 @@ export function buildExecuteChatbookMeta(options: {
     meta.contextHash = options.contextHash;
   }
   return meta;
+}
+
+/** Ties an English description to the exact code it was written from. */
+export function chatbookSummaryHash(
+  prompt: string,
+  code: string
+): Promise<string> {
+  return sha256Hex(JSON.stringify([prompt, code]));
 }
 
 export async function sha256Hex(text: string): Promise<string> {
