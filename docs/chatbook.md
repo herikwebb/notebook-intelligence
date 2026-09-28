@@ -14,9 +14,9 @@ Cell badges show **NL** (natural language) and **Cd** (code). Code cells use the
 
 ## Writing cells
 
-Every cell is either a natural-language prompt (**NL**) or ordinary code (**Cd**), and the badge at the top of the cell shows which. The badge is a button: click it to switch that cell. `Ctrl J` switches the active cell and `Ctrl Shift J` switches every cell in the notebook. Both are literal `Ctrl`, including on macOS, where most JupyterLab bindings use `Cmd`. The notebook toolbar carries the same switch-all action and an export button.
+Every cell is either a natural-language prompt (**NL**) or ordinary code (**Cd**), and the badge at the top of the cell shows which. The badge is a button: click it to switch that cell. `Ctrl J` switches the active cell and `Ctrl Shift J` switches every cell in the notebook. Both are literal `Ctrl`, including on macOS, where most JupyterLab bindings use `Cmd`. The notebook toolbar carries the same switch-all action and an export button, and ordinary notebooks get a button to convert them to a Chatbook.
 
-Chatbook adds six commands, all reachable from the command palette:
+Chatbook adds seven commands, all reachable from the command palette:
 
 | Command                         | What it does                                                       |
 | ------------------------------- | ------------------------------------------------------------------ |
@@ -26,6 +26,7 @@ Chatbook adds six commands, all reachable from the command palette:
 | Show generated code             | Opens the code a prompt cell generated, which is otherwise hidden. |
 | Refresh English representation  | Regenerates the English description of a code cell.                |
 | Export as code notebook         | Writes a plain notebook for the backend language.                  |
+| Convert Notebook to Chatbook    | Writes a Chatbook copy of an ordinary notebook.                    |
 
 **Running a code cell also sends it to the model.** The first time a **Cd** cell runs successfully, Chatbook asks the model for a one-line English description of that source and stores it in the cell's metadata, so the cell can be read as prose and switched back to **NL** later. It does not ask again on later runs, and it does not refresh the description when you edit the code: use **Refresh English representation** for that. This is worth knowing in a deployment where code is more sensitive than prompts, because it means hand-written code in a Chatbook reaches the model even under **Always confirm**.
 
@@ -34,6 +35,14 @@ Chatbook adds six commands, all reachable from the command palette:
 Typing `@` in a prompt cell opens a menu of context to attach. The built-in **Files & folders** provider browses the Jupyter root, skipping dotfiles, `__pycache__`, and `node_modules`; a selected file is read and truncated at 16,000 characters. Extensions can register providers of their own, which appear in the same menu under their own root (see [`chatbook-extensions.md`](chatbook-extensions.md)).
 
 Mentions work only in prompt cells. A prompt that carries one is regenerated every run rather than reusing the previously approved code, because the mentioned content may have changed since.
+
+## Convert a notebook to a Chatbook
+
+**Convert Notebook to Chatbook** is the reverse of export. It appears as a toolbar button on ordinary notebooks, and in the command palette, and writes a Chatbook copy next to the original, named after it with `-chatbook` appended (`analysis.ipynb` becomes `analysis-chatbook.ipynb`, and a number is added if that name is taken). The copy opens straight away, and the original is left untouched. It converts what is in the editor, so unsaved changes are included.
+
+Every code cell becomes a **Cd** cell and runs exactly as written. Everything else is kept: markdown and raw cells, outputs, execution counts, attachments, and notebook metadata. Conversion itself sends nothing to the model. As with any **Cd** cell, the first time each converted cell runs successfully, its code is sent to the model for a one-line English description. A description a cell already carries is kept only when it is known to describe that exact code, as for a Chatbook that was exported and is converted back.
+
+Chatbook runs code in the one backend kernel chosen in Settings → **Chatbook**, so conversion compares the notebook's language with it first. A notebook in the same language converts, with a note when its kernel differs from the backend. A notebook in another language (an R notebook while the backend is Python) is not converted, because every code cell would fail; the dialog explains why and offers to open the Chatbook settings. Conversion never changes that setting itself, since it applies to every Chatbook. The notebook's original kernel is recorded in the copy's metadata under `nbi.chatbook.sourceKernel`.
 
 ## Export as a code notebook
 

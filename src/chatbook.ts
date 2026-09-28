@@ -18,6 +18,7 @@ import {
 import {
   CHATBOOK_LANGUAGE,
   CHATBOOK_MSG_TYPE,
+  buildChatbookFromCodeNotebook,
   buildCodeNotebookFromChatbook,
   buildExecuteChatbookMeta,
   canSwitchChatbookCellMode,
@@ -1062,19 +1063,44 @@ export async function exportChatbookNotebookAsCode(
     display_name: profile.displayName,
     language: profile.language
   });
-  let attempt = 0;
-  let path = chatbookExportNotebookPath(
+  return saveNotebookCopy(
+    contents,
     panel.context.path,
     profile.language,
-    attempt
+    content
   );
+}
+
+/**
+ * Write a copy of a notebook next to it as a new Chatbook. The original is
+ * left untouched, and nothing is sent to a model.
+ */
+export async function convertNotebookToChatbook(
+  panel: NotebookPanel,
+  contents: Contents.IManager
+): Promise<string> {
+  if (!panel.model) {
+    throw new Error('Notebook has no model to convert');
+  }
+  const notebook = structuredClone(
+    panel.model.toJSON() as Record<string, unknown>
+  );
+  const content = await buildChatbookFromCodeNotebook(notebook);
+  return saveNotebookCopy(contents, panel.context.path, 'chatbook', content);
+}
+
+/** Save `content` as `<stem>-<slug>.ipynb` beside `sourcePath`, never overwriting. */
+async function saveNotebookCopy(
+  contents: Contents.IManager,
+  sourcePath: string,
+  slug: string,
+  content: Record<string, unknown>
+): Promise<string> {
+  let attempt = 0;
+  let path = chatbookExportNotebookPath(sourcePath, slug, attempt);
   while (await contentsPathExists(contents, path)) {
     attempt += 1;
-    path = chatbookExportNotebookPath(
-      panel.context.path,
-      profile.language,
-      attempt
-    );
+    path = chatbookExportNotebookPath(sourcePath, slug, attempt);
   }
   await contents.save(path, {
     type: 'notebook',

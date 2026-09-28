@@ -481,6 +481,155 @@ export async function buildCodeNotebookFromChatbook(
   };
 }
 
+/** A notebook's own kernel, read from its metadata rather than its session. */
+export interface IChatbookSourceKernel {
+  name: string;
+  displayName: string;
+  language: string;
+}
+
+export function chatbookSourceKernel(metadata: unknown): IChatbookSourceKernel {
+  const record =
+    metadata && typeof metadata === 'object'
+      ? (metadata as Record<string, unknown>)
+      : {};
+  const spec =
+    record.kernelspec && typeof record.kernelspec === 'object'
+      ? (record.kernelspec as Record<string, unknown>)
+      : {};
+  const info =
+    record.language_info && typeof record.language_info === 'object'
+      ? (record.language_info as Record<string, unknown>)
+      : {};
+  return {
+    name: String(spec.name ?? '').trim(),
+    displayName: String(spec.display_name ?? '').trim(),
+    language: String(spec.language ?? info.name ?? '')
+      .trim()
+      .toLowerCase()
+  };
+}
+
+/**
+ * How a notebook's kernel relates to the Chatbook backend it would run on
+ * after conversion. The backend is one user setting shared by every Chatbook,
+ * so a notebook in another language would become a Chatbook whose code cells
+ * all fail.
+ */
+export type ChatbookConversionFit =
+  | 'same-kernel'
+  | 'same-language'
+  | 'unknown'
+  | 'different-language';
+
+export function chatbookConversionFit(
+  source: IChatbookSourceKernel,
+  backend: { kernelName: string; language: string }
+): ChatbookConversionFit {
+  if (source.name && source.name === backend.kernelName) {
+    return 'same-kernel';
+  }
+  if (!source.language) {
+    return 'unknown';
+  }
+  return source.language === backend.language.trim().toLowerCase()
+    ? 'same-language'
+    : 'different-language';
+}
+
+/**
+ * A code cell as a Chatbook code cell. An English description is kept only
+ * when it is known to describe this exact code, as for a Chatbook that was
+ * exported and is converted back; anything else describes different code.
+ */
+export async function convertCodeCellToChatbook(
+  cell: Record<string, unknown>
+): Promise<Record<string, unknown>> {
+  const source = cellSourceToString(cell.source);
+  const previous = getChatbookCellMeta(cell.metadata);
+  const meta: IChatbookCellMeta = {
+    mode: 'code',
+    origin: 'code',
+    codeSource: source,
+    generatedCode: source
+  };
+  const prompt = previous.prompt ?? '';
+  if (prompt.trim()) {
+    const codeHash = await sha256Hex(source);
+    const describesThisCode =
+      previous.codeHash === codeHash ||
+      (previous.generatedCode === source &&
+        Boolean(previous.promptHash) &&
+        previous.promptHash === (await sha256Hex(prompt)));
+    if (describesThisCode) {
+      // Only a recorded prompt origin survives: this cell arrives as code.
+      meta.origin = previous.origin === 'prompt' ? 'prompt' : 'code';
+      meta.prompt = prompt;
+      meta.codeHash = codeHash;
+      if (previous.promptHash) {
+        meta.promptHash = previous.promptHash;
+      }
+    }
+  }
+  const metadata: Record<string, unknown> =
+    cell.metadata && typeof cell.metadata === 'object'
+      ? { ...(cell.metadata as Record<string, unknown>) }
+      : {};
+  const nbi: Record<string, unknown> =
+    metadata.nbi && typeof metadata.nbi === 'object'
+      ? { ...(metadata.nbi as Record<string, unknown>) }
+      : {};
+  nbi.chatbook = meta;
+  metadata.nbi = nbi;
+  return { ...cell, metadata };
+}
+
+/**
+ * A copy of a code notebook as a Chatbook: every code cell becomes a Chatbook
+ * code cell, and everything else (markdown, outputs, execution counts, ids,
+ * attachments, notebook metadata) is kept. The source kernel is recorded so
+ * the notebook's own language is not lost.
+ */
+export async function buildChatbookFromCodeNotebook(
+  notebook: Record<string, unknown>
+): Promise<Record<string, unknown>> {
+  const cells = Array.isArray(notebook.cells)
+    ? await Promise.all(
+        notebook.cells.map(cell =>
+          cell &&
+          typeof cell === 'object' &&
+          (cell as Record<string, unknown>).cell_type === 'code'
+            ? convertCodeCellToChatbook(cell as Record<string, unknown>)
+            : cell
+        )
+      )
+    : [];
+  const metadata: Record<string, unknown> = {
+    ...((notebook.metadata as Record<string, unknown>) || {})
+  };
+  const source = chatbookSourceKernel(metadata);
+  metadata.kernelspec = {
+    name: CHATBOOK_KERNEL_NAME,
+    display_name: 'Chatbook',
+    language: CHATBOOK_KERNEL_NAME
+  };
+  metadata.language_info = { name: CHATBOOK_KERNEL_NAME };
+  if (source.name) {
+    const nbi =
+      metadata.nbi && typeof metadata.nbi === 'object'
+        ? { ...(metadata.nbi as Record<string, unknown>) }
+        : {};
+    const chatbook =
+      nbi.chatbook && typeof nbi.chatbook === 'object'
+        ? { ...(nbi.chatbook as Record<string, unknown>) }
+        : {};
+    chatbook.sourceKernel = source.name;
+    nbi.chatbook = chatbook;
+    metadata.nbi = nbi;
+  }
+  return { ...notebook, cells, metadata };
+}
+
 async function convertNotebookCellToCode(
   cell: unknown,
   language: string

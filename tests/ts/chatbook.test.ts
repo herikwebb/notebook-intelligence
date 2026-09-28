@@ -1,8 +1,12 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import {
+  buildChatbookFromCodeNotebook,
   buildCodeNotebookFromChatbook,
   buildExecuteChatbookMeta,
+  chatbookConversionFit,
+  chatbookSourceKernel,
+  convertCodeCellToChatbook,
   snapshotChatbookContextCell,
   splitNotebookContext,
   canSwitchChatbookCellMode,
@@ -574,5 +578,225 @@ describe('NBIConfig.chatbookEnabled', () => {
       feature_policies: { chatbook: { enabled: true, locked: true } }
     };
     expect(config.chatbookEnabled).toBe(true);
+  });
+});
+
+describe('convert to chatbook', () => {
+  const codeNotebook = () => ({
+    nbformat: 4,
+    nbformat_minor: 5,
+    metadata: {
+      kernelspec: {
+        name: 'python3',
+        display_name: 'Python 3',
+        language: 'python'
+      },
+      language_info: { name: 'python', version: '3.12' },
+      widgets: { state: {} },
+      custom: { team: 'data' }
+    },
+    cells: [
+      {
+        id: 'md1',
+        cell_type: 'markdown',
+        source: '# Sales',
+        metadata: {},
+        attachments: { 'a.png': {} }
+      },
+      {
+        id: 'c1',
+        cell_type: 'code',
+        source: ['import pandas as pd\n', 'df = pd.read_csv("s.csv")'],
+        metadata: { tags: ['setup'] },
+        execution_count: 3,
+        outputs: [{ output_type: 'stream', name: 'stdout', text: 'ok' }]
+      },
+      { id: 'r1', cell_type: 'raw', source: 'raw text', metadata: {} }
+    ]
+  });
+
+  it('turns every code cell into a Chatbook code cell and keeps everything else', async () => {
+    const original = codeNotebook();
+    const out = (await buildChatbookFromCodeNotebook(
+      JSON.parse(JSON.stringify(original))
+    )) as any;
+
+    expect(out.metadata.kernelspec).toEqual({
+      name: 'chatbook',
+      display_name: 'Chatbook',
+      language: 'chatbook'
+    });
+    expect(out.metadata.language_info).toEqual({ name: 'chatbook' });
+    expect(out.metadata.widgets).toEqual({ state: {} });
+    expect(out.metadata.custom).toEqual({ team: 'data' });
+    // The notebook's own kernel is recorded, since the Chatbook backend is a
+    // single setting and would otherwise lose the notebook's language.
+    expect(out.metadata.nbi.chatbook.sourceKernel).toBe('python3');
+
+    const [md, code, raw] = out.cells;
+    expect(md).toEqual(original.cells[0]);
+    expect(raw).toEqual(original.cells[2]);
+    expect(code.id).toBe('c1');
+    expect(code.execution_count).toBe(3);
+    expect(code.outputs).toEqual(original.cells[1].outputs);
+    expect(code.source).toEqual(original.cells[1].source);
+    expect(code.metadata.tags).toEqual(['setup']);
+    const src = 'import pandas as pd\ndf = pd.read_csv("s.csv")';
+    expect(code.metadata.nbi.chatbook).toEqual({
+      mode: 'code',
+      origin: 'code',
+      codeSource: src,
+      generatedCode: src
+    });
+    expect(getChatbookCellMode(getChatbookCellMeta(code.metadata))).toBe(
+      'code'
+    );
+  });
+
+  it('does not record a source kernel for a notebook that names none', async () => {
+    const out = (await buildChatbookFromCodeNotebook({
+      nbformat: 4,
+      metadata: {},
+      cells: []
+    })) as any;
+    expect(out.metadata.nbi).toBeUndefined();
+  });
+
+  it('keeps an English description only when it still describes the code', async () => {
+    const src = 'total = sum(values)';
+    const codeHash = await sha256Hex(src);
+    const kept = (await convertCodeCellToChatbook({
+      cell_type: 'code',
+      source: src,
+      metadata: {
+        nbi: {
+          chatbook: {
+            prompt: 'Add up the values',
+            codeHash,
+            summaryError: 'old',
+            contextHash: 'x'
+          }
+        }
+      }
+    })) as any;
+    expect(kept.metadata.nbi.chatbook).toEqual({
+      mode: 'code',
+      origin: 'code',
+      codeSource: src,
+      generatedCode: src,
+      prompt: 'Add up the values',
+      codeHash
+    });
+
+    const fromPrompt = 'add up the values';
+    const promptHash = await sha256Hex(fromPrompt);
+    const exported = (await convertCodeCellToChatbook({
+      cell_type: 'code',
+      source: src,
+      metadata: {
+        nbi: {
+          chatbook: {
+            mode: 'prompt',
+            origin: 'prompt',
+            prompt: fromPrompt,
+            promptHash,
+            generatedCode: src
+          }
+        }
+      }
+    })) as any;
+    expect(exported.metadata.nbi.chatbook).toMatchObject({
+      mode: 'code',
+      origin: 'prompt',
+      prompt: fromPrompt,
+      promptHash
+    });
+
+    const stale = (await convertCodeCellToChatbook({
+      cell_type: 'code',
+      source: 'total = sum(values) * 2',
+      metadata: {
+        nbi: {
+          chatbook: {
+            prompt: 'Add up the values',
+            codeHash,
+            generatedCode: src
+          }
+        }
+      }
+    })) as any;
+    expect(stale.metadata.nbi.chatbook.prompt).toBeUndefined();
+    expect(stale.metadata.nbi.chatbook.codeHash).toBeUndefined();
+  });
+
+  it('round-trips through Export as code notebook without losing code', async () => {
+    const chatbook = await buildChatbookFromCodeNotebook(codeNotebook());
+    const back = (await buildCodeNotebookFromChatbook(chatbook, {
+      name: 'python3',
+      display_name: 'Python 3',
+      language: 'python'
+    })) as any;
+    expect(back.cells[1].source).toBe(
+      'import pandas as pd\ndf = pd.read_csv("s.csv")'
+    );
+    expect(back.cells[0].source).toBe('# Sales');
+  });
+
+  it('switches a converted cell to natural language and back', async () => {
+    const chatbook = (await buildChatbookFromCodeNotebook(
+      codeNotebook()
+    )) as any;
+    const cell = chatbook.cells[1];
+    const src = 'import pandas as pd\ndf = pd.read_csv("s.csv")';
+    const toPrompt = switchChatbookCellMode({
+      source: src,
+      meta: getChatbookCellMeta(cell.metadata),
+      nextMode: 'prompt'
+    });
+    // No description yet, so the natural-language side starts empty.
+    expect(toPrompt.source).toBe('');
+    const back = switchChatbookCellMode({
+      source: toPrompt.source,
+      meta: toPrompt.meta,
+      nextMode: 'code'
+    });
+    expect(back.source).toBe(src);
+  });
+
+  it('names the copy like an export and numbers it when taken', () => {
+    expect(chatbookExportNotebookPath('work/analysis.ipynb', 'chatbook')).toBe(
+      'work/analysis-chatbook.ipynb'
+    );
+    expect(chatbookExportNotebookPath('analysis.ipynb', 'chatbook', 2)).toBe(
+      'analysis-chatbook-2.ipynb'
+    );
+  });
+
+  it('reads the source kernel from kernelspec, then language_info', () => {
+    expect(
+      chatbookSourceKernel({
+        kernelspec: { name: 'ir', display_name: 'R', language: 'R' }
+      })
+    ).toEqual({ name: 'ir', displayName: 'R', language: 'r' });
+    expect(chatbookSourceKernel({ language_info: { name: 'julia' } })).toEqual({
+      name: '',
+      displayName: '',
+      language: 'julia'
+    });
+    expect(chatbookSourceKernel(undefined)).toEqual({
+      name: '',
+      displayName: '',
+      language: ''
+    });
+  });
+
+  it('compares the notebook language with the Chatbook backend', () => {
+    const backend = { kernelName: 'python3', language: 'python' };
+    const fit = (name: string, language: string) =>
+      chatbookConversionFit({ name, displayName: '', language }, backend);
+    expect(fit('python3', 'python')).toBe('same-kernel');
+    expect(fit('conda-env', 'python')).toBe('same-language');
+    expect(fit('', '')).toBe('unknown');
+    expect(fit('ir', 'r')).toBe('different-language');
   });
 });
