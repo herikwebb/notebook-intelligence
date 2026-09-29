@@ -52,7 +52,7 @@ Chatbook runs code in the one backend kernel chosen in Settings → **Chatbook**
 
 **Export as code notebook** writes a plain notebook for the backend language next to the original, named after it with the language appended (`analysis.ipynb` becomes `analysis-python.ipynb`, and a number is added if that name is taken). The Chatbook itself is left untouched.
 
-Prompt cells become their generated code. A prompt cell whose code never ran, or whose prompt changed since it last ran, is written as line comments instead, so an export never passes off code as having been executed when it was not. The exported notebook's `kernelspec` and `language_info` are rewritten to the backend kernel. Export fails if the backend language has no line-comment syntax Chatbook knows, since there would be no way to write those cells safely.
+Prompt cells become their generated code. A prompt cell whose code never ran, or whose prompt changed since it last ran, is written as line comments instead, so an export never passes off code as having been executed when it was not. A code cell switched to natural language exports its own code, as any code cell does, while its English side is empty or is still the description of that code. Once either side changes, it is written as comments too; after editing the code, **Refresh English representation** brings the description back in step. The exported notebook's `kernelspec` and `language_info` are rewritten to the backend kernel. Export fails if the backend language has no line-comment syntax Chatbook knows, since there would be no way to write those cells safely.
 
 ## What the notebook file holds
 

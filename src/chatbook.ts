@@ -30,6 +30,7 @@ import {
   mergeChatbookCellMeta,
   chatbookExportNotebookPath,
   resolveChatbookPrompt,
+  chatbookSummaryHash,
   sha256Hex,
   snapshotChatbookContextCell,
   splitNotebookContext,
@@ -408,6 +409,7 @@ export async function summarizeCodeCell(
   });
   try {
     const prompt = await NBIAPI.summarizeChatbookCell(source);
+    const summaryHash = await chatbookSummaryHash(prompt, source);
     const latestSource = cell.model.sharedModel.getSource();
     const latestHash = await sha256Hex(latestSource);
     if (
@@ -419,6 +421,7 @@ export async function summarizeCodeCell(
     writeChatbookCellMeta(cell, {
       prompt,
       codeHash,
+      summaryHash,
       summaryError: undefined
     });
     return prompt;
