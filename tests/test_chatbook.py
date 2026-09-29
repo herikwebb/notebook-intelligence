@@ -3,6 +3,7 @@
 import io
 import json
 import os
+import time
 from types import SimpleNamespace
 from urllib.error import HTTPError
 
@@ -879,6 +880,33 @@ def test_chatbook_mention_parser_accepts_non_whitespace_predecessors():
         assert mentions and mentions[0][0] == 'file'
 
 
+def test_chatbook_mention_parser_reads_quoted_paths():
+    assert parse_chatbook_mentions(
+        'Compare @file:"data/my notes.md", @dir:"My Folder" and @file:plain.csv'
+    ) == [
+        ('file', 'data/my notes.md'),
+        ('dir', 'My Folder'),
+        ('file', 'plain.csv'),
+    ]
+    assert parse_chatbook_mentions('See @file:"img/logo@2x.png".') == [
+        ('file', 'img/logo@2x.png'),
+    ]
+    # An unterminated quote, or text glued to the closing quote, is not a
+    # quoted mention; it stays one plain token, as before.
+    assert parse_chatbook_mentions('Open @file:"my notes.md') == [
+        ('file', '"my'),
+    ]
+    assert parse_chatbook_mentions('Open @file:"a"b.csv') == [
+        ('file', '"a"b.csv'),
+    ]
+    # A quoted literal and the same text unquoted resolve differently, so one
+    # must not hide the other.
+    assert parse_chatbook_mentions('@file:"a.csv," and @file:a.csv,') == [
+        ('file', 'a.csv,'),
+        ('file', 'a.csv,'),
+    ]
+
+
 def test_list_filesystem_mentions_filters_orders_and_limits(tmp_path):
     old_root = get_jupyter_root_dir()
     set_jupyter_root_dir(str(tmp_path))
@@ -1041,9 +1069,10 @@ def test_resolve_file_and_directory_mentions_with_soft_failures(tmp_path):
         )
         by_token = {item['token']: item for item in resolved}
         assert by_token['@file:data/input.csv']['content'] == 'a,b\n1,2\n'
+        # The token keeps the comma as written; the lookup does not.
         directory = by_token['@dir:docs,']
-        assert directory['available'] == 'false'
-        # Punctuation is part of NUI-compatible non-whitespace tokens.
+        assert directory['available'] == 'true'
+        assert directory['path'] == 'docs'
         assert by_token['@file:binary.bin']['available'] == 'false'
         assert by_token['@file:missing.txt']['available'] == 'false'
         assert by_token['@file:../outside.txt']['available'] == 'false'
@@ -1057,6 +1086,247 @@ def test_resolve_file_and_directory_mentions_with_soft_failures(tmp_path):
         assert directory_only['available'] == 'true'
         assert directory_only['content'].splitlines() == ['nested/', 'guide.md']
         assert 'hello' not in directory_only['content']
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+@pytest.mark.parametrize(
+    'punctuation',
+    [',', '.', ';', ':', '!', '?', ')', '),', '.)', '\u2026', '.\u201d', '\u3002'],
+)
+def test_trailing_punctuation_is_not_part_of_the_mentioned_path(
+    tmp_path, punctuation
+):
+    # Writing a mention mid-sentence used to resolve `data/input.csv,`, a
+    # file that does not exist, and the prompt ran without it.
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / 'data').mkdir()
+        (tmp_path / 'data' / 'input.csv').write_text('a,b\n')
+        mention = resolve_chatbook_mentions(
+            f'Summarize @file:data/input.csv{punctuation} then plot it'
+        )[0]
+        assert mention['available'] == 'true'
+        assert mention['path'] == 'data/input.csv'
+        assert mention['content'] == 'a,b\n'
+        assert mention['token'] == f'@file:data/input.csv{punctuation}'
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_mention_paths_try_the_name_as_written_before_trimming(tmp_path):
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / 'notes.').write_text('trailing dot')
+        (tmp_path / 'notes').write_text('no dot')
+        mention = resolve_chatbook_mentions('Read @file:notes. first')[0]
+        assert mention['content'] == 'trailing dot'
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_mention_trimming_removes_punctuation_one_character_at_a_time(tmp_path):
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / 'data(2)').mkdir()
+        mention = resolve_chatbook_mentions('compare (@dir:data(2))')[0]
+        assert mention['available'] == 'true'
+        assert mention['path'] == 'data(2)'
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_mention_trimming_stops_after_five_characters(tmp_path):
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / 'x.md').write_text('x')
+        five, six = resolve_chatbook_mentions(
+            # `?!.")` is five characters; six dots is one too many.
+            'See (@file:x.md?!.") and @file:x.md......'
+        )
+        assert (five['available'], five['path']) == ('true', 'x.md')
+        assert six['available'] == 'false'
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_mention_trimming_never_reaches_a_different_file(tmp_path):
+    # A looser trim would resolve the shorter sibling of each, which is not the
+    # file the user named.
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / 'foo.c').write_text('c source')
+        (tmp_path / 'e').write_text('wrong file')
+        (tmp_path / 'data').write_text('wrong file')
+        (tmp_path / 'data.').write_bytes(b'\x00binary')
+        resolved = resolve_chatbook_mentions(
+            # Only sentence punctuation is trimmed, not `+` or a combining
+            # accent, and a name that exists stops the search even when it
+            # cannot be read.
+            'Use @file:foo.c++ and @file:e\u0301, and @file:data. please'
+        )
+        assert [item['available'] for item in resolved] == ['false'] * 3
+        assert all(item['content'] == '[unavailable]' for item in resolved)
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_an_unreadable_mention_reports_the_file_that_exists(tmp_path):
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / 'data.bin').write_bytes(b'\x00binary')
+        mention = resolve_chatbook_mentions('Load @file:data.bin, then')[0]
+        assert mention['available'] == 'false'
+        assert mention['path'] == 'data.bin'
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_mention_trimming_is_bounded_on_long_punctuation_runs(tmp_path):
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        # A regex trim here went quadratic and held the GIL for tens of
+        # seconds; pytest-timeout fails the test long before that finishes.
+        started = time.monotonic()
+        resolve_chatbook_mentions('@file:a' + '!' * 200_000 + 'b')
+        resolve_chatbook_mentions('@file:a' + '!' * 200_000)
+        assert time.monotonic() - started < 2
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_quoted_mentions_resolve_paths_with_spaces_literally(tmp_path):
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / 'My Folder').mkdir()
+        (tmp_path / 'My Folder' / 'my notes.md').write_text('hello')
+        (tmp_path / 'data.csv').write_text('x')
+        resolved = resolve_chatbook_mentions(
+            'Use @file:"My Folder/my notes.md", @dir:"My Folder". '
+            'Then @file:"data.csv,"'
+        )
+        by_token = {item['token']: item for item in resolved}
+        assert by_token['@file:"My Folder/my notes.md"']['content'] == 'hello'
+        assert by_token['@dir:"My Folder"']['available'] == 'true'
+        # Quoting means "exactly this name", so nothing is trimmed inside it.
+        assert by_token['@file:"data.csv,"']['available'] == 'false'
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_mention_trimming_does_not_bypass_path_safety(tmp_path):
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / '.secret').write_text('hidden')
+        (tmp_path / 'node_modules').mkdir()
+        (tmp_path / 'node_modules' / 'x.txt').write_text('hidden')
+        (tmp_path / 'a.txt').write_text('visible')
+        resolved = resolve_chatbook_mentions(
+            'See @file:.secret, @file:node_modules/x.txt, @file:../outside.txt. '
+            # An invisible or bidi suffix is refused, not trimmed off.
+            'Also @file:a.txt\u202e and @file:a.txt\u200b.'
+        )
+        assert [item['available'] for item in resolved] == ['false'] * 5
+        assert all(item['content'] == '[unavailable]' for item in resolved)
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_a_file_mentioned_twice_is_sent_once(tmp_path):
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    try:
+        (tmp_path / 'data.csv').write_text('x')
+        resolved = resolve_chatbook_mentions(
+            'Load @file:data.csv and check @file:data.csv, then @file:"data.csv".'
+        )
+        assert [(item['token'], item['path']) for item in resolved] == [
+            ('@file:data.csv', 'data.csv'),
+        ]
+        missing = resolve_chatbook_mentions(
+            'Try @file:gone.csv, @file:gone.csv and @file:gone.csv.'
+        )
+        assert [item['token'] for item in missing] == ['@file:gone.csv,']
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_a_repeated_mention_is_read_once(tmp_path, monkeypatch):
+    import notebook_intelligence.chatbook_mentions as mentions
+
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    reads = []
+    real_read = mentions._read_text_file
+    monkeypatch.setattr(
+        mentions, '_read_text_file', lambda path: reads.append(path) or real_read(path)
+    )
+    try:
+        (tmp_path / 'big.csv').write_text('x')
+        resolve_chatbook_mentions('Load @file:big.csv, @file:big.csv. and @file:"big.csv"')
+        assert len(reads) == 1
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_a_refused_mention_does_not_hide_a_real_sibling(tmp_path):
+    outside = tmp_path / 'outside'
+    outside.mkdir()
+    (outside / 'secret.txt').write_text('outside the root')
+    root = tmp_path / 'root'
+    root.mkdir()
+    (root / 'leak').write_text('inside')
+    (root / 'leak.').symlink_to(outside / 'secret.txt')
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(root))
+    try:
+        resolved = resolve_chatbook_mentions('Read @file:leak. then @file:leak')
+        assert [(item['token'], item['available']) for item in resolved] == [
+            ('@file:leak.', 'false'),
+            ('@file:leak', 'true'),
+        ]
+        assert resolved[1]['content'] == 'inside'
+    finally:
+        set_jupyter_root_dir(old_root)
+
+
+def test_extension_mention_values_are_quoted_but_never_trimmed(tmp_path):
+    # Provider values are opaque, and a provider may answer "" for a value it
+    # does not know, so trimming could silently resolve a different item.
+    old_root = get_jupyter_root_dir()
+    set_jupyter_root_dir(str(tmp_path))
+    seen = []
+
+    class Provider:
+        id = 'catalog'
+
+        def resolve_mention(self, request):
+            seen.append(request.value)
+            return f'resolved {request.value}'
+
+    try:
+        resolve_chatbook_mentions(
+            'Join @ext:"catalog:Q3 orders" with @ext:catalog:refunds, today, '
+            'and @ext:catalog:refunds, again',
+            providers=[Provider()],
+        )
+        assert seen == ['Q3 orders', 'refunds,']
+        seen.clear()
+        resolved = resolve_chatbook_mentions(
+            'Use @ext:catalog:orders and @ext:"catalog:orders"',
+            providers=[Provider()],
+        )
+        assert seen == ['orders']
+        assert len(resolved) == 1
     finally:
         set_jupyter_root_dir(old_root)
 

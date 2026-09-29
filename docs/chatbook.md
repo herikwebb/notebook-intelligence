@@ -33,6 +33,10 @@ Chatbook adds six commands, all reachable from the command palette:
 
 Typing `@` in a prompt cell opens a menu of context to attach. The built-in **Files & folders** provider browses the Jupyter root, skipping dotfiles, `__pycache__`, and `node_modules`; a selected file is read and truncated at 16,000 characters. Extensions can register providers of their own, which appear in the same menu under their own root (see [`chatbook-extensions.md`](chatbook-extensions.md)).
 
+A mention ends at the first whitespace or `@`, so a path that contains either is written in double quotes, `@file:"data/my notes.md"`; the menu inserts that form for you. A quoted path is taken exactly as written and cannot contain a double quote or a line break, so a name with a double quote can only be mentioned when it needs no quoting, and a name that itself begins and ends with a double quote cannot be mentioned at all.
+
+Sentence punctuation typed right after an unquoted file or folder mention (`.` `,` `;` `:` `!` `?` and `…`, closing brackets and quotes, and their full-width forms) is not part of the path, so `Summarize @file:data/README.md, then chart it` refers to `data/README.md`. The name as written is tried first, then with up to five of those characters removed one at a time, and the first name that exists is used even if it cannot be read. So a file whose real name ends in punctuation still resolves, and a shorter name is never reached past one that exists. Other characters, such as `+` or `-`, are always part of the path.
+
 Mentions work only in prompt cells. A prompt that carries one is regenerated every run rather than reusing the previously approved code, because the mentioned content may have changed since.
 
 ## Export as a code notebook

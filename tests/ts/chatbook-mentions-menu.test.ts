@@ -155,6 +155,47 @@ describe('chatbook mention menu lifecycle', () => {
     expect(menu()).not.toBeNull();
   });
 
+  it('quotes a picked path with a space and puts the caret after it', async () => {
+    (NBIAPI.listChatbookMentions as jest.Mock).mockResolvedValue({
+      items: [
+        {
+          label: 'data/my notes.md',
+          value: 'file:data/my notes.md',
+          kind: 'file',
+          hasChildren: false
+        }
+      ],
+      breadcrumbs: []
+    });
+    // jsdom has no layout, and the selection is scrolled into view.
+    const range = Range.prototype as any;
+    const saved = [range.getClientRects, range.getBoundingClientRect];
+    range.getClientRects = () => [];
+    range.getBoundingClientRect = () => new DOMRect();
+    try {
+      await openMenu();
+      document
+        .querySelector('.nbi-chatbook-mention-option')!
+        .dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+
+      const doc = view.state.doc.toString();
+      expect(doc).toBe('summarize @file:"data/my notes.md" ');
+      // Two characters past where the unquoted value's length would put it.
+      expect(view.state.selection.main.head).toBe(doc.length);
+    } finally {
+      // jsdom has neither method, so put back absence rather than undefined.
+      (['getClientRects', 'getBoundingClientRect'] as const).forEach(
+        (name, index) => {
+          if (saved[index] === undefined) {
+            delete range[name];
+          } else {
+            range[name] = saved[index];
+          }
+        }
+      );
+    }
+  });
+
   it('is gone once the editor is destroyed', async () => {
     await openMenu();
     view.destroy();

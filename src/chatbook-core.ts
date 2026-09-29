@@ -21,7 +21,13 @@ export const DEFAULT_CHATBOOK_EXECUTION_MODE: ChatbookExecutionMode =
 export const DEFAULT_CHATBOOK_MAX_EXECUTION_MODE: ChatbookExecutionMode =
   'auto-run';
 
-/** Same token rule as `MENTION_TOKEN_RE` in chatbook_mentions.py. */
+/**
+ * Detects whether a prompt carries a mention, the way `MENTION_TOKEN_RE` in
+ * chatbook_mentions.py does. A quoted mention always also matches this unquoted
+ * form, so presence needs nothing more. JS `\w` is ASCII-only, so after a
+ * non-ASCII letter this can see a mention the server does not, which only costs
+ * a regeneration.
+ */
 export const CHATBOOK_MENTION_TOKEN_RE = /(?<![\w@])@[^\s@]+/u;
 
 export function promptHasChatbookMention(prompt: string): boolean {
