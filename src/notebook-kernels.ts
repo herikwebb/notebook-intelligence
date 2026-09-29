@@ -2,6 +2,8 @@
 
 import { KernelSpec, KernelSpecManager } from '@jupyterlab/services';
 
+import { chatbookLanguageId } from './chatbook-core';
+
 export interface INotebookKernelProfile {
   language: string;
   kernelName: string;
@@ -52,14 +54,7 @@ export function sharedKernelSpecManager(): KernelSpecManager {
 }
 
 export function normalizeNotebookLanguage(raw: string | undefined): string {
-  const language = (raw ?? '').trim().toLowerCase();
-  if (!language) {
-    return DEFAULT_NOTEBOOK_KERNEL.language;
-  }
-  if (language === 'py') {
-    return 'python';
-  }
-  return language;
+  return chatbookLanguageId(raw ?? '') || DEFAULT_NOTEBOOK_KERNEL.language;
 }
 
 export function findKernelProfile(

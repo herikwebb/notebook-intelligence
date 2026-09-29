@@ -142,7 +142,10 @@ import { Token } from '@lumino/coreutils';
 import { NotebookGenerationToolbarExtension } from './notebook-generation-toolbar';
 import {
   ChatbookToolbarExtension,
-  confirmConvertChatbookNotebook
+  canConvertToChatbook,
+  confirmConvertChatbookNotebook,
+  confirmConvertToChatbook,
+  convertToChatbookIcon
 } from './chatbook-toolbar';
 import { attachTerminalDragDrop } from './terminal-drag';
 import {
@@ -1617,6 +1620,28 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       }
     });
 
+    const currentConvertibleNotebook = (): NotebookPanel | null => {
+      const current = app.shell.currentWidget;
+      return current instanceof NotebookPanel && canConvertToChatbook(current)
+        ? current
+        : null;
+    };
+    app.commands.addCommand(CommandIDs.convertNotebookToChatbook, {
+      label: 'Convert notebook to Chatbook',
+      caption:
+        'Create a Chatbook copy of this notebook, leaving the original unchanged',
+      icon: convertToChatbookIcon,
+      isEnabled: () => currentConvertibleNotebook() !== null,
+      isVisible: () => NBIAPI.config.chatbookEnabled,
+      execute: async () => {
+        const panel = currentConvertibleNotebook();
+        if (!panel) {
+          return;
+        }
+        await confirmConvertToChatbook(app, panel);
+      }
+    });
+
     app.commands.addCommand(CommandIDs.listAvailableNotebookKernels, {
       execute: async () => {
         const kernels = new KernelSpecManager();
@@ -2363,6 +2388,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     });
     palette.addItem({
       command: CommandIDs.convertChatbookNotebook,
+      category: 'Notebook Intelligence'
+    });
+    palette.addItem({
+      command: CommandIDs.convertNotebookToChatbook,
       category: 'Notebook Intelligence'
     });
     palette.addItem({
