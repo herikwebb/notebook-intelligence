@@ -4,10 +4,20 @@ import { Notification } from '@jupyterlab/apputils';
 import { Widget } from '@lumino/widgets';
 
 import { NBIAPI } from './api';
-import { DragMode, formatForMode, invertMode } from './terminal-drag-format';
+import {
+  DragMode,
+  formatForMode,
+  invertMode,
+  partitionTerminalSafePaths
+} from './terminal-drag-format';
 
 export type { DragMode } from './terminal-drag-format';
-export { formatForMode, invertMode } from './terminal-drag-format';
+export {
+  formatForMode,
+  invertMode,
+  isTerminalSafePath,
+  partitionTerminalSafePaths
+} from './terminal-drag-format';
 
 // Structural types over `IMainAreaWidgetLike` and
 // `ITerminalTracker`: @jupyterlab/terminal nests its own copies of
@@ -108,8 +118,22 @@ function setupTerminal(
     if (widget.isDisposed) {
       return;
     }
+    // A file name is attacker-controlled data (a hostile checkout, a
+    // downloaded archive, a shared directory). Refuse any path that would
+    // not stay inert once typed into the terminal instead of pasting it.
+    const { safe, rejected } = partitionTerminalSafePaths(paths);
+    if (rejected.length > 0) {
+      Notification.warning(
+        `Terminal drop skipped ${rejected.length} path${
+          rejected.length === 1 ? '' : 's'
+        } containing control characters`
+      );
+    }
+    if (safe.length === 0) {
+      return;
+    }
     const effectiveMode = invertMode(state.mode, shiftHeld);
-    widget.content.paste(`${formatForMode(paths, effectiveMode)} `);
+    widget.content.paste(`${formatForMode(safe, effectiveMode)} `);
     // Activate the outer MainAreaWidget so the terminal also gets raised
     // if it's a background tab in a split. Otherwise the next keystroke
     // goes to the file-browser (Enter would "open the selected file") or

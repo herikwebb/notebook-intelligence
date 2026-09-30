@@ -1,7 +1,14 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
+import { Notification } from '@jupyterlab/apputils';
+
 import { attachTerminalDragDrop } from '../../src/terminal-drag';
-import { formatForMode, invertMode } from '../../src/terminal-drag-format';
+import {
+  formatForMode,
+  invertMode,
+  isTerminalSafePath,
+  partitionTerminalSafePaths
+} from '../../src/terminal-drag-format';
 
 describe('formatForMode', () => {
   it('prefixes each path with @ in mention mode', () => {
@@ -30,6 +37,38 @@ describe('formatForMode', () => {
     // in shell quotes would break the parse. Mention mode trusts the path
     // not to contain shell metacharacters; raw mode is the path that quotes.
     expect(formatForMode(['/tmp/a b.txt'], 'mention')).toBe('@/tmp/a b.txt');
+  });
+});
+
+describe('isTerminalSafePath', () => {
+  it('accepts ordinary paths, including spaces, quotes and non-ASCII', () => {
+    expect(isTerminalSafePath('/tmp/a b.txt')).toBe(true);
+    expect(isTerminalSafePath("/tmp/it's.txt")).toBe(true);
+    expect(isTerminalSafePath('/tmp/données/ファイル.csv')).toBe(true);
+  });
+
+  it('rejects paths carrying line breaks, which xterm pastes as Enter', () => {
+    expect(isTerminalSafePath('/tmp/a\nrm -rf ~\nb.txt')).toBe(false);
+    expect(isTerminalSafePath('/tmp/a\r\nb.txt')).toBe(false);
+    expect(isTerminalSafePath('/tmp/a\rb.txt')).toBe(false);
+  });
+
+  it('rejects other C0 / DEL / C1 control characters', () => {
+    expect(isTerminalSafePath('/tmp/a\u001b]0;x\u0007b.txt')).toBe(false);
+    expect(isTerminalSafePath('/tmp/a\tb.txt')).toBe(false);
+    expect(isTerminalSafePath('/tmp/a\u007fb.txt')).toBe(false);
+    expect(isTerminalSafePath('/tmp/a\u0085b.txt')).toBe(false);
+  });
+});
+
+describe('partitionTerminalSafePaths', () => {
+  it('keeps order and separates unsafe paths from safe ones', () => {
+    expect(
+      partitionTerminalSafePaths(['/tmp/a.txt', '/tmp/x\ny', '/tmp/b.txt'])
+    ).toEqual({
+      safe: ['/tmp/a.txt', '/tmp/b.txt'],
+      rejected: ['/tmp/x\ny']
+    });
   });
 });
 
@@ -165,6 +204,68 @@ describe('attachTerminalDragDrop lm-drop handler', () => {
     expect(env.activate.mock.invocationCallOrder[0]).toBeGreaterThan(
       env.paste.mock.invocationCallOrder[0]
     );
+  });
+
+  it('refuses to paste a path with an embedded line break and warns instead', () => {
+    const env = newEnv();
+    const { tracker, fireWidgetAdded } = setupTracker();
+    attachTerminalDragDrop({ tracker, isEnabled: () => true });
+    fireWidgetAdded(env.mock);
+    (Notification.warning as jest.Mock).mockClear();
+
+    // A file named "report\nrm -rf ~\n.csv" is legal on POSIX and listed
+    // verbatim by the contents API; pasted unquoted it would run the
+    // middle line as a command.
+    dispatchLmDrop(env.host, ['/tmp/report\nrm -rf ~\n.csv']);
+
+    expect(env.paste).not.toHaveBeenCalled();
+    expect(env.activate).not.toHaveBeenCalled();
+    expect(Notification.warning).toHaveBeenCalledTimes(1);
+    expect((Notification.warning as jest.Mock).mock.calls[0][0]).toMatch(
+      /skipped 1 path containing control characters/
+    );
+  });
+
+  it('still pastes the safe paths of a mixed drop, in both modes', () => {
+    const env = newEnv();
+    const { tracker, fireWidgetAdded } = setupTracker();
+    attachTerminalDragDrop({ tracker, isEnabled: () => true });
+    fireWidgetAdded(env.mock);
+    (Notification.warning as jest.Mock).mockClear();
+
+    dispatchLmDrop(env.host, [
+      '/tmp/ok.txt',
+      '/tmp/bad\u001b[2Jname',
+      '/tmp/also\rbad'
+    ]);
+
+    expect(env.paste).toHaveBeenCalledTimes(1);
+    expect(env.paste).toHaveBeenCalledWith('@/tmp/ok.txt ');
+    expect(env.activate).toHaveBeenCalledTimes(1);
+    expect((Notification.warning as jest.Mock).mock.calls[0][0]).toMatch(
+      /skipped 2 paths containing control characters/
+    );
+
+    // Raw mode single-quotes for POSIX shells, but the terminal may be
+    // running a REPL, so the guard applies before quoting in both modes.
+    const rawEvent: any = new Event('lm-drop', {
+      bubbles: true,
+      cancelable: true
+    });
+    rawEvent.mimeData = {
+      hasData: (key: string) => key === 'application/x-jupyter-icontents',
+      getData: (key: string) =>
+        key === 'application/x-jupyter-icontents'
+          ? ['/tmp/raw ok.txt', '/tmp/raw\nbad']
+          : null
+    };
+    rawEvent.proposedAction = 'move';
+    rawEvent.dropAction = 'none';
+    rawEvent.shiftKey = true;
+    env.host.dispatchEvent(rawEvent);
+
+    expect(env.paste).toHaveBeenCalledTimes(2);
+    expect(env.paste).toHaveBeenLastCalledWith("'/tmp/raw ok.txt' ");
   });
 
   it('handles drops on a descendant of the terminal host, not just the host itself', () => {
