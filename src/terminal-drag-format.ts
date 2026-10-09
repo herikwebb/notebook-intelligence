@@ -9,6 +9,23 @@ import { shellSingleQuote } from './shell-utils';
 export type DragMode = 'mention' | 'raw';
 
 /**
+ * Detect characters that terminal input can interpret as keys or control
+ * sequences, including line breaks, tabs, ESC, DEL and C1 controls. Shell
+ * quoting does not protect every program that may be running in a terminal.
+ * This check does not escape shell syntax; mention mode still emits bare
+ * Claude Code @-mentions, while raw mode quotes paths for POSIX shells.
+ */
+export function hasTerminalControlCharacters(path: string): boolean {
+  for (let i = 0; i < path.length; i++) {
+    const code = path.charCodeAt(i);
+    if (code <= 0x1f || (code >= 0x7f && code <= 0x9f)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Format a list of paths for injection per mode. @-mention prefixes each
  * path with "@" (Claude Code syntax, no quoting); raw mode shell-escapes
  * absolute paths for non-Claude shell sessions. Single-space separator
