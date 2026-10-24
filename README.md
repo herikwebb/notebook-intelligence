@@ -164,7 +164,7 @@ A Chatbook is a notebook whose cells can be written in English. Running a prompt
 
 What happens to generated code before it runs is yours to choose: **Always confirm** (the default) shows the code and waits, **Confirm if risky** waits only when a scan finds destructive calls, and **Auto-run** executes straight away. Admins can cap that choice fleet-wide, or turn Chatbook off entirely.
 
-Prompts can pull in context with `@` mentions, rules apply to generation the same way they apply to chat, the backend kernel need not be Python, and a Chatbook exports to a plain code notebook when you want to hand someone the result instead of the prompts. See [`docs/chatbook.md`](docs/chatbook.md).
+Prompts can pull in context with `@` mentions, rules apply to generation the same way they apply to chat, the backend kernel need not be Python, a Chatbook exports to a plain code notebook when you want to hand someone the result instead of the prompts, and an existing notebook converts to a Chatbook. See [`docs/chatbook.md`](docs/chatbook.md).
 
 ### Code generation with inline chat
 
@@ -507,7 +507,7 @@ Full guide, including the span and event reference, the probe thresholds, worked
 - [`docs/skills.md`](docs/skills.md) — Claude Skills management and the org-manifest reconciler.
 - [`docs/rulesets.md`](docs/rulesets.md) — ruleset frontmatter and discovery.
 - [`docs/acp.md`](docs/acp.md) — using the experimental ACP agent mode, and its limits.
-- [`docs/chatbook.md`](docs/chatbook.md) — writing Chatbook cells, execution modes, export, and why there is no per-cell sandbox.
+- [`docs/chatbook.md`](docs/chatbook.md): writing Chatbook cells, execution modes, conversion and export, and why there is no per-cell sandbox.
 - [`docs/chatbook-extensions.md`](docs/chatbook-extensions.md) — dynamic Chatbook context and mention providers.
 - [`docs/troubleshooting.md`](docs/troubleshooting.md) — common problems with copy-pasteable fixes.
 - [`docs/performance-diagnostics.md`](docs/performance-diagnostics.md): turn timelines, the environment probe, and how to read both.
@@ -525,7 +525,7 @@ Full guide, including the span and event reference, the probe thresholds, worked
 
 ## Roadmap
 
-NBI 6.x is the current line. New features land in minor releases (6.1, 6.2, …); breaking changes are reserved for a major release and announced in the [changelog](CHANGELOG.md). 6.0 marks Chatbook's arrival, and no traitlet, env var, REST route, or on-disk format was renamed or removed. Deployments using the experimental ACP mode must now preinstall its adapter; see the [migration guidance](docs/admin-guide.md#gating-the-experimental-acp-agent-378). Upgrading from 4.x? See the [5.0.0 migration note](CHANGELOG.md#migration-note) for the `fastmcp` → `mcp` dependency swap, the new path sandboxes, and the workspace-file-attach behavior change.
+NBI 6.x is the current line. New features land in minor releases (6.1, 6.2, …); breaking changes are reserved for a major release and announced in the [changelog](CHANGELOG.md). 6.0 marks Chatbook's arrival, and no traitlet, env var, REST route, or on-disk format was renamed or removed. Deployments using the experimental ACP mode must now preinstall its adapter; see the [migration guidance](docs/admin-guide.md#gating-the-experimental-acp-agent-378). Upgrading from 4.x? See the [5.0.0 migration note](CHANGELOG.md#migration-note-1) for the `fastmcp` → `mcp` dependency swap, the new path sandboxes, and the workspace-file-attach behavior change.
 
 ## License
 
