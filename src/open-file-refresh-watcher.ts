@@ -2,6 +2,7 @@
 
 import type { DocumentRegistry } from '@jupyterlab/docregistry';
 import type { Contents } from '@jupyterlab/services';
+import { getTrans } from './i18n';
 
 // The watcher only reads `.context` off each yielded widget. Keeping the
 // surface structural (rather than `DocumentWidget`) lets the unit test
@@ -352,5 +353,6 @@ export function shouldNotifyRevert(
  * client or a git checkout produces just as readily as an agent.
  */
 export function formatRevertNotification(path: string): string {
-  return `${path} changed on disk and was reloaded`;
+  const trans = getTrans();
+  return trans.__('%1 changed on disk and was reloaded', path);
 }

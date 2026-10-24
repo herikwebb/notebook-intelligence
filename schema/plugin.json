@@ -10,7 +10,6 @@
         "name": "notebook-intelligence:editor-generate-code",
         "command": "notebook-intelligence:editor-generate-code",
         "icon": "notebook-intelligence:sparkles-icon",
-        "caption": "Generate code",
         "rank": 0
       }
     ]

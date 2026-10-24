@@ -1,0 +1,199 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: notebook_intelligence\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/open-file-refresh-watcher.ts
+msgid "%1 changed on disk and was reloaded"
+msgstr ""
+
+#: src/index.ts
+msgid "Ask about this output"
+msgstr ""
+
+#: src/index.ts
+msgid "Chatbook"
+msgstr ""
+
+#: src/index.ts
+msgid "Choose start directory for %1"
+msgstr ""
+
+#: src/index.ts
+msgid "Claude Code terminal session"
+msgstr ""
+
+#: src/index.ts
+msgid "Close"
+msgstr ""
+
+#: src/index.ts
+msgid "Convert notebook to Chatbook"
+msgstr ""
+
+#: src/index.ts
+msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
+msgstr ""
+
+#: src/index.ts
+msgid "Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged"
+msgstr ""
+
+#: src/index.ts
+msgid "Create a notebook whose cells are natural-language prompts"
+msgstr ""
+
+#: src/index.ts
+msgid "Explain code"
+msgstr ""
+
+#: src/index.ts
+msgid "Explain output"
+msgstr ""
+
+#: src/index.ts
+msgid "Export as code notebook"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to access the notebook: %1"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to find active file"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to find active notebook"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to find notebook: %1"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to save MCP config: %1"
+msgstr ""
+
+#: src/index.ts
+msgid "Fix code"
+msgstr ""
+
+#: src/index.ts
+msgid "Focus Notebook Intelligence chat input"
+msgstr ""
+
+#: src/index.ts
+msgid "Generate code"
+msgstr ""
+
+#: src/index.ts
+msgid "Generated code"
+msgstr ""
+
+#: src/index.ts
+msgid "GitHub Copilot Status"
+msgstr ""
+
+#: src/index.ts
+msgid "Inline chat failed: %1"
+msgstr ""
+
+#: src/index.ts
+msgid "NBI Settings"
+msgstr ""
+
+#: src/index.ts
+msgid "Notebook Intelligence Settings"
+msgstr ""
+
+#: src/index.ts
+msgid "Open MCP Config Editor"
+msgstr ""
+
+#: src/index.ts
+msgid "Open a notebook to insert the code as new cell"
+msgstr ""
+
+#: src/index.ts
+msgid "Open the NBI sidebar and move focus to the prompt textarea"
+msgstr ""
+
+#: src/index.ts
+msgid "Refresh English representation"
+msgstr ""
+
+#: src/index.ts
+msgid "Regenerate the English representation of this code cell"
+msgstr ""
+
+#: src/index.ts
+msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr ""
+
+#: src/index.ts
+msgid "Resume or start a Claude Code session"
+msgstr ""
+
+#: src/index.ts
+msgid "Show generated code"
+msgstr ""
+
+#: src/index.ts
+msgid "Show the hidden code generated for this Chatbook cell"
+msgstr ""
+
+#: src/index.ts
+msgid "Start a GitHub Copilot CLI session in a Jupyter terminal"
+msgstr ""
+
+#: src/index.ts
+msgid "Start a Pi session in a Jupyter terminal"
+msgstr ""
+
+#: src/index.ts
+msgid "Start an OpenAI Codex CLI session in a Jupyter terminal"
+msgstr ""
+
+#: src/index.ts
+msgid "Start an opencode session in a Jupyter terminal"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch all cells to code"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch all cells to natural language"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch cell to code"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch cell to natural language"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch every cell of this Chatbook between its prompt and its code"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch the active Chatbook cell between natural language and code"
+msgstr ""
+
+#: src/index.ts
+msgid "Troubleshoot errors in output"
+msgstr ""
+
+#: src/index.ts
+msgid "＋ New Session"
+msgstr ""
