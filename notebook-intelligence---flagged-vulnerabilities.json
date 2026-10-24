@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-10-23T05:15:00-07:00",
+    "last_scan": "2026-10-24T05:10:00-07:00",
     "scanner": "manual trace-based review at upstream tip 2d5a8ae (6.2.0-a1) focused on the 9-commit delta since 11ff327 (chatbook_mentions.py quoted/punctuation-trimmed mention parsing #505, Convert to Chatbook #508/#510 in src/chatbook-core.ts, src/chatbook-toolbar.ts, src/chatbook.ts, src/index.ts, src/chatbook-mentions.ts), each path verified against the source",
     "findings": [
         {
@@ -769,6 +769,7 @@
         "Pass B 2026-10-09: 0 new findings at upstream tip cfb1301 (6.2.0; no code delta since 2026-10-06, fourth scan of this commit). Confirmed via git log cfb1301..upstream/main (empty). All surfaces (incl. skill_github_import, plugin_manager, chatbook, ACP/MCP, handlers, terminal sinks) already traced in surfaces_reviewed; 18 prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-10-14: 0 new findings at upstream tip cfb1301 (6.2.0; ninth scan of this commit, no code delta since 2026-10-06). All surfaces already traced in surfaces_reviewed; 18 prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-10-22: 0 new findings at upstream tip cfb1301 (6.2.0; git log cfb1301..upstream/main empty, no code delta since 2026-10-06). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
-        "Pass B 2026-10-23: 0 new findings at upstream tip cfb1301 (6.2.0; upstream/main still cfb1301, no code delta since 2026-10-06). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post."
+        "Pass B 2026-10-23: 0 new findings at upstream tip cfb1301 (6.2.0; upstream/main still cfb1301, no code delta since 2026-10-06). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
+        "Pass B 2026-10-24: 0 new findings at upstream tip cfb1301 (6.2.0; upstream/main still cfb1301, no code delta since 2026-10-06). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post."
     ]
 }
