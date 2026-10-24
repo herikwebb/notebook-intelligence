@@ -164,3 +164,35 @@ def test_frontend_labels_every_built_in_toolset():
     enum_body = tokens.split("export enum BuiltinToolsetType {", 1)[1].split("}", 1)[0]
     frontend = set(re.findall(r"=\s*'([^']+)'", enum_body))
     assert frontend == {toolset.value for toolset in BuiltinToolset}
+
+
+def test_template_token_must_survive_translation(tmp_path, hatch_build):
+    po_path = _write_catalog(tmp_path)
+    po = polib.pofile(str(po_path))
+    po.append(
+        polib.POEntry(
+            msgid="Tiles for {launchers}.",
+            msgstr="Kacheln für die Werkzeuge.",
+        )
+    )
+    po.save(str(po_path))
+    with pytest.raises(ValueError, match="placeholders"):
+        hatch_build.compile_catalogs(tmp_path, "6.3.0")
+
+
+def test_tour_contexts_match_the_frontend():
+    """scripts/i18n.py extracts the tour's strings under contexts that
+    src/tour/tour-text.ts must look them up with; a mismatch would leave the
+    whole tour English with no error."""
+    spec = importlib.util.spec_from_file_location(
+        "nbi_i18n_script", ROOT / "scripts" / "i18n.py"
+    )
+    script = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(script)
+    tour_text = (ROOT / "src" / "tour" / "tour-text.ts").read_text(encoding="utf-8")
+    template_branch = tour_text.index("includes('{launchers}')")
+    template_context = tour_text.index(f'"{script.TOUR_TEMPLATE_CONTEXT}"')
+    plain_context = tour_text.index(f"'{script.TOUR_CONTEXT}'")
+    # The {launchers} branch looks up the template context; the other the
+    # plain one.
+    assert template_branch < template_context < plain_context

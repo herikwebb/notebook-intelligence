@@ -3,7 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { NBIAPI } from '../api';
 import { requestAPI } from '../handler';
-import { useTrans } from '../i18n';
+import { TranslationBundle } from '@jupyterlab/translation';
+import {
+  formatNumber,
+  getLanguageCode,
+  getTrans,
+  interpolate,
+  useTrans
+} from '../i18n';
 import { lockedTip } from './setting-lock';
 import { writeTextToClipboard } from '../utils';
 import {
@@ -148,6 +155,29 @@ function stallCount(turn: IPerfTurn): number {
   return (turn.events ?? []).filter(e => e.name === 'stall').length;
 }
 
+// Panel numbers go through the shared formatter in i18n.ts.
+const fmtNumber = formatNumber;
+
+/** How many decimals a value has, up to 3, so it is shown as recorded. */
+function decimalPlaces(value: number): number {
+  const fraction = String(value).split('.')[1] ?? '';
+  return Math.min(fraction.length, 3);
+}
+
+function fmtCount(value: number): string {
+  return fmtNumber(value, 0);
+}
+
+function fmtTokens(value: unknown): string {
+  const v = num(value);
+  return v === undefined ? notAvailable() : fmtCount(v);
+}
+
+function notAvailable(): string {
+  const trans = getTrans();
+  return trans._p('a value that was not recorded', 'n/a');
+}
+
 // `num` first, not a bare undefined check: the backend leaves
 // sdk.duration_api_ms (and its siblings) as null on every turn that is not a
 // Claude turn, and `Math.round(null)` is 0. A hard "0 ms" in the column the
@@ -155,7 +185,10 @@ function stallCount(turn: IPerfTurn): number {
 // nothing" and sends the reader looking for local causes.
 function fmtMs(value: unknown): string {
   const v = num(value);
-  return v === undefined ? 'n/a' : `${Math.round(v)} ms`;
+  const trans = getTrans();
+  return v === undefined
+    ? notAvailable()
+    : trans._p('milliseconds', '%1 ms', fmtNumber(Math.round(v), 0));
 }
 
 // Probe latency medians on a local disk are routinely well under 1 ms, and
@@ -163,42 +196,54 @@ function fmtMs(value: unknown): string {
 function fmtLatency(value: unknown): string {
   const v = num(value);
   if (v === undefined) {
-    return 'n/a';
+    return notAvailable();
   }
-  if (v < 10) {
-    return `${v.toFixed(2)} ms`;
-  }
-  return `${Math.round(v)} ms`;
+  const trans = getTrans();
+  return trans._p(
+    'milliseconds',
+    '%1 ms',
+    v < 10 ? fmtNumber(v, 2) : fmtNumber(Math.round(v), 0)
+  );
 }
 
 function fmtSeconds(value: unknown): string {
   const v = num(value);
-  return v === undefined ? 'n/a' : `${(v / 1000).toFixed(1)}s`;
+  const trans = getTrans();
+  return v === undefined
+    ? notAvailable()
+    : trans._p('seconds', '%1s', fmtNumber(v / 1000, 1));
 }
 
 function fmtClock(tWall: unknown): string {
   if (num(tWall) === undefined) {
-    return 'n/a';
+    return notAvailable();
   }
   // The backend sends time.time(), i.e. epoch seconds as a float.
-  return new Date((tWall as number) * 1000).toLocaleTimeString();
+  return new Date((tWall as number) * 1000).toLocaleTimeString(
+    getLanguageCode()
+  );
 }
 
 function fmtBytes(input: unknown): string {
   const value = num(input);
   if (value === undefined) {
-    return 'n/a';
+    return notAvailable();
   }
+  const trans = getTrans();
   if (value >= 1024 * 1024 * 1024) {
-    return `${(value / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+    return trans._p(
+      'gigabytes',
+      '%1 GB',
+      fmtNumber(value / (1024 * 1024 * 1024), 1)
+    );
   }
   if (value >= 1024 * 1024) {
-    return `${(value / (1024 * 1024)).toFixed(1)} MB`;
+    return trans._p('megabytes', '%1 MB', fmtNumber(value / (1024 * 1024), 1));
   }
   if (value >= 1024) {
-    return `${(value / 1024).toFixed(1)} KB`;
+    return trans._p('kilobytes', '%1 KB', fmtNumber(value / 1024, 1));
   }
-  return `${value} B`;
+  return trans._p('bytes', '%1 B', fmtCount(value));
 }
 
 function num(value: unknown): number | undefined {
@@ -305,20 +350,28 @@ interface IVerdict {
 // no verdict field. The denominator is active_ms rather than total_ms because
 // total_ms includes time the turn spent waiting on the user, which is not a
 // performance problem.
-function turnVerdict(turn: IPerfTurn): IVerdict {
+function turnVerdict(trans: TranslationBundle, turn: IPerfTurn): IVerdict {
   if (turn.status === 'error') {
-    return { label: 'Failed', detail: 'The turn ended in an error.' };
+    return {
+      label: trans._p('turn verdict', 'Failed'),
+      detail: trans.__('The turn ended in an error.')
+    };
   }
   if (turn.status === 'cancelled') {
     return {
-      label: 'Cancelled',
-      detail: 'Stopped before completing, so these timings are partial.'
+      label: trans._p('turn verdict', 'Cancelled'),
+      detail: trans.__(
+        'Stopped before completing, so these timings are partial.'
+      )
     };
   }
 
   const active = turn.active_ms;
   if (!active || active <= 0) {
-    return { label: 'No timing recorded', detail: '' };
+    return {
+      label: trans._p('turn verdict', 'No timing recorded'),
+      detail: ''
+    };
   }
 
   const api = num(turn.sdk?.duration_api_ms);
@@ -329,41 +382,64 @@ function turnVerdict(turn: IPerfTurn): IVerdict {
 
   if (api !== undefined && api >= 0.7 * active) {
     return {
-      label: 'Model or gateway',
-      detail: `The SDK attributes ${fmtSeconds(api)} to the API against ${fmtSeconds(active)} active, so the time is on the far side of the network rather than in NBI.`
+      label: trans._p('turn verdict', 'Model or gateway'),
+      detail: trans.__(
+        'The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI.',
+        fmtSeconds(api),
+        fmtSeconds(active)
+      )
     };
   }
   if (tools >= 0.4 * active) {
     const worst = slowestTool(turn);
-    const which = worst
-      ? ` Slowest: ${worst.name} at ${fmtSeconds(worst.dur_ms)}.`
-      : '';
     return {
-      label: 'Tool execution',
-      detail: `Tools accounted for ${fmtSeconds(tools)} of ${fmtSeconds(active)} active.${which}`
+      label: trans._p('turn verdict', 'Tool execution'),
+      detail: worst
+        ? trans.__(
+            'Tools accounted for %1 of %2 active. Slowest: %3 at %4.',
+            fmtSeconds(tools),
+            fmtSeconds(active),
+            worst.name,
+            fmtSeconds(worst.dur_ms)
+          )
+        : trans.__(
+            'Tools accounted for %1 of %2 active.',
+            fmtSeconds(tools),
+            fmtSeconds(active)
+          )
     };
   }
   if (connect !== undefined && connect >= 0.25 * active) {
     return {
-      label: 'Agent cold start',
-      detail: `Connect and spawn took ${fmtSeconds(connect)}. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up.`
+      label: trans._p('turn verdict', 'Agent cold start'),
+      detail: trans.__(
+        'Connect and spawn took %1. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up.',
+        fmtSeconds(connect)
+      )
     };
   }
   if (contextPrep !== undefined && contextPrep >= 0.25 * active) {
     return {
-      label: 'Context preparation',
-      detail: `Rule and skill discovery took ${fmtSeconds(contextPrep)}. That work is filesystem-bound on the server's home directory.`
+      label: trans._p('turn verdict', 'Context preparation'),
+      detail: trans.__(
+        "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory.",
+        fmtSeconds(contextPrep)
+      )
     };
   }
   if (stalls > 0) {
     return {
-      label: 'Mid-stream stalls',
-      detail: `${stalls} gap${stalls === 1 ? '' : 's'} during streaming. Each stall event below is tagged with what preceded it.`
+      label: trans._p('turn verdict', 'Mid-stream stalls'),
+      detail: trans._n(
+        '%1 gap during streaming. Each stall event below is tagged with what preceded it.',
+        '%1 gaps during streaming. Each stall event below is tagged with what preceded it.',
+        stalls
+      )
     };
   }
   return {
-    label: 'No single hotspot',
-    detail: `${fmtSeconds(active)} active with no phase dominating.`
+    label: trans._p('turn verdict', 'No single hotspot'),
+    detail: trans.__('%1 active with no phase dominating.', fmtSeconds(active))
   };
 }
 
@@ -377,78 +453,124 @@ interface IColumn {
   tip: string;
 }
 
-const TURN_COLUMNS: IColumn[] = [
-  { key: 'time', label: 'Time', tip: 'When the turn started, in local time.' },
+// A function so the labels are translated when the table renders.
+const turnColumns = (trans: TranslationBundle): IColumn[] => [
+  {
+    key: 'time',
+    label: trans._p('performance table column', 'Time'),
+    tip: trans.__('When the turn started, in local time.')
+  },
   {
     key: 'mode',
-    label: 'Mode',
-    tip: 'Which backend served the turn, and the surface it came from.'
+    label: trans._p('performance table column', 'Mode'),
+    tip: trans.__(
+      'Which backend served the turn, and the surface it came from.'
+    )
   },
   {
     key: 'model',
-    label: 'Model',
-    tip: 'Model name, hashed when attribute detail is set to redacted.'
+    label: trans._p('performance table column', 'Model'),
+    tip: trans.__(
+      'Model name, hashed when attribute detail is set to redacted.'
+    )
   },
   {
     key: 'status',
-    label: 'Status',
-    tip: 'ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success.'
+    label: trans._p('performance table column', 'Status'),
+    tip: trans.__(
+      'ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success.'
+    )
   },
   {
     key: 'total',
-    label: 'Total',
-    tip: 'Wall time from the request arriving to the response finishing, including any time spent waiting on you.'
+    label: trans._p('performance table column', 'Total'),
+    tip: trans.__(
+      'Wall time from the request arriving to the response finishing, including any time spent waiting on you.'
+    )
   },
   {
     key: 'active',
-    label: 'Active',
-    tip: 'Total minus time the turn spent blocked on your input. This is the number to judge performance by.'
+    label: trans._p('performance table column', 'Active'),
+    tip: trans.__(
+      'Total minus time the turn spent blocked on your input. This is the number to judge performance by.'
+    )
   },
   {
     key: 'spawn',
-    label: 'Spawn',
-    tip: 'The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage.'
+    label: trans._p('performance table column', 'Spawn'),
+    tip: trans.__(
+      'The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage.'
+    )
   },
   {
     key: 'first_token',
-    label: 'First token',
-    tip: 'Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it.'
+    label: trans._p('performance table column', 'First token'),
+    tip: trans.__(
+      'Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it.'
+    )
   },
   {
     key: 'stream',
-    label: 'Stream',
-    tip: 'First content chunk to last. Excludes connect.'
+    label: trans._p('performance table column', 'Stream'),
+    tip: trans.__('First content chunk to last. Excludes connect.')
   },
   {
     key: 'tools',
-    label: 'Tools',
-    tip: 'Sum of every tool span in the turn. Expand the row to see them individually.'
+    label: trans._p('performance table column', 'Tools'),
+    tip: trans.__(
+      'Sum of every tool span in the turn. Expand the row to see them individually.'
+    )
   },
   {
     key: 'stalls',
-    label: 'Stalls',
-    tip: 'Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text.'
+    label: trans._p('performance table column', 'Stalls'),
+    tip: trans.__(
+      'Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text.'
+    )
   },
   {
     key: 'tokens_in',
-    label: 'Tokens in',
-    tip: 'Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them.'
+    label: trans._p('performance table column', 'Tokens in'),
+    tip: trans.__(
+      'Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them.'
+    )
   },
-  { key: 'tokens_out', label: 'Tokens out', tip: 'Output tokens.' },
+  {
+    key: 'tokens_out',
+    label: trans._p('performance table column', 'Tokens out'),
+    tip: trans.__('Output tokens.')
+  },
   {
     key: 'api',
-    label: 'API ms',
-    tip: 'Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local.'
+    label: trans._p('performance table column', 'API ms'),
+    tip: trans.__(
+      'Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local.'
+    )
   }
 ];
 
+/** A turn's recorded status (ok, error, cancelled) in words. */
+function turnStatusLabel(trans: TranslationBundle, status: string): string {
+  switch (status) {
+    case 'ok':
+      return trans._p('turn status', 'ok');
+    case 'error':
+      return trans._p('turn status', 'error');
+    case 'cancelled':
+      return trans._p('turn status', 'cancelled');
+    default:
+      return status;
+  }
+}
+
 function PerfTurnDetail(props: { turn: IPerfTurn }): JSX.Element {
+  const trans = useTrans();
   const { turn } = props;
   const spans = turn.spans ?? [];
   const events = [...(turn.events ?? [])].sort((a, b) => a.t_ms - b.t_ms);
   const maxDur = spans.reduce((m, s) => Math.max(m, s.dur_ms), 0);
   const depths = spanDepths(spans);
-  const verdict = turnVerdict(turn);
+  const verdict = turnVerdict(trans, turn);
   const droppedSpans = turn.dropped_spans ?? 0;
   const droppedAttrs = turn.dropped_attrs ?? 0;
 
@@ -459,7 +581,9 @@ function PerfTurnDetail(props: { turn: IPerfTurn }): JSX.Element {
       )}
 
       {spans.length === 0 ? (
-        <div className="nbi-perf-empty">No spans recorded for this turn.</div>
+        <div className="nbi-perf-empty">
+          {trans.__('No spans recorded for this turn.')}
+        </div>
       ) : (
         <div className="nbi-perf-spans">
           {spans.map((span, i) => (
@@ -488,7 +612,9 @@ function PerfTurnDetail(props: { turn: IPerfTurn }): JSX.Element {
 
       {events.length > 0 && (
         <div className="nbi-perf-events">
-          <div className="nbi-perf-subtitle">Events</div>
+          <div className="nbi-perf-subtitle">
+            {trans._p('turn timeline section', 'Events')}
+          </div>
           {events.map((ev, i) => (
             <div className="nbi-perf-event-row" key={`${ev.name}-${i}`}>
               <span className="nbi-perf-event-offset">{fmtMs(ev.t_ms)}</span>
@@ -501,8 +627,11 @@ function PerfTurnDetail(props: { turn: IPerfTurn }): JSX.Element {
 
       {droppedSpans + droppedAttrs > 0 && (
         <div className="nbi-perf-detail-note">
-          {droppedSpans} span(s) and {droppedAttrs} attribute(s) were dropped by
-          the per-turn caps, so this timeline is incomplete.
+          {trans.__(
+            '%1 and %2 were dropped by the per-turn caps, so this timeline is incomplete.',
+            trans._n('%1 span', '%1 spans', droppedSpans),
+            trans._n('%1 attribute', '%1 attributes', droppedAttrs)
+          )}
         </div>
       )}
     </div>
@@ -510,13 +639,15 @@ function PerfTurnDetail(props: { turn: IPerfTurn }): JSX.Element {
 }
 
 function PerfTurnsTable(props: { turns: IPerfTurn[] }): JSX.Element {
+  const trans = useTrans();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   if (props.turns.length === 0) {
     return (
       <div className="nbi-perf-empty">
-        Recording is on, but no turns have been captured yet. Run a chat turn,
-        then press Refresh.
+        {trans.__(
+          'Recording is on, but no turns have been captured yet. Run a chat turn, then press Refresh.'
+        )}
       </div>
     );
   }
@@ -525,28 +656,35 @@ function PerfTurnsTable(props: { turns: IPerfTurn[] }): JSX.Element {
     setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const columns = turnColumns(trans);
   return (
     <div className="nbi-perf-table-wrap">
       <table className="nbi-perf-table">
         <thead>
           <tr>
             <th>
-              <span className="nbi-perf-visually-hidden">Expand</span>
+              <span className="nbi-perf-visually-hidden">
+                {trans.__('Expand')}
+              </span>
             </th>
-            {TURN_COLUMNS.map(col => (
+            {columns.map(col => (
               <th key={col.key} title={col.tip}>
                 {col.label}
               </th>
             ))}
-            <th title="A one-line reading of where this turn's time went, derived from the columns to the left.">
-              Verdict
+            <th
+              title={trans.__(
+                "A one-line reading of where this turn's time went, derived from the columns to the left."
+              )}
+            >
+              {trans._p('performance table column', 'Verdict')}
             </th>
           </tr>
         </thead>
         <tbody>
           {props.turns.map(turn => {
             const open = !!expanded[turn.turn_id];
-            const verdict = turnVerdict(turn);
+            const verdict = turnVerdict(trans, turn);
             return (
               <React.Fragment key={turn.turn_id}>
                 <tr>
@@ -556,8 +694,14 @@ function PerfTurnsTable(props: { turns: IPerfTurn[] }): JSX.Element {
                       aria-expanded={open}
                       aria-label={
                         open
-                          ? `Hide timeline for the turn at ${fmtClock(turn.t_wall)}`
-                          : `Show timeline for the turn at ${fmtClock(turn.t_wall)}`
+                          ? trans.__(
+                              'Hide timeline for the turn at %1',
+                              fmtClock(turn.t_wall)
+                            )
+                          : trans.__(
+                              'Show timeline for the turn at %1',
+                              fmtClock(turn.t_wall)
+                            )
                       }
                       onClick={() => toggle(turn.turn_id)}
                     >
@@ -566,9 +710,9 @@ function PerfTurnsTable(props: { turns: IPerfTurn[] }): JSX.Element {
                   </td>
                   <td>{fmtClock(turn.t_wall)}</td>
                   <td>{turn.mode}</td>
-                  <td>{turn.model || 'unknown'}</td>
+                  <td>{turn.model || trans._p('model name', 'unknown')}</td>
                   <td className={`nbi-perf-status-${turn.status}`}>
-                    {turn.status}
+                    {turnStatusLabel(trans, turn.status)}
                   </td>
                   <td>{fmtMs(turn.total_ms)}</td>
                   <td>{fmtMs(turn.active_ms)}</td>
@@ -576,9 +720,9 @@ function PerfTurnsTable(props: { turns: IPerfTurn[] }): JSX.Element {
                   <td>{fmtMs(firstTokenMs(turn))}</td>
                   <td>{fmtMs(findSpanMs(turn, 'stream'))}</td>
                   <td>{fmtMs(toolsMs(turn))}</td>
-                  <td>{stallCount(turn)}</td>
-                  <td>{turn.tokens?.input ?? 'n/a'}</td>
-                  <td>{turn.tokens?.output ?? 'n/a'}</td>
+                  <td>{fmtCount(stallCount(turn))}</td>
+                  <td>{fmtTokens(turn.tokens?.input)}</td>
+                  <td>{fmtTokens(turn.tokens?.output)}</td>
                   <td>{fmtMs(turn.sdk?.duration_api_ms)}</td>
                   <td className="nbi-perf-verdict">{verdict.label}</td>
                 </tr>
@@ -586,7 +730,7 @@ function PerfTurnsTable(props: { turns: IPerfTurn[] }): JSX.Element {
                   <tr>
                     <td
                       className="nbi-perf-detail-cell"
-                      colSpan={TURN_COLUMNS.length + 2}
+                      colSpan={columns.length + 2}
                     >
                       <PerfTurnDetail turn={turn} />
                     </td>
@@ -605,12 +749,20 @@ function PerfTurnsTable(props: { turns: IPerfTurn[] }): JSX.Element {
 // Probe rendering
 // ---------------------------------------------------------------------------
 
-const PROBE_GROUP_LABELS: Record<string, string> = {
-  filesystem: 'Filesystem',
-  subprocess: 'Subprocess startup',
-  runtime: 'Process and host',
-  network: 'Network'
-};
+function probeGroupLabel(trans: TranslationBundle, group: string): string {
+  switch (group) {
+    case 'filesystem':
+      return trans._p('probe group', 'Filesystem');
+    case 'subprocess':
+      return trans._p('probe group', 'Subprocess startup');
+    case 'runtime':
+      return trans._p('probe group', 'Process and host');
+    case 'network':
+      return trans._p('probe group', 'Network');
+    default:
+      return group;
+  }
+}
 
 const PROBE_GROUP_ORDER = ['filesystem', 'subprocess', 'runtime', 'network'];
 
@@ -627,87 +779,145 @@ const NETWORK_FS_TYPES = [
   'glusterfs'
 ];
 
-const FS_TARGET_LABELS: Record<string, string> = {
-  claude_home: '~/.claude',
-  nbi_user_dir: 'NBI config directory',
-  jupyter_root: 'Jupyter root directory'
-};
+// Labels are built per call so they are translated; commands stay as typed.
+function fsTargetLabel(trans: TranslationBundle, target: string): string {
+  switch (target) {
+    case 'claude_home':
+      return '~/.claude';
+    case 'nbi_user_dir':
+      return trans.__('NBI config directory');
+    case 'jupyter_root':
+      return trans.__('Jupyter root directory');
+    default:
+      return target;
+  }
+}
 
-const FS_KIND_LABELS: Record<string, string> = {
-  latency: 'small-file latency',
-  sustained_io: 'sustained throughput',
-  mount: 'mount',
-  session_scan: 'session tree size'
-};
+function fsKindLabel(trans: TranslationBundle, kind: string): string {
+  switch (kind) {
+    case 'latency':
+      return trans._p('filesystem check', 'small-file latency');
+    case 'sustained_io':
+      return trans._p('filesystem check', 'sustained throughput');
+    case 'mount':
+      return trans._p('filesystem check', 'mount');
+    case 'session_scan':
+      return trans._p('filesystem check', 'session tree size');
+    default:
+      return kind;
+  }
+}
 
-const CHECK_LABELS: Record<string, string> = {
-  'subprocess.node_version': 'node --version',
-  'subprocess.claude_cli_version': 'claude --version',
-  'subprocess.npm_cache_path': 'npm config get cache',
-  'runtime.process_rss': 'Server process peak memory',
-  'runtime.loadavg': 'Host load average',
-  'runtime.cgroup_cpu': 'cgroup CPU throttling',
-  'runtime.interpreter': 'Python interpreter',
-  'network.endpoint': 'Configured endpoint'
-};
+function otherCheckLabel(trans: TranslationBundle, id: string): string {
+  switch (id) {
+    case 'subprocess.node_version':
+      return 'node --version';
+    case 'subprocess.claude_cli_version':
+      return 'claude --version';
+    case 'subprocess.npm_cache_path':
+      return 'npm config get cache';
+    case 'runtime.process_rss':
+      return trans.__('Server process peak memory');
+    case 'runtime.loadavg':
+      return trans.__('Host load average');
+    case 'runtime.cgroup_cpu':
+      return trans.__('cgroup CPU throttling');
+    case 'runtime.interpreter':
+      return trans.__('Python interpreter');
+    case 'network.endpoint':
+      return trans.__('Configured endpoint');
+    default:
+      return id;
+  }
+}
 
-function checkLabel(check: IPerfProbeCheck): string {
+function checkLabel(trans: TranslationBundle, check: IPerfProbeCheck): string {
   if (check.id.startsWith('fs.')) {
     const parts = check.id.split('.');
     const target = parts[1];
     const kind = parts.slice(2).join('.');
-    const targetLabel = FS_TARGET_LABELS[target] ?? target;
+    const targetLabel = fsTargetLabel(trans, target);
     // "fs.claude_home" with no kind is the directory-level entry (skipped
     // when absent, timed out when the mount is hung), so it has no ": kind"
     // suffix to add.
     return kind
-      ? `${targetLabel}: ${FS_KIND_LABELS[kind] ?? kind}`
+      ? trans._p(
+          'probe check: %1 is a directory, %2 what was measured',
+          '%1: %2',
+          targetLabel,
+          fsKindLabel(trans, kind)
+        )
       : targetLabel;
   }
-  return CHECK_LABELS[check.id] ?? check.id;
+  return otherCheckLabel(trans, check.id);
 }
 
-function latencyReading(detail: Record<string, unknown>): IProbeReading {
+function latencyReading(
+  trans: TranslationBundle,
+  detail: Record<string, unknown>
+): IProbeReading {
   const stat = (detail.stat_ms ?? {}) as Record<string, unknown>;
   const write = (detail.write_fsync_unlink_ms ?? {}) as Record<string, unknown>;
   const statMedian = num(stat.median_ms);
   const writeMedian = num(write.median_ms);
   const level = worseBand(band(statMedian, 1, 5), band(writeMedian, 10, 50));
   return {
-    headline: `stat ${fmtLatency(statMedian)}, write+fsync ${fmtLatency(writeMedian)} (median of ${num(detail.n_completed) ?? 0})`,
+    headline: trans.__(
+      'stat %1, write+fsync %2 (median of %3)',
+      fmtLatency(statMedian),
+      fmtLatency(writeMedian),
+      fmtCount(num(detail.n_completed) ?? 0)
+    ),
     band: level,
     note:
       level === 'bad' || level === 'warn'
-        ? 'fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it.'
+        ? trans.__(
+            'fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it.'
+          )
         : undefined
   };
 }
 
-function sustainedReading(detail: Record<string, unknown>): IProbeReading {
+function sustainedReading(
+  trans: TranslationBundle,
+  detail: Record<string, unknown>
+): IProbeReading {
   const writeMbs = num(detail.write_mb_s);
   const readMbs = num(detail.read_mb_s);
   const level = bandDescending(writeMbs, 50, 10);
   const fmt = (v: number | undefined) =>
-    v === undefined ? 'n/a' : `${v.toFixed(1)} MB/s`;
+    v === undefined
+      ? notAvailable()
+      : trans._p('megabytes per second', '%1 MB/s', fmtNumber(v, 1));
   return {
-    headline: `write ${fmt(writeMbs)}, read ${fmt(readMbs)}`,
+    headline: trans.__('write %1, read %2', fmt(writeMbs), fmt(readMbs)),
     band: level,
     note:
       level === 'bad'
-        ? 'Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod.'
+        ? trans.__(
+            'Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod.'
+          )
         : level === 'warn'
-          ? 'Below what local storage delivers. Worth comparing against a known-good node.'
+          ? trans.__(
+              'Below what local storage delivers. Worth comparing against a known-good node.'
+            )
           : undefined
   };
 }
 
-function mountReading(detail: Record<string, unknown>): IProbeReading {
+function mountReading(
+  trans: TranslationBundle,
+  detail: Record<string, unknown>
+): IProbeReading {
   const fstype = typeof detail.fstype === 'string' ? detail.fstype : undefined;
   const options =
     typeof detail.options === 'string' ? detail.options : undefined;
   if (!fstype) {
     return {
-      headline: typeof detail.note === 'string' ? detail.note : 'not determined'
+      headline:
+        typeof detail.note === 'string'
+          ? detail.note
+          : trans._p('filesystem type', 'not determined')
     };
   }
   const isNetwork = NETWORK_FS_TYPES.some(
@@ -717,12 +927,17 @@ function mountReading(detail: Record<string, unknown>): IProbeReading {
     headline: options ? `${fstype} (${options})` : fstype,
     band: isNetwork ? 'warn' : 'ok',
     note: isNetwork
-      ? 'A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local.'
+      ? trans.__(
+          'A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local.'
+        )
       : undefined
   };
 }
 
-function sessionScanReading(detail: Record<string, unknown>): IProbeReading {
+function sessionScanReading(
+  trans: TranslationBundle,
+  detail: Record<string, unknown>
+): IProbeReading {
   const parts: string[] = [];
   let worstCount = 0;
   let truncated = false;
@@ -734,23 +949,37 @@ function sessionScanReading(detail: Record<string, unknown>): IProbeReading {
     const count = num(entry.file_count) ?? 0;
     worstCount = Math.max(worstCount, count);
     truncated = truncated || entry.truncated === true;
-    parts.push(`${key} ${count} files, ${fmtBytes(num(entry.total_bytes))}`);
+    parts.push(
+      trans._n(
+        '%2 %1 file, %3',
+        '%2 %1 files, %3',
+        count,
+        key,
+        fmtBytes(num(entry.total_bytes))
+      )
+    );
   }
   if (parts.length === 0) {
-    return { headline: 'no projects/ or sessions/ directory' };
+    return { headline: trans.__('no projects/ or sessions/ directory') };
   }
   const level = band(worstCount, 5000, 20000);
+  const scanned = parts.join('; ');
   return {
-    headline: `${parts.join('; ')}${truncated ? ' (scan truncated)' : ''}`,
+    headline: truncated ? trans.__('%1 (scan truncated)', scanned) : scanned,
     band: level,
     note:
       level === 'bad' || level === 'warn'
-        ? 'A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost.'
+        ? trans.__(
+            'A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost.'
+          )
         : undefined
   };
 }
 
-function subprocessReading(detail: Record<string, unknown>): IProbeReading {
+function subprocessReading(
+  trans: TranslationBundle,
+  detail: Record<string, unknown>
+): IProbeReading {
   const wall = num(detail.wall_ms);
   const level = band(wall, 500, 2000);
   const version =
@@ -763,12 +992,17 @@ function subprocessReading(detail: Record<string, unknown>): IProbeReading {
     band: level,
     note:
       level === 'bad' || level === 'warn'
-        ? 'Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn.'
+        ? trans.__(
+            'Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn.'
+          )
         : undefined
   };
 }
 
-function networkReading(detail: Record<string, unknown>): IProbeReading {
+function networkReading(
+  trans: TranslationBundle,
+  detail: Record<string, unknown>
+): IProbeReading {
   const timings = (detail.timings_ms ?? {}) as Record<string, unknown>;
   const tls = (detail.tls ?? {}) as Record<string, unknown>;
   const http = (detail.http ?? {}) as Record<string, unknown>;
@@ -785,134 +1019,221 @@ function networkReading(detail: Record<string, unknown>): IProbeReading {
     pieces.push(`ttfb ${fmtLatency(num(http.ttfb_ms))}`);
   }
   if (detail.path === 'via_proxy') {
-    pieces.push('via proxy');
+    pieces.push(trans.__('via proxy'));
   }
   const headline = pieces.join(', ');
 
   if (typeof detail.tls_error === 'string') {
     return {
-      headline: `${headline}; TLS handshake failed (${detail.tls_error})`,
+      headline: trans.__(
+        '%1; TLS handshake failed (%2)',
+        headline,
+        String(detail.tls_error)
+      ),
       band: 'bad',
-      note: 'The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses.'
+      note: trans.__(
+        'The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses.'
+      )
     };
   }
   if (tls.verified_against_default_bundle === false) {
     return {
-      headline: `${headline}; issuer ${String(tls.issuer_cn ?? 'unknown')}`,
+      headline: trans.__(
+        '%1; issuer %2',
+        headline,
+        String(tls.issuer_cn ?? trans._p('certificate issuer', 'unknown'))
+      ),
       band: 'bad',
-      note: 'The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor.'
+      note: trans.__(
+        'The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor.'
+      )
     };
   }
   const skew = num(http.clock_skew_s);
   if (skew !== undefined && Math.abs(skew) > 60) {
     return {
-      headline: `${headline}; clock skew ${skew.toFixed(0)}s`,
+      headline: trans.__(
+        '%1; clock skew %2',
+        headline,
+        trans._p('seconds', '%1s', fmtNumber(skew, 0))
+      ),
       band: 'warn',
-      note: 'This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows.'
+      note: trans.__(
+        'This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows.'
+      )
     };
   }
   const level = band(Math.max(dns ?? 0, tcp ?? 0, handshake ?? 0), 200, 1000);
   return {
     headline: tls.issuer_cn
-      ? `${headline}; issuer ${String(tls.issuer_cn)}`
+      ? trans.__('%1; issuer %2', headline, String(tls.issuer_cn))
       : headline,
     band: level,
     note:
       level === 'bad' || level === 'warn'
-        ? 'Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it.'
+        ? trans.__(
+            'Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it.'
+          )
         : undefined
   };
 }
 
-function runtimeReading(check: IPerfProbeCheck): IProbeReading {
+function runtimeReading(
+  trans: TranslationBundle,
+  check: IPerfProbeCheck
+): IProbeReading {
   const detail = check.detail ?? {};
   if (check.id === 'runtime.process_rss') {
     const kb = num(detail.max_rss_kb);
     return {
       headline:
         kb === undefined
-          ? 'n/a'
-          : `${(kb / 1024).toFixed(0)} MB peak since server start`
+          ? notAvailable()
+          : trans.__(
+              '%1 MB peak since server start',
+              fmtNumber(Math.round(kb / 1024), 0)
+            )
     };
   }
   if (check.id === 'runtime.loadavg') {
-    const fmt = (v: unknown) => num(v)?.toFixed(2) ?? 'n/a';
+    const fmt = (v: unknown) => {
+      const n = num(v);
+      return n === undefined ? notAvailable() : fmtNumber(n, 2);
+    };
     return {
-      headline: `1m ${fmt(detail.load1)}, 5m ${fmt(detail.load5)}, 15m ${fmt(detail.load15)}`
+      headline: trans.__(
+        '1m %1, 5m %2, 15m %3',
+        fmt(detail.load1),
+        fmt(detail.load5),
+        fmt(detail.load15)
+      )
     };
   }
   if (check.id === 'runtime.cgroup_cpu') {
     const throttled = Number(detail.nr_throttled ?? 0);
     return {
-      headline: `nr_throttled ${String(detail.nr_throttled ?? 'n/a')}`,
+      headline: `nr_throttled ${
+        num(detail.nr_throttled) === undefined
+          ? notAvailable()
+          : fmtCount(num(detail.nr_throttled)!)
+      }`,
       band: throttled > 0 ? 'warn' : 'ok',
       note:
         throttled > 0
-          ? 'This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network.'
+          ? trans.__(
+              'This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network.'
+            )
           : undefined
     };
   }
   if (check.id === 'runtime.interpreter') {
     return {
-      headline: `${String(detail.python_version ?? '')} on ${String(detail.platform ?? '')}`
+      headline: trans._p(
+        'Python version on an operating system',
+        '%1 on %2',
+        String(detail.python_version ?? ''),
+        String(detail.platform ?? '')
+      )
     };
   }
   return { headline: JSON.stringify(detail) };
 }
 
-function probeReading(check: IPerfProbeCheck): IProbeReading {
+function probeReading(
+  trans: TranslationBundle,
+  check: IPerfProbeCheck
+): IProbeReading {
   if (check.status === 'skipped') {
     return {
-      headline: `skipped: ${String(check.detail?.reason ?? 'not applicable')}`
+      headline: trans.__(
+        'skipped: %1',
+        String(
+          check.detail?.reason ?? trans._p('skip reason', 'not applicable')
+        )
+      )
     };
   }
   if (check.status === 'timed_out') {
+    const timeoutSeconds = num(check.detail?.timeout_s);
     return {
-      headline: `timed out after ${String(check.detail?.timeout_s ?? '?')}s`,
+      headline: trans.__(
+        'timed out after %1s',
+        timeoutSeconds === undefined
+          ? '?'
+          : fmtNumber(timeoutSeconds, decimalPlaces(timeoutSeconds))
+      ),
       band: 'bad',
-      note: 'The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding.'
+      note: trans.__(
+        'The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding.'
+      )
     };
   }
   if (check.status === 'error') {
     return {
-      headline: `failed (${String(check.detail?.exception_class ?? 'error')})`,
+      headline: trans.__(
+        'failed (%1)',
+        String(
+          check.detail?.exception_class ??
+            trans._p('probe check badge', 'error')
+        )
+      ),
       band: 'warn'
     };
   }
 
   const detail = check.detail ?? {};
   if (check.id.endsWith('.latency')) {
-    return latencyReading(detail);
+    return latencyReading(trans, detail);
   }
   if (check.id.endsWith('.sustained_io')) {
-    return sustainedReading(detail);
+    return sustainedReading(trans, detail);
   }
   if (check.id.endsWith('.mount')) {
-    return mountReading(detail);
+    return mountReading(trans, detail);
   }
   if (check.id.endsWith('.session_scan')) {
-    return sessionScanReading(detail);
+    return sessionScanReading(trans, detail);
   }
   if (check.group === 'subprocess') {
-    return subprocessReading(detail);
+    return subprocessReading(trans, detail);
   }
   if (check.group === 'runtime') {
-    return runtimeReading(check);
+    return runtimeReading(trans, check);
   }
   if (check.group === 'network') {
-    return networkReading(detail);
+    return networkReading(trans, detail);
   }
   return { headline: JSON.stringify(detail) };
 }
 
-function badgeText(check: IPerfProbeCheck, reading: IProbeReading): string {
-  if (check.status !== 'ok') {
-    return check.status === 'timed_out' ? 'timed out' : check.status;
+function badgeText(
+  trans: TranslationBundle,
+  check: IPerfProbeCheck,
+  reading: IProbeReading
+): string {
+  const word = check.status !== 'ok' ? check.status : (reading.band ?? 'info');
+  switch (word) {
+    case 'timed_out':
+      return trans._p('probe check badge', 'timed out');
+    case 'skipped':
+      return trans._p('probe check badge', 'skipped');
+    case 'error':
+      return trans._p('probe check badge', 'error');
+    case 'ok':
+      return trans._p('probe check badge', 'ok');
+    case 'warn':
+      return trans._p('probe check badge', 'warn');
+    case 'bad':
+      return trans._p('probe check badge', 'bad');
+    case 'info':
+      return trans._p('probe check badge', 'info');
+    default:
+      return word;
   }
-  return reading.band ?? 'info';
 }
 
 function ProbeChecksTable(props: { checks: IPerfProbeCheck[] }): JSX.Element {
+  const trans = useTrans();
   const groups = new Map<string, IPerfProbeCheck[]>();
   for (const check of props.checks) {
     const list = groups.get(check.group) ?? [];
@@ -929,22 +1250,22 @@ function ProbeChecksTable(props: { checks: IPerfProbeCheck[] }): JSX.Element {
       {ordered.map(group => (
         <div className="nbi-perf-probe-group" key={group}>
           <div className="nbi-perf-subtitle">
-            {PROBE_GROUP_LABELS[group] ?? group}
+            {probeGroupLabel(trans, group)}
           </div>
           {(groups.get(group) ?? []).map(check => {
-            const reading = probeReading(check);
-            const badge = badgeText(check, reading);
+            const reading = probeReading(trans, check);
+            const badge = badgeText(trans, check, reading);
             return (
               <div className="nbi-perf-check" key={check.id}>
                 <div className="nbi-perf-check-head">
                   <span
                     className={`nbi-perf-badge nbi-perf-badge-${reading.band ?? 'none'}`}
-                    title={`Check status: ${check.status}`}
+                    title={trans.__('Check status: %1', check.status)}
                   >
                     {badge}
                   </span>
                   <span className="nbi-perf-check-label">
-                    {checkLabel(check)}
+                    {checkLabel(trans, check)}
                   </span>
                   <span className="nbi-perf-check-value">
                     {reading.headline}
@@ -966,6 +1287,7 @@ function CopyButton(props: {
   label: string;
   getValue: () => unknown;
 }): JSX.Element {
+  const trans = useTrans();
   const [copied, setCopied] = useState(false);
   const onClick = async () => {
     const ok = await writeTextToClipboard(
@@ -983,7 +1305,7 @@ function CopyButton(props: {
     >
       {copied ? <VscCheck /> : <VscCopy />}
       <div className="jp-Dialog-buttonLabel">
-        {copied ? 'Copied' : props.label}
+        {copied ? trans.__('Copied') : props.label}
       </div>
     </button>
   );
@@ -1116,13 +1438,12 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
     <div className="nbi-perf-panel">
       <div className="nbi-perf-section">
         <div className="nbi-perf-section-header">
-          <div className="nbi-perf-title">Diagnostics</div>
+          <div className="nbi-perf-title">{trans.__('Diagnostics')}</div>
         </div>
         <div className="nbi-perf-lede">
-          Records where each chat turn spends its time, so a slow deployment can
-          be told apart from a slow model. Off by default, and when off it costs
-          one boolean check per instrumentation site. Prompts, responses, file
-          contents, and hostnames are never recorded.
+          {trans.__(
+            'Records where each chat turn spends its time, so a slow deployment can be told apart from a slow model. Off by default, and when off it costs one boolean check per instrumentation site. Prompts, responses, file contents, and hostnames are never recorded.'
+          )}
         </div>
         <div className="nbi-perf-controls">
           <label
@@ -1135,7 +1456,7 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
               disabled={perfLocked}
               onChange={e => updateConfig({ enabled: e.target.checked })}
             />
-            Enabled
+            {trans._p('performance diagnostics setting', 'Enabled')}
           </label>
           <label
             className="nbi-perf-control"
@@ -1153,13 +1474,13 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
               disabled={perfLocked}
               onChange={e => updateConfig({ log_to_file: e.target.checked })}
             />
-            Log to file
+            {trans.__('Log to file')}
           </label>
           <label
             className="nbi-perf-control"
             title={lockedTip(trans, perfLocked)}
           >
-            Attribute detail
+            {trans.__('Attribute detail')}
             <select
               className="jp-mod-styled"
               value={config.attr_detail}
@@ -1168,24 +1489,35 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
                 updateConfig({ attr_detail: e.target.value as AttrDetail })
               }
             >
-              <option value="redacted">redacted</option>
-              <option value="full">full</option>
+              <option value="redacted">
+                {trans._p('attribute detail', 'redacted')}
+              </option>
+              <option value="full">
+                {trans._p('attribute detail', 'full')}
+              </option>
             </select>
           </label>
         </div>
         <div className="nbi-perf-hint">
           {config.attr_detail === 'redacted'
-            ? 'Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine.'
-            : 'Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket.'}
+            ? trans.__(
+                'Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine.'
+              )
+            : trans.__(
+                'Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket.'
+              )}
         </div>
       </div>
 
       <div className="nbi-perf-section">
         <div className="nbi-perf-section-header">
-          <div className="nbi-perf-title">Recent turns</div>
+          <div className="nbi-perf-title">{trans.__('Recent turns')}</div>
           <div className="nbi-perf-header-actions">
             {report && (
-              <CopyButton label="Copy as JSON" getValue={() => report} />
+              <CopyButton
+                label={trans.__('Copy as JSON')}
+                getValue={() => report}
+              />
             )}
             <button
               className="jp-Dialog-button jp-mod-reject jp-mod-styled"
@@ -1194,7 +1526,7 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
             >
               <VscRefresh />
               <div className="jp-Dialog-buttonLabel">
-                {reportLoading ? 'Refreshing…' : 'Refresh'}
+                {reportLoading ? trans.__('Refreshing…') : trans.__('Refresh')}
               </div>
             </button>
           </div>
@@ -1202,28 +1534,39 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
 
         {reportDisabled ? (
           <div className="nbi-perf-empty">
-            Performance diagnostics are disabled. Enable them above to start
-            collecting turn data.
+            {trans.__(
+              'Performance diagnostics are disabled. Enable them above to start collecting turn data.'
+            )}
           </div>
         ) : reportError ? (
           <div className="nbi-perf-error" role="alert">
-            Failed to load report: {reportError}
+            {trans.__('Failed to load report: %1', reportError)}
             <button
               className="jp-Dialog-button jp-mod-reject jp-mod-styled"
               onClick={loadReport}
             >
-              <div className="jp-Dialog-buttonLabel">Retry</div>
+              <div className="jp-Dialog-buttonLabel">{trans.__('Retry')}</div>
             </button>
           </div>
         ) : reportLoading && !report ? (
-          <div className="nbi-perf-empty">Loading…</div>
+          <div className="nbi-perf-empty">{trans.__('Loading…')}</div>
         ) : (
           <>
             <div className="nbi-perf-hint">
-              Compare <strong>Active</strong> against <strong>API ms</strong>:
-              close together means the time is in the model or the gateway, far
-              apart means it is local. Expand a row for that turn&apos;s phase
-              breakdown.
+              {interpolate(
+                (active, api) =>
+                  trans.__(
+                    "Compare %1 against %2: close together means the time is in the model or the gateway, far apart means it is local. Expand a row for that turn's phase breakdown.",
+                    active,
+                    api
+                  ),
+                <strong>
+                  {trans._p('performance table column', 'Active')}
+                </strong>,
+                <strong>
+                  {trans._p('performance table column', 'API ms')}
+                </strong>
+              )}
             </div>
             <PerfTurnsTable turns={report?.turns ?? []} />
           </>
@@ -1232,13 +1575,19 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
 
       <div className="nbi-perf-section">
         <div className="nbi-perf-section-header">
-          <div className="nbi-perf-title">Probe</div>
+          <div className="nbi-perf-title">
+            {trans._p('machine measurement', 'Probe')}
+          </div>
         </div>
         <div className="nbi-perf-lede">
-          Measures this machine rather than a turn: filesystem latency and
-          throughput for the config and <code>~/.claude</code> directories,
-          interpreter and CLI cold-start cost, and host contention. It writes
-          and deletes small temporary files in the directories it measures.
+          {interpolate(
+            claudeDir =>
+              trans.__(
+                'Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures.',
+                claudeDir
+              ),
+            <code>~/.claude</code>
+          )}
         </div>
         <div className="nbi-perf-probe-actions">
           <button
@@ -1247,15 +1596,20 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
             disabled={probing}
           >
             <div className="jp-Dialog-buttonLabel">
-              {probing ? 'Running…' : 'Run probe'}
+              {probing ? trans.__('Running…') : trans.__('Run probe')}
             </div>
           </button>
           <label
             className="nbi-perf-control"
             title={
               networkProbeAllowed
-                ? 'Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate.'
-                : 'Disabled by your administrator (NBI_PERF_PROBE_NETWORK)'
+                ? trans.__(
+                    'Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate.'
+                  )
+                : trans.__(
+                    'Disabled by your administrator (%1)',
+                    'NBI_PERF_PROBE_NETWORK'
+                  )
             }
           >
             <input
@@ -1264,16 +1618,19 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
               disabled={!networkProbeAllowed}
               onChange={e => onIncludeNetworkChange(e.target.checked)}
             />
-            Include network check
+            {trans.__('Include network check')}
           </label>
         </div>
 
         {probing && (
           <div className="nbi-perf-empty">
-            Running the filesystem, subprocess, and contention checks one at a
-            time so they do not measure each other
-            {includeNetwork ? ', plus the network check' : ''}. This takes a few
-            seconds, longer on a slow filesystem.
+            {includeNetwork
+              ? trans.__(
+                  'Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other, plus the network check. This takes a few seconds, longer on a slow filesystem.'
+                )
+              : trans.__(
+                  'Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other. This takes a few seconds, longer on a slow filesystem.'
+                )}
           </div>
         )}
 
@@ -1282,15 +1639,22 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
             <VscWarning />
             <span>
               {probeTarget
-                ? `This opens connections to ${probeTarget} from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request.`
-                : 'This opens unauthenticated connections to your configured endpoint from this machine.'}
+                ? trans.__(
+                    'This opens connections to %1 from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request.',
+                    probeTarget
+                  )
+                : trans.__(
+                    'This opens unauthenticated connections to your configured endpoint from this machine.'
+                  )}
             </span>
             <button
               className="jp-Dialog-button jp-mod-accept jp-mod-styled"
               onClick={() => runProbe(true)}
               disabled={probing}
             >
-              <div className="jp-Dialog-buttonLabel">Confirm and run</div>
+              <div className="jp-Dialog-buttonLabel">
+                {trans.__('Confirm and run')}
+              </div>
             </button>
             <button
               className="jp-Dialog-button jp-mod-reject jp-mod-styled"
@@ -1299,14 +1663,14 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
                 setIncludeNetwork(false);
               }}
             >
-              <div className="jp-Dialog-buttonLabel">Cancel</div>
+              <div className="jp-Dialog-buttonLabel">{trans.__('Cancel')}</div>
             </button>
           </div>
         )}
 
         {probeError && (
           <div className="nbi-perf-error" role="alert">
-            Probe failed: {probeError}
+            {trans.__('Probe failed: %1', probeError)}
           </div>
         )}
 
@@ -1319,10 +1683,15 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
                 onClick={() => setShowRawProbe(!showRawProbe)}
               >
                 <div className="jp-Dialog-buttonLabel">
-                  {showRawProbe ? 'Hide raw output' : 'Show raw output'}
+                  {showRawProbe
+                    ? trans.__('Hide raw output')
+                    : trans.__('Show raw output')}
                 </div>
               </button>
-              <CopyButton label="Copy as JSON" getValue={() => probeResult} />
+              <CopyButton
+                label={trans.__('Copy as JSON')}
+                getValue={() => probeResult}
+              />
             </div>
             <ProbeChecksTable checks={probeResult.checks ?? []} />
             {showRawProbe && (

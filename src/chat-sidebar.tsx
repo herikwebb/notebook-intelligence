@@ -101,7 +101,7 @@ import { hasCompletedTour, shouldAutoShowTour } from './tour/tour-state';
 import { cancelInFlightTurns, registerInFlightTurn } from './chat-cancel';
 import { recordStoppedTurn } from './chat-stopped-turn';
 import { upsertMessageById } from './chat-transcript';
-import { getTrans, interpolate, useTrans } from './i18n';
+import { getLanguageCode, getTrans, interpolate, useTrans } from './i18n';
 import { builtinToolsetLabel } from './builtin-toolset-labels';
 import { IClaudeSessionInfo } from './api';
 import {
@@ -648,7 +648,9 @@ function ChatResponse(props: any) {
   }, [props.showGenerating, hasCustomVerbs]);
 
   const msg: IChatMessage = props.message;
-  const timestamp = msg.date.toLocaleTimeString('en-US', { hour12: false });
+  const timestamp = msg.date.toLocaleTimeString(getLanguageCode(), {
+    hour12: false
+  });
 
   const openNotebook = (event: any) => {
     const notebookPath = event.target.dataset['ref'];

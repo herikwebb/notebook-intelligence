@@ -38,9 +38,31 @@ msgstr ""
 msgid "%1 (required)"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "%1 (scan truncated)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 MB peak since server start"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 active with no phase dominating."
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "%1 added"
 msgid_plural "%1 added"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 and %2 were dropped by the per-turn caps, so this timeline is incomplete."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 attribute"
+msgid_plural "%1 attributes"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -72,6 +94,12 @@ msgid_plural "%1 files skipped (limit of %2)."
 msgstr[0] ""
 msgstr[1] ""
 
+#: src/components/perf-panel.tsx
+msgid "%1 gap during streaming. Each stall event below is tagged with what preceded it."
+msgid_plural "%1 gaps during streaming. Each stall event below is tagged with what preceded it."
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/components/settings-panel.tsx
 msgid "%1 is required."
 msgstr ""
@@ -92,6 +120,12 @@ msgstr[1] ""
 msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "%1 span"
+msgid_plural "%1 spans"
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/components/tool-call-group.tsx
 msgid "%1 tool call"
 msgid_plural "%1 tool calls"
@@ -107,6 +141,24 @@ msgstr[1] ""
 #: src/components/skills-panel.tsx
 msgid "%1 updated"
 msgid_plural "%1 updated"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/perf-panel.tsx
+msgid "%1; TLS handshake failed (%2)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1; clock skew %2"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1; issuer %2"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%2 %1 file, %3"
+msgid_plural "%2 %1 files, %3"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -152,6 +204,22 @@ msgstr ""
 
 #: src/components/skills-panel.tsx
 msgid "+ New user skill"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "1m %1, 5m %2, 15m %3"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "A one-line reading of where this turn's time went, derived from the columns to the left."
 msgstr ""
 
 #: src/components/skills-panel.tsx
@@ -246,6 +314,10 @@ msgstr ""
 msgid "Adds a small footer under each reply."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Agent account"
 msgstr ""
@@ -294,6 +366,10 @@ msgstr ""
 msgid "Ask about this output"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Attribute detail"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Auto-complete debouncer delay (milliseconds)"
 msgstr ""
@@ -332,6 +408,10 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Base URL"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Below what local storage delivers. Worth comparing against a known-good node."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -376,7 +456,7 @@ msgstr ""
 msgid "Can't convert this notebook yet"
 msgstr ""
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
 msgid "Cancel"
 msgstr ""
 
@@ -480,6 +560,10 @@ msgstr ""
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Check status: %1"
+msgstr ""
+
 #: src/components/readiness-card.tsx
 msgid "Checking configuration…"
 msgstr ""
@@ -540,8 +624,16 @@ msgstr ""
 msgid "Code cell: switch to natural language"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn."
+msgstr ""
+
 #: src/components/claude-mcp-panel.tsx
 msgid "Command"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Compare %1 against %2: close together means the time is in the model or the gateway, far apart means it is local. Expand a row for that turn's phase breakdown."
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -564,16 +656,32 @@ msgstr ""
 msgid "Configure tools (warning: irreversible tools selected)"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Configured endpoint"
+msgstr ""
+
 #: src/components/permission-mode-select.tsx
 msgid "Confirm Bypass Permissions"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Confirm and run"
 msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Confirm if risky"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Connect and spawn took %1. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up."
+msgstr ""
+
 #: src/components/mcp-util.ts
 msgid "Connection failed. Reload MCP servers to retry."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -592,8 +700,16 @@ msgstr ""
 msgid "Convert to Chatbook"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Copied"
+msgstr ""
+
 #: src/markdown-renderer.tsx
 msgid "Copy"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Copy as JSON"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -700,6 +816,10 @@ msgstr ""
 msgid "Description is required."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Diagnostics"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Directories cannot be attached as chat context."
 msgstr ""
@@ -710,6 +830,10 @@ msgstr ""
 
 #: src/components/claude-mcp-panel.tsx
 msgid "Disable for workspace"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Disabled by your administrator (%1)"
 msgstr ""
 
 #: src/components/claude-mcp-panel.tsx
@@ -760,6 +884,10 @@ msgstr ""
 msgid "Duplicate skill"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local."
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Edit"
 msgstr ""
@@ -806,6 +934,10 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Execution mode"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Expand"
 msgstr ""
 
 #: src/components/claude-mcp-paste.ts
@@ -904,6 +1036,10 @@ msgstr ""
 msgid "Failed to load plugins: %1"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Failed to load report: %1"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Failed to load workspace files."
 msgstr ""
@@ -952,6 +1088,10 @@ msgstr ""
 msgid "Filter sessions..."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "First content chunk to last. Excludes connect."
+msgstr ""
+
 #: src/index.ts
 msgid "Fix code"
 msgstr ""
@@ -962,6 +1102,14 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Full access (run without asking)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text."
 msgstr ""
 
 #: src/components/notebook-generation-popover.tsx
@@ -1044,8 +1192,20 @@ msgstr ""
 msgid "Hide diff"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Hide raw output"
+msgstr ""
+
 #: src/components/claude-mcp-panel.tsx
 msgid "Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Hide timeline for the turn at %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Host load average"
 msgstr ""
 
 #: src/components/skills-panel.tsx
@@ -1058,6 +1218,10 @@ msgstr ""
 
 #: src/components/skills-panel.tsx
 msgid "Import skill from GitHub"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Include network check"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -1082,6 +1246,10 @@ msgstr ""
 
 #: src/components/claude-mcp-panel.tsx
 msgid "Input mode"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them."
 msgstr ""
 
 #: src/markdown-renderer.tsx
@@ -1132,6 +1300,10 @@ msgstr ""
 msgid "Jupyter UI tools"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Jupyter root directory"
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Keep editing"
 msgstr ""
@@ -1164,12 +1336,16 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgid "Loading…"
 msgstr ""
 
 #: src/components/setting-lock.ts
 msgid "Locked by your administrator"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Log to file"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -1216,8 +1392,16 @@ msgstr ""
 msgid "Marketplace picker"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Model"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Model name, hashed when attribute detail is set to redacted."
 msgstr ""
 
 #: src/components/readiness-card.tsx
@@ -1238,6 +1422,10 @@ msgstr ""
 
 #: src/chatbook-toolbar.ts src/chatbook.ts src/index.ts
 msgid "NBI Settings"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "NBI config directory"
 msgstr ""
 
 #: src/components/claude-mcp-panel.tsx src/components/skills-panel.tsx
@@ -1356,6 +1544,10 @@ msgstr ""
 msgid "No sessions match your filter."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "No spans recorded for this turn."
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "No user skills. They live in %1."
 msgstr ""
@@ -1386,6 +1578,10 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Notice"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it."
 msgstr ""
 
 #: src/chatbook-toolbar.ts
@@ -1424,6 +1620,10 @@ msgstr ""
 msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Output tokens."
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Overwrite existing project skill \"%1\""
 msgstr ""
@@ -1434,6 +1634,10 @@ msgstr ""
 
 #: src/components/skills-panel.tsx
 msgid "Path: %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Performance diagnostics are disabled. Enable them above to start collecting turn data."
 msgstr ""
 
 #: src/components/permission-mode-select.tsx
@@ -1464,6 +1668,10 @@ msgstr ""
 msgid "Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Probe failed: %1"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Project (Jupyter root directory)"
 msgstr ""
@@ -1482,6 +1690,10 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Provider"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Python interpreter"
 msgstr ""
 
 #: src/components/skills-panel.tsx
@@ -1516,11 +1728,27 @@ msgstr ""
 msgid "Readiness check failed: %1"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Recent turns"
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Reconcile managed skills against the org manifest"
 msgstr ""
 
-#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
+#: src/components/perf-panel.tsx
+msgid "Recording is on, but no turns have been captured yet. Run a chat turn, then press Refresh."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Records where each chat turn spends its time, so a slow deployment can be told apart from a slow model. Off by default, and when off it costs one boolean check per instrumentation site. Prompts, responses, file contents, and hostnames are never recorded."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine."
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
 msgid "Refresh"
 msgstr ""
 
@@ -1544,7 +1772,7 @@ msgstr ""
 msgid "Refresh workspace file list"
 msgstr ""
 
-#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx
 msgid "Refreshing…"
 msgstr ""
 
@@ -1656,6 +1884,10 @@ msgstr ""
 msgid "Resumed session %1: %2."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Retry"
+msgstr ""
+
 #: src/chatbook.ts
 msgid "Review generated code before running it in this kernel."
 msgstr ""
@@ -1664,15 +1896,31 @@ msgstr ""
 msgid "Right-click a cell output to attach it to the chat"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory."
+msgstr ""
+
 #: src/components/readiness-card.tsx
 msgid "Run it"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Run probe"
 msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Running (%1 s)"
 msgstr ""
 
-#: src/components/readiness-card.tsx
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other, plus the network check. This takes a few seconds, longer on a slow filesystem."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other. This takes a few seconds, longer on a slow filesystem."
+msgstr ""
+
+#: src/components/perf-panel.tsx src/components/readiness-card.tsx
 msgid "Running…"
 msgstr ""
 
@@ -1716,6 +1964,10 @@ msgstr ""
 msgid "Server config must include \"command\" or \"url\"."
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Server process peak memory"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Settings sections"
 msgstr ""
@@ -1744,8 +1996,16 @@ msgstr ""
 msgid "Show output toolbar"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Show raw output"
+msgstr ""
+
 #: src/index.ts
 msgid "Show the hidden code generated for this Chatbook cell"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Show timeline for the turn at %1"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -1757,6 +2017,10 @@ msgid "Showing the first %1 file found in the workspace."
 msgid_plural "Showing the first %1 files found in the workspace."
 msgstr[0] ""
 msgstr[1] ""
+
+#: src/components/perf-panel.tsx
+msgid "Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod."
+msgstr ""
 
 #: src/components/skills-panel.tsx
 msgid "Skills"
@@ -1838,8 +2102,16 @@ msgstr ""
 msgid "Stop using current file as context"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Stopped before completing, so these timings are partial."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Stopped by you"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Sum of every tool span in the turn. Expand the row to see them individually."
 msgstr ""
 
 #: src/index.ts
@@ -1928,6 +2200,30 @@ msgstr ""
 msgid "Text file"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The turn ended in an error."
+msgstr ""
+
 #: src/components/claude-mcp-panel.tsx
 msgid "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab."
 msgstr ""
@@ -1936,12 +2232,28 @@ msgstr ""
 msgid "Thinking (%1 s)"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows."
+msgstr ""
+
 #: src/chatbook-toolbar.ts
 msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3."
 msgstr ""
 
 #: src/chatbook-toolbar.ts
 msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "This opens connections to %1 from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "This opens unauthenticated connections to your configured endpoint from this machine."
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -1980,6 +2292,22 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Tools"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active. Slowest: %3 at %4."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Total minus time the turn spent blocked on your input. This is the number to judge performance by."
+msgstr ""
+
+#: src/tour/tour-overlay.tsx
+msgid "Tour progress: step %1 of %2"
 msgstr ""
 
 #: src/components/skills-panel.tsx
@@ -2094,6 +2422,10 @@ msgstr ""
 msgid "View skill"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "Wall time from the request arriving to the response finishing, including any time spent waiting on you."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Welcome! How can I assist you today?"
 msgstr ""
@@ -2104,6 +2436,14 @@ msgstr ""
 
 #: src/components/notebook-generation-popover.tsx
 msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "When the turn started, in local time."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Which backend served the turn, and the surface it came from."
 msgstr ""
 
 #: src/components/plugins-panel.tsx src/components/skills-panel.tsx
@@ -2122,12 +2462,24 @@ msgstr ""
 msgid "available in all your projects"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "cgroup CPU throttling"
+msgstr ""
+
 #: src/components/tool-call-card.tsx
 msgid "diff truncated"
 msgstr ""
 
 #: src/components/skills-panel.tsx
 msgid "e.g. %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "failed (%1)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it."
 msgstr ""
 
 #: src/components/skills-panel.tsx
@@ -2140,6 +2492,14 @@ msgstr ""
 
 #: src/components/plugins-panel.tsx
 msgid "no plugins"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "no projects/ or sessions/ directory"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -2158,8 +2518,20 @@ msgstr ""
 msgid "shared via the project repo (%1)"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgid "skipped: %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "stat %1, write+fsync %2 (median of %3)"
+msgstr ""
+
 #: src/components/claude-scope.ts
 msgid "this project, this user only"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "timed out after %1s"
 msgstr ""
 
 #: src/components/claude-mcp-paste.ts
@@ -2168,6 +2540,14 @@ msgstr ""
 
 #: src/components/claude-mcp-paste.ts
 msgid "transport: \"stdio\" requires a \"command\" field."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "via proxy"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "write %1, read %2"
 msgstr ""
 
 #: src/index.ts
@@ -2274,9 +2654,34 @@ msgctxt "Ollama hint: the button that retries listing models"
 msgid "Try again"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgctxt "Python version on an operating system"
+msgid "%1 on %2"
+msgstr ""
+
 #: src/chatbook-toolbar.ts
 msgctxt "a settings path: %1 the settings window, %2 its tab, %3 the field"
 msgid "%1 > %2 > %3"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "a value that was not recorded"
+msgid "n/a"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "full"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "redacted"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "bytes"
+msgid "%1 B"
 msgstr ""
 
 #: src/cell-output-toolbar.ts
@@ -2292,6 +2697,11 @@ msgstr ""
 #: src/cell-output-toolbar.ts
 msgctxt "cell output toolbar"
 msgid "Troubleshoot"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "certificate issuer"
+msgid "unknown"
 msgstr ""
 
 #: src/chat-sidebar.tsx src/components/settings-panel.tsx
@@ -2340,9 +2750,204 @@ msgctxt "diff line"
 msgid "removed"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "mount"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "session tree size"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "small-file latency"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "sustained throughput"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem type"
+msgid "not determined"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Add files from outside the workspace. They're saved to the workspace and attached to this chat."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Ask is read-only and only answers questions. Agent can also run tools, such as file edits and shell commands."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Attach files as context"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Back"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Begin a fresh session when context gets crowded or you want to switch tasks."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Configure providers, API keys, and extensions (MCP servers, skills, admin policies)."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Done"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag and drop"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag files from the JupyterLab file browser or your desktop onto the prompt. Keyboard users can attach the same files with the 'Attach files as context' and 'Upload from your computer' buttons."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Next"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Open the menu for built-in commands and installed skills. Typing / at the start of the prompt does the same thing."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick a chat mode"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick up where you left off"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pin workspace files so the assistant can reference them. Typing @ in the prompt opens the same picker."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Reopen an earlier Claude session from this workspace."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a coding agent in a terminal"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a slash command"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Settings"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Show NBI tour"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Skip tour"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Start a new chat"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Try this: open a notebook and ask, 'Explain what this notebook does and suggest one improvement.' You can replay this tour anytime from the command palette."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Upload from your computer"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Welcome to Notebook Intelligence"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "You're ready"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Your AI assistant lives in this sidebar. Take a quick tour of the settings, attachments, and chat modes so you can use it confidently."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a 'Coding Agent' section with tiles for {launchers}. Each tile opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a {launchers} tile in the 'Coding Agent' section. It opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "gigabytes"
+msgid "%1 GB"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "kilobytes"
+msgid "%1 KB"
+msgstr ""
+
 #: src/components/setting-lock.ts
 msgctxt "lock reason: %1 is an environment variable name"
 msgid "Locked by %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "machine measurement"
+msgid "Probe"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes"
+msgid "%1 MB"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes per second"
+msgid "%1 MB/s"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "milliseconds"
+msgid "%1 ms"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -2350,9 +2955,94 @@ msgctxt "model"
 msgid "None"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgctxt "model name"
+msgid "unknown"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgctxt "model provider"
 msgid "None"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance diagnostics setting"
+msgid "Enabled"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "API ms"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Active"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "First token"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Mode"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Model"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Spawn"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stalls"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Status"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stream"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Time"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens in"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens out"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tools"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Total"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Verdict"
 msgstr ""
 
 #: src/components/permission-mode-select.tsx
@@ -2383,6 +3073,66 @@ msgstr ""
 #: src/components/plugins-panel.tsx
 msgctxt "plugins section heading"
 msgid "MARKETPLACES"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "bad"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "error"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "info"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "ok"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "skipped"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "timed out"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "warn"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check: %1 is a directory, %2 what was measured"
+msgid "%1: %2"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Filesystem"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Network"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Process and host"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Subprocess startup"
 msgstr ""
 
 #: src/components/readiness-card.tsx
@@ -2490,6 +3240,11 @@ msgctxt "scope picker option: %1 is the scope id, %2 what it means"
 msgid "%1: %2"
 msgstr ""
 
+#: src/components/perf-panel.tsx
+msgctxt "seconds"
+msgid "%1s"
+msgstr ""
+
 #: src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
@@ -2553,6 +3308,11 @@ msgstr ""
 #: src/components/skills-panel.tsx
 msgctxt "skill sync result; %1 is a list of counts"
 msgid "Sync complete. %1."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "skip reason"
+msgid "not applicable"
 msgstr ""
 
 #: src/components/skills-panel.tsx
@@ -2625,6 +3385,71 @@ msgstr ""
 #: src/builtin-toolset-labels.ts
 msgctxt "toolset"
 msgid "Python file edit"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "cancelled"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "error"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "ok"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn timeline section"
+msgid "Events"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Agent cold start"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Cancelled"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Context preparation"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Failed"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Mid-stream stalls"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Model or gateway"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No single hotspot"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No timing recorded"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Tool execution"
 msgstr ""
 
 #: src/mcp-config-save.ts
