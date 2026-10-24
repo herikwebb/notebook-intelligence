@@ -6,12 +6,180 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: src/chat-sidebar.tsx
+msgid "%1 (required)"
+msgstr ""
+
 #: src/open-file-refresh-watcher.ts
 msgid "%1 changed on disk and was reloaded"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "%1 duplicate skipped."
+msgid_plural "%1 duplicates skipped."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/tool-call-group.tsx
+msgid "%1 failed"
+msgid_plural "%1 failed"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "%1 file skipped (limit of %2)."
+msgid_plural "%1 files skipped (limit of %2)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
+msgstr ""
+
+#: src/components/tool-call-group.tsx
+msgid "%1 tool call"
+msgid_plural "%1 tool calls"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "'%1' has no content to attach."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "'%1' is empty"
+msgstr ""
+
+#: src/components/safe-anchor.tsx
+msgid "(link blocked)"
+msgstr ""
+
+#: src/components/safe-anchor.tsx
+msgid "(opens in new tab)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "ACP mode"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "AI Assistant"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Accept"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Activating device..."
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Add as new cell"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Add code as new cell"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Add files as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Add workspace file as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence to generate Python code..."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence..."
+msgstr ""
+
 #: src/index.ts
 msgid "Ask about this output"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Bad response"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Binary files cannot be attached as chat context."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Built-in"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "By using Notebook Intelligence with GitHub Copilot subscription you agree to %1. Review the terms to understand about usage, limitations and ways to improve GitHub Copilot. Please review %2."
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions is active: tool calls run without confirmation"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions runs every tool call without asking for confirmation, with your full user account access. Content the agent reads can steer what it runs. Stays on until you switch modes or start a new session."
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass permissions"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/permission-mode-select.tsx
+msgid "Cancel"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cancel activation"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Canceled"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output (%2)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell output"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell output (%1)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Change provider"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Chat is disabled as you don't have a model configured."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Chat mode"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Chat response image"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Chat transcript"
 msgstr ""
 
 #: src/index.ts
@@ -26,12 +194,72 @@ msgstr ""
 msgid "Claude Code terminal session"
 msgstr ""
 
-#: src/index.ts
+#: src/chat-sidebar.tsx
+msgid "Claude mode"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Claude permission mode"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/index.ts
 msgid "Close"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Close file picker"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Close notebook generation popover"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Close tools picker"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Configure models"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Configure providers, API keys, MCP servers, and skills"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools (warning: irreversible tools selected)"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Confirm Bypass Permissions"
 msgstr ""
 
 #: src/index.ts
 msgid "Convert notebook to Chatbook"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Copy"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Copy code %1 and enter at %2 to allow access to GitHub Copilot from this app. Activation could take up to a minute after you enter the code."
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Copy code to clipboard"
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Copy resume command"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Could not attach: %1"
 msgstr ""
 
 #: src/index.ts
@@ -46,6 +274,38 @@ msgstr ""
 msgid "Create a notebook whose cells are natural-language prompts"
 msgstr ""
 
+#: src/markdown-renderer.tsx
+msgid "Create new file from code"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Create new notebook from code"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Describe how to update the active notebook..."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Directories cannot be attached as chat context."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Don't use as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Done"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Drop files to attach as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Empty files do not provide useful context."
+msgstr ""
+
 #: src/index.ts
 msgid "Explain code"
 msgstr ""
@@ -58,8 +318,24 @@ msgstr ""
 msgid "Export as code notebook"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Extension tools"
+msgstr ""
+
 #: src/index.ts
 msgid "Failed to access the notebook: %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach '%1'."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach workspace file '%1'."
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Failed to copy resume command"
 msgstr ""
 
 #: src/index.ts
@@ -78,6 +354,10 @@ msgstr ""
 msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Failed to load workspace files."
+msgstr ""
+
 #: src/index.ts
 msgid "Failed to save MCP config: %1"
 msgstr ""
@@ -90,6 +370,14 @@ msgstr ""
 msgid "Focus Notebook Intelligence chat input"
 msgstr ""
 
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate (Enter)"
+msgstr ""
+
 #: src/index.ts
 msgid "Generate code"
 msgstr ""
@@ -98,56 +386,334 @@ msgstr ""
 msgid "Generated code"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Generating"
+msgstr ""
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generating notebook…"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Generating response."
+msgstr ""
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generation failed: %1"
+msgstr ""
+
 #: src/index.ts
 msgid "GitHub Copilot Status"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot chat terms"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Logged in"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Not logged in"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Terms for Additional Products and Features"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Good response"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgid "Hide diff"
 msgstr ""
 
 #: src/index.ts
 msgid "Inline chat failed: %1"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Input Parameters"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Insert at cursor"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Insert code at cursor"
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Loading sessions…"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Loading workspace files..."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Logged in"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Logging in..."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Login status: %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Login to GitHub Copilot"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Login using your GitHub account"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Logout"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "MCP Server Tools"
+msgstr ""
+
 #: src/index.ts
 msgid "NBI Settings"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "New chat session started."
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "New file"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "New notebook"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached."
+msgid_plural "No files added: %1 files are already attached."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "No files added: the limit of %1 file is reached."
+msgid_plural "No files added: the limit of %1 files is reached."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "No matching files found."
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "No previous Claude sessions found for this working directory."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "No previous sessions found for this working directory."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "No workspace files available."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Not logged in"
 msgstr ""
 
 #: src/index.ts
 msgid "Notebook Intelligence Settings"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Notebook file"
+msgstr ""
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Notebook generation complete"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Notice"
+msgstr ""
+
 #: src/index.ts
 msgid "Open MCP Config Editor"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Open Notebook Intelligence settings"
 msgstr ""
 
 #: src/index.ts
 msgid "Open a notebook to insert the code as new cell"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Open notebook %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Open slash commands"
+msgstr ""
+
 #: src/index.ts
 msgid "Open the NBI sidebar and move focus to the prompt textarea"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: %1"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: Bypass Permissions is active"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Privacy Statement"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Privacy and terms"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as bad"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as good"
 msgstr ""
 
 #: src/index.ts
 msgid "Refresh English representation"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Refresh file list"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Refresh workspace file list"
+msgstr ""
+
 #: src/index.ts
 msgid "Regenerate the English representation of this code cell"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file %1"
 msgstr ""
 
 #: src/index.ts
 msgid "Replay the first-run tour highlighting the chat sidebar affordances"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Response complete."
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume Claude session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resume a previous session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resume a session you started earlier in this workspace"
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume command copied"
+msgstr ""
+
 #: src/index.ts
 msgid "Resume or start a Claude Code session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resume session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1: %2."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1: %2."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Running (%1 s)"
+msgstr ""
+
+#: src/components/confirmation-details.tsx
+msgid "Scroll to see all of this value."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Search files by path"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Send message"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgid "Show diff"
 msgstr ""
 
 #: src/index.ts
 msgid "Show generated code"
 msgstr ""
 
+#: src/components/notebook-generation-popover.tsx
+msgid "Show in chat"
+msgstr ""
+
 #: src/index.ts
 msgid "Show the hidden code generated for this Chatbook cell"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Showing the first %1 file found in the workspace."
+msgid_plural "Showing the first %1 files found in the workspace."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "Skills reloaded and applied to the current session."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Skip to message input"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Slash commands"
 msgstr ""
 
 #: src/index.ts
@@ -158,12 +724,40 @@ msgstr ""
 msgid "Start a Pi session in a Jupyter terminal"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (restarts the Claude client)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (starts a fresh agent session)"
+msgstr ""
+
 #: src/index.ts
 msgid "Start an OpenAI Codex CLI session in a Jupyter terminal"
 msgstr ""
 
 #: src/index.ts
 msgid "Start an opencode session in a Jupyter terminal"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Still working, server may be slow"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Stop generating"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Stop using current file as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Stopped by you"
 msgstr ""
 
 #: src/index.ts
@@ -190,10 +784,227 @@ msgstr ""
 msgid "Switch the active Chatbook cell between natural language and code"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Text file"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Thinking (%1 s)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection (%1)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid ""
+"Tool selection can cause irreversible changes! Review each tool execution carefully.\n"
+"%1"
+msgstr ""
+
 #: src/index.ts
 msgid "Troubleshoot errors in output"
 msgstr ""
 
+#: src/chat-sidebar.tsx
+msgid "Unknown"
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Unknown error"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Update active notebook"
+msgstr ""
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Update active notebook with AI"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Upload file from computer"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Uploaded: %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Uploading"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Use as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Use current file as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "User"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Welcome! How can I assist you today?"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "You are not logged in to GitHub Copilot. Please login now to activate chat."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory."
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgid "diff truncated"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "open notebook"
+msgstr ""
+
 #: src/index.ts
 msgid "＋ New Session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "chat mode"
+msgid "Agent"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "chat mode"
+msgid "Ask"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected MCP server tools"
+msgid "%1 mcp"
+msgid_plural "%1 mcp"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected extension tools"
+msgid "%1 ext"
+msgid_plural "%1 ext"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected tools"
+msgid "%1 built-in"
+msgid_plural "%1 built-in"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "added"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "removed"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Accept Edits"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Bypass Permissions"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Default"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Plan"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Output"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Thought"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "cancelled"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "completed"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "failed"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "in progress"
+msgstr ""
+
+#: src/components/tool-call-group.tsx
+msgctxt "tool call summary: %1 is the call count, %2 the failed count"
+msgid "%1 (%2)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "tool selection"
+msgid "clear"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Command execute"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File edit"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File read"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook edit"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook execute"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Python file edit"
 msgstr ""

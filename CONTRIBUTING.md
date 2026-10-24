@@ -225,7 +225,8 @@ trans._p('toolbar', 'Run'); // a short label whose meaning depends on context
 
 - Never build a sentence from pieces (`'Failed to ' + verb`) or with a template literal. Write the whole sentence with `%1`, `%2` placeholders so a translator can reorder it.
 - Never translate at module load (a top-level `const LABEL = trans.__(...)`): the bundle is bound when the plugin activates, so such a string stays English.
-- Keep markup out of translated strings; render structure (links, emphasis) around the translated pieces instead.
+- Keep markup out of translated strings. For a sentence with a link or other element inside it, use `interpolate` from `src/i18n.ts`, which translates the whole sentence and places the elements at its `%1`, `%2` placeholders, so a translator can reorder them.
+- Give short labels whose meaning depends on where they appear a context with `trans._p` (`trans._p('permission mode', 'Plan')`), so a translator can choose a different word for each use.
 - Pass string literals only. The extractor skips any other argument (a variable, a template literal), so the string would never be translated; a lint rule enforces this.
 - Leave in English anything that is not shown to the user as prose: prompts and instructions sent to a model, results that UI tools return to the model, log and console messages, telemetry, command ids, and configuration values. Product names (Notebook Intelligence, Claude Code, Codex) are not translated. Neither is text that styling or code matches on, such as the launcher category `Coding Agent`, which `style/base.css` pins to the top of the launcher.
 - Python strings are not extracted yet: `jupyterlab_server`'s Python translator reads only JupyterLab language packs' catalogs, so server text needs a loader of NBI's own first.

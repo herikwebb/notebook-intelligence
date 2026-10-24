@@ -20,6 +20,7 @@ import {
   NOTEBOOK_GENERATION_PROGRESS_EVENT
 } from './notebook-generation';
 import { NotebookGenerationPopover } from './components/notebook-generation-popover';
+import { getTrans } from './i18n';
 
 const TOOLBAR_BUTTON_NAME = 'nbi-generate-notebook';
 const TOOLBAR_STATUS_NAME = 'nbi-generate-notebook-status';
@@ -157,7 +158,8 @@ class NotebookGenerationToolbarController {
     };
 
     if (!showInChat) {
-      this._setStatus('Generating notebook…');
+      const trans = getTrans();
+      this._setStatus(trans.__('Generating notebook…'));
       this._activeProgressRequestId = externalRequestId;
       document.addEventListener(
         NOTEBOOK_GENERATION_PROGRESS_EVENT,
@@ -188,11 +190,12 @@ class NotebookGenerationToolbarController {
         this._onProgress
       );
       this._activeProgressRequestId = null;
+      const trans = getTrans();
       if (detail.error) {
-        this._setStatus(`Generation failed: ${detail.error}`);
+        this._setStatus(trans.__('Generation failed: %1', detail.error));
         this._scheduleStatusHide(4000);
       } else {
-        this._setStatus('Notebook generation complete');
+        this._setStatus(trans.__('Notebook generation complete'));
         this._scheduleStatusHide(2500);
       }
     }
@@ -259,6 +262,7 @@ export class NotebookGenerationToolbarExtension
       this._options,
       panel
     );
+    const trans = getTrans();
     const button: ToolbarButton = new ToolbarButton({
       icon: this._options.icon,
       onClick: () => controller.openPopover(button),
@@ -267,7 +271,7 @@ export class NotebookGenerationToolbarExtension
       // routing this request (issue #229). The button used to be gated
       // on isInClaudeCodeMode here, but that gate undermined the
       // sidebar-side fix.
-      tooltip: 'Update active notebook with AI'
+      tooltip: trans.__('Update active notebook with AI')
     });
     button.addClass('nbi-notebook-generation-toolbar-button');
     panel.toolbar.insertAfter('cellType', TOOLBAR_BUTTON_NAME, button);

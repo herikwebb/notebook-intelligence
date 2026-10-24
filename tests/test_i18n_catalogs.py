@@ -3,6 +3,7 @@ bundle JupyterLab's frontend loads."""
 
 import importlib.util
 import json
+import re
 import sys
 import types
 from pathlib import Path
@@ -119,3 +120,47 @@ def test_bundle_of_a_removed_catalog_is_deleted(tmp_path, hatch_build):
     po_path.unlink()
     assert hatch_build.compile_catalogs(tmp_path, "6.3.0") == []
     assert not po_path.with_suffix(".json").exists()
+
+
+@pytest.mark.parametrize(
+    "msgstr",
+    ["Datei geöffnet", "%1 geöffnet in %2"],
+    ids=["missing", "extra"],
+)
+def test_placeholder_mismatch_fails_the_build(tmp_path, hatch_build, msgstr):
+    po_path = _write_catalog(tmp_path)
+    po = polib.pofile(str(po_path))
+    po.append(polib.POEntry(msgid="%1 opened", msgstr=msgstr))
+    po.save(str(po_path))
+    with pytest.raises(ValueError, match="placeholders"):
+        hatch_build.compile_catalogs(tmp_path, "6.3.0")
+
+
+def test_plural_forms_may_leave_out_the_count(tmp_path, hatch_build):
+    po_path = _write_catalog(tmp_path)
+    po = polib.pofile(str(po_path))
+    po.append(
+        polib.POEntry(
+            msgid="%1 file in %2",
+            msgid_plural="%1 files in %2",
+            msgstr_plural={0: "eine Datei in %2", 1: "%1 Dateien in %2"},
+        )
+    )
+    po.append(polib.POEntry(msgid="100%% done", msgstr="100%% fertig"))
+    po.save(str(po_path))
+    hatch_build.compile_catalogs(tmp_path, "6.3.0")
+
+
+
+def test_frontend_labels_every_built_in_toolset():
+    """src/builtin-toolset-labels.ts translates the built-in toolsets by id;
+    the frontend's id list must match the server's, or a new toolset shows
+    its English name in every language."""
+    # The i18n CI job does not install NBI; the main build job runs this.
+    api = pytest.importorskip("notebook_intelligence.api")
+    BuiltinToolset = api.BuiltinToolset
+
+    tokens = (ROOT / "src" / "tokens.ts").read_text(encoding="utf-8")
+    enum_body = tokens.split("export enum BuiltinToolsetType {", 1)[1].split("}", 1)[0]
+    frontend = set(re.findall(r"=\s*'([^']+)'", enum_body))
+    assert frontend == {toolset.value for toolset in BuiltinToolset}

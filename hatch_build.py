@@ -22,6 +22,34 @@ _PLURAL_FORMS = re.compile(
 )
 
 
+_PLACEHOLDER = re.compile(r"%(\d+)")
+
+
+def _placeholders(text: str) -> set:
+    # Gettext.strfmt reads %% as a literal percent sign, not a placeholder.
+    return set(_PLACEHOLDER.findall(text.replace("%%", "")))
+
+
+def _check_placeholders(entry: polib.POEntry, po_path: Path) -> None:
+    """A translation must use the source's %N placeholders: a missing one
+    drops a value (or a link, through interpolate), and an extra one renders
+    as the word "undefined". Plural forms may leave out the count."""
+    source = _placeholders(entry.msgid) | _placeholders(entry.msgid_plural or "")
+    if entry.msgid_plural:
+        translations = [text for _, text in sorted(entry.msgstr_plural.items())]
+        required = source - {"1"}
+    else:
+        translations = [entry.msgstr]
+        required = source
+    for text in translations:
+        found = _placeholders(text)
+        if found - source or required - found:
+            raise ValueError(
+                f"{po_path}: the translation of {entry.msgid!r} uses "
+                f"placeholders {sorted(found)}, but the source has {sorted(source)}"
+            )
+
+
 def _jed_bundle(po: polib.POFile, po_path: Path, version: str) -> dict:
     # @jupyterlab/translation refuses a bundle without these two headers,
     # which would stop NBI loading in that language; fail the build instead.
@@ -45,6 +73,7 @@ def _jed_bundle(po: polib.POFile, po_path: Path, version: str) -> dict:
         }
     }
     for entry in po.translated_entries():
+        _check_placeholders(entry, po_path)
         key = f"{entry.msgctxt}\x04{entry.msgid}" if entry.msgctxt else entry.msgid
         if entry.msgid_plural:
             plural = [text for _, text in sorted(entry.msgstr_plural.items())]

@@ -101,6 +101,8 @@ import { hasCompletedTour, shouldAutoShowTour } from './tour/tour-state';
 import { cancelInFlightTurns, registerInFlightTurn } from './chat-cancel';
 import { recordStoppedTurn } from './chat-stopped-turn';
 import { upsertMessageById } from './chat-transcript';
+import { getTrans, interpolate, useTrans } from './i18n';
+import { builtinToolsetLabel } from './builtin-toolset-labels';
 import { IClaudeSessionInfo } from './api';
 import {
   activeSuggestionIndex,
@@ -512,12 +514,17 @@ function countContentLines(content: string): number {
 }
 
 function serializeWorkspaceFileContent(model: any): string {
+  const trans = getTrans();
   if (model.type === 'directory') {
-    throw new Error('Directories cannot be attached as chat context.');
+    throw new Error(
+      trans.__('Directories cannot be attached as chat context.')
+    );
   }
 
   if (model.format === 'base64') {
-    throw new Error('Binary files cannot be attached as chat context.');
+    throw new Error(
+      trans.__('Binary files cannot be attached as chat context.')
+    );
   }
 
   if (typeof model.content === 'string') {
@@ -552,6 +559,7 @@ function ChatResponseHTMLFrame(props: any) {
 
 // Memoize ChatResponse for performance
 function ChatResponse(props: any) {
+  const trans = useTrans();
   const [renderCount, setRenderCount] = useState(0);
   const shuffledOrder = useRef<number[]>([]);
   const shufflePos = useRef(0);
@@ -815,12 +823,12 @@ function ChatResponse(props: any) {
   const getReasoningTitle = (item: IChatMessageContent) => {
     if (item.reasoningTag === '<terminal-output>') {
       return item.reasoningFinished
-        ? 'Output'
-        : `Running (${Math.floor(item.reasoningTime)} s)`;
+        ? trans._p('reasoning', 'Output')
+        : trans.__('Running (%1 s)', Math.floor(item.reasoningTime));
     }
     return item.reasoningFinished
-      ? 'Thought'
-      : `Thinking (${Math.floor(item.reasoningTime)} s)`;
+      ? trans._p('reasoning', 'Thought')
+      : trans.__('Thinking (%1 s)', Math.floor(item.reasoningTime));
   };
 
   const chatParticipantId = msg.participant?.id || 'default';
@@ -841,8 +849,8 @@ function ChatResponse(props: any) {
           )}
           <div className="chat-message-from-title">
             {msg.from === 'user'
-              ? 'User'
-              : msg.participant?.name || 'AI Assistant'}
+              ? trans.__('User')
+              : msg.participant?.name || trans.__('AI Assistant')}
           </div>
           <div
             className="chat-message-from-progress"
@@ -860,10 +868,10 @@ function ChatResponse(props: any) {
             />
             <div className="generating-label" aria-hidden="true">
               {props.isStalled
-                ? 'Still working, server may be slow'
+                ? trans.__('Still working, server may be slow')
                 : hasCustomVerbs
                   ? _spinnerVerbs!.verbs[verbIndex]
-                  : 'Generating'}
+                  : trans.__('Generating')}
               {props.showGenerating && props.elapsedSeconds > 0
                 ? ` (${formatElapsedSeconds(props.elapsedSeconds)})`
                 : ''}
@@ -873,14 +881,16 @@ function ChatResponse(props: any) {
                 elapsed-seconds tick. */}
             <div className="nbi-sr-only" aria-live="polite" aria-atomic="true">
               {props.isStalled
-                ? 'Still working, server may be slow'
+                ? trans.__('Still working, server may be slow')
                 : hasCustomVerbs
                   ? _spinnerVerbs!.verbs[verbIndex]
-                  : 'Generating'}
+                  : trans.__('Generating')}
             </div>
           </div>
           {msg.stopped && (
-            <div className="chat-message-stopped">Stopped by you</div>
+            <div className="chat-message-stopped">
+              {trans.__('Stopped by you')}
+            </div>
           )}
         </div>
         <div className="chat-message-timestamp">{timestamp}</div>
@@ -965,7 +975,10 @@ function ChatResponse(props: any) {
             case ResponseStreamDataType.Image:
               return (
                 <div className="chat-response-img" key={`key-${index}`}>
-                  <img src={item.content} alt="Chat response image" />
+                  <img
+                    src={item.content}
+                    alt={trans.__('Chat response image')}
+                  />
                 </div>
               );
             case ResponseStreamDataType.HTMLFrame:
@@ -1038,7 +1051,7 @@ function ChatResponse(props: any) {
               return answeredForms.get(item.id) ===
                 'confirmed' ? null : answeredForms.get(item.id) ===
                 'canceled' ? (
-                <div>&#10006; Canceled</div>
+                <div>&#10006; {trans.__('Canceled')}</div>
               ) : (
                 <div className="chat-confirmation-form" key={`key-${index}`}>
                   {item.content.title ? (
@@ -1100,7 +1113,7 @@ function ChatResponse(props: any) {
               return answeredForms.get(item.id) ===
                 'confirmed' ? null : answeredForms.get(item.id) ===
                 'canceled' ? (
-                <div>&#10006; Canceled</div>
+                <div>&#10006; {trans.__('Canceled')}</div>
               ) : (
                 <div
                   className="chat-confirmation-form ask-user-question"
@@ -1143,10 +1156,10 @@ function ChatResponse(props: any) {
             type="button"
             className="copilot-generated-notebook-link"
             data-ref={msg.notebookLink}
-            aria-label={`Open notebook ${msg.notebookLink}`}
+            aria-label={trans.__('Open notebook %1', msg.notebookLink)}
             onClick={openNotebook}
           >
-            open notebook
+            {trans.__('open notebook')}
           </button>
         )}
       </div>
@@ -1180,9 +1193,9 @@ function ChatResponse(props: any) {
                   });
                 }
               }}
-              aria-label="Rate response as good"
+              aria-label={trans.__('Rate response as good')}
               aria-pressed={msg.feedback === 'positive'}
-              title="Good response"
+              title={trans.__('Good response')}
             >
               {msg.feedback === 'positive' ? (
                 <VscThumbsupFilled />
@@ -1208,9 +1221,9 @@ function ChatResponse(props: any) {
                   });
                 }
               }}
-              aria-label="Rate response as bad"
+              aria-label={trans.__('Rate response as bad')}
               aria-pressed={msg.feedback === 'negative'}
-              title="Bad response"
+              title={trans.__('Bad response')}
             >
               {msg.feedback === 'negative' ? (
                 <VscThumbsdownFilled />
@@ -1294,6 +1307,7 @@ function getActiveChatModel(): { provider: string; model: string } {
 }
 
 function SidebarComponent(props: any) {
+  const trans = useTrans();
   const [chatMessages, setChatMessages] = useState<IChatMessage[]>([]);
   const [prompt, setPrompt] = useState<string>('');
   const [draftPrompt, setDraftPrompt] = useState<string>('');
@@ -1372,9 +1386,9 @@ function SidebarComponent(props: any) {
   useEffect(() => {
     const prev = prevCopilotRequestInProgressRef.current;
     if (!prev && copilotRequestInProgress) {
-      setChatStatusAnnouncement('Generating response.');
+      setChatStatusAnnouncement(trans.__('Generating response.'));
     } else if (prev && !copilotRequestInProgress) {
-      setChatStatusAnnouncement('Response complete.');
+      setChatStatusAnnouncement(trans.__('Response complete.'));
     }
     prevCopilotRequestInProgressRef.current = copilotRequestInProgress;
   }, [copilotRequestInProgress]);
@@ -1481,8 +1495,9 @@ function SidebarComponent(props: any) {
   // adding it to their dependency arrays.
   const permissionModeRef = useRef(permissionMode);
 
-  const [toolSelectionTitle, setToolSelectionTitle] =
-    useState('Tool selection');
+  const [toolSelectionTitle, setToolSelectionTitle] = useState(
+    trans.__('Tool selection')
+  );
   const [selectedToolCount, setSelectedToolCount] = useState(0);
   const [unsafeToolSelected, setUnsafeToolSelected] = useState(false);
 
@@ -1674,7 +1689,7 @@ function SidebarComponent(props: any) {
         return;
       }
       setWorkspaceFilesError(
-        error?.message || 'Failed to load workspace files.'
+        error?.message || trans.__('Failed to load workspace files.')
       );
     } finally {
       workspaceFilesLoadingRef.current = false;
@@ -1899,7 +1914,9 @@ function SidebarComponent(props: any) {
         });
         content = serializeWorkspaceFileContent(model);
         if (content.trim() === '') {
-          throw new Error('Empty files do not provide useful context.');
+          throw new Error(
+            trans.__('Empty files do not provide useful context.')
+          );
         }
         lineCount = countContentLines(content);
       }
@@ -1919,7 +1936,8 @@ function SidebarComponent(props: any) {
     } catch (error: any) {
       console.error(`Failed to attach workspace file '${file.path}'.`, error);
       setWorkspaceFilesError(
-        error?.message || `Failed to attach workspace file '${file.path}'.`
+        error?.message ||
+          trans.__("Failed to attach workspace file '%1'.", file.path)
       );
     } finally {
       setWorkspaceFileActionPath('');
@@ -1958,7 +1976,7 @@ function SidebarComponent(props: any) {
     if (isLikelyTextFile(file)) {
       const content = await readFileAsText(file);
       if (content.trim() === '') {
-        throw new Error(`'${file.name}' is empty`);
+        throw new Error(trans.__("'%1' is empty", file.name));
       }
       return {
         content,
@@ -2005,7 +2023,7 @@ function SidebarComponent(props: any) {
         id: UUID.uuid4(),
         date: new Date(),
         from: 'notice',
-        participant: { name: 'Notice' } as any,
+        participant: { name: trans.__('Notice') } as any,
         contents: [
           {
             id: UUID.uuid4(),
@@ -2039,14 +2057,27 @@ function SidebarComponent(props: any) {
     const skippedCount = uniqueFiles.length - filesToProcess.length;
 
     if (filesToProcess.length === 0) {
-      const parts: string[] = [];
+      // Whole sentences, so each can be translated and punctuated on its own.
+      const reasons: string[] = [];
       if (duplicateCount > 0) {
-        parts.push(`${duplicateCount} already attached`);
+        reasons.push(
+          trans._n(
+            'No files added: %1 file is already attached.',
+            'No files added: %1 files are already attached.',
+            duplicateCount
+          )
+        );
       }
       if (skippedCount > 0) {
-        parts.push(`limit of ${MAX_ATTACHED_FILES} files reached`);
+        reasons.push(
+          trans._n(
+            'No files added: the limit of %1 file is reached.',
+            'No files added: the limit of %1 files is reached.',
+            MAX_ATTACHED_FILES
+          )
+        );
       }
-      addSystemNotice(`No files added: ${parts.join('; ')}.`);
+      addSystemNotice(reasons.join(' '));
       return;
     }
 
@@ -2068,21 +2099,32 @@ function SidebarComponent(props: any) {
       }
 
       const notices: string[] = [];
-      if (errors.length > 0) {
-        notices.push(`Could not attach: ${errors.join('; ')}`);
-      }
       if (duplicateCount > 0) {
         notices.push(
-          `${duplicateCount} duplicate${duplicateCount > 1 ? 's' : ''} skipped`
+          trans._n(
+            '%1 duplicate skipped.',
+            '%1 duplicates skipped.',
+            duplicateCount
+          )
         );
       }
       if (skippedCount > 0) {
         notices.push(
-          `${skippedCount} file${skippedCount > 1 ? 's' : ''} skipped (limit of ${MAX_ATTACHED_FILES})`
+          trans._n(
+            '%1 file skipped (limit of %2).',
+            '%1 files skipped (limit of %2).',
+            skippedCount,
+            MAX_ATTACHED_FILES
+          )
         );
       }
+      // Last, since the error messages it lists carry their own punctuation.
+      if (errors.length > 0) {
+        notices.push(trans.__('Could not attach: %1', errors.join('; ')));
+      }
       if (notices.length > 0) {
-        addSystemNotice(notices.join('. ') + '.');
+        // Each notice is a whole translated sentence with its own punctuation.
+        addSystemNotice(notices.join(' '));
       }
 
       if (newContextFiles.length > 0) {
@@ -2325,7 +2367,7 @@ function SidebarComponent(props: any) {
           }
           const content = serializeWorkspaceFileContent(model);
           if (content.trim() === '') {
-            throw new Error(`'${path}' has no content to attach.`);
+            throw new Error(trans.__("'%1' has no content to attach.", path));
           }
           additions.push({
             content,
@@ -2334,7 +2376,9 @@ function SidebarComponent(props: any) {
             type: model.type === 'notebook' ? 'notebook' : 'file'
           });
         } catch (error: any) {
-          errors.push(error?.message || `Failed to attach '${path}'.`);
+          errors.push(
+            error?.message || trans.__("Failed to attach '%1'.", path)
+          );
         }
       })
     );
@@ -2360,7 +2404,7 @@ function SidebarComponent(props: any) {
       // Match the terminal-drag error path (Notification toast) instead
       // of slipping a chat-message-notice into the transcript, which
       // can scroll out of view.
-      Notification.warning(`Could not attach: ${errors.join('; ')}`);
+      Notification.warning(trans.__('Could not attach: %1', errors.join('; ')));
     }
   };
 
@@ -2496,13 +2540,34 @@ function SidebarComponent(props: any) {
 
     const typeCounts = [];
     if (builtinToolSelCount > 0) {
-      typeCounts.push(`${builtinToolSelCount} built-in`);
+      typeCounts.push(
+        trans._np(
+          'count of selected tools',
+          '%1 built-in',
+          '%1 built-in',
+          builtinToolSelCount
+        )
+      );
     }
     if (mcpServerToolSelCount > 0) {
-      typeCounts.push(`${mcpServerToolSelCount} mcp`);
+      typeCounts.push(
+        trans._np(
+          'count of selected MCP server tools',
+          '%1 mcp',
+          '%1 mcp',
+          mcpServerToolSelCount
+        )
+      );
     }
     if (extensionToolSelCount > 0) {
-      typeCounts.push(`${extensionToolSelCount} ext`);
+      typeCounts.push(
+        trans._np(
+          'count of selected extension tools',
+          '%1 ext',
+          '%1 ext',
+          extensionToolSelCount
+        )
+      );
     }
 
     setSelectedToolCount(
@@ -2521,8 +2586,8 @@ function SidebarComponent(props: any) {
     );
     setToolSelectionTitle(
       typeCounts.length === 0
-        ? 'Tool selection'
-        : `Tool selection (${typeCounts.join(', ')})`
+        ? trans.__('Tool selection')
+        : trans.__('Tool selection (%1)', typeCounts.join(', '))
     );
   }, [toolSelections]);
 
@@ -2943,7 +3008,7 @@ function SidebarComponent(props: any) {
         const result = await props
           .getApp()
           .commands.execute('notebook-intelligence:show-form-input-dialog', {
-            title: 'Input Parameters',
+            title: trans.__('Input Parameters'),
             fields: promptConfig.arguments
           });
         const argumentValues: string[] = [];
@@ -3454,20 +3519,30 @@ function SidebarComponent(props: any) {
 
   const handleClaudeSessionResumed = (session: IClaudeSessionInfo) => {
     setShowClaudeSessionPicker(false);
+    const sessionId = session.session_id.slice(0, 8);
     resetChatForResumedSession(
-      `Resumed Claude session \`${session.session_id.slice(0, 8)}\`${
-        session.preview ? ` \u2014 _${session.preview}_` : ''
-      }.`
+      session.preview
+        ? trans.__(
+            'Resumed Claude session %1: %2.',
+            `\`${sessionId}\``,
+            `_${session.preview}_`
+          )
+        : trans.__('Resumed Claude session %1.', `\`${sessionId}\``)
     );
     setPermissionMode(NBIAPI.config.claudePermissionDefaultMode);
   };
 
   const handleAcpSessionResumed = (session: IClaudeSessionInfo) => {
     setShowAcpSessionPicker(false);
+    const sessionId = session.session_id.slice(0, 8);
     resetChatForResumedSession(
-      `Resumed session \`${session.session_id.slice(0, 8)}\`${
-        session.preview ? `: _${session.preview}_` : ''
-      }.`
+      session.preview
+        ? trans.__(
+            'Resumed session %1: %2.',
+            `\`${sessionId}\``,
+            `_${session.preview}_`
+          )
+        : trans.__('Resumed session %1.', `\`${sessionId}\``)
     );
   };
 
@@ -4015,7 +4090,10 @@ function SidebarComponent(props: any) {
 
     if (!wholeFile) {
       if (activeDocumentInfo.filename.endsWith('.ipynb')) {
-        cellAndLineIndicator = ` · Cell ${activeDocumentInfo.activeCellIndex + 1}`;
+        cellAndLineIndicator = ` · ${trans.__(
+          'Cell %1',
+          activeDocumentInfo.activeCellIndex + 1
+        )}`;
       }
       if (
         activeDocumentInfo.selection.start.line ===
@@ -4172,12 +4250,12 @@ function SidebarComponent(props: any) {
             promptInputRef.current?.focus();
           }}
         >
-          Skip to message input
+          {trans.__('Skip to message input')}
         </a>
       )}
       {isDragOver && (
         <div className="drop-zone-overlay">
-          <span>Drop files to attach as context</span>
+          <span>{trans.__('Drop files to attach as context')}</span>
         </div>
       )}
       {tourVisible && <TourOverlay onClose={() => setTourVisible(false)} />}
@@ -4192,10 +4270,14 @@ function SidebarComponent(props: any) {
               onClick={() => startNewChatSession()}
               title={
                 NBIAPI.config.isInClaudeCodeMode
-                  ? 'Start a new chat session (restarts the Claude client)'
-                  : 'Start a new chat session (starts a fresh agent session)'
+                  ? trans.__(
+                      'Start a new chat session (restarts the Claude client)'
+                    )
+                  : trans.__(
+                      'Start a new chat session (starts a fresh agent session)'
+                    )
               }
-              aria-label="Start a new chat session"
+              aria-label={trans.__('Start a new chat session')}
             >
               <VscAdd />
             </button>
@@ -4208,8 +4290,10 @@ function SidebarComponent(props: any) {
                   ? setShowClaudeSessionPicker(true)
                   : setShowAcpSessionPicker(true)
               }
-              aria-label="Resume a previous session"
-              title="Resume a session you started earlier in this workspace"
+              aria-label={trans.__('Resume a previous session')}
+              title={trans.__(
+                'Resume a session you started earlier in this workspace'
+              )}
             >
               <VscHistory />
             </button>
@@ -4220,8 +4304,10 @@ function SidebarComponent(props: any) {
           className="user-input-footer-button"
           data-tour-id={TOUR_ANCHOR.settingsGear}
           onClick={() => handleSettingsButtonClick()}
-          aria-label="Open Notebook Intelligence settings"
-          title="Configure providers, API keys, MCP servers, and skills"
+          aria-label={trans.__('Open Notebook Intelligence settings')}
+          title={trans.__(
+            'Configure providers, API keys, MCP servers, and skills'
+          )}
         >
           <VscSettingsGear />
         </button>
@@ -4229,11 +4315,13 @@ function SidebarComponent(props: any) {
       <div className="nbi-status-banner-live" aria-live="polite">
         {skillsReloadedVisible && (
           <div className="nbi-status-banner">
-            Skills reloaded — applied to the current session.
+            {trans.__('Skills reloaded and applied to the current session.')}
           </div>
         )}
         {newChatNoticeVisible && (
-          <div className="nbi-status-banner">New chat session started.</div>
+          <div className="nbi-status-banner">
+            {trans.__('New chat session started.')}
+          </div>
         )}
       </div>
       {/* sr-only polite region for chat-status boundary announcements.
@@ -4246,12 +4334,14 @@ function SidebarComponent(props: any) {
       </div>
       {!chatEnabled && !ghLoginRequired && (
         <div className="sidebar-login-info">
-          Chat is disabled as you don't have a model configured.
+          {trans.__("Chat is disabled as you don't have a model configured.")}
           <button
             className="jp-Dialog-button jp-mod-accept jp-mod-styled"
             onClick={handleConfigurationClick}
           >
-            <div className="jp-Dialog-buttonLabel">Configure models</div>
+            <div className="jp-Dialog-buttonLabel">
+              {trans.__('Configure models')}
+            </div>
           </button>
         </div>
       )}
@@ -4260,8 +4350,9 @@ function SidebarComponent(props: any) {
         ghLoginRequired && (
           <div className="sidebar-login-info">
             <div>
-              You are not logged in to GitHub Copilot. Please login now to
-              activate chat.
+              {trans.__(
+                'You are not logged in to GitHub Copilot. Please login now to activate chat.'
+              )}
             </div>
             <div className="sidebar-login-buttons">
               <button
@@ -4269,7 +4360,7 @@ function SidebarComponent(props: any) {
                 onClick={handleLoginClick}
               >
                 <div className="jp-Dialog-buttonLabel">
-                  Login to GitHub Copilot
+                  {trans.__('Login to GitHub Copilot')}
                 </div>
               </button>
 
@@ -4277,7 +4368,9 @@ function SidebarComponent(props: any) {
                 className="jp-Dialog-button jp-mod-reject jp-mod-styled"
                 onClick={handleConfigurationClick}
               >
-                <div className="jp-Dialog-buttonLabel">Change provider</div>
+                <div className="jp-Dialog-buttonLabel">
+                  {trans.__('Change provider')}
+                </div>
               </button>
             </div>
           </div>
@@ -4288,17 +4381,17 @@ function SidebarComponent(props: any) {
           <div
             className="sidebar-messages"
             role="log"
-            aria-label="Chat transcript"
+            aria-label={trans.__('Chat transcript')}
           >
             <div className="sidebar-greeting">
-              Welcome! How can I assist you today?
+              {trans.__('Welcome! How can I assist you today?')}
             </div>
           </div>
         ) : (
           <div
             className="sidebar-messages"
             role="log"
-            aria-label="Chat transcript"
+            aria-label={trans.__('Chat transcript')}
           >
             {chatMessages.map((msg, index) => {
               // Only the most recent copilot message owns the live
@@ -4342,7 +4435,7 @@ function SidebarComponent(props: any) {
             onChange={onPromptChange}
             onKeyDown={onPromptKeyDown}
             onPaste={handlePaste}
-            placeholder="Ask Notebook Intelligence..."
+            placeholder={trans.__('Ask Notebook Intelligence...')}
             spellCheck={false}
             value={prompt}
           />
@@ -4361,12 +4454,14 @@ function SidebarComponent(props: any) {
                     onClick={() => setContextOn(!contextOn)}
                     aria-label={
                       contextOn
-                        ? 'Stop using current file as context'
-                        : 'Use current file as context'
+                        ? trans.__('Stop using current file as context')
+                        : trans.__('Use current file as context')
                     }
                     aria-pressed={contextOn}
                     title={
-                      contextOn ? 'Use as context' : "Don't use as context"
+                      contextOn
+                        ? trans.__('Use as context')
+                        : trans.__("Don't use as context")
                     }
                   >
                     {contextOn ? (
@@ -4379,19 +4474,25 @@ function SidebarComponent(props: any) {
               )}
               {selectedContextFiles.map(file => {
                 const isOutput = !!file.outputContext;
-                const cellLabel =
-                  typeof file.cellIndex === 'number'
-                    ? `Cell ${file.cellIndex + 1} output`
-                    : 'Cell output';
-                const label = isOutput
-                  ? file.notebookFilename
-                    ? `${cellLabel} (${file.notebookFilename})`
-                    : cellLabel
-                  : file.path;
+                const hasCell = typeof file.cellIndex === 'number';
+                const cellNumber = hasCell ? file.cellIndex! + 1 : 0;
+                const label = !isOutput
+                  ? file.path
+                  : file.notebookFilename
+                    ? hasCell
+                      ? trans.__(
+                          'Cell %1 output (%2)',
+                          cellNumber,
+                          file.notebookFilename
+                        )
+                      : trans.__('Cell output (%1)', file.notebookFilename)
+                    : hasCell
+                      ? trans.__('Cell %1 output', cellNumber)
+                      : trans.__('Cell output');
                 const titleText = isOutput
                   ? label
                   : file.source === 'upload'
-                    ? `Uploaded: ${file.path}`
+                    ? trans.__('Uploaded: %1', file.path)
                     : file.path;
                 return (
                   <div
@@ -4457,8 +4558,8 @@ function SidebarComponent(props: any) {
                           }
                         });
                       }}
-                      aria-label={`Remove attached file ${label}`}
-                      title="Remove attached file"
+                      aria-label={trans.__('Remove attached file %1', label)}
+                      title={trans.__('Remove attached file')}
                     >
                       <VscClose aria-hidden="true" />
                     </button>
@@ -4480,7 +4581,9 @@ function SidebarComponent(props: any) {
                   aria-atomic="true"
                   aria-busy="true"
                 >
-                  <div className="loading-ellipsis">Uploading</div>
+                  <div className="loading-ellipsis">
+                    {trans.__('Uploading')}
+                  </div>
                 </div>
               )}
             </div>
@@ -4504,8 +4607,8 @@ function SidebarComponent(props: any) {
                   setShowPopover(prev => !prev);
                   promptInputRef.current?.focus();
                 }}
-                title="Slash commands"
-                aria-label="Open slash commands"
+                title={trans.__('Slash commands')}
+                aria-label={trans.__('Open slash commands')}
               >
                 /
               </button>
@@ -4515,8 +4618,8 @@ function SidebarComponent(props: any) {
               data-tour-id={TOUR_ANCHOR.addContext}
               className={`user-input-footer-button ${selectedContextFiles.length > 0 ? 'tools-button tools-button-active' : ''}`}
               onClick={() => handleWorkspaceFilePickerClick()}
-              title="Add workspace file as context"
-              aria-label="Add workspace file as context"
+              title={trans.__('Add workspace file as context')}
+              aria-label={trans.__('Add workspace file as context')}
             >
               <VscFile />
               {selectedContextFiles.length > 0 && (
@@ -4528,8 +4631,8 @@ function SidebarComponent(props: any) {
               data-tour-id={TOUR_ANCHOR.uploadFile}
               className="user-input-footer-button"
               onClick={() => fileInputRef.current?.click()}
-              title="Upload file from computer"
-              aria-label="Upload file from computer"
+              title={trans.__('Upload file from computer')}
+              aria-label={trans.__('Upload file from computer')}
             >
               <VscCloudUpload />
             </button>
@@ -4547,7 +4650,7 @@ function SidebarComponent(props: any) {
                   <div data-tour-id={TOUR_ANCHOR.chatMode}>
                     <select
                       className="chat-mode-select"
-                      title="Chat mode"
+                      title={trans.__('Chat mode')}
                       value={chatMode}
                       onChange={event => {
                         if (event.target.value === 'ask') {
@@ -4557,8 +4660,12 @@ function SidebarComponent(props: any) {
                         setChatMode(event.target.value);
                       }}
                     >
-                      <option value="ask">Ask</option>
-                      <option value="agent">Agent</option>
+                      <option value="ask">
+                        {trans._p('chat mode', 'Ask')}
+                      </option>
+                      <option value="agent">
+                        {trans._p('chat mode', 'Agent')}
+                      </option>
                     </select>
                   </div>
                 )}
@@ -4571,13 +4678,18 @@ function SidebarComponent(props: any) {
                     onClick={() => handleChatToolsButtonClick()}
                     title={
                       unsafeToolSelected
-                        ? `Tool selection can cause irreversible changes! Review each tool execution carefully.\n${toolSelectionTitle}`
+                        ? trans.__(
+                            'Tool selection can cause irreversible changes! Review each tool execution carefully.\n%1',
+                            toolSelectionTitle
+                          )
                         : toolSelectionTitle
                     }
                     aria-label={
                       unsafeToolSelected
-                        ? 'Configure tools (warning: irreversible tools selected)'
-                        : 'Configure tools'
+                        ? trans.__(
+                            'Configure tools (warning: irreversible tools selected)'
+                          )
+                        : trans.__('Configure tools')
                     }
                   >
                     <VscTools />
@@ -4593,14 +4705,14 @@ function SidebarComponent(props: any) {
               )}
               {NBIAPI.config.isInClaudeCodeMode && (
                 <span
-                  title="Claude mode"
+                  title={trans.__('Claude mode')}
                   className="claude-icon"
                   dangerouslySetInnerHTML={{ __html: claudeSvgStr }}
                 ></span>
               )}
               {NBIAPI.config.isInAcpMode && (
                 <span
-                  title="ACP mode"
+                  title={trans.__('ACP mode')}
                   className="acp-agent-icon"
                   dangerouslySetInnerHTML={{ __html: openaiSvgStr }}
                 ></span>
@@ -4617,10 +4729,14 @@ function SidebarComponent(props: any) {
                 onClick={() => handleSubmitStopChatButtonClick()}
                 disabled={prompt.length === 0 && !copilotRequestInProgress}
                 aria-label={
-                  copilotRequestInProgress ? 'Stop generating' : 'Send message'
+                  copilotRequestInProgress
+                    ? trans.__('Stop generating')
+                    : trans.__('Send message')
                 }
                 title={
-                  copilotRequestInProgress ? 'Stop generating' : 'Send message'
+                  copilotRequestInProgress
+                    ? trans.__('Stop generating')
+                    : trans.__('Send message')
                 }
               >
                 {copilotRequestInProgress ? (
@@ -4653,8 +4769,10 @@ function SidebarComponent(props: any) {
           )}
           {showAcpSessionPicker && (
             <ClaudeSessionPicker
-              title="Resume session"
-              emptyMessage="No previous sessions found for this working directory."
+              title={trans.__('Resume session')}
+              emptyMessage={trans.__(
+                'No previous sessions found for this working directory.'
+              )}
               showCopyCommand={false}
               fetchSessions={() => NBIAPI.listAcpSessions()}
               resumeSession={sessionId => NBIAPI.resumeAcpSession(sessionId)}
@@ -4685,7 +4803,7 @@ function SidebarComponent(props: any) {
                   className="mode-tools-popover-title"
                   id="nbi-workspace-popover-title"
                 >
-                  Add files as context
+                  {trans.__('Add files as context')}
                 </div>
                 <div style={{ flexGrow: 1 }}></div>
                 <button
@@ -4694,8 +4812,8 @@ function SidebarComponent(props: any) {
                     'mode-tools-popover-button mode-tools-popover-refresh-button' +
                     (workspaceFilesLoading ? ' is-loading' : '')
                   }
-                  title="Refresh file list"
-                  aria-label="Refresh workspace file list"
+                  title={trans.__('Refresh file list')}
+                  aria-label={trans.__('Refresh workspace file list')}
                   aria-busy={workspaceFilesLoading}
                   aria-disabled={workspaceFilesLoading}
                   onClick={() => {
@@ -4709,8 +4827,8 @@ function SidebarComponent(props: any) {
                 <button
                   type="button"
                   className="mode-tools-popover-button mode-tools-popover-close-button"
-                  title="Close"
-                  aria-label="Close file picker"
+                  title={trans.__('Close')}
+                  aria-label={trans.__('Close file picker')}
                   onClick={() => setShowWorkspaceFilePicker(false)}
                 >
                   <VscClose />
@@ -4720,7 +4838,7 @@ function SidebarComponent(props: any) {
                 <input
                   className="workspace-file-search-input"
                   type="text"
-                  placeholder="Search files by path"
+                  placeholder={trans.__('Search files by path')}
                   value={workspaceFileSearch}
                   onChange={event => setWorkspaceFileSearch(event.target.value)}
                   onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
@@ -4741,13 +4859,16 @@ function SidebarComponent(props: any) {
                 )}
                 {workspaceScanLimitReached && (
                   <div className="workspace-file-popover-status">
-                    Showing the first {MAX_WORKSPACE_FILE_SCAN_COUNT} files
-                    found in the workspace.
+                    {trans._n(
+                      'Showing the first %1 file found in the workspace.',
+                      'Showing the first %1 files found in the workspace.',
+                      MAX_WORKSPACE_FILE_SCAN_COUNT
+                    )}
                   </div>
                 )}
                 {workspaceFilesLoading ? (
                   <div className="workspace-file-popover-status">
-                    Loading workspace files...
+                    {trans.__('Loading workspace files...')}
                   </div>
                 ) : visibleWorkspaceFiles.length > 0 ? (
                   <div className="mode-tools-popover-tool-list">
@@ -4760,8 +4881,8 @@ function SidebarComponent(props: any) {
                         onClick={() => handleWorkspaceFileSelection(file)}
                         tooltip={
                           file.type === 'notebook'
-                            ? 'Notebook file'
-                            : 'Text file'
+                            ? trans.__('Notebook file')
+                            : trans.__('Text file')
                         }
                       />
                     ))}
@@ -4769,8 +4890,8 @@ function SidebarComponent(props: any) {
                 ) : (
                   <div className="workspace-file-popover-status">
                     {workspaceFilesLoaded
-                      ? 'No matching files found.'
-                      : 'No workspace files available.'}
+                      ? trans.__('No matching files found.')
+                      : trans.__('No workspace files available.')}
                   </div>
                 )}
               </div>
@@ -4816,29 +4937,31 @@ function SidebarComponent(props: any) {
                       className="link-button"
                       onClick={onClearToolsButtonClicked}
                     >
-                      clear
+                      {trans._p('tool selection', 'clear')}
                     </button>
                   </div>
                 </div>
                 <button
                   type="button"
                   className="mode-tools-popover-button mode-tools-popover-done-button"
-                  aria-label="Close tools picker"
+                  aria-label={trans.__('Close tools picker')}
                   onClick={() => setShowModeTools(false)}
                 >
                   <div>
                     <VscPassFilled />
                   </div>
-                  <div>Done</div>
+                  <div>{trans.__('Done')}</div>
                 </button>
               </div>
               <div className="mode-tools-popover-tool-list">
-                <div className="mode-tools-group-header">Built-in</div>
+                <div className="mode-tools-group-header">
+                  {trans.__('Built-in')}
+                </div>
                 <div className="mode-tools-group mode-tools-group-built-in">
                   {toolConfigRef.current.builtinToolsets.map((toolset: any) => (
                     <CheckBoxItem
                       key={toolset.id}
-                      label={toolset.name}
+                      label={builtinToolsetLabel(trans, toolset)}
                       checked={getBuiltinToolsetState(toolset.id)}
                       tooltip={toolset.description}
                       header={true}
@@ -4855,7 +4978,7 @@ function SidebarComponent(props: any) {
                   mcpServerEnabledState.size > 0 &&
                   toolConfigRef.current.mcpServers.length > 0 && (
                     <div className="mode-tools-group-header">
-                      MCP Server Tools
+                      {trans.__('MCP Server Tools')}
                     </div>
                   )}
                 {renderCount > 0 &&
@@ -4901,7 +5024,9 @@ function SidebarComponent(props: any) {
                       </div>
                     ))}
                 {hasExtensionTools && (
-                  <div className="mode-tools-group-header">Extension tools</div>
+                  <div className="mode-tools-group-header">
+                    {trans.__('Extension tools')}
+                  </div>
                 )}
                 {toolConfigRef.current.extensions.map(
                   (extension, index: number) => (
@@ -4968,6 +5093,7 @@ function SidebarComponent(props: any) {
 }
 
 export function InlinePopoverComponent(props: any) {
+  const trans = useTrans();
   const [modifiedCode, setModifiedCode] = useState<string>('');
   const [promptSubmitted, setPromptSubmitted] = useState(false);
   // Tracks the in-flight backend request so Escape / Cancel / Accept can
@@ -5095,7 +5221,7 @@ export function InlinePopoverComponent(props: any) {
                 className="jp-Button jp-mod-accept jp-mod-styled jp-mod-small"
                 onClick={() => onUpdatedCodeAccepted()}
               >
-                Accept
+                {trans.__('Accept')}
               </button>
             </div>
             <div>
@@ -5103,7 +5229,7 @@ export function InlinePopoverComponent(props: any) {
                 className="jp-Button jp-mod-reject jp-mod-styled jp-mod-small"
                 onClick={() => onRequestCancelled()}
               >
-                Cancel
+                {trans.__('Cancel')}
               </button>
             </div>
           </div>
@@ -5156,6 +5282,7 @@ function InlineDiffViewerComponent(props: any) {
 }
 
 function InlinePromptComponent(props: any) {
+  const trans = useTrans();
   const [prompt, setPrompt] = useState<string>(props.prompt);
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   const [inputSubmitted, setInputSubmitted] = useState(false);
@@ -5264,7 +5391,9 @@ function InlinePromptComponent(props: any) {
         }}
         onKeyDown={onPromptKeyDown}
         onMouseDown={event => event.stopPropagation()}
-        placeholder="Ask Notebook Intelligence to generate Python code..."
+        placeholder={trans.__(
+          'Ask Notebook Intelligence to generate Python code...'
+        )}
         spellCheck={false}
         value={prompt}
       />
@@ -5273,6 +5402,7 @@ function InlinePromptComponent(props: any) {
 }
 
 function GitHubCopilotStatusComponent(props: any) {
+  const trans = useTrans();
   const [ghLoginStatus, setGHLoginStatus] = useState(
     GitHubCopilotLoginStatus.NotLoggedIn
   );
@@ -5300,7 +5430,11 @@ function GitHubCopilotStatusComponent(props: any) {
 
   return (
     <div
-      title={`GitHub Copilot: ${ghLoginStatus === GitHubCopilotLoginStatus.LoggedIn ? 'Logged in' : 'Not logged in'}`}
+      title={
+        ghLoginStatus === GitHubCopilotLoginStatus.LoggedIn
+          ? trans.__('GitHub Copilot: Logged in')
+          : trans.__('GitHub Copilot: Not logged in')
+      }
       className="github-copilot-status-bar"
       onClick={() => onStatusClick()}
       dangerouslySetInnerHTML={{
@@ -5314,6 +5448,7 @@ function GitHubCopilotStatusComponent(props: any) {
 }
 
 function GitHubCopilotLoginDialogBodyComponent(props: any) {
+  const trans = useTrans();
   const [ghLoginStatus, setGHLoginStatus] = useState(
     GitHubCopilotLoginStatus.NotLoggedIn
   );
@@ -5359,54 +5494,64 @@ function GitHubCopilotLoginDialogBodyComponent(props: any) {
     <div className="github-copilot-login-dialog">
       <div className="github-copilot-login-status">
         <h4>
-          Login status:{' '}
-          <span
-            className={`github-copilot-login-status-text ${loggedIn ? 'logged-in' : ''}`}
-          >
-            {loggedIn
-              ? 'Logged in'
-              : ghLoginStatus === GitHubCopilotLoginStatus.LoggingIn
-                ? 'Logging in...'
-                : ghLoginStatus === GitHubCopilotLoginStatus.ActivatingDevice
-                  ? 'Activating device...'
-                  : ghLoginStatus === GitHubCopilotLoginStatus.NotLoggedIn
-                    ? 'Not logged in'
-                    : 'Unknown'}
-          </span>
+          {interpolate(
+            status => trans.__('Login status: %1', status),
+            <span
+              className={`github-copilot-login-status-text ${loggedIn ? 'logged-in' : ''}`}
+            >
+              {loggedIn
+                ? trans.__('Logged in')
+                : ghLoginStatus === GitHubCopilotLoginStatus.LoggingIn
+                  ? trans.__('Logging in...')
+                  : ghLoginStatus === GitHubCopilotLoginStatus.ActivatingDevice
+                    ? trans.__('Activating device...')
+                    : ghLoginStatus === GitHubCopilotLoginStatus.NotLoggedIn
+                      ? trans.__('Not logged in')
+                      : trans.__('Unknown')}
+            </span>
+          )}
         </h4>
       </div>
 
       {ghLoginStatus === GitHubCopilotLoginStatus.NotLoggedIn && (
         <>
           <div>
-            Your code and data are directly transferred to GitHub Copilot as
-            needed without storing any copies other than keeping in the process
-            memory.
+            {trans.__(
+              'Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory.'
+            )}
           </div>
           <div>
-            <SafeAnchor href="https://github.com/features/copilot">
-              GitHub Copilot
-            </SafeAnchor>{' '}
-            requires a subscription and it has a free tier. GitHub Copilot is
-            subject to the{' '}
-            <SafeAnchor href="https://docs.github.com/en/site-policy/github-terms/github-terms-for-additional-products-and-features">
-              GitHub Terms for Additional Products and Features
-            </SafeAnchor>
-            .
+            {interpolate(
+              (copilot, terms) =>
+                trans.__(
+                  '%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2.',
+                  copilot,
+                  terms
+                ),
+              <SafeAnchor href="https://github.com/features/copilot">
+                GitHub Copilot
+              </SafeAnchor>,
+              <SafeAnchor href="https://docs.github.com/en/site-policy/github-terms/github-terms-for-additional-products-and-features">
+                {trans.__('GitHub Terms for Additional Products and Features')}
+              </SafeAnchor>
+            )}
           </div>
           <div>
-            <h4>Privacy and terms</h4>
-            By using Notebook Intelligence with GitHub Copilot subscription you
-            agree to{' '}
-            <SafeAnchor href="https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-chat-in-your-ide">
-              GitHub Copilot chat terms
-            </SafeAnchor>
-            . Review the terms to understand about usage, limitations and ways
-            to improve GitHub Copilot. Please review{' '}
-            <SafeAnchor href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">
-              Privacy Statement
-            </SafeAnchor>
-            .
+            <h4>{trans.__('Privacy and terms')}</h4>
+            {interpolate(
+              (chatTerms, privacy) =>
+                trans.__(
+                  'By using Notebook Intelligence with GitHub Copilot subscription you agree to %1. Review the terms to understand about usage, limitations and ways to improve GitHub Copilot. Please review %2.',
+                  chatTerms,
+                  privacy
+                ),
+              <SafeAnchor href="https://docs.github.com/en/copilot/responsible-use-of-github-copilot-features/responsible-use-of-github-copilot-chat-in-your-ide">
+                {trans.__('GitHub Copilot chat terms')}
+              </SafeAnchor>,
+              <SafeAnchor href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">
+                {trans.__('Privacy Statement')}
+              </SafeAnchor>
+            )}
           </div>
           <div>
             <button
@@ -5414,7 +5559,7 @@ function GitHubCopilotLoginDialogBodyComponent(props: any) {
               onClick={handleLoginClick}
             >
               <div className="jp-Dialog-buttonLabel">
-                Login using your GitHub account
+                {trans.__('Login using your GitHub account')}
               </div>
             </button>
           </div>
@@ -5427,7 +5572,7 @@ function GitHubCopilotLoginDialogBodyComponent(props: any) {
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
             onClick={handleLogoutClick}
           >
-            <div className="jp-Dialog-buttonLabel">Logout</div>
+            <div className="jp-Dialog-buttonLabel">{trans.__('Logout')}</div>
           </button>
         </div>
       )}
@@ -5437,28 +5582,32 @@ function GitHubCopilotLoginDialogBodyComponent(props: any) {
         deviceActivationCode && (
           <div>
             <div className="copilot-activation-message">
-              Copy code{' '}
-              <span
-                className="user-code-span"
-                onClick={() => {
-                  void writeTextToClipboard(deviceActivationCode);
-                  return true;
-                }}
-              >
-                <b>
-                  {deviceActivationCode}{' '}
-                  <span
-                    className="copy-icon"
-                    dangerouslySetInnerHTML={{ __html: copySvgstr }}
-                  ></span>
-                </b>
-              </span>{' '}
-              and enter at{' '}
-              <SafeAnchor href={deviceActivationURL}>
-                {deviceActivationURL}
-              </SafeAnchor>{' '}
-              to allow access to GitHub Copilot from this app. Activation could
-              take up to a minute after you enter the code.
+              {interpolate(
+                (code, url) =>
+                  trans.__(
+                    'Copy code %1 and enter at %2 to allow access to GitHub Copilot from this app. Activation could take up to a minute after you enter the code.',
+                    code,
+                    url
+                  ),
+                <span
+                  className="user-code-span"
+                  onClick={() => {
+                    void writeTextToClipboard(deviceActivationCode);
+                    return true;
+                  }}
+                >
+                  <b>
+                    {deviceActivationCode}{' '}
+                    <span
+                      className="copy-icon"
+                      dangerouslySetInnerHTML={{ __html: copySvgstr }}
+                    ></span>
+                  </b>
+                </span>,
+                <SafeAnchor href={deviceActivationURL}>
+                  {deviceActivationURL}
+                </SafeAnchor>
+              )}
             </div>
           </div>
         )}
@@ -5469,7 +5618,9 @@ function GitHubCopilotLoginDialogBodyComponent(props: any) {
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
             onClick={handleLogoutClick}
           >
-            <div className="jp-Dialog-buttonLabel">Cancel activation</div>
+            <div className="jp-Dialog-buttonLabel">
+              {trans.__('Cancel activation')}
+            </div>
           </button>
         </div>
       )}
@@ -5499,6 +5650,7 @@ export class FormInputDialogBody extends ReactWidget {
 }
 
 function FormInputDialogBodyComponent(props: any) {
+  const trans = useTrans();
   const [formData, setFormData] = useState<any>({});
 
   const handleInputChange = (event: any) => {
@@ -5521,8 +5673,9 @@ function FormInputDialogBodyComponent(props: any) {
                 className="form-input-dialog-body-content-field-label jp-mod-styled"
                 htmlFor={field.name}
               >
-                {field.name}
-                {field.required ? ' (required)' : ''}
+                {field.required
+                  ? trans.__('%1 (required)', field.name)
+                  : field.name}
               </label>
               <input
                 className="form-input-dialog-body-content-field-input jp-mod-styled"
@@ -5541,7 +5694,7 @@ function FormInputDialogBodyComponent(props: any) {
               className="jp-Dialog-button jp-mod-accept jp-mod-styled"
               onClick={() => props.onDone(formData)}
             >
-              <div className="jp-Dialog-buttonLabel">Done</div>
+              <div className="jp-Dialog-buttonLabel">{trans.__('Done')}</div>
             </button>
           </div>
         </div>
