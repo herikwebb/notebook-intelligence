@@ -9,14 +9,16 @@ import {
   NBIAPI,
   PluginScope
 } from '../api';
+import { TranslationBundle } from '@jupyterlab/translation';
 import { FormDialog } from './form-dialog';
-
-const SCOPES: PluginScope[] = ['user', 'project', 'local'];
-const SCOPE_HINT: Record<PluginScope, string> = {
-  user: 'available in all your projects',
-  project: 'shared via the project repo',
-  local: 'this project, this user only'
-};
+import { interpolate, useTrans } from '../i18n';
+import {
+  CLAUDE_CONFIG_SCOPES as SCOPES,
+  removedFromScopeConfig,
+  scopeHeading,
+  scopeHint,
+  scopeOption
+} from './claude-scope';
 
 function marketplaceName(marketplace: IPluginMarketplaceInfo): string {
   return String(marketplace.name ?? '').trim();
@@ -27,18 +29,21 @@ function marketplaceName(marketplace: IPluginMarketplaceInfo): string {
 // "+N more" tail when the cap is hit, so the row width stays bounded
 // even for marketplaces with hundreds of plugins.
 export function summarizePluginNames(
+  trans: TranslationBundle,
   names: readonly string[] | undefined,
   visible: number
 ): string {
   if (!names || names.length === 0) {
     return '';
   }
+  // The separator is translated so the list matches the "+N more" tail.
+  const separator = trans._p('separator between list items', ', ');
   if (names.length <= visible) {
-    return names.join(', ');
+    return names.join(separator);
   }
-  const head = names.slice(0, visible).join(', ');
+  const head = names.slice(0, visible).join(separator);
   const remaining = names.length - visible;
-  return `${head}, +${remaining} more`;
+  return trans._n('%2, +%1 more', '%2, +%1 more', remaining, head);
 }
 
 function pluginName(plugin: IPluginInfo): string {
@@ -55,6 +60,7 @@ function pluginEntryLabel(plugin: IPluginMarketplacePluginInfo): string {
 type PluginInstallMode = 'marketplace' | 'manual';
 
 export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
+  const trans = useTrans();
   const [plugins, setPlugins] = useState<IPluginInfo[]>([]);
   const [marketplaces, setMarketplaces] = useState<IPluginMarketplaceInfo[]>(
     []
@@ -106,11 +112,11 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
       return;
     }
     const ok = await showDialog({
-      title: 'Uninstall plugin?',
-      body: `"${name}" will be removed from Claude's ${scope}-scope config.`,
+      title: trans.__('Uninstall plugin?'),
+      body: removedFromScopeConfig(trans, 'plugin', name, scope),
       buttons: [
         Dialog.cancelButton(),
-        Dialog.warnButton({ label: 'Uninstall' })
+        Dialog.warnButton({ label: trans.__('Uninstall') })
       ]
     });
     if (!ok.button.accept) {
@@ -122,7 +128,7 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
       await NBIAPI.uninstallPlugin(name, scope);
       await refresh();
     } catch (e: any) {
-      setError(`Failed to uninstall: ${e?.message ?? e}`);
+      setError(trans.__('Failed to uninstall: %1', e?.message ?? e));
     } finally {
       setBusyPluginKey(null);
     }
@@ -140,7 +146,7 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
       await NBIAPI.setPluginEnabled(name, scope, !p.enabled);
       await refresh();
     } catch (e: any) {
-      setError(`Failed to update: ${e?.message ?? e}`);
+      setError(trans.__('Failed to update: %1', e?.message ?? e));
     } finally {
       setBusyPluginKey(null);
     }
@@ -152,9 +158,15 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
       return;
     }
     const ok = await showDialog({
-      title: 'Remove marketplace?',
-      body: `"${name}" will be removed from Claude's plugin marketplaces.`,
-      buttons: [Dialog.cancelButton(), Dialog.warnButton({ label: 'Remove' })]
+      title: trans.__('Remove marketplace?'),
+      body: trans.__(
+        '"%1" will be removed from Claude\'s plugin marketplaces.',
+        name
+      ),
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.warnButton({ label: trans.__('Remove') })
+      ]
     });
     if (!ok.button.accept) {
       return;
@@ -164,7 +176,7 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
       await NBIAPI.removePluginMarketplace(name);
       await refresh();
     } catch (e: any) {
-      setError(`Failed to remove: ${e?.message ?? e}`);
+      setError(trans.__('Failed to remove: %1', e?.message ?? e));
     } finally {
       setBusyMarketplace(null);
     }
@@ -180,7 +192,7 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
       await NBIAPI.updatePluginMarketplace(name);
       await refresh();
     } catch (e: any) {
-      setError(`Failed to update marketplace: ${e?.message ?? e}`);
+      setError(trans.__('Failed to update marketplace: %1', e?.message ?? e));
     } finally {
       setBusyMarketplace(null);
     }
@@ -199,7 +211,7 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
   return (
     <div className="config-dialog-body nbi-skills-panel">
       <div className="nbi-skills-header">
-        <div className="nbi-skills-title">Plugins</div>
+        <div className="nbi-skills-title">{trans.__('Plugins')}</div>
         <div className="nbi-skills-header-actions">
           <button
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
@@ -207,27 +219,32 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
             disabled={loading}
           >
             <div className="jp-Dialog-buttonLabel">
-              {loading ? 'Refreshing…' : 'Refresh'}
+              {loading ? trans.__('Refreshing…') : trans.__('Refresh')}
             </div>
           </button>
           <button
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
             onClick={() => setMarketplaceOpen(true)}
           >
-            <div className="jp-Dialog-buttonLabel">Add marketplace</div>
+            <div className="jp-Dialog-buttonLabel">
+              {trans.__('Add marketplace')}
+            </div>
           </button>
           <button
             className="jp-Dialog-button jp-mod-accept jp-mod-styled"
             onClick={() => setInstallOpen(true)}
           >
-            <div className="jp-Dialog-buttonLabel">Install plugin</div>
+            <div className="jp-Dialog-buttonLabel">
+              {trans.__('Install plugin')}
+            </div>
           </button>
         </div>
       </div>
 
       <div className="nbi-info-banner" role="note">
-        Add a marketplace to discover plugins, then install one to extend Claude
-        Code with new commands, agents, and tool integrations.
+        {trans.__(
+          'Add a marketplace to discover plugins, then install one to extend Claude Code with new commands, agents, and tool integrations.'
+        )}
       </div>
 
       {error && (
@@ -237,12 +254,16 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
       )}
 
       <div className="nbi-skills-section">
-        <div className="nbi-skills-section-caption">MARKETPLACES</div>
+        <div className="nbi-skills-section-caption">
+          {trans._p('plugins section heading', 'MARKETPLACES')}
+        </div>
         {marketplaces.length === 0 ? (
           <div className="nbi-skills-empty">
             {loading
-              ? 'Loading…'
-              : 'No marketplaces configured. Add one to discover plugins.'}
+              ? trans.__('Loading…')
+              : trans.__(
+                  'No marketplaces configured. Add one to discover plugins.'
+                )}
           </div>
         ) : (
           marketplaces.map((m, i) => (
@@ -304,17 +325,20 @@ function PluginScopeSection(props: {
   onUninstall: (p: IPluginInfo) => void;
   onToggle: (p: IPluginInfo) => void;
 }) {
+  const trans = useTrans();
   return (
     <div className="nbi-skills-section">
       <div
         className="nbi-skills-section-caption"
-        title={SCOPE_HINT[props.scope]}
+        title={scopeHint(trans, props.scope)}
       >
-        {props.scope.toUpperCase()}
+        {scopeHeading(trans, props.scope)}
       </div>
       {props.plugins.length === 0 ? (
         <div className="nbi-skills-empty">
-          {props.loading ? 'Loading…' : 'No plugins in this scope.'}
+          {props.loading
+            ? trans.__('Loading…')
+            : trans.__('No plugins in this scope.')}
         </div>
       ) : (
         props.plugins.map(p => {
@@ -342,6 +366,7 @@ function PluginRow(props: {
   onUninstall: () => void;
   onToggle: () => void;
 }) {
+  const trans = useTrans();
   const { plugin } = props;
   const description = [plugin.version, plugin.marketplace, plugin.description]
     .filter(Boolean)
@@ -352,8 +377,8 @@ function PluginRow(props: {
     <div className="nbi-skill-row">
       <div className="nbi-skill-row-main">
         <div className="nbi-skill-row-name">
-          {pluginName(plugin) || '(unnamed)'}
-          {!enabled && <span> — disabled</span>}
+          {pluginName(plugin) || trans.__('(unnamed)')}
+          {!enabled && <span> {trans.__('(disabled)')}</span>}
         </div>
         {description && (
           <div className="nbi-skill-row-description">{description}</div>
@@ -366,7 +391,7 @@ function PluginRow(props: {
           disabled={props.busy}
         >
           <div className="jp-Dialog-buttonLabel">
-            {enabled ? 'Disable' : 'Enable'}
+            {enabled ? trans.__('Disable') : trans.__('Enable')}
           </div>
         </button>
         <button
@@ -375,7 +400,7 @@ function PluginRow(props: {
           disabled={props.busy}
         >
           <div className="jp-Dialog-buttonLabel">
-            {props.busy ? 'Working…' : 'Uninstall'}
+            {props.busy ? trans.__('Working…') : trans.__('Uninstall')}
           </div>
         </button>
       </div>
@@ -394,6 +419,7 @@ function MarketplaceRow(props: {
   onRemove: () => void;
   onUpdate: () => void;
 }) {
+  const trans = useTrans();
   const { info } = props;
   const description =
     typeof info.description === 'string' ? info.description.trim() : '';
@@ -406,6 +432,7 @@ function MarketplaceRow(props: {
       ? info.plugin_count
       : pluginNames.length;
   const pluginSummary = summarizePluginNames(
+    trans,
     pluginNames,
     MARKETPLACE_VISIBLE_PLUGINS
   );
@@ -414,10 +441,8 @@ function MarketplaceRow(props: {
   // plugin entries.
   const pluginCountLabel =
     pluginCount === 0
-      ? 'no plugins'
-      : pluginCount === 1
-        ? '1 plugin'
-        : `${pluginCount} plugins`;
+      ? trans.__('no plugins')
+      : trans._n('%1 plugin', '%1 plugins', pluginCount);
   // Only render the plugin summary line when the manifest read produced
   // a count or name list. Without this guard, a marketplace that the
   // user just added but whose manifest hasn't been cached yet would
@@ -429,7 +454,7 @@ function MarketplaceRow(props: {
     <div className="nbi-skill-row">
       <div className="nbi-skill-row-main">
         <div className="nbi-skill-row-name">
-          {String(info.name ?? '(unnamed)')}
+          {String(info.name ?? trans.__('(unnamed)'))}
           {version && (
             <span className="nbi-skill-row-version"> v{version}</span>
           )}
@@ -444,8 +469,14 @@ function MarketplaceRow(props: {
         )}
         {hasPluginManifestData && (
           <div className="nbi-skill-row-description nbi-skill-row-plugins">
-            {pluginCountLabel}
-            {pluginSummary && <span>{`: ${pluginSummary}`}</span>}
+            {pluginSummary
+              ? trans._p(
+                  'plugin count, then the plugin names',
+                  '%1: %2',
+                  pluginCountLabel,
+                  pluginSummary
+                )
+              : pluginCountLabel}
           </div>
         )}
       </div>
@@ -454,10 +485,10 @@ function MarketplaceRow(props: {
           className="jp-Dialog-button jp-mod-accept jp-mod-styled"
           onClick={props.onUpdate}
           disabled={props.busy}
-          title="Refresh this marketplace from its source"
+          title={trans.__('Refresh this marketplace from its source')}
         >
           <div className="jp-Dialog-buttonLabel">
-            {props.busy ? 'Updating…' : 'Update'}
+            {props.busy ? trans.__('Updating…') : trans.__('Update')}
           </div>
         </button>
         <button
@@ -466,7 +497,7 @@ function MarketplaceRow(props: {
           disabled={props.busy}
         >
           <div className="jp-Dialog-buttonLabel">
-            {props.busy ? 'Removing…' : 'Remove'}
+            {props.busy ? trans.__('Removing…') : trans.__('Remove')}
           </div>
         </button>
       </div>
@@ -479,6 +510,7 @@ function PluginInstallDialog(props: {
   onCancel: () => void;
   onSubmit: (input: { plugin: string; scope: PluginScope }) => Promise<void>;
 }) {
+  const trans = useTrans();
   const marketplaceNames = props.marketplaces
     .map(marketplaceName)
     .filter(Boolean);
@@ -542,7 +574,9 @@ function PluginInstallDialog(props: {
         }
         setMarketplacePlugins([]);
         setSelectedPlugin('');
-        setPluginListError(`Failed to load plugins: ${e?.message ?? e}`);
+        setPluginListError(
+          trans.__('Failed to load plugins: %1', e?.message ?? e)
+        );
       })
       .finally(() => {
         if (!cancelled) {
@@ -585,9 +619,9 @@ function PluginInstallDialog(props: {
 
   return (
     <FormDialog
-      title="Install plugin"
-      submitLabel="Install"
-      submitInProgressLabel="Installing…"
+      title={trans.__('Install plugin')}
+      submitLabel={trans.__('Install')}
+      submitInProgressLabel={trans.__('Installing…')}
       canSubmit={Boolean(canSubmit)}
       submitting={submitting}
       error={submitError}
@@ -595,7 +629,7 @@ function PluginInstallDialog(props: {
       onSubmit={handleSubmit}
     >
       <div className="nbi-form-field">
-        <label>Install from</label>
+        <label>{trans.__('Install from')}</label>
         <select
           value={installMode}
           onChange={e => setInstallMode(e.target.value as PluginInstallMode)}
@@ -603,15 +637,15 @@ function PluginInstallDialog(props: {
           autoFocus
         >
           <option value="marketplace" disabled={marketplaceNames.length === 0}>
-            Marketplace picker
+            {trans.__('Marketplace picker')}
           </option>
-          <option value="manual">Specify manually</option>
+          <option value="manual">{trans.__('Specify manually')}</option>
         </select>
       </div>
       {installMode === 'manual' ? (
         <>
           <div className="nbi-form-field">
-            <label>Plugin</label>
+            <label>{trans.__('Plugin')}</label>
             <input
               type="text"
               value={manualPlugin}
@@ -621,13 +655,15 @@ function PluginInstallDialog(props: {
             />
           </div>
           <div className="nbi-form-hint">
-            Enter a plugin name or the plugin@marketplace shorthand.
+            {trans.__(
+              'Enter a plugin name or the plugin@marketplace shorthand.'
+            )}
           </div>
         </>
       ) : (
         <>
           <div className="nbi-form-field">
-            <label>Marketplace</label>
+            <label>{trans.__('Marketplace')}</label>
             <select
               value={marketplace}
               onChange={e => setMarketplace(e.target.value)}
@@ -641,7 +677,7 @@ function PluginInstallDialog(props: {
             </select>
           </div>
           <div className="nbi-form-field">
-            <label>Plugin</label>
+            <label>{trans.__('Plugin')}</label>
             <select
               value={selectedPlugin}
               onChange={e => setSelectedPlugin(e.target.value)}
@@ -660,13 +696,15 @@ function PluginInstallDialog(props: {
             </select>
           </div>
           {loadingPlugins && (
-            <div className="nbi-form-hint">Loading marketplace plugins...</div>
+            <div className="nbi-form-hint">
+              {trans.__('Loading marketplace plugins...')}
+            </div>
           )}
           {!loadingPlugins &&
             !pluginListError &&
             marketplacePlugins.length === 0 && (
               <div className="nbi-form-hint">
-                No plugins were found in this marketplace.
+                {trans.__('No plugins were found in this marketplace.')}
               </div>
             )}
           {pluginListError && (
@@ -677,14 +715,14 @@ function PluginInstallDialog(props: {
         </>
       )}
       <div className="nbi-form-field">
-        <label>Scope</label>
+        <label>{trans.__('Scope')}</label>
         <select
           value={scope}
           onChange={e => setScope(e.target.value as PluginScope)}
         >
           {SCOPES.map(s => (
             <option key={s} value={s}>
-              {s} — {SCOPE_HINT[s]}
+              {scopeOption(trans, s)}
             </option>
           ))}
         </select>
@@ -698,6 +736,7 @@ function MarketplaceAddDialog(props: {
   onCancel: () => void;
   onSubmit: (input: { source: string; scope: PluginScope }) => Promise<void>;
 }) {
+  const trans = useTrans();
   const [source, setSource] = useState('');
   const [scope, setScope] = useState<PluginScope>('user');
   const [submitting, setSubmitting] = useState(false);
@@ -722,9 +761,9 @@ function MarketplaceAddDialog(props: {
 
   return (
     <FormDialog
-      title="Add plugin marketplace"
-      submitLabel="Add"
-      submitInProgressLabel="Adding…"
+      title={trans.__('Add plugin marketplace')}
+      submitLabel={trans.__('Add')}
+      submitInProgressLabel={trans.__('Adding…')}
       canSubmit={Boolean(canSubmit)}
       submitting={submitting}
       error={submitError}
@@ -732,39 +771,50 @@ function MarketplaceAddDialog(props: {
       onSubmit={handleSubmit}
     >
       <div className="nbi-form-field">
-        <label>Source</label>
+        <label>{trans.__('Source')}</label>
         <input
           type="text"
           value={source}
           onChange={e => setSource(e.target.value)}
           placeholder={
             props.allowGithubImport
-              ? 'owner/repo, https://github.com/owner/repo, or local path'
-              : 'https://… or local path'
+              ? trans.__(
+                  'owner/repo, https://github.com/owner/repo, or local path'
+                )
+              : trans.__('https://… or local path')
           }
           autoFocus
         />
       </div>
       {props.allowGithubImport ? (
         <div className="nbi-form-hint">
-          Private GitHub sources work if <code>GITHUB_TOKEN</code> is set or{' '}
-          <code>gh auth login</code> is configured on the Jupyter server.
+          {interpolate(
+            (token, ghLogin) =>
+              trans.__(
+                'Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server.',
+                token,
+                ghLogin
+              ),
+            <code>GITHUB_TOKEN</code>,
+            <code>gh auth login</code>
+          )}
         </div>
       ) : (
         <div className="nbi-form-hint">
-          GitHub-sourced marketplaces are disabled by your administrator. Use a
-          non-GitHub URL or a local filesystem path.
+          {trans.__(
+            'GitHub-sourced marketplaces are disabled by your administrator. Use a non-GitHub URL or a local filesystem path.'
+          )}
         </div>
       )}
       <div className="nbi-form-field">
-        <label>Scope</label>
+        <label>{trans.__('Scope')}</label>
         <select
           value={scope}
           onChange={e => setScope(e.target.value as PluginScope)}
         >
           {SCOPES.map(s => (
             <option key={s} value={s}>
-              {s} — {SCOPE_HINT[s]}
+              {scopeOption(trans, s)}
             </option>
           ))}
         </select>

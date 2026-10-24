@@ -30,10 +30,13 @@ jest.mock('../../src/api', () => ({
 }));
 
 import { NBIAPI } from '../../src/api';
+import { nullTranslator } from '@jupyterlab/translation';
 import {
   SettingsPanelComponentPlugins,
   summarizePluginNames
 } from '../../src/components/plugins-panel';
+
+const english = nullTranslator.load('notebook_intelligence');
 
 describe('SettingsPanelComponentPlugins', () => {
   const api = NBIAPI as any;
@@ -283,20 +286,20 @@ describe('SettingsPanelComponentPlugins', () => {
 
 describe('summarizePluginNames', () => {
   it('returns empty string for undefined / empty', () => {
-    expect(summarizePluginNames(undefined, 5)).toBe('');
-    expect(summarizePluginNames([], 5)).toBe('');
+    expect(summarizePluginNames(english, undefined, 5)).toBe('');
+    expect(summarizePluginNames(english, [], 5)).toBe('');
   });
 
   it('returns the full list when under the visible cap', () => {
-    expect(summarizePluginNames(['a', 'b'], 5)).toBe('a, b');
+    expect(summarizePluginNames(english, ['a', 'b'], 5)).toBe('a, b');
   });
 
   it('returns the full list when exactly at the visible cap', () => {
-    expect(summarizePluginNames(['a', 'b', 'c'], 3)).toBe('a, b, c');
+    expect(summarizePluginNames(english, ['a', 'b', 'c'], 3)).toBe('a, b, c');
   });
 
   it('truncates and appends +N more when over the cap', () => {
-    expect(summarizePluginNames(['a', 'b', 'c', 'd', 'e'], 3)).toBe(
+    expect(summarizePluginNames(english, ['a', 'b', 'c', 'd', 'e'], 3)).toBe(
       'a, b, c, +2 more'
     );
   });

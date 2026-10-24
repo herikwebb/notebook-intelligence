@@ -9,6 +9,9 @@ import React, {
 } from 'react';
 import { Dialog, showDialog } from '@jupyterlab/apputils';
 import { VscCopy, VscEdit, VscTrash } from '../icons';
+import { TranslationBundle } from '@jupyterlab/translation';
+import { interpolate, useTrans } from '../i18n';
+import { scopeHeading } from './claude-scope';
 import {
   ISkillDetail,
   ISkillImportPreview,
@@ -75,8 +78,54 @@ function useFocusTrap(container: React.RefObject<HTMLElement>): void {
 
 // Must match SKILL_NAME_PATTERN in notebook_intelligence/skillset.py
 const SKILL_NAME_PATTERN = /^[a-z0-9][a-z0-9-]{0,63}$/;
-const SKILL_NAME_REQUIREMENT =
-  'Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars.';
+/**
+ * Picks the text for a skill scope. A Record keyed by every SkillScope, so a
+ * new scope fails to compile until each sentence has its own wording.
+ */
+function byScope<T>(scope: SkillScope, texts: Record<SkillScope, () => T>): T {
+  // A scope a newer server reports reads like a user skill rather than as
+  // empty text.
+  return (texts[scope] ?? texts.user)();
+}
+
+/**
+ * "Sync complete." followed by each count as its own pluralized phrase, so
+ * every number agrees with its word.
+ */
+function syncSummary(
+  trans: TranslationBundle,
+  counts: {
+    added?: number;
+    updated: number;
+    removed?: number;
+    unchanged: number;
+    errors: number;
+  }
+): string {
+  const parts: string[] = [];
+  if (counts.added !== undefined) {
+    parts.push(trans._n('%1 added', '%1 added', counts.added));
+  }
+  parts.push(trans._n('%1 updated', '%1 updated', counts.updated));
+  if (counts.removed !== undefined) {
+    parts.push(trans._n('%1 removed', '%1 removed', counts.removed));
+  }
+  parts.push(trans._n('%1 unchanged', '%1 unchanged', counts.unchanged));
+  if (counts.errors > 0) {
+    parts.push(trans._n('%1 error', '%1 errors', counts.errors));
+  }
+  return trans._p(
+    'skill sync result; %1 is a list of counts',
+    'Sync complete. %1.',
+    parts.join(trans._p('separator between list items', ', '))
+  );
+}
+
+function skillNameRequirement(trans: TranslationBundle): string {
+  return trans.__(
+    'Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars.'
+  );
+}
 const SKILL_ENTRY_FILE = 'SKILL.md';
 // Bundles with more files than this collapse their file tabs to just SKILL.md.
 // Keeps the tab strip usable for reference-data skills that ship hundreds of
@@ -112,6 +161,7 @@ interface IUndoState {
 }
 
 export function SettingsPanelComponentSkills(_props: any): JSX.Element {
+  const trans = useTrans();
   const [skills, setSkills] = useState<ISkillSummary[]>([]);
   const [context, setContext] = useState<ISkillsContext | null>(null);
   const [loading, setLoading] = useState(true);
@@ -188,16 +238,21 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
     setError(null);
     try {
       const r = await NBIAPI.reconcileManagedSkills();
-      const summary = `Sync complete. ${r.added} added, ${r.updated} updated, ${r.removed} removed, ${r.unchanged} unchanged.`;
       setSyncMessage(
-        r.errors.length ? `${summary} (${r.errors.length} error(s))` : summary
+        syncSummary(trans, {
+          added: r.added,
+          updated: r.updated,
+          removed: r.removed,
+          unchanged: r.unchanged,
+          errors: r.errors.length
+        })
       );
       if (r.errors.length) {
         setError(r.errors.join('\n'));
       }
       await refresh();
     } catch (e: any) {
-      setError(`Sync failed: ${e?.message ?? e}`);
+      setError(trans.__('Sync failed: %1', e?.message ?? e));
     } finally {
       setSyncing(false);
     }
@@ -211,12 +266,18 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
       const r = await NBIAPI.syncTrackingSkill(skill.scope, skill.name);
       setSyncMessage(
         r.updated
-          ? `Synced "${skill.name}" to ${r.ref.slice(0, 7)}.`
-          : `"${skill.name}" already up to date at ${r.ref.slice(0, 7)}.`
+          ? trans.__('Synced "%1" to %2.', skill.name, r.ref.slice(0, 7))
+          : trans.__(
+              '"%1" already up to date at %2.',
+              skill.name,
+              r.ref.slice(0, 7)
+            )
       );
       await refresh();
     } catch (e: any) {
-      setError(`Sync failed for "${skill.name}": ${e?.message ?? e}`);
+      setError(
+        trans.__('Sync failed for "%1": %2', skill.name, e?.message ?? e)
+      );
     } finally {
       setSyncing(false);
     }
@@ -231,14 +292,15 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
       const updated = results.filter(r => r.updated).length;
       const unchanged = results.filter(r => r.updated === false).length;
       const errors = results.filter(r => r.error);
-      const summary = `Sync complete. ${updated} updated, ${unchanged} unchanged, ${errors.length} error(s).`;
-      setSyncMessage(summary);
+      setSyncMessage(
+        syncSummary(trans, { updated, unchanged, errors: errors.length })
+      );
       if (errors.length) {
         setError(errors.map(r => `${r.name}: ${r.error}`).join('\n'));
       }
       await refresh();
     } catch (e: any) {
-      setError(`Sync failed: ${e?.message ?? e}`);
+      setError(trans.__('Sync failed: %1', e?.message ?? e));
     } finally {
       setSyncing(false);
     }
@@ -246,9 +308,12 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
 
   const handleDelete = async (skill: ISkillSummary) => {
     const result = await showDialog({
-      title: 'Delete skill?',
-      body: `"${skill.name}" will be deleted.`,
-      buttons: [Dialog.cancelButton(), Dialog.warnButton({ label: 'Delete' })]
+      title: trans.__('Delete skill?'),
+      body: trans.__('"%1" will be deleted.', skill.name),
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.warnButton({ label: trans.__('Delete') })
+      ]
     });
     if (!result.button.accept) {
       return;
@@ -260,7 +325,7 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
     try {
       detail = await NBIAPI.readSkill(skill.scope, skill.name);
     } catch (e: any) {
-      setError(`Failed to read skill: ${e?.message ?? e}`);
+      setError(trans.__('Failed to read skill: %1', e?.message ?? e));
       return;
     }
     const pathsToSnapshot = (detail.files ?? []).filter(
@@ -288,7 +353,7 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
       await NBIAPI.deleteSkill(skill.scope, skill.name);
       await refresh();
     } catch (e: any) {
-      setError(`Failed to delete skill: ${e?.message ?? e}`);
+      setError(trans.__('Failed to delete skill: %1', e?.message ?? e));
       return;
     }
     dismissUndo();
@@ -326,7 +391,7 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
       );
       await refresh();
     } catch (e: any) {
-      setError(`Failed to restore skill: ${e?.message ?? e}`);
+      setError(trans.__('Failed to restore skill: %1', e?.message ?? e));
     }
   };
 
@@ -391,17 +456,21 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
   return (
     <div className="config-dialog-body nbi-skills-panel">
       <div className="nbi-skills-header">
-        <div className="nbi-skills-title">Skills</div>
+        <div className="nbi-skills-title">{trans.__('Skills')}</div>
         <div className="nbi-skills-header-actions">
           {hasManagedSkills && (
             <button
               className="jp-Dialog-button jp-mod-reject jp-mod-styled"
               onClick={handleSyncManaged}
               disabled={syncing}
-              title="Reconcile managed skills against the org manifest"
+              title={trans.__(
+                'Reconcile managed skills against the org manifest'
+              )}
             >
               <div className="jp-Dialog-buttonLabel">
-                {syncing ? 'Syncing…' : 'Sync managed skills'}
+                {syncing
+                  ? trans.__('Syncing…')
+                  : trans.__('Sync managed skills')}
               </div>
             </button>
           )}
@@ -410,10 +479,14 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
               className="jp-Dialog-button jp-mod-reject jp-mod-styled"
               onClick={handleSyncAllTracking}
               disabled={syncing}
-              title="Re-fetch every skill set to track upstream from GitHub"
+              title={trans.__(
+                'Re-fetch every skill set to track upstream from GitHub'
+              )}
             >
               <div className="jp-Dialog-buttonLabel">
-                {syncing ? 'Syncing…' : 'Sync tracking skills'}
+                {syncing
+                  ? trans.__('Syncing…')
+                  : trans.__('Sync tracking skills')}
               </div>
             </button>
           )}
@@ -421,10 +494,12 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
             <button
               className="jp-Dialog-button jp-mod-reject jp-mod-styled"
               onClick={() => setImportOpen(true)}
-              title="Import from GitHub"
+              title={trans.__('Import from GitHub')}
             >
               <div className="jp-Dialog-buttonLabel">
-                {hasManagedSkills ? 'Import' : 'Import from GitHub'}
+                {hasManagedSkills
+                  ? trans.__('Import')
+                  : trans.__('Import from GitHub')}
               </div>
             </button>
           )}
@@ -434,14 +509,15 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
               setView({ kind: 'editor', scope: 'user', name: null })
             }
           >
-            <div className="jp-Dialog-buttonLabel">New Skill</div>
+            <div className="jp-Dialog-buttonLabel">{trans.__('New Skill')}</div>
           </button>
         </div>
       </div>
       {!NBIAPI.config.isInClaudeCodeMode && (
         <div className="nbi-skills-info-banner" role="note">
-          Skills are consumed by Claude Code. Enable Claude mode in the Claude
-          settings tab to use skills you author here.
+          {trans.__(
+            'Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here.'
+          )}
         </div>
       )}
       {syncMessage && (
@@ -456,7 +532,7 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
       )}
       <SkillScopeSection
         scope="user"
-        label="USER"
+        label={scopeHeading(trans, 'user')}
         pathHint={context?.userSkillsDir || '~/.claude/skills/'}
         skills={userSkills}
         loading={loading}
@@ -471,9 +547,19 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
       <SkillScopeSection
         scope="project"
         label={
-          context?.projectName ? `PROJECT · ${context.projectName}` : 'PROJECT'
+          context?.projectName
+            ? trans._p(
+                'scope heading, then the project name',
+                '%1 · %2',
+                scopeHeading(trans, 'project'),
+                context.projectName
+              )
+            : scopeHeading(trans, 'project')
         }
-        pathHint={context?.projectSkillsDir || '<project>/.claude/skills/'}
+        pathHint={
+          context?.projectSkillsDir ||
+          `${trans._p('stands in for the project folder name', '<project>')}/.claude/skills/`
+        }
         skills={projectSkills}
         loading={loading}
         onEdit={s => setView({ kind: 'editor', scope: s.scope, name: s.name })}
@@ -495,7 +581,7 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
       )}
       {undo && (
         <UndoToast
-          message={`Deleted "${undo.detail.name}"`}
+          message={trans.__('Deleted "%1"', undo.detail.name)}
           onUndo={handleUndoDelete}
           onDismiss={dismissUndo}
         />
@@ -517,6 +603,7 @@ function GitHubImportDialog(props: {
   onCancel: () => void;
   onImported: () => Promise<void> | void;
 }): JSX.Element {
+  const trans = useTrans();
   type Step = 'url' | 'preview';
   const [step, setStep] = useState<Step>('url');
   const [url, setUrl] = useState('');
@@ -597,40 +684,60 @@ function GitHubImportDialog(props: {
         className="nbi-modal-card"
         role="dialog"
         aria-modal="true"
-        aria-label="Import skill from GitHub"
+        aria-label={trans.__('Import skill from GitHub')}
         onClick={e => e.stopPropagation()}
         onSubmit={step === 'url' ? handleFetchPreview : handleInstall}
       >
-        <div className="nbi-modal-title">Import skill from GitHub</div>
+        <div className="nbi-modal-title">
+          {trans.__('Import skill from GitHub')}
+        </div>
         <div className="nbi-modal-body">
           {step === 'url' && (
             <>
               <div className="nbi-form-field">
-                <label htmlFor="nbi-import-url">GitHub repo URL</label>
+                <label htmlFor="nbi-import-url">
+                  {trans.__('GitHub repo URL')}
+                </label>
                 <input
                   id="nbi-import-url"
                   type="text"
                   autoFocus
                   value={url}
                   onChange={e => setUrl(e.target.value)}
-                  placeholder="https://github.com/owner/repo or .../tree/main/path/to/skill"
+                  placeholder={trans.__(
+                    'https://github.com/owner/repo or .../tree/main/path/to/skill'
+                  )}
                 />
                 <div className="nbi-form-hint">
-                  Link to the repo root, a branch, or a subdirectory containing{' '}
-                  <code>SKILL.md</code>. Private repos work if{' '}
-                  <code>GITHUB_TOKEN</code> is set or <code>gh auth login</code>{' '}
-                  is configured on the Jupyter server.
+                  {interpolate(
+                    (entryFile, token, ghLogin) =>
+                      trans.__(
+                        'Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server.',
+                        entryFile,
+                        token,
+                        ghLogin
+                      ),
+                    <code>SKILL.md</code>,
+                    <code>GITHUB_TOKEN</code>,
+                    <code>gh auth login</code>
+                  )}
                 </div>
               </div>
               <div className="nbi-form-field">
-                <label htmlFor="nbi-import-scope">Install into</label>
+                <label htmlFor="nbi-import-scope">
+                  {trans.__('Install into')}
+                </label>
                 <select
                   id="nbi-import-scope"
                   value={scope}
                   onChange={e => setScope(e.target.value as SkillScope)}
                 >
-                  <option value="user">User (available in all projects)</option>
-                  <option value="project">Project (this project only)</option>
+                  <option value="user">
+                    {trans.__('User (available in all projects)')}
+                  </option>
+                  <option value="project">
+                    {trans.__('Project (this project only)')}
+                  </option>
                 </select>
               </div>
             </>
@@ -639,7 +746,9 @@ function GitHubImportDialog(props: {
             <>
               <div className="nbi-import-preview">
                 <div className="nbi-import-preview-row">
-                  <span className="nbi-import-preview-label">Name</span>
+                  <span className="nbi-import-preview-label">
+                    {trans.__('Name')}
+                  </span>
                   <span className="nbi-import-preview-value">
                     {preview.name}
                   </span>
@@ -647,7 +756,7 @@ function GitHubImportDialog(props: {
                 {preview.description && (
                   <div className="nbi-import-preview-row">
                     <span className="nbi-import-preview-label">
-                      Description
+                      {trans.__('Description')}
                     </span>
                     <span className="nbi-import-preview-value">
                       {preview.description}
@@ -657,7 +766,7 @@ function GitHubImportDialog(props: {
                 {preview.allowedTools.length > 0 && (
                   <div className="nbi-import-preview-row">
                     <span className="nbi-import-preview-label">
-                      Allowed tools
+                      {trans.__('Allowed tools')}
                     </span>
                     <span className="nbi-import-preview-value">
                       {preview.allowedTools.join(', ')}
@@ -665,15 +774,24 @@ function GitHubImportDialog(props: {
                   </div>
                 )}
                 <div className="nbi-import-preview-row">
-                  <span className="nbi-import-preview-label">Files</span>
+                  <span className="nbi-import-preview-label">
+                    {trans.__('Files')}
+                  </span>
                   <span className="nbi-import-preview-value">
-                    SKILL.md
-                    {preview.files.length > 0 &&
-                      ` + ${preview.files.length} other${preview.files.length === 1 ? '' : 's'}`}
+                    {preview.files.length > 0
+                      ? trans._n(
+                          '%2 + %1 other',
+                          '%2 + %1 others',
+                          preview.files.length,
+                          'SKILL.md'
+                        )
+                      : 'SKILL.md'}
                   </span>
                 </div>
                 <div className="nbi-import-preview-row">
-                  <span className="nbi-import-preview-label">Source</span>
+                  <span className="nbi-import-preview-label">
+                    {trans.__('Source')}
+                  </span>
                   <span className="nbi-import-preview-value nbi-import-preview-source">
                     {preview.canonicalUrl}
                   </span>
@@ -681,7 +799,7 @@ function GitHubImportDialog(props: {
               </div>
               <div className="nbi-form-field">
                 <label htmlFor="nbi-import-name">
-                  Name (optional override)
+                  {trans.__('Name (optional override)')}
                 </label>
                 <input
                   id="nbi-import-name"
@@ -695,7 +813,7 @@ function GitHubImportDialog(props: {
                 />
                 {effectiveName.length > 0 && !nameValid && (
                   <div className="nbi-form-field-error">
-                    {SKILL_NAME_REQUIREMENT}
+                    {skillNameRequirement(trans)}
                   </div>
                 )}
               </div>
@@ -707,7 +825,18 @@ function GitHubImportDialog(props: {
                       checked={overwrite}
                       onChange={e => setOverwrite(e.target.checked)}
                     />
-                    Overwrite existing {scope} skill "{preview.name}"
+                    {byScope(scope, {
+                      user: () =>
+                        trans.__(
+                          'Overwrite existing user skill "%1"',
+                          preview.name
+                        ),
+                      project: () =>
+                        trans.__(
+                          'Overwrite existing project skill "%1"',
+                          preview.name
+                        )
+                    })}
                   </label>
                 </div>
               )}
@@ -718,8 +847,9 @@ function GitHubImportDialog(props: {
                     checked={tracksUpstream}
                     onChange={e => setTracksUpstream(e.target.checked)}
                   />
-                  Track upstream. Show a Sync button so I can re-pull this skill
-                  from GitHub later
+                  {trans.__(
+                    'Track upstream. Show a Sync button so I can re-pull this skill from GitHub later'
+                  )}
                 </label>
               </div>
             </>
@@ -741,7 +871,7 @@ function GitHubImportDialog(props: {
                 setError(null);
               }}
             >
-              <div className="jp-Dialog-buttonLabel">Back</div>
+              <div className="jp-Dialog-buttonLabel">{trans.__('Back')}</div>
             </button>
           )}
           <button
@@ -749,7 +879,7 @@ function GitHubImportDialog(props: {
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
             onClick={props.onCancel}
           >
-            <div className="jp-Dialog-buttonLabel">Cancel</div>
+            <div className="jp-Dialog-buttonLabel">{trans.__('Cancel')}</div>
           </button>
           {step === 'url' ? (
             <button
@@ -758,7 +888,7 @@ function GitHubImportDialog(props: {
               disabled={!canFetchPreview}
             >
               <div className="jp-Dialog-buttonLabel">
-                {busy ? 'Fetching…' : 'Next'}
+                {busy ? trans.__('Fetching…') : trans.__('Next')}
               </div>
             </button>
           ) : (
@@ -768,7 +898,7 @@ function GitHubImportDialog(props: {
               disabled={!canInstall}
             >
               <div className="jp-Dialog-buttonLabel">
-                {busy ? 'Installing…' : 'Install'}
+                {busy ? trans.__('Installing…') : trans.__('Install')}
               </div>
             </button>
           )}
@@ -792,25 +922,38 @@ function SkillScopeSection(props: {
   onSync: (skill: ISkillSummary) => void;
   syncDisabled: boolean;
 }): JSX.Element {
+  const trans = useTrans();
   return (
     <div className="nbi-skills-section">
       <div className="nbi-skills-section-caption" title={props.pathHint}>
         {props.label} · {props.skills.length}
       </div>
       {props.loading && props.skills.length === 0 && (
-        <div className="nbi-skills-empty">Loading…</div>
+        <div className="nbi-skills-empty">{trans.__('Loading…')}</div>
       )}
       {!props.loading && props.skills.length === 0 && (
         <div className="nbi-skills-empty">
           <span>
-            No {props.scope} skills. They live in <code>{props.pathHint}</code>.
+            {interpolate(
+              path =>
+                byScope(props.scope, {
+                  user: () =>
+                    trans.__('No user skills. They live in %1.', path),
+                  project: () =>
+                    trans.__('No project skills. They live in %1.', path)
+                }),
+              <code>{props.pathHint}</code>
+            )}
           </span>
           <button
             className="jp-toast-button jp-mod-small jp-Button"
             onClick={props.onNew}
           >
             <div className="jp-Dialog-buttonLabel">
-              + New {props.scope} skill
+              {byScope(props.scope, {
+                user: () => trans.__('+ New user skill'),
+                project: () => trans.__('+ New project skill')
+              })}
             </div>
           </button>
         </div>
@@ -832,24 +975,38 @@ function SkillScopeSection(props: {
 }
 
 function ManagedBadge(props: { source?: string }): JSX.Element {
+  const trans = useTrans();
   return (
     <span
       className="nbi-skill-managed-badge"
-      title={`Managed by org manifest (${props.source ?? ''})`}
+      title={trans.__('Managed by org manifest (%1)', props.source ?? '')}
     >
-      Managed
+      {trans._p('skill badge', 'Managed')}
     </span>
   );
 }
 
-function TrackingBadge(props: { source: string; ref: string }): JSX.Element {
-  const refSuffix = props.ref ? ` (last sync: ${props.ref.slice(0, 7)})` : '';
+// `syncRef`, not `ref`: React reserves `ref` and never passes it to a
+// function component, and a string there throws.
+function TrackingBadge(props: {
+  source: string;
+  syncRef: string;
+}): JSX.Element {
+  const trans = useTrans();
   return (
     <span
       className="nbi-skill-tracking-badge"
-      title={`Tracking upstream from ${props.source}${refSuffix}`}
+      title={
+        props.syncRef
+          ? trans.__(
+              'Tracking upstream from %1 (last sync: %2)',
+              props.source,
+              props.syncRef.slice(0, 7)
+            )
+          : trans.__('Tracking upstream from %1', props.source)
+      }
     >
-      Tracking
+      {trans._p('skill badge', 'Tracking')}
     </span>
   );
 }
@@ -863,6 +1020,7 @@ function SkillRow(props: {
   onSync: () => void;
   syncDisabled: boolean;
 }): JSX.Element {
+  const trans = useTrans();
   const { skill } = props;
   const stopAnd = (fn: () => void) => (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -883,7 +1041,7 @@ function SkillRow(props: {
           {skill.name}
           {skill.managed && <ManagedBadge source={skill.managedSource} />}
           {!skill.managed && skill.tracksUpstream && (
-            <TrackingBadge source={skill.source} ref={skill.trackingRef} />
+            <TrackingBadge source={skill.source} syncRef={skill.trackingRef} />
           )}
         </div>
         {skill.description && (
@@ -895,8 +1053,8 @@ function SkillRow(props: {
           <button
             type="button"
             className="nbi-icon-button"
-            aria-label="Sync skill from GitHub"
-            title="Sync from GitHub"
+            aria-label={trans.__('Sync skill from GitHub')}
+            title={trans.__('Sync from GitHub')}
             onClick={stopAnd(props.onSync)}
             disabled={props.syncDisabled}
           >
@@ -906,8 +1064,14 @@ function SkillRow(props: {
         <button
           type="button"
           className="nbi-icon-button"
-          aria-label={skill.managed ? 'View skill' : 'Edit skill'}
-          title={skill.managed ? 'View (managed, read-only)' : 'Edit'}
+          aria-label={
+            skill.managed ? trans.__('View skill') : trans.__('Edit skill')
+          }
+          title={
+            skill.managed
+              ? trans.__('View (managed, read-only)')
+              : trans.__('Edit')
+          }
           onClick={stopAnd(props.onEdit)}
         >
           <VscEdit aria-hidden="true" />
@@ -916,8 +1080,8 @@ function SkillRow(props: {
           <button
             type="button"
             className="nbi-icon-button"
-            aria-label="Rename skill"
-            title="Rename"
+            aria-label={trans.__('Rename skill')}
+            title={trans.__('Rename')}
             onClick={stopAnd(props.onRename)}
           >
             <span aria-hidden="true" className="nbi-icon-button-text">
@@ -928,8 +1092,8 @@ function SkillRow(props: {
         <button
           type="button"
           className="nbi-icon-button"
-          aria-label="Duplicate skill"
-          title="Duplicate"
+          aria-label={trans.__('Duplicate skill')}
+          title={trans.__('Duplicate')}
           onClick={stopAnd(props.onDuplicate)}
         >
           <VscCopy aria-hidden="true" />
@@ -938,8 +1102,8 @@ function SkillRow(props: {
           <button
             type="button"
             className="nbi-icon-button danger"
-            aria-label="Delete skill"
-            title="Delete"
+            aria-label={trans.__('Delete skill')}
+            title={trans.__('Delete')}
             onClick={stopAnd(props.onDelete)}
           >
             <VscTrash aria-hidden="true" />
@@ -961,6 +1125,7 @@ function SkillPromptDialog(props: {
     newName: string
   ) => Promise<void>;
 }): JSX.Element {
+  const trans = useTrans();
   const { prompt } = props;
   const isRename = prompt.kind === 'rename';
   const initialName = isRename
@@ -988,8 +1153,10 @@ function SkillPromptDialog(props: {
   );
   const canSubmit = !busy && nameValid && !conflict && !isUnchangedRename;
 
-  const title = isRename ? 'Rename skill' : 'Duplicate skill';
-  const submitLabel = isRename ? 'Rename' : 'Duplicate';
+  const title = isRename
+    ? trans.__('Rename skill')
+    : trans.__('Duplicate skill');
+  const submitLabel = isRename ? trans.__('Rename') : trans.__('Duplicate');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1029,19 +1196,21 @@ function SkillPromptDialog(props: {
         <div className="nbi-modal-body">
           {!isRename && (
             <div className="nbi-form-field">
-              <label htmlFor="nbi-dup-scope">Target scope</label>
+              <label htmlFor="nbi-dup-scope">{trans.__('Target scope')}</label>
               <select
                 id="nbi-dup-scope"
                 value={scope}
                 onChange={e => setScope(e.target.value as SkillScope)}
               >
-                <option value="user">User</option>
-                <option value="project">Project</option>
+                <option value="user">{trans._p('skill scope', 'User')}</option>
+                <option value="project">
+                  {trans._p('skill scope', 'Project')}
+                </option>
               </select>
             </div>
           )}
           <div className="nbi-form-field">
-            <label htmlFor="nbi-prompt-name">New name</label>
+            <label htmlFor="nbi-prompt-name">{trans.__('New name')}</label>
             <input
               id="nbi-prompt-name"
               type="text"
@@ -1062,12 +1231,23 @@ function SkillPromptDialog(props: {
             />
             {trimmed.length > 0 && !nameValid && (
               <div className="nbi-form-field-error">
-                {SKILL_NAME_REQUIREMENT}
+                {skillNameRequirement(trans)}
               </div>
             )}
             {conflict && (
               <div className="nbi-form-field-error">
-                A {scope} skill named "{trimmed}" already exists.
+                {byScope(scope, {
+                  user: () =>
+                    trans.__(
+                      'A user skill named "%1" already exists.',
+                      trimmed
+                    ),
+                  project: () =>
+                    trans.__(
+                      'A project skill named "%1" already exists.',
+                      trimmed
+                    )
+                })}
               </div>
             )}
           </div>
@@ -1083,7 +1263,7 @@ function SkillPromptDialog(props: {
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
             onClick={props.onCancel}
           >
-            <div className="jp-Dialog-buttonLabel">Cancel</div>
+            <div className="jp-Dialog-buttonLabel">{trans.__('Cancel')}</div>
           </button>
           <button
             type="submit"
@@ -1091,7 +1271,7 @@ function SkillPromptDialog(props: {
             disabled={!canSubmit}
           >
             <div className="jp-Dialog-buttonLabel">
-              {busy ? 'Working…' : submitLabel}
+              {busy ? trans.__('Working…') : submitLabel}
             </div>
           </button>
         </div>
@@ -1105,6 +1285,7 @@ function UndoToast(props: {
   onUndo: () => void;
   onDismiss: () => void;
 }): JSX.Element {
+  const trans = useTrans();
   return (
     <div className="nbi-undo-toast" role="status">
       <span className="nbi-undo-toast-message">{props.message}</span>
@@ -1113,12 +1294,12 @@ function UndoToast(props: {
         className="nbi-undo-toast-action"
         onClick={props.onUndo}
       >
-        Undo
+        {trans.__('Undo')}
       </button>
       <button
         type="button"
         className="nbi-undo-toast-close"
-        aria-label="Dismiss"
+        aria-label={trans.__('Dismiss')}
         onClick={props.onDismiss}
       >
         ×
@@ -1138,6 +1319,7 @@ function SkillEditor(props: {
   name: string | null;
   onClose: () => void;
 }): JSX.Element {
+  const trans = useTrans();
   const isNew = props.name === null;
   const [scope, setScope] = useState<SkillScope>(props.scope);
   const [name, setName] = useState(props.name ?? '');
@@ -1306,7 +1488,7 @@ function SkillEditor(props: {
   const handleSave = async () => {
     setError(null);
     if (effectiveIsNew && !nameValid) {
-      setError(`Invalid name. ${SKILL_NAME_REQUIREMENT}`);
+      setError(trans.__('Invalid name. %1', skillNameRequirement(trans)));
       return;
     }
     setSaving(true);
@@ -1401,11 +1583,11 @@ function SkillEditor(props: {
   const handleBack = async () => {
     if (anyDirty) {
       const result = await showDialog({
-        title: 'Discard unsaved changes?',
-        body: 'This skill has unsaved changes. Discard them?',
+        title: trans.__('Discard unsaved changes?'),
+        body: trans.__('This skill has unsaved changes. Discard them?'),
         buttons: [
-          Dialog.cancelButton({ label: 'Keep editing' }),
-          Dialog.warnButton({ label: 'Discard' })
+          Dialog.cancelButton({ label: trans.__('Keep editing') }),
+          Dialog.warnButton({ label: trans.__('Discard') })
         ]
       });
       if (!result.button.accept) {
@@ -1428,7 +1610,7 @@ function SkillEditor(props: {
       return;
     }
     if (buffers.has(relPath)) {
-      setError(`"${relPath}" already exists in this bundle.`);
+      setError(trans.__('"%1" already exists in this bundle.', relPath));
       return;
     }
     try {
@@ -1451,9 +1633,12 @@ function SkillEditor(props: {
 
   const handleDeleteFile = async (path: string) => {
     const result = await showDialog({
-      title: 'Delete file?',
-      body: `"${path}" will be permanently deleted.`,
-      buttons: [Dialog.cancelButton(), Dialog.warnButton({ label: 'Delete' })]
+      title: trans.__('Delete file?'),
+      body: trans.__('"%1" will be permanently deleted.', path),
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.warnButton({ label: trans.__('Delete') })
+      ]
     });
     if (!result.button.accept) {
       return;
@@ -1554,10 +1739,10 @@ function SkillEditor(props: {
   }, [activeFile, effectiveIsNew, scope, effectiveName]);
 
   const nameError =
-    effectiveIsNew && name && !nameValid ? SKILL_NAME_REQUIREMENT : null;
+    effectiveIsNew && name && !nameValid ? skillNameRequirement(trans) : null;
   const descriptionError =
     !descriptionValid && (description.length > 0 || !effectiveIsNew)
-      ? 'Description is required.'
+      ? trans.__('Description is required.')
       : null;
 
   const editingSkillMd = activeFile === SKILL_ENTRY_FILE;
@@ -1574,19 +1759,22 @@ function SkillEditor(props: {
       }}
     >
       <div className="nbi-skill-editor-header">
-        <nav className="nbi-skill-editor-breadcrumb" aria-label="Breadcrumb">
+        <nav
+          className="nbi-skill-editor-breadcrumb"
+          aria-label={trans.__('Breadcrumb')}
+        >
           <button
             type="button"
             className="nbi-breadcrumb-link"
             onClick={handleBack}
           >
-            Skills
+            {trans.__('Skills')}
           </button>
           <span className="nbi-breadcrumb-separator" aria-hidden="true">
             /
           </span>
           <span className="nbi-breadcrumb-current">
-            {effectiveIsNew ? 'New skill' : effectiveName}
+            {effectiveIsNew ? trans.__('New skill') : effectiveName}
             {managed && <ManagedBadge source={managedSource} />}
           </span>
         </nav>
@@ -1597,7 +1785,7 @@ function SkillEditor(props: {
             onClick={handleBack}
           >
             <div className="jp-Dialog-buttonLabel">
-              {managed ? 'Close' : 'Cancel'}
+              {managed ? trans.__('Close') : trans.__('Cancel')}
             </div>
           </button>
           {!managed && (
@@ -1607,11 +1795,11 @@ function SkillEditor(props: {
               disabled={!canSave || (!effectiveIsNew && !anyDirty)}
             >
               <div className="jp-Dialog-buttonLabel">
-                {saving ? 'Saving…' : 'Save'}
+                {saving ? trans.__('Saving…') : trans.__('Save')}
                 {anyDirty && (
                   <span
                     className="nbi-dirty-marker"
-                    aria-label="Unsaved changes"
+                    aria-label={trans.__('Unsaved changes')}
                   >
                     {' '}
                     •
@@ -1624,8 +1812,9 @@ function SkillEditor(props: {
       </div>
       {managed && (
         <div className="nbi-skills-managed-banner" role="note">
-          This skill is managed by the organization manifest and is read-only.
-          Changes will be overwritten on the next sync.
+          {trans.__(
+            'This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync.'
+          )}
         </div>
       )}
       {!managed && !effectiveIsNew && skillSource && (
@@ -1660,19 +1849,24 @@ function SkillEditor(props: {
                 }
               }}
             />
-            Track upstream
+            {trans.__('Track upstream')}
           </label>
           <span className="nbi-form-hint">
-            Source: {skillSource}
-            {tracksUpstream &&
-              trackingRef &&
-              ` · last sync: ${trackingRef.slice(0, 7)}`}
+            {tracksUpstream && trackingRef
+              ? trans.__(
+                  'Source: %1 · last sync: %2',
+                  skillSource,
+                  trackingRef.slice(0, 7)
+                )
+              : trans.__('Source: %1', skillSource)}
           </span>
         </div>
       )}
 
       {loading ? (
-        <div className="nbi-skill-editor-loading">Loading skill…</div>
+        <div className="nbi-skill-editor-loading">
+          {trans.__('Loading skill…')}
+        </div>
       ) : (
         <>
           {error && (
@@ -1685,18 +1879,22 @@ function SkillEditor(props: {
             <div className="nbi-form-row">
               <div className="nbi-form-row-inline">
                 <div className="nbi-form-field">
-                  <label>Scope</label>
+                  <label>{trans.__('Scope')}</label>
                   <select
                     value={scope}
                     disabled={!effectiveIsNew}
                     onChange={e => setScope(e.target.value as SkillScope)}
                   >
-                    <option value="user">User</option>
-                    <option value="project">Project</option>
+                    <option value="user">
+                      {trans._p('skill scope', 'User')}
+                    </option>
+                    <option value="project">
+                      {trans._p('skill scope', 'Project')}
+                    </option>
                   </select>
                 </div>
                 <div className="nbi-form-field">
-                  <label>Name</label>
+                  <label>{trans.__('Name')}</label>
                   <input
                     type="text"
                     value={name}
@@ -1712,19 +1910,22 @@ function SkillEditor(props: {
               </div>
               {!effectiveIsNew && (
                 <div className="nbi-form-hint">
-                  Scope and name are set at creation and can't be changed.
-                  Delete and recreate to change them.
+                  {trans.__(
+                    "Scope and name are set at creation and can't be changed. Delete and recreate to change them."
+                  )}
                 </div>
               )}
             </div>
 
             <div className="nbi-form-field nbi-form-field-wide">
-              <label>Description</label>
+              <label>{trans.__('Description')}</label>
               <textarea
                 rows={3}
                 value={description}
                 onChange={e => setDescription(e.target.value)}
-                placeholder="What this skill does, shown to Claude when deciding whether to use it"
+                placeholder={trans.__(
+                  'What this skill does, shown to Claude when deciding whether to use it'
+                )}
                 aria-invalid={descriptionError ? true : undefined}
                 required
               />
@@ -1732,33 +1933,49 @@ function SkillEditor(props: {
                 <div className="nbi-form-field-error">{descriptionError}</div>
               ) : (
                 <div className="nbi-form-hint">
-                  Required. Claude uses this to decide when to apply the skill.
+                  {trans.__(
+                    'Required. Claude uses this to decide when to apply the skill.'
+                  )}
                 </div>
               )}
             </div>
 
             <div className="nbi-form-field nbi-form-field-wide">
-              <label>Allowed tools</label>
+              <label>{trans.__('Allowed tools')}</label>
               <AllowedToolsPicker
                 value={allowedTools}
                 onChange={setAllowedTools}
               />
               <div className="nbi-form-hint">
-                Quick-add pills cover common tools. Type patterns like{' '}
-                <code>Bash(git:*)</code> or <code>Read(./docs/**)</code> for
-                finer-grained permissions.
+                {interpolate(
+                  (gitPattern, docsPattern) =>
+                    trans.__(
+                      'Quick-add pills cover common tools. Type patterns like %1 or %2 for finer-grained permissions.',
+                      gitPattern,
+                      docsPattern
+                    ),
+                  <code>Bash(git:*)</code>,
+                  <code>Read(./docs/**)</code>
+                )}
               </div>
             </div>
           </div>
 
           {bundleOverflow && (
             <div className="nbi-form-hint">
-              Bundle contains {orderedFileList.length} files — showing{' '}
-              {SKILL_ENTRY_FILE} only. Edit supporting files directly on disk.
+              {trans._n(
+                'Bundle contains %1 file; showing %2 only. Edit supporting files directly on disk.',
+                'Bundle contains %1 files; showing %2 only. Edit supporting files directly on disk.',
+                orderedFileList.length,
+                SKILL_ENTRY_FILE
+              )}
               {rootPath && (
                 <>
                   {' '}
-                  Path: <code>{rootPath}</code>
+                  {interpolate(
+                    path => trans.__('Path: %1', path),
+                    <code>{rootPath}</code>
+                  )}
                 </>
               )}
             </div>
@@ -1813,6 +2030,7 @@ function BundleFileTabs(props: {
   onAddFileDraftChange: (v: string) => void;
   onAddFile: () => void;
 }): JSX.Element {
+  const trans = useTrans();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
@@ -1880,7 +2098,7 @@ function BundleFileTabs(props: {
                     <button
                       type="button"
                       className="nbi-icon-button"
-                      aria-label={`Actions for ${file}`}
+                      aria-label={trans.__('Actions for %1', file)}
                       aria-haspopup="menu"
                       aria-expanded={openMenu === file}
                       onClick={e => {
@@ -1900,7 +2118,7 @@ function BundleFileTabs(props: {
                             props.onBeginRename(file);
                           }}
                         >
-                          Rename
+                          {trans.__('Rename')}
                         </button>
                         <button
                           type="button"
@@ -1911,7 +2129,7 @@ function BundleFileTabs(props: {
                             props.onDelete(file);
                           }}
                         >
-                          Delete
+                          {trans.__('Delete')}
                         </button>
                       </div>
                     )}
@@ -1949,8 +2167,8 @@ function BundleFileTabs(props: {
           <button
             type="button"
             className="nbi-skill-editor-tab-add"
-            aria-label="Add file"
-            title="Add file"
+            aria-label={trans.__('Add file')}
+            title={trans.__('Add file')}
             onClick={() => setAdding(true)}
           >
             +
@@ -1964,6 +2182,7 @@ function AllowedToolsPicker(props: {
   value: string[];
   onChange: (next: string[]) => void;
 }): JSX.Element {
+  const trans = useTrans();
   const [draft, setDraft] = useState('');
 
   const commit = (raw: string) => {
@@ -2010,7 +2229,7 @@ function AllowedToolsPicker(props: {
             {tool}
             <button
               onClick={() => remove(tool)}
-              aria-label={`Remove ${tool}`}
+              aria-label={trans.__('Remove %1', tool)}
               className="nbi-pill-remove"
             >
               ×
@@ -2023,7 +2242,9 @@ function AllowedToolsPicker(props: {
           onChange={e => setDraft(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={() => draft.trim() && commit(draft)}
-          placeholder={props.value.length === 0 ? 'e.g. Bash(git:*)' : ''}
+          placeholder={
+            props.value.length === 0 ? trans.__('e.g. %1', 'Bash(git:*)') : ''
+          }
         />
       </div>
       <div className="nbi-tools-picker-suggestions">

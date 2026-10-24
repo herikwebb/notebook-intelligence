@@ -6,6 +6,26 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already exists in this bundle."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already up to date at %2."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be deleted."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be permanently deleted."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "\"%1\" will be removed from Claude's plugin marketplaces."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "%1 (not installed)"
 msgstr ""
@@ -18,6 +38,12 @@ msgstr ""
 msgid "%1 (required)"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "%1 added"
+msgid_plural "%1 added"
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/open-file-refresh-watcher.ts
 msgid "%1 changed on disk and was reloaded"
 msgstr ""
@@ -25,6 +51,12 @@ msgstr ""
 #: src/chat-sidebar.tsx
 msgid "%1 duplicate skipped."
 msgid_plural "%1 duplicates skipped."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%1 error"
+msgid_plural "%1 errors"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -44,6 +76,18 @@ msgstr[1] ""
 msgid "%1 is required."
 msgstr ""
 
+#: src/components/plugins-panel.tsx
+msgid "%1 plugin"
+msgid_plural "%1 plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%1 removed"
+msgid_plural "%1 removed"
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/chat-sidebar.tsx
 msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
 msgstr ""
@@ -51,6 +95,30 @@ msgstr ""
 #: src/components/tool-call-group.tsx
 msgid "%1 tool call"
 msgid_plural "%1 tool calls"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%1 unchanged"
+msgid_plural "%1 unchanged"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%1 updated"
+msgid_plural "%1 updated"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%2 + %1 other"
+msgid_plural "%2 + %1 others"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/plugins-panel.tsx
+msgid "%2, +%1 more"
+msgid_plural "%2, +%1 more"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -62,12 +130,36 @@ msgstr ""
 msgid "'%1' is empty"
 msgstr ""
 
+#: src/components/plugins-panel.tsx
+msgid "(disabled)"
+msgstr ""
+
 #: src/components/safe-anchor.tsx
 msgid "(link blocked)"
 msgstr ""
 
 #: src/components/safe-anchor.tsx
 msgid "(opens in new tab)"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "(unnamed)"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "+ New project skill"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "+ New user skill"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "A project skill named \"%1\" already exists."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "A user skill named \"%1\" already exists."
 msgstr ""
 
 #: src/components/readiness-card.tsx
@@ -90,12 +182,28 @@ msgstr ""
 msgid "Accept"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Actions for %1"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Activating device..."
 msgstr ""
 
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Add"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Add / Edit"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add MCP server"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Add a marketplace to discover plugins, then install one to extend Claude Code with new commands, agents, and tool integrations."
 msgstr ""
 
 #: src/markdown-renderer.tsx
@@ -106,12 +214,32 @@ msgstr ""
 msgid "Add code as new cell"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Add file"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Add files as context"
 msgstr ""
 
+#: src/components/plugins-panel.tsx
+msgid "Add marketplace"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Add plugin marketplace"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add server"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Add workspace file as context"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Adding…"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -130,6 +258,10 @@ msgstr ""
 msgid "Agent type"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Allowed tools"
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines."
 msgstr ""
@@ -140,6 +272,10 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Always confirm"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Args (one per line)"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -182,6 +318,10 @@ msgstr ""
 msgid "Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Back"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Backend kernel"
 msgstr ""
@@ -198,9 +338,19 @@ msgstr ""
 msgid "Binary files cannot be attached as chat context."
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Breadcrumb"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Built-in"
 msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Bundle contains %1 file; showing %2 only. Edit supporting files directly on disk."
+msgid_plural "Bundle contains %1 files; showing %2 only. Edit supporting files directly on disk."
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/components/settings-panel.tsx
 msgid "By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs."
@@ -222,7 +372,7 @@ msgstr ""
 msgid "Bypass permissions"
 msgstr ""
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx
+#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
 msgid "Cancel"
 msgstr ""
 
@@ -342,7 +492,7 @@ msgstr ""
 msgid "Click to learn more about security implications"
 msgstr ""
 
-#: src/chat-sidebar.tsx src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/index.ts
+#: src/chat-sidebar.tsx src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Close"
 msgstr ""
 
@@ -356,6 +506,10 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Close tools picker"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Command"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -446,12 +600,68 @@ msgstr ""
 msgid "Default chat mode"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Delete"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Delete file?"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill?"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Deleted \"%1\""
+msgstr ""
+
 #: src/components/notebook-generation-popover.tsx
 msgid "Describe how to update the active notebook..."
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Description"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Description is required."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Directories cannot be attached as chat context."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Disable"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disable for workspace"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabled for workspace"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabling…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Discard"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Discard unsaved changes?"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Dismiss"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -466,8 +676,28 @@ msgstr ""
 msgid "Drop files to attach as context"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Duplicate"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate skill"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Edit"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Edit skill"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Empty files do not provide useful context."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Enable"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -478,12 +708,32 @@ msgstr ""
 msgid "Enable Claude mode"
 msgstr ""
 
+#: src/components/claude-mcp-panel.tsx
+msgid "Enable for workspace"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enabling…"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Enter a plugin name or the plugin@marketplace shorthand."
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Environment (KEY=value, one per line)"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Execution kernel"
 msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Execution mode"
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "Expected at least one server entry."
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -530,6 +780,10 @@ msgstr ""
 msgid "Failed to copy resume command"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Failed to delete skill: %1"
+msgstr ""
+
 #: src/index.ts
 msgid "Failed to find active file"
 msgstr ""
@@ -546,12 +800,56 @@ msgstr ""
 msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
 msgstr ""
 
+#: src/components/plugins-panel.tsx
+msgid "Failed to load plugins: %1"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Failed to load workspace files."
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Failed to read skill: %1"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Failed to remove: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Failed to restore skill: %1"
+msgstr ""
+
 #: src/index.ts
 msgid "Failed to save MCP config: %1"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to uninstall: %1"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update marketplace: %1"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Failed to update workspace state: %1"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Fetching…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Files"
+msgstr ""
+
+#: src/components/launcher-picker.tsx
+msgid "Filter sessions..."
 msgstr ""
 
 #: src/index.ts
@@ -626,12 +924,40 @@ msgstr ""
 msgid "GitHub Terms for Additional Products and Features"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "GitHub repo URL"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "GitHub-sourced marketplaces are disabled by your administrator. Use a non-GitHub URL or a local filesystem path."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Good response"
 msgstr ""
 
+#: src/components/claude-mcp-panel.tsx
+msgid "Headers (Name: value, one per line)"
+msgstr ""
+
 #: src/components/tool-call-card.tsx
 msgid "Hide diff"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Import"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Import from GitHub"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Import skill from GitHub"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -654,6 +980,10 @@ msgstr ""
 msgid "Input Parameters"
 msgstr ""
 
+#: src/components/claude-mcp-panel.tsx
+msgid "Input mode"
+msgstr ""
+
 #: src/markdown-renderer.tsx
 msgid "Insert at cursor"
 msgstr ""
@@ -662,16 +992,68 @@ msgstr ""
 msgid "Insert code at cursor"
 msgstr ""
 
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Install"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Install from"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Install into"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Install plugin"
+msgstr ""
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Installing…"
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "Invalid JSON: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Invalid name. %1"
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON is empty."
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON must describe a server entry."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Jupyter UI tools"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Keep editing"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server."
 msgstr ""
 
 #: src/components/readiness-card.tsx
 msgid "Live endpoint check"
 msgstr ""
 
-#: src/components/claude-session-picker.tsx
+#: src/components/plugins-panel.tsx
+msgid "Loading marketplace plugins..."
+msgstr ""
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
 msgid "Loading sessions…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Loading skill…"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -680,6 +1062,10 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Loading..."
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Loading…"
 msgstr ""
 
 #: src/components/setting-lock.ts
@@ -718,6 +1104,18 @@ msgstr ""
 msgid "MCP Servers"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Managed by org manifest (%1)"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace picker"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Model"
 msgstr ""
@@ -730,12 +1128,32 @@ msgstr ""
 msgid "Models"
 msgstr ""
 
+#: src/components/claude-mcp-paste.ts
+msgid "Multiple servers found; paste one entry at a time."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars."
+msgstr ""
+
 #: src/index.ts
 msgid "NBI Settings"
 msgstr ""
 
+#: src/components/claude-mcp-panel.tsx src/components/skills-panel.tsx
+msgid "Name"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Name (optional override)"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Natural-language execution"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "New Skill"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -746,8 +1164,20 @@ msgstr ""
 msgid "New file"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "New name"
+msgstr ""
+
 #: src/markdown-renderer.tsx
 msgid "New notebook"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "New skill"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Next"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -770,8 +1200,20 @@ msgid_plural "No files added: the limit of %1 files is reached."
 msgstr[0] ""
 msgstr[1] ""
 
+#: src/components/plugins-panel.tsx
+msgid "No marketplaces configured. Add one to discover plugins."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "No matching files found."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins in this scope."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins were found in this marketplace."
 msgstr ""
 
 #: src/components/claude-session-picker.tsx
@@ -780,6 +1222,26 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "No previous sessions found for this working directory."
+msgstr ""
+
+#: src/components/launcher-picker.tsx
+msgid "No previous sessions found."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "No project skills. They live in %1."
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "No servers in this scope."
+msgstr ""
+
+#: src/components/launcher-picker.tsx
+msgid "No sessions match your filter."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "No user skills. They live in %1."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -834,12 +1296,32 @@ msgstr ""
 msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing project skill \"%1\""
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing user skill \"%1\""
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Path: %1"
+msgstr ""
+
 #: src/components/permission-mode-select.tsx
 msgid "Permission mode: %1"
 msgstr ""
 
 #: src/components/permission-mode-select.tsx
 msgid "Permission mode: Bypass Permissions is active"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Plugin"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Plugins"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -850,8 +1332,16 @@ msgstr ""
 msgid "Privacy and terms"
 msgstr ""
 
+#: src/components/plugins-panel.tsx
+msgid "Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Project (Jupyter root directory)"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Project (this project only)"
 msgstr ""
 
 #: src/components/mcp-util.ts
@@ -866,6 +1356,10 @@ msgstr ""
 msgid "Provider"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Quick-add pills cover common tools. Type patterns like %1 or %2 for finer-grained permissions."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Rate response as bad"
 msgstr ""
@@ -878,11 +1372,27 @@ msgstr ""
 msgid "Re-check"
 msgstr ""
 
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-enable this server for the current Jupyter workspace"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Re-fetch every skill set to track upstream from GitHub"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-read Claude's MCP config from disk"
+msgstr ""
+
 #: src/components/readiness-card.tsx
 msgid "Readiness check failed: %1"
 msgstr ""
 
-#: src/components/settings-panel.tsx
+#: src/components/skills-panel.tsx
+msgid "Reconcile managed skills against the org manifest"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
 msgid "Refresh"
 msgstr ""
 
@@ -898,8 +1408,16 @@ msgstr ""
 msgid "Refresh open files when changed on disk"
 msgstr ""
 
+#: src/components/plugins-panel.tsx
+msgid "Refresh this marketplace from its source"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Refresh workspace file list"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Refreshing…"
 msgstr ""
 
 #: src/index.ts
@@ -918,6 +1436,18 @@ msgstr ""
 msgid "Remember my GitHub Copilot access token"
 msgstr ""
 
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Remove"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Remove %1"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Remove MCP server?"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Remove attached file"
 msgstr ""
@@ -926,8 +1456,28 @@ msgstr ""
 msgid "Remove attached file %1"
 msgstr ""
 
+#: src/components/plugins-panel.tsx
+msgid "Remove marketplace?"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Removing…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Rename"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Rename skill"
+msgstr ""
+
 #: src/index.ts
 msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Required. Claude uses this to decide when to apply the skill."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -994,6 +1544,22 @@ msgstr ""
 msgid "Running…"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Save"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Saving…"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Scope"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Scope and name are set at creation and can't be changed. Delete and recreate to change them."
+msgstr ""
+
 #: src/components/confirmation-details.tsx
 msgid "Scroll to see all of this value."
 msgstr ""
@@ -1008,6 +1574,14 @@ msgstr ""
 
 #: src/components/readiness-card.tsx
 msgid "Sends one short request to your configured model to verify streaming and tool support."
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server \"%1\" config must be an object."
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server config must include \"command\" or \"url\"."
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -1056,6 +1630,14 @@ msgid_plural "Showing the first %1 files found in the workspace."
 msgstr[0] ""
 msgstr[1] ""
 
+#: src/components/skills-panel.tsx
+msgid "Skills"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Skills reloaded and applied to the current session."
 msgstr ""
@@ -1066,6 +1648,22 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Slash commands"
+msgstr ""
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Source"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1 · last sync: %2"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Specify manually"
 msgstr ""
 
 #: src/index.ts
@@ -1140,12 +1738,52 @@ msgstr ""
 msgid "Switch the active Chatbook cell between natural language and code"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Sync failed for \"%1\": %2"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync from GitHub"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync managed skills"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync skill from GitHub"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync tracking skills"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Synced \"%1\" to %2."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Syncing…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Target scope"
+msgstr ""
+
 #: src/components/readiness-card.tsx
 msgid "Test the endpoint"
 msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Text file"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -1158,6 +1796,14 @@ msgstr ""
 
 #: src/components/readiness-card.tsx
 msgid "This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "This skill has unsaved changes. Discard them?"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync."
 msgstr ""
 
 #: src/components/mcp-util.ts
@@ -1182,16 +1828,60 @@ msgstr ""
 msgid "Tools"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "Track upstream"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream. Show a Sync button so I can re-pull this skill from GitHub later"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1 (last sync: %2)"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Transport"
+msgstr ""
+
 #: src/index.ts
 msgid "Troubleshoot errors in output"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "URL"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Undo"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall plugin?"
 msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Unknown"
 msgstr ""
 
-#: src/components/claude-session-picker.tsx
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
 msgid "Unknown error"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Unsaved changes"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Update"
 msgstr ""
 
 #: src/components/notebook-generation-popover.tsx
@@ -1200,6 +1890,10 @@ msgstr ""
 
 #: src/notebook-generation-toolbar.tsx
 msgid "Update active notebook with AI"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Updating…"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -1230,12 +1924,32 @@ msgstr ""
 msgid "User"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "User (available in all projects)"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "View (managed, read-only)"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "View skill"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Welcome! How can I assist you today?"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "What this skill does, shown to Claude when deciding whether to use it"
+msgstr ""
+
 #: src/components/notebook-generation-popover.tsx
 msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr ""
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Working…"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -1246,12 +1960,56 @@ msgstr ""
 msgid "Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory."
 msgstr ""
 
+#: src/components/claude-scope.ts
+msgid "available in all your projects"
+msgstr ""
+
 #: src/components/tool-call-card.tsx
 msgid "diff truncated"
 msgstr ""
 
+#: src/components/skills-panel.tsx
+msgid "e.g. %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "https://github.com/owner/repo or .../tree/main/path/to/skill"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "https://… or local path"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "no plugins"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "open notebook"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "owner/repo, https://github.com/owner/repo, or local path"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo (%1)"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgid "this project, this user only"
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"%1\" requires a \"url\" field."
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"stdio\" requires a \"command\" field."
 msgstr ""
 
 #: src/index.ts
@@ -1266,6 +2024,26 @@ msgstr ""
 #: src/components/settings-panel.tsx
 msgctxt "ACP settings section"
 msgid "Agent"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "LOCAL"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "PROJECT"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "USER"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgctxt "MCP server input mode"
+msgid "Form"
 msgstr ""
 
 #: src/components/mcp-util.ts
@@ -1389,6 +2167,16 @@ msgctxt "permission mode"
 msgid "Plan"
 msgstr ""
 
+#: src/components/plugins-panel.tsx
+msgctxt "plugin count, then the plugin names"
+msgid "%1: %2"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugins section heading"
+msgid "MARKETPLACES"
+msgstr ""
+
 #: src/components/readiness-card.tsx
 msgctxt "readiness check level"
 msgid "blocked"
@@ -1444,6 +2232,61 @@ msgctxt "reasoning"
 msgid "Thought"
 msgstr ""
 
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "scope heading, then the project name"
+msgid "%1 · %2"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "scope picker option: %1 is the scope id, %2 what it means"
+msgid "%1: %2"
+msgstr ""
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgctxt "separator between list items"
+msgid ", "
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgctxt "setting source"
 msgid "User"
@@ -1477,6 +2320,36 @@ msgstr ""
 #: src/components/settings-panel.tsx
 msgctxt "settings tab"
 msgid "Skills"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Managed"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Tracking"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "Project"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "User"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill sync result; %1 is a list of counts"
+msgid "Sync complete. %1."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "stands in for the project folder name"
+msgid "<project>"
 msgstr ""
 
 #: src/components/tool-call-card.tsx
