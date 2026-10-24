@@ -38,6 +38,9 @@ import {
   resolveChatbookBackendProfile
 } from '../../src/notebook-kernels';
 import { NBIConfig } from '../../src/api';
+import { nullTranslator } from '@jupyterlab/translation';
+
+const english = nullTranslator.load('notebook_intelligence');
 
 describe('chatbook-core', () => {
   it('recognizes the chatbook kernel name', () => {
@@ -668,11 +671,13 @@ describe('chatbook-core', () => {
 
   it('summarizes every execution mode for the confirm bar', () => {
     for (const mode of CHATBOOK_EXECUTION_MODES) {
-      expect(chatbookExecutionModeSummary(mode)).toMatch(
+      expect(chatbookExecutionModeSummary(english, mode)).toMatch(
         /^Chatbook is set to /
       );
     }
-    expect(chatbookExecutionModeSummary('confirm-if-risky')).toContain('risk');
+    expect(chatbookExecutionModeSummary(english, 'confirm-if-risky')).toContain(
+      'risk'
+    );
   });
 
   it('resolves a Chatbook backend kernelspec and MIME type', () => {

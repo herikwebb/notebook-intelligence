@@ -2,6 +2,7 @@
 
 const showDialog = jest.fn();
 const convertNotebookToChatbook = jest.fn();
+const exportChatbookNotebookAsCode = jest.fn();
 const config: Record<string, unknown> = {};
 let backend = { kernelName: 'python3', language: 'python', displayName: '' };
 let installedProfiles: { language: string }[] = [];
@@ -36,7 +37,8 @@ jest.mock('../../src/api', () => ({ NBIAPI: { config } }));
 jest.mock('../../src/chatbook', () => ({
   convertNotebookToChatbook: (...args: unknown[]) =>
     convertNotebookToChatbook(...args),
-  exportChatbookNotebookAsCode: jest.fn(),
+  exportChatbookNotebookAsCode: (...args: unknown[]) =>
+    exportChatbookNotebookAsCode(...args),
   isChatbookSession: (session: { kernelName?: string }) =>
     session.kernelName === 'chatbook',
   nextChatbookNotebookMode: jest.fn(),
@@ -45,6 +47,7 @@ jest.mock('../../src/chatbook', () => ({
 jest.mock('../../src/notebook-kernels', () => ({
   NotebookKernelNotFoundError: class extends Error {},
   findKernelProfile: jest.fn(),
+  kernelNotFoundMessage: jest.fn(() => 'No installed Jupyter kernel'),
   listChatbookBackendProfiles: () => installedProfiles,
   resolveChatbookBackendProfile: () => backend,
   sharedKernelSpecManager: () => ({
@@ -55,9 +58,13 @@ jest.mock('../../src/notebook-kernels', () => ({
 
 import {
   canConvertToChatbook,
+  confirmConvertChatbookNotebook,
   confirmConvertToChatbook
 } from '../../src/chatbook-toolbar';
 import { CommandIDs } from '../../src/command-ids';
+import { ChatbookExportLanguageError } from '../../src/chatbook-core';
+import { initTranslations } from '../../src/i18n';
+import { pseudo, pseudoTranslator } from './pseudo-translator';
 
 function makePanel(
   metadata: Record<string, unknown>,
@@ -235,6 +242,33 @@ describe('confirmConvertToChatbook', () => {
       expect.objectContaining({
         message: 'Could not convert to Chatbook: read-only',
         type: 'error'
+      })
+    );
+  });
+});
+
+describe('confirmConvertChatbookNotebook', () => {
+  afterEach(() => initTranslations(null));
+
+  it('reports a language export cannot comment out in the user language', async () => {
+    initTranslations(pseudoTranslator);
+    showDialog.mockResolvedValue({ button: { accept: true } });
+    exportChatbookNotebookAsCode.mockRejectedValue(
+      new ChatbookExportLanguageError('cobol')
+    );
+    const app = makeApp();
+    await confirmConvertChatbookNotebook(
+      app,
+      makePanel(python, { kernelName: 'chatbook' })
+    );
+    expect(app.commands.execute).toHaveBeenCalledWith(
+      'apputils:notify',
+      expect.objectContaining({
+        message: pseudo(
+          `Export failed: ${pseudo(
+            'Cannot export unrun Chatbook cells: no safe line comment for cobol'
+          )}`
+        )
       })
     );
   });

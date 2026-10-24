@@ -15,16 +15,20 @@ import {
   toggleAllChatbookCellModes
 } from './chatbook';
 import {
+  ChatbookExportLanguageError,
   chatbookConversionFit,
+  chatbookExportLanguageMessage,
   chatbookLanguageId,
   chatbookSourceKernel,
   isChatbookKernelName
 } from './chatbook-core';
 import { NBIAPI } from './api';
 import { CommandIDs } from './command-ids';
+import { getTrans } from './i18n';
 import {
   NotebookKernelNotFoundError,
   findKernelProfile,
+  kernelNotFoundMessage,
   listChatbookBackendProfiles,
   resolveChatbookBackendProfile,
   sharedKernelSpecManager
@@ -108,6 +112,7 @@ async function runConvertToChatbook(
   app: JupyterFrontEnd,
   panel: NotebookPanel
 ): Promise<void> {
+  const trans = getTrans();
   const kernels = sharedKernelSpecManager();
   await kernels.ready;
   const specs = kernels.specs?.kernelspecs;
@@ -123,25 +128,36 @@ async function runConvertToChatbook(
     const installed = listChatbookBackendProfiles(specs).some(
       profile => chatbookLanguageId(profile.language) === source.language
     );
+    // Built from the labels the settings panel shows, so the path matches it
+    // in every language.
+    const settingPath = trans._p(
+      'a settings path: %1 the settings window, %2 its tab, %3 the field',
+      '%1 > %2 > %3',
+      trans.__('NBI Settings'),
+      trans._p('settings tab', 'Chatbook'),
+      trans.__('Execution kernel')
+    );
     const result = await showDialog({
-      title: "Can't convert this notebook yet",
-      body:
-        `This notebook is written in ${language}, but Chatbook runs all ` +
-        `code in ${backend.displayName}, so its code cells would fail. ` +
-        (installed
-          ? 'To convert it, set Settings > Chatbook > Execution kernel to ' +
-            `a kernel for ${language}, then convert again. That setting applies ` +
-            'to every Chatbook, so your existing Chatbooks would run ' +
-            `${language} too.`
-          : `No ${language} kernel is installed for Chatbook to use. ` +
-            'Install one, then choose it in Settings > Chatbook > ' +
-            'Execution kernel.'),
+      title: trans.__("Can't convert this notebook yet"),
+      body: installed
+        ? trans.__(
+            'This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too.',
+            language,
+            backend.displayName,
+            settingPath
+          )
+        : trans.__(
+            'This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3.',
+            language,
+            backend.displayName,
+            settingPath
+          ),
       buttons: installed
         ? [
             Dialog.cancelButton(),
-            Dialog.okButton({ label: 'Open Chatbook settings' })
+            Dialog.okButton({ label: trans.__('Open Chatbook settings') })
           ]
-        : [Dialog.cancelButton({ label: 'Close' })]
+        : [Dialog.cancelButton({ label: trans.__('Close') })]
     });
     if (installed && result.button.accept) {
       void app.commands.execute(CommandIDs.openConfigurationDialog, {
@@ -151,26 +167,35 @@ async function runConvertToChatbook(
     return;
   }
 
-  let kernelNote = '';
   const from =
     source.displayName && source.displayName !== backend.displayName
       ? source.displayName
       : source.name;
+  // One whole message per case, so no sentence is joined to another.
+  let body: string;
   if (fit === 'same-language' && from) {
-    kernelNote = ` Its code will run in ${backend.displayName}, the Chatbook execution kernel, instead of ${from}.`;
+    body = trans.__(
+      'Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description.',
+      backend.displayName,
+      from
+    );
   } else if (fit !== 'same-kernel') {
-    kernelNote = ` Its code will run in ${backend.displayName}, the Chatbook execution kernel.`;
+    body = trans.__(
+      'Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description.',
+      backend.displayName
+    );
+  } else {
+    body = trans.__(
+      'Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description.'
+    );
   }
   const result = await showDialog({
-    title: 'Convert to Chatbook',
-    body:
-      'Creates a Chatbook copy of this notebook next to it and opens it, ' +
-      'including any unsaved changes. Code cells become Chatbook code cells ' +
-      'and run exactly as written; outputs and markdown are kept. The ' +
-      `original is not changed.${kernelNote} Nothing is sent to the model ` +
-      'now. The first time each code cell runs successfully, its code is ' +
-      'sent to the model for a one-line English description.',
-    buttons: [Dialog.cancelButton(), Dialog.okButton({ label: 'Convert' })]
+    title: trans.__('Convert to Chatbook'),
+    body,
+    buttons: [
+      Dialog.cancelButton(),
+      Dialog.okButton({ label: trans.__('Convert') })
+    ]
   });
   if (!result.button.accept) {
     return;
@@ -181,14 +206,17 @@ async function runConvertToChatbook(
     path = await convertNotebookToChatbook(panel, app.serviceManager.contents);
   } catch (error) {
     void app.commands.execute('apputils:notify', {
-      message: `Could not convert to Chatbook: ${error instanceof Error ? error.message : error}`,
+      message: trans.__(
+        'Could not convert to Chatbook: %1',
+        error instanceof Error ? error.message : String(error)
+      ),
       type: 'error',
       options: { autoClose: true }
     });
     return;
   }
   void app.commands.execute('apputils:notify', {
-    message: `Created Chatbook copy: ${path}`,
+    message: trans.__('Created Chatbook copy: %1', path),
     type: 'success',
     options: { autoClose: true }
   });
@@ -206,6 +234,7 @@ export async function confirmConvertChatbookNotebook(
   if (!isChatbookSession(panel.sessionContext)) {
     return;
   }
+  const trans = getTrans();
   const kernels = sharedKernelSpecManager();
   await kernels.ready;
   const profile = resolveChatbookBackendProfile(
@@ -213,9 +242,15 @@ export async function confirmConvertChatbookNotebook(
     NBIAPI.config.chatbookBackendKernel
   );
   const result = await showDialog({
-    title: `Export as ${profile.language} notebook`,
-    body: `Create a new ${profile.displayName} notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments.`,
-    buttons: [Dialog.cancelButton(), Dialog.okButton({ label: 'Export' })]
+    title: trans.__('Export as %1 notebook', profile.language),
+    body: trans.__(
+      'Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments.',
+      profile.displayName
+    ),
+    buttons: [
+      Dialog.cancelButton(),
+      Dialog.okButton({ label: trans.__('Export') })
+    ]
   });
   if (!result.button.accept) {
     return;
@@ -229,7 +264,7 @@ export async function confirmConvertChatbookNotebook(
   } catch (error) {
     if (error instanceof NotebookKernelNotFoundError) {
       void app.commands.execute('apputils:notify', {
-        message: error.message,
+        message: kernelNotFoundMessage(trans, error),
         type: 'error',
         options: { autoClose: true }
       });
@@ -247,7 +282,14 @@ export async function confirmConvertChatbookNotebook(
     );
   } catch (error) {
     void app.commands.execute('apputils:notify', {
-      message: `Export failed: ${error instanceof Error ? error.message : error}`,
+      message: trans.__(
+        'Export failed: %1',
+        error instanceof ChatbookExportLanguageError
+          ? chatbookExportLanguageMessage(trans, error)
+          : error instanceof Error
+            ? error.message
+            : String(error)
+      ),
       type: 'error',
       options: { autoClose: true }
     });
@@ -255,7 +297,7 @@ export async function confirmConvertChatbookNotebook(
   }
   await app.commands.execute('docmanager:open', { path });
   void app.commands.execute('apputils:notify', {
-    message: `Exported ${path}`,
+    message: trans.__('Exported %1', path),
     type: 'success',
     options: { autoClose: true }
   });
@@ -265,9 +307,15 @@ class ChatbookToolbarController {
   constructor(app: JupyterFrontEnd, panel: NotebookPanel) {
     this._app = app;
     this._panel = panel;
+    const trans = getTrans();
     this._showCodeButton = new ToolbarButton({
       icon: switchIcon,
-      tooltip: 'Switch every cell to code',
+      // One label for both states: the button is a toggle (aria-pressed), so
+      // its name must not change with the state. The command palette uses
+      // the same wording.
+      tooltip: trans.__(
+        'Switch every cell of this Chatbook between its prompt and its code'
+      ),
       onClick: () => {
         toggleAllChatbookCellModes(this._panel);
         this.sync();
@@ -276,7 +324,7 @@ class ChatbookToolbarController {
     this._showCodeButton.addClass('nbi-chatbook-toolbar-button');
     this._convertButton = new ToolbarButton({
       icon: exportIcon,
-      tooltip: 'Export as a notebook for the Chatbook backend kernel',
+      tooltip: trans.__('Export as a notebook for the Chatbook backend kernel'),
       onClick: () => {
         void confirmConvertChatbookNotebook(this._app, this._panel);
       }
@@ -284,7 +332,7 @@ class ChatbookToolbarController {
     this._convertButton.addClass('nbi-chatbook-toolbar-button');
     this._toChatbookButton = new ToolbarButton({
       icon: convertToChatbookIcon,
-      tooltip: 'Convert to Chatbook',
+      tooltip: trans.__('Convert to Chatbook'),
       onClick: () => {
         void confirmConvertToChatbook(this._app, this._panel);
       }
@@ -348,9 +396,6 @@ class ChatbookToolbarController {
     }
     const allPython = nextChatbookNotebookMode(this._panel) === 'prompt';
     this._showCodeButton.pressed = allPython;
-    this._showCodeButton.node.title = allPython
-      ? 'Switch every cell to natural language'
-      : 'Switch every cell to code';
   }
 
   dispose(): void {

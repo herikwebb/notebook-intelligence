@@ -1,8 +1,10 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import { KernelSpec, KernelSpecManager } from '@jupyterlab/services';
+import { nullTranslator, TranslationBundle } from '@jupyterlab/translation';
 
 import { chatbookLanguageId } from './chatbook-core';
+import { TRANSLATION_DOMAIN } from './i18n';
 
 export interface INotebookKernelProfile {
   language: string;
@@ -17,14 +19,43 @@ export class NotebookKernelNotFoundError extends Error {
   constructor(options?: { language?: string; kernelName?: string }) {
     const requestedLanguage = normalizeNotebookLanguage(options?.language);
     const requestedKernelName = (options?.kernelName ?? '').trim();
-    const detail = requestedKernelName
-      ? `kernel "${requestedKernelName}"`
-      : `language "${requestedLanguage}"`;
-    super(`No installed Jupyter kernel matches ${detail}.`);
+    // English: UI tools return this message to the model.
+    super(
+      formatKernelNotFound(
+        nullTranslator.load(TRANSLATION_DOMAIN),
+        requestedKernelName,
+        requestedLanguage
+      )
+    );
     this.name = 'NotebookKernelNotFoundError';
     this.requestedLanguage = requestedLanguage;
     this.requestedKernelName = requestedKernelName;
   }
+}
+
+/**
+ * The error as the user reads it. `error.message` stays English: it is also
+ * the result a UI tool returns to the model.
+ */
+export function kernelNotFoundMessage(
+  trans: TranslationBundle,
+  error: NotebookKernelNotFoundError
+): string {
+  return formatKernelNotFound(
+    trans,
+    error.requestedKernelName,
+    error.requestedLanguage
+  );
+}
+
+function formatKernelNotFound(
+  trans: TranslationBundle,
+  kernelName: string,
+  language: string
+): string {
+  return kernelName
+    ? trans.__('No installed Jupyter kernel matches kernel "%1".', kernelName)
+    : trans.__('No installed Jupyter kernel matches language "%1".', language);
 }
 
 export const DEFAULT_NOTEBOOK_KERNEL: INotebookKernelProfile = Object.freeze({

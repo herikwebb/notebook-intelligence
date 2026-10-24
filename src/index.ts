@@ -153,6 +153,7 @@ import { attachTerminalDragDrop } from './terminal-drag';
 import {
   DEFAULT_NOTEBOOK_KERNEL,
   NotebookKernelNotFoundError,
+  kernelNotFoundMessage,
   findKernelProfile,
   listKernelProfiles,
   normalizeNotebookLanguage
@@ -1433,7 +1434,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           } catch (error) {
             if (error instanceof NotebookKernelNotFoundError) {
               app.commands.execute('apputils:notify', {
-                message: error.message,
+                message: kernelNotFoundMessage(trans, error),
                 type: 'error',
                 options: { autoClose: true }
               });
