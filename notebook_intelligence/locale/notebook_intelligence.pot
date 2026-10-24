@@ -6,6 +6,14 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: src/components/settings-panel.tsx
+msgid "%1 (not installed)"
+msgstr ""
+
+#: src/components/setting-lock.ts
+msgid "%1 (optional)"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "%1 (required)"
 msgstr ""
@@ -31,6 +39,10 @@ msgid "%1 file skipped (limit of %2)."
 msgid_plural "%1 files skipped (limit of %2)."
 msgstr[0] ""
 msgstr[1] ""
+
+#: src/components/settings-panel.tsx
+msgid "%1 is required."
+msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
@@ -58,6 +70,10 @@ msgstr ""
 msgid "(opens in new tab)"
 msgstr ""
 
+#: src/components/readiness-card.tsx
+msgid "ACP agent"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr ""
@@ -66,12 +82,20 @@ msgstr ""
 msgid "AI Assistant"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "API Key"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Accept"
 msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Activating device..."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Add / Edit"
 msgstr ""
 
 #: src/markdown-renderer.tsx
@@ -90,6 +114,34 @@ msgstr ""
 msgid "Add workspace file as context"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Adds a small footer under each reply."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Agent account"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Agent default (e.g. '%1')"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Agent type"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Also classify with the chat model"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Always confirm"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Ask Notebook Intelligence to generate Python code..."
 msgstr ""
@@ -98,12 +150,48 @@ msgstr ""
 msgid "Ask Notebook Intelligence..."
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Ask about cell outputs"
+msgstr ""
+
 #: src/index.ts
 msgid "Ask about this output"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (milliseconds)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (ms)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete model"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run when a static scan looks clean. Confirm when it flags a risk or cannot parse the cell. The scan is a speed bump, not a security boundary; false negatives are inevitable."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Backend kernel"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Bad response"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Base URL"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -112,6 +200,10 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Built-in"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -130,7 +222,7 @@ msgstr ""
 msgid "Bypass permissions"
 msgstr ""
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/permission-mode-select.tsx
+#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx
 msgid "Cancel"
 msgstr ""
 
@@ -162,8 +254,20 @@ msgstr ""
 msgid "Cell output (%1)"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Cell output features"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Change provider"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent setting sources"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent tools"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -172,6 +276,14 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Chat mode"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Chat model"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Chat path"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -186,6 +298,22 @@ msgstr ""
 msgid "Chatbook"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Checking configuration…"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Checking…"
+msgstr ""
+
 #: src/index.ts
 msgid "Choose start directory for %1"
 msgstr ""
@@ -194,12 +322,24 @@ msgstr ""
 msgid "Claude Code terminal session"
 msgstr ""
 
-#: src/chat-sidebar.tsx
+#: src/components/settings-panel.tsx
+msgid "Claude Code tools"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Claude account"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/components/readiness-card.tsx
 msgid "Claude mode"
 msgstr ""
 
 #: src/components/permission-mode-select.tsx
 msgid "Claude permission mode"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Click to learn more about security implications"
 msgstr ""
 
 #: src/chat-sidebar.tsx src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/index.ts
@@ -216,6 +356,10 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Close tools picker"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Config file path"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -236,6 +380,18 @@ msgstr ""
 
 #: src/components/permission-mode-select.tsx
 msgid "Confirm Bypass Permissions"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Confirm if risky"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgid "Connection failed. Reload MCP servers to retry."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Conversation History"
 msgstr ""
 
 #: src/index.ts
@@ -282,6 +438,14 @@ msgstr ""
 msgid "Create new notebook from code"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Default (recommended)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Default chat mode"
+msgstr ""
+
 #: src/components/notebook-generation-popover.tsx
 msgid "Describe how to update the active notebook..."
 msgstr ""
@@ -306,6 +470,30 @@ msgstr ""
 msgid "Empty files do not provide useful context."
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Enable ACP mode"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Enable Claude mode"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Execution kernel"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Execution mode"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Experimental. Routes chat through an external coding agent over the %1. Requires a preinstalled %2 adapter (%3). See the %4. ACP mode and Claude mode are mutually exclusive: enabling one turns the other off."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Explain cell errors"
+msgstr ""
+
 #: src/index.ts
 msgid "Explain code"
 msgstr ""
@@ -320,6 +508,10 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Extension tools"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "External changes"
 msgstr ""
 
 #: src/index.ts
@@ -370,12 +562,20 @@ msgstr ""
 msgid "Focus Notebook Intelligence chat input"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Full access (run without asking)"
+msgstr ""
+
 #: src/components/notebook-generation-popover.tsx
 msgid "Generate"
 msgstr ""
 
 #: src/components/notebook-generation-popover.tsx
 msgid "Generate (Enter)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Generate and execute immediately, same as a normal notebook cell. Inspect generated code afterward if you need to."
 msgstr ""
 
 #: src/index.ts
@@ -410,6 +610,10 @@ msgstr ""
 msgid "GitHub Copilot chat terms"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "GitHub Copilot login"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "GitHub Copilot: Logged in"
 msgstr ""
@@ -430,8 +634,20 @@ msgstr ""
 msgid "Hide diff"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Inherit from chat model"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from general settings"
+msgstr ""
+
 #: src/index.ts
 msgid "Inline chat failed: %1"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Inline chat model"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -446,12 +662,28 @@ msgstr ""
 msgid "Insert code at cursor"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Jupyter UI tools"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Live endpoint check"
+msgstr ""
+
 #: src/components/claude-session-picker.tsx
 msgid "Loading sessions…"
 msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Loading workspace files..."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Loading..."
+msgstr ""
+
+#: src/components/setting-lock.ts
+msgid "Locked by your administrator"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -482,8 +714,28 @@ msgstr ""
 msgid "MCP Server Tools"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "MCP Servers"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Model"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Model provider"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Models"
+msgstr ""
+
 #: src/index.ts
 msgid "NBI Settings"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Natural-language execution"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -496,6 +748,14 @@ msgstr ""
 
 #: src/markdown-renderer.tsx
 msgid "New notebook"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "No MCP servers found. Add MCP servers in the configuration file."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -570,6 +830,10 @@ msgstr ""
 msgid "Open the NBI sidebar and move focus to the prompt textarea"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
+msgstr ""
+
 #: src/components/permission-mode-select.tsx
 msgid "Permission mode: %1"
 msgstr ""
@@ -586,12 +850,40 @@ msgstr ""
 msgid "Privacy and terms"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Project (Jupyter root directory)"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgid "Prompt refresh failed. Reload MCP servers to retry."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Prompts"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Provider"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Rate response as bad"
 msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Rate response as good"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Re-check"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Readiness check failed: %1"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Refresh"
 msgstr ""
 
 #: src/index.ts
@@ -602,12 +894,28 @@ msgstr ""
 msgid "Refresh file list"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Refresh open files when changed on disk"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Refresh workspace file list"
 msgstr ""
 
 #: src/index.ts
 msgid "Regenerate the English representation of this code cell"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Reload"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Remember conversation history"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Remember my GitHub Copilot access token"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -624,6 +932,10 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Response complete."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Restart the Chatbook kernel in open notebooks so they pick up %1."
 msgstr ""
 
 #: src/components/claude-session-picker.tsx
@@ -666,8 +978,20 @@ msgstr ""
 msgid "Resumed session %1: %2."
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Right-click a cell output to attach it to the chat"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Run it"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Running (%1 s)"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Running…"
 msgstr ""
 
 #: src/components/confirmation-details.tsx
@@ -682,6 +1006,22 @@ msgstr ""
 msgid "Send message"
 msgstr ""
 
+#: src/components/readiness-card.tsx
+msgid "Sends one short request to your configured model to verify streaming and tool support."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Settings sections"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons"
+msgstr ""
+
 #: src/components/tool-call-card.tsx
 msgid "Show diff"
 msgstr ""
@@ -694,8 +1034,20 @@ msgstr ""
 msgid "Show in chat"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Show output toolbar"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Show the generated code and wait for Run or Don't run on every natural-language Run."
+msgstr ""
+
 #: src/index.ts
 msgid "Show the hidden code generated for this Chatbook cell"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Show usage after each turn (time / tokens / cost)"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -744,6 +1096,10 @@ msgstr ""
 msgid "Start an opencode session in a Jupyter terminal"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Status"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Still working, server may be slow"
 msgstr ""
@@ -784,12 +1140,28 @@ msgstr ""
 msgid "Switch the active Chatbook cell between natural language and code"
 msgstr ""
 
+#: src/components/readiness-card.tsx
+msgid "Test the endpoint"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Text file"
 msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Thinking (%1 s)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "This requires a %1 account and %2 installed in your system."
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls."
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgid "Tool refresh failed. Reload MCP servers to retry."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -804,6 +1176,10 @@ msgstr ""
 msgid ""
 "Tool selection can cause irreversible changes! Review each tool execution carefully.\n"
 "%1"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Tools"
 msgstr ""
 
 #: src/index.ts
@@ -836,6 +1212,10 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Uploading"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Usage footer"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -878,12 +1258,67 @@ msgstr ""
 msgid "＋ New Session"
 msgstr ""
 
-#: src/chat-sidebar.tsx
+#: src/components/settings-panel.tsx
+msgctxt "ACP description: the link to the admin guide"
+msgid "administrator installation guide"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP settings section"
+msgid "Agent"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connected"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connecting"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "disconnecting"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "not connected"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated prompt list"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated tool list"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating prompt list"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating tool list"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "Ollama hint: the button that retries listing models"
+msgid "Try again"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
 msgctxt "chat mode"
 msgid "Agent"
 msgstr ""
 
-#: src/chat-sidebar.tsx
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
 msgctxt "chat mode"
 msgid "Ask"
 msgstr ""
@@ -919,6 +1354,21 @@ msgctxt "diff line"
 msgid "removed"
 msgstr ""
 
+#: src/components/setting-lock.ts
+msgctxt "lock reason: %1 is an environment variable name"
+msgid "Locked by %1"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "model"
+msgid "None"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "model provider"
+msgid "None"
+msgstr ""
+
 #: src/components/permission-mode-select.tsx
 msgctxt "permission mode"
 msgid "Accept Edits"
@@ -939,6 +1389,51 @@ msgctxt "permission mode"
 msgid "Plan"
 msgstr ""
 
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "blocked"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "ok"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "skipped"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "warn"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Checking…"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Not ready"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready, with warnings"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Unknown"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgctxt "reasoning"
 msgid "Output"
@@ -947,6 +1442,41 @@ msgstr ""
 #: src/chat-sidebar.tsx
 msgctxt "reasoning"
 msgid "Thought"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "setting source"
+msgid "User"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Chatbook"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "General"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "MCP Servers"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Performance"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Plugins"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Skills"
 msgstr ""
 
 #: src/components/tool-call-card.tsx

@@ -6,6 +6,10 @@ import {
   mcpServerStatusTitle
 } from '../../src/components/mcp-util';
 import { MCPServerStatus } from '../../src/tokens';
+import { nullTranslator } from '@jupyterlab/translation';
+import { pseudoBundle } from './pseudo-translator';
+
+const english = nullTranslator.load('notebook_intelligence');
 
 const SERVERS = [
   {
@@ -33,11 +37,24 @@ describe('mcpServerStatusTitle', () => {
       'Prompt refresh failed. Reload MCP servers to retry.'
     ]
   ])('explains failure status %s', (status, expected) => {
-    expect(mcpServerStatusTitle(status)).toBe(expected);
+    expect(mcpServerStatusTitle(english, status)).toBe(expected);
   });
 
-  it('preserves non-failure status labels', () => {
-    expect(mcpServerStatusTitle(MCPServerStatus.Connected)).toBe('connected');
+  it('describes non-failure statuses in words', () => {
+    expect(mcpServerStatusTitle(english, MCPServerStatus.Connected)).toBe(
+      'connected'
+    );
+    expect(
+      mcpServerStatusTitle(english, MCPServerStatus.UpdatingToolList)
+    ).toBe('updating tool list');
+  });
+
+  it('translates every known status', () => {
+    for (const status of Object.values(MCPServerStatus)) {
+      expect(mcpServerStatusTitle(pseudoBundle, status)).toMatch(
+        /^\[!! .+ !!\]$/
+      );
+    }
   });
 });
 
