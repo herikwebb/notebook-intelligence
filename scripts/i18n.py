@@ -2,24 +2,25 @@
 
     python scripts/i18n.py extract                # rewrite the .pot template
     python scripts/i18n.py update [-l ll_CC ...]  # merge it into .po files
-    python scripts/i18n.py compile                # build the .json bundles
+    python scripts/i18n.py compile                # build the .json and .mo files
     python scripts/i18n.py check                  # fail if the .pot is stale
 
 Strings are extracted from ``src/`` with jupyterlab-translate's TypeScript
 extractor (``pip install jupyterlab-translate``), the tool JupyterLab and its
 language packs use. Its own CLI walks every top-level folder of the
 repository, ``.venv`` and ``node_modules`` included, so this runs only the
-extractor. Occurrences are recorded without line numbers so the template
-changes only when strings do.
+extractor. Python strings are extracted from ``notebook_intelligence/`` by an
+AST walk (``extract_py_strings``) for ``notebook_intelligence/i18n.py``,
+which loads NBI's own ``.mo`` files. Occurrences are recorded without line
+numbers so the template changes only when strings do.
 
-Two sources are deliberately not scanned. The settings schema: the server
-translates schema strings only from JupyterLab language packs, never from an
-extension's own catalog, so they stay English. And Python: the server's
-Python translator likewise reads only language packs' ``.mo`` files, so
-server text needs a loader of NBI's own before it can be translated.
+The settings schema is deliberately not scanned: the server translates
+schema strings only from JupyterLab language packs, never from an
+extension's own catalog, so they stay English.
 """
 
 import argparse
+import ast
 import contextlib
 import json
 import os
@@ -96,6 +97,67 @@ def _singular_msgids() -> dict:
     return found
 
 
+PY_DIR = ROOT / "notebook_intelligence"
+# trans.<method> -> (has context, has plural)
+_PY_METHODS = {"__": (False, False), "_n": (False, True), "_p": (True, False), "_np": (True, True)}
+
+
+def extract_py_strings(package_dir: Path = PY_DIR) -> list:
+    """Messages from ``trans.__``/``_n``/``_p``/``_np`` calls in the server.
+
+    Mirrors the TypeScript extractor's rule: only calls on a name literally
+    ``trans``, and only string-literal arguments, so the template never
+    depends on runtime values.
+    """
+    items = []
+    for path in sorted(package_dir.rglob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        for node in ast.walk(tree):
+            if (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr in _PY_METHODS
+                and isinstance(node.func.value, ast.Attribute)
+                and node.func.value.attr == "trans"
+            ):
+                raise SystemExit(
+                    f"{path.relative_to(ROOT).as_posix()}:{node.lineno}: bind the "
+                    "bundle to a local first (trans = ...); the extractor only "
+                    "reads calls on a name `trans`."
+                )
+            if not (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id == "trans"
+                and node.func.attr in _PY_METHODS
+            ):
+                continue
+            has_context, has_plural = _PY_METHODS[node.func.attr]
+            needed = 1 + has_context + has_plural
+            literals = node.args[:needed]
+            where = f"{path.relative_to(ROOT).as_posix()}:{node.lineno}"
+            if len(literals) < needed or not all(
+                isinstance(arg, ast.Constant) and isinstance(arg.value, str)
+                for arg in literals
+            ):
+                raise SystemExit(
+                    f"{where}: trans.{node.func.attr} needs string literals; "
+                    "pass runtime values as %1, %2 arguments."
+                )
+            values = [arg.value for arg in literals]
+            msgctxt = values.pop(0) if has_context else None
+            items.append(
+                {
+                    "msgid": values[0],
+                    "msgid_plural": values[1] if has_plural else None,
+                    "msgctxt": msgctxt,
+                    "occurrence": path.relative_to(ROOT).as_posix(),
+                }
+            )
+    return items
+
+
 def build_template() -> polib.POFile:
     from jupyterlab_translate.utils import extract_tsx_strings
 
@@ -147,6 +209,14 @@ def build_template() -> polib.POFile:
                 item.get("msgctxt"),
                 item.get("msgid_plural"),
             )
+
+    for item in extract_py_strings():
+        add(
+            item["msgid"],
+            item["occurrence"],
+            item["msgctxt"],
+            item["msgid_plural"],
+        )
 
     # The extractor merges `trans.__('X')` and `trans._n('X', 'Xs', n)` into
     # one plural entry. gettext keys by msgid, and a plural entry never

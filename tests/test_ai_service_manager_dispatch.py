@@ -5,6 +5,7 @@ import asyncio
 import pytest
 from unittest.mock import AsyncMock, Mock
 
+from notebook_intelligence import i18n
 from notebook_intelligence.ai_service_manager import AIServiceManager
 from notebook_intelligence.api import (
     ChatRequest,
@@ -29,6 +30,8 @@ from notebook_intelligence.llm_providers.openai_compatible_llm_provider import (
 
 
 class _RecordingResponse:
+    trans = i18n.english()
+
     def __init__(self):
         self.participant_id = ""
         self.streamed = []

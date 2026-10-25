@@ -41,6 +41,7 @@ from typing import Any, Optional
 import acp
 from acp import schema
 
+from notebook_intelligence import i18n
 from notebook_intelligence.api import (
     ChatCommand,
     ChatRequest,
@@ -53,6 +54,7 @@ from notebook_intelligence.api import (
     ConfirmationData,
 )
 from notebook_intelligence import perf
+from notebook_intelligence.i18n import TranslationBundle
 from notebook_intelligence.acp_registry import (
     AcpAgentSpec,
     acp_adapter_path,
@@ -184,9 +186,10 @@ class _NbiAcpClient(acp.Client):
                 span_cm = self._tool_perf_spans.pop(tid, None)
                 if span_cm is not None:
                     span_cm.__exit__(None, None, None)
+        trans = i18n.response_bundle(resp)
         resp.stream(ToolCallData(
             id=tid,
-            title=state["title"] or "Tool call",
+            title=state["title"] or trans.__("Tool call"),
             kind=state["kind"],
             status=state["status"],
             diffs=state["diffs"] or None,
@@ -205,6 +208,7 @@ class _NbiAcpClient(acp.Client):
                 outcome=schema.DeniedOutcome(outcome="cancelled")
             )
         agent_label = self._owner.agent_spec.label
+        trans = i18n.response_bundle(resp)
         raw = getattr(tool_call, "raw_input", None)
         command, script, runner = _parse_command(raw)
         bidi = [c for c in command if ord(c) in BIDI_CONTROL_CODEPOINTS]
@@ -216,8 +220,13 @@ class _NbiAcpClient(acp.Client):
                 f"U+{ord(c):04X} {unicodedata.name(c)}" for c in bidi
             ))
             resp.stream(MarkdownData(
-                f"&#x26A0; **{agent_label} tool call rejected: its command contains "
-                f"hidden Unicode bidirectional controls ({names}).**"
+                "&#x26A0; "
+                + trans.__(
+                    "**%1 tool call rejected: its command contains "
+                    "hidden Unicode bidirectional controls (%2).**",
+                    agent_label,
+                    names,
+                )
             ))
             return _reject(options, cancel=True)
         codex_event = _is_codex_event(self._owner.agent_spec.id, raw)
@@ -225,26 +234,30 @@ class _NbiAcpClient(acp.Client):
         script_is_title = codex_event and bool(script) and script.strip() == title.strip()
         try:
             details = _permission_details(
-                tool_call, raw, codex_event, script, runner, script_is_title, agent_label
+                tool_call, raw, codex_event, script, runner, script_is_title, agent_label, trans
             )
             reject = _pick_option(options, "reject")
             lasting = []
             # Keep the command (or the whole input) last, next to the buttons.
-            last = details.items.pop() if details.items and details.items[-1]["label"].split(" (")[0] in ("Command", "Input") else None
+            last = details.items.pop() if details.items and details.items[-1] is details.trailing else None
             if allow.kind != "allow_once":
-                lasting.append("Approving grants a lasting permission, not only this request.")
-                details.field("Permission granted", allow.name or "")
+                lasting.append(trans.__("Approving grants a lasting permission, not only this request."))
+                details.field(trans.__("Permission granted"), allow.name or "")
                 if codex_event and raw.get("proposed_execpolicy_amendment"):
-                    details.block("Lasting rule", _json_text(raw["proposed_execpolicy_amendment"]))
+                    details.block(trans.__("Lasting rule"), _json_text(raw["proposed_execpolicy_amendment"]))
             if reject is not None and reject.kind != "reject_once":
-                lasting.append("Rejecting records a lasting denial, not only for this request.")
-                details.field("Denial recorded", reject.name or "")
+                lasting.append(trans.__("Rejecting records a lasting denial, not only for this request."))
+                details.field(trans.__("Denial recorded"), reject.name or "")
             if last is not None:
                 details.items.append(last)
         except _ValueTooLarge:
             resp.stream(MarkdownData(
-                f"&#x26A0; **{agent_label} tool call rejected: it is too large to show "
-                "in full for approval.**"
+                "&#x26A0; "
+                + trans.__(
+                    "**%1 tool call rejected: it is too large to show "
+                    "in full for approval.**",
+                    agent_label,
+                )
             ))
             return _reject(options)
         diff_card = bool(_diffs_from_content(getattr(tool_call, "content", None)))
@@ -255,32 +268,33 @@ class _NbiAcpClient(acp.Client):
         # Unique per request: codex-acp can ask more than once for one call.
         callback_id = f"acp-perm-{tool_call.tool_call_id}-{uuid.uuid4().hex}"
         sentences = [
-            "Approve running this command?" if script_is_title
-            else f"Approve this {agent_label} tool call?",
+            trans.__("Approve running this command?") if script_is_title
+            else trans.__("Approve this %1 tool call?", agent_label),
             *lasting,
         ]
         if command and not command.isascii():
-            sentences.append(
+            sentences.append(trans.__(
                 "The command contains non-ASCII characters, which can look like "
                 "quotes or letters they are not."
-            )
+            ))
         if details.escaped:
-            sentences.append("Characters that would not display are shown as \\u{XXXX}.")
-        sentences.append(
-            f"{agent_label} decides which tools to ask about, so some actions may run without a prompt."
-        )
+            sentences.append(trans.__("Characters that would not display are shown as \\u{XXXX}."))
+        sentences.append(trans.__(
+            "%1 decides which tools to ask about, so some actions may run without a prompt.",
+            agent_label,
+        ))
         pending_user_input = resp.stream_user_input_request(
             callback_id,
             ConfirmationData(
-            title=f"{agent_label} tool call",
+            title=trans._p("approval card title", "%1 tool call", agent_label),
             message=" ".join(sentences),
             details=details.items or None,
             confirmArgs={"id": resp.message_id, "data": {
                 "callback_id": callback_id, "data": {"confirmed": True}}},
             cancelArgs={"id": resp.message_id, "data": {
                 "callback_id": callback_id, "data": {"confirmed": False}}},
-            confirmLabel="Approve",
-            cancelLabel="Reject",
+            confirmLabel=trans._p("approval button", "Approve"),
+            cancelLabel=trans._p("approval button", "Reject"),
             ),
         )
         user_input = await ChatResponse.wait_for_chat_user_input(
@@ -506,14 +520,22 @@ class _ValueTooLarge(Exception):
     pass
 
 
-def _sized_label(label: str, text: str, notes=(), count_lines: bool = True) -> str:
+def _sized_label(label: str, text: str, trans: TranslationBundle, notes=(), count_lines: bool = True) -> str:
     notes = list(notes)
     lines = text.count("\n") + 1
     if count_lines and lines > 1:
-        notes.append(f"{lines} lines")
+        notes.append(trans._n("%1 line", "%1 lines", lines))
     if len(text) > 300:
-        notes.append(f"{len(text)} characters")
-    return f"{label} ({', '.join(notes)})" if notes else label
+        notes.append(trans._n("%1 character", "%1 characters", len(text)))
+    if not notes:
+        return label
+    separator = trans._p("between notes on an approval card detail", ", ")
+    return trans._p(
+        "an approval card detail: its label, then notes such as its size",
+        "%1 (%2)",
+        label,
+        separator.join(notes),
+    )
 
 
 class _Details:
@@ -523,9 +545,13 @@ class _Details:
     escaped here and rendered by the frontend in its own bounded block.
     """
 
-    def __init__(self):
+    def __init__(self, trans: TranslationBundle):
         self.items: list[dict] = []
         self.escaped = False
+        self.trans = trans
+        # The block shown last, next to the buttons (the command or the
+        # whole input), marked here rather than recognized by its label.
+        self.trailing: Optional[dict] = None
 
     def _escape(self, text: str, keep_line_breaks: bool) -> str:
         if len(text) > _MAX_VALUE_CHARS:
@@ -540,12 +566,15 @@ class _Details:
 
     def field(self, label: str, value: str) -> None:
         shown = self._escape(value, keep_line_breaks=False)
-        self.items.append({"label": _sized_label(label, value, count_lines=False), "value": shown})
+        self.items.append({"label": _sized_label(label, value, self.trans, count_lines=False), "value": shown})
 
-    def block(self, label: str, value: str, notes=()) -> None:
+    def block(self, label: str, value: str, notes=(), trailing: bool = False) -> None:
         value = _without_final_newline(value)
         shown = _mark_padding(self._escape(value, keep_line_breaks=True))
-        self.items.append({"label": _sized_label(label, value, notes), "value": shown})
+        item = {"label": _sized_label(label, value, self.trans, notes), "value": shown}
+        self.items.append(item)
+        if trailing:
+            self.trailing = item
 
 
 def _json_text(value) -> str:
@@ -561,7 +590,8 @@ def _is_codex_event(agent_id: str, raw) -> bool:
 
 
 def _permission_details(tool_call, raw, codex_event: bool, script: str, runner: str,
-                        script_is_title: bool, agent_label: str) -> _Details:
+                        script_is_title: bool, agent_label: str,
+                        trans: TranslationBundle) -> _Details:
     """What an ACP permission request would do, as label and value pairs.
 
     The request's title is the agent's own summary. codex-acp also sends the
@@ -572,21 +602,21 @@ def _permission_details(tool_call, raw, codex_event: bool, script: str, runner: 
     input. The command, or else the whole input, comes last, next to the
     buttons.
     """
-    details = _Details()
+    details = _Details(trans)
     title = getattr(tool_call, "title", None) or ""
     if title and not script_is_title:
-        details.field("Request", title)
+        details.field(trans.__("Request"), title)
     known = False
     if codex_event:
         command = raw.get("command")
-        for key, label in (("cwd", "Working directory"), ("grant_root", "Write access under")):
+        for key, label in (("cwd", trans.__("Working directory")), ("grant_root", trans.__("Write access under"))):
             if isinstance(raw.get(key), str) and raw[key]:
                 known = True
                 details.field(label, raw[key])
         reason = raw.get("reason")
         if isinstance(reason, str) and reason.strip() and reason.strip() != title.strip():
             known = True
-            details.field("Reason", reason)
+            details.field(trans.__("Reason"), reason)
         changes = raw.get("changes")
         if isinstance(changes, dict) and changes:
             known = True
@@ -597,22 +627,22 @@ def _permission_details(tool_call, raw, codex_event: bool, script: str, runner: 
                 move = change.get("move_path")
                 target = f" -> {move}" if isinstance(move, str) and move else ""
                 entries.append(details.escape_line(f"{kind}: {path}{target}"))
-            details.block("Files", "\n".join(entries))
+            details.block(trans.__("Files"), "\n".join(entries))
         network = raw.get("network_approval_context")
         if isinstance(network, dict):
             parts = [p for p in (network.get("protocol"), network.get("host")) if isinstance(p, str) and p]
             if parts:
                 known = True
-                details.field("Network access", " ".join(parts))
-        for key, label in (("additional_permissions", "Additional permissions"), ("permissions", "Requested permissions")):
+                details.field(trans.__("Network access"), " ".join(parts))
+        for key, label in (("additional_permissions", trans.__("Additional permissions")), ("permissions", trans.__("Requested permissions"))):
             if raw.get(key):
                 known = True
                 details.block(label, _json_text(raw[key]))
         if command is not None:
             known = True
             if runner and command[0] != runner.split(" ")[0]:
-                details.field("Shell", command[0])
-            details.block("Command", script, [f"run by {runner}"] if runner else [])
+                details.field(trans.__("Shell"), command[0])
+            details.block(trans.__("Command"), script, [trans.__("run by %1", runner)] if runner else [], trailing=True)
     if not known:
         texts = [
             _block_text(getattr(item, "content", None))
@@ -621,9 +651,9 @@ def _permission_details(tool_call, raw, codex_event: bool, script: str, runner: 
         ]
         text = "\n\n".join(t for t in texts if t)
         if text:
-            details.block(f"Details from {agent_label}", text)
+            details.block(trans.__("Details from %1", agent_label), text)
         if raw not in (None, {}, []):
-            details.block("Input", _json_text(raw))
+            details.block(trans.__("Input"), _json_text(raw), trailing=True)
     return details
 
 
@@ -1383,15 +1413,16 @@ class AcpAgentChatParticipant(BaseChatParticipant):
         self, request: ChatRequest, response: ChatResponse, options: dict = {}
     ) -> None:
         self._current_chat_request = request
+        trans = i18n.response_bundle(response)
         try:
-            response.stream(ProgressData("Thinking…"))
+            response.stream(ProgressData(trans.__("Thinking…")))
             result = self._client.query(request, response)
             if isinstance(result, str) and result:
-                response.stream(MarkdownData(content=f"**{self._spec.label} agent error:** {result}"))
+                response.stream(MarkdownData(content=trans.__("**%1 agent error:** %2", self._spec.label, result)))
         except Exception as e:
             log.error("Error handling ACP chat request: %s", e, exc_info=True)
             try:
-                response.stream(MarkdownData(content=f"**Error:** {e}"))
+                response.stream(MarkdownData(content=trans.__("**Error:** %1", e)))
             except Exception:
                 pass
         finally:

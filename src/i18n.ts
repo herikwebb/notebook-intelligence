@@ -15,6 +15,7 @@ export const TRANSLATION_DOMAIN = 'notebook_intelligence';
 
 let bundle: TranslationBundle = nullTranslator.load(TRANSLATION_DOMAIN);
 let languageCode: string | undefined;
+let catalogLocale: string | undefined;
 
 /**
  * JupyterLab's language as a BCP 47 tag for Intl, or undefined to use the
@@ -54,6 +55,7 @@ export function initTranslations(
   try {
     bundle = (translator ?? nullTranslator).load(TRANSLATION_DOMAIN);
     languageCode = toLanguageTag(translator?.languageCode);
+    catalogLocale = serverLocale(translator?.languageCode);
   } catch (error) {
     // A catalog JupyterLab cannot load must not stop NBI from activating.
     console.warn(
@@ -61,6 +63,7 @@ export function initTranslations(
     );
     bundle = nullTranslator.load(TRANSLATION_DOMAIN);
     languageCode = undefined;
+    catalogLocale = undefined;
   }
 }
 
@@ -70,6 +73,21 @@ export function initTranslations(
  */
 export function getLanguageCode(): string | undefined {
   return languageCode;
+}
+
+function serverLocale(code: string | undefined): string | undefined {
+  const value = (code ?? '').trim();
+  return !value || value === 'default' || value === 'en' ? undefined : value;
+}
+
+/**
+ * JupyterLab's language as its translator reports it (de-DE; the server
+ * maps it to its de_DE catalog), for the server to translate the text it
+ * sends; undefined in English. Unlike getLanguageCode it does not depend on
+ * Intl supporting the language.
+ */
+export function getCatalogLocale(): string | undefined {
+  return catalogLocale;
 }
 
 /**

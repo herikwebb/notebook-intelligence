@@ -11,6 +11,7 @@ import threading
 import time
 from typing import Any, Optional, Union
 import uuid
+from notebook_intelligence import i18n
 from notebook_intelligence import perf
 from notebook_intelligence.mcp_client import (
     Client,
@@ -1216,12 +1217,13 @@ class MCPChatParticipant(BaseChatParticipant):
         return self._servers
     
     async def handle_chat_request(self, request: ChatRequest, response: ChatResponse, options: dict = {}) -> None:
-        response.stream(ProgressData("Thinking…"))
+        trans = i18n.response_bundle(response)
+        response.stream(ProgressData(trans.__("Thinking…")))
 
         if request.command == "info":
             for server in self._servers:
                 info_lines = []
-                info_lines.append(f"- **{server.name}** server tools:")
+                info_lines.append("- " + trans.__("**%1** server tools:", server.name))
                 for tool in server.get_tools():
                     info_lines.append(f"  - **{tool.name}**: {tool.description}\n")
                 response.stream(MarkdownData(f"\n".join(info_lines)))

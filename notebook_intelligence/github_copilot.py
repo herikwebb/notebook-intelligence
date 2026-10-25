@@ -12,6 +12,7 @@ import secrets
 import sseclient
 import datetime as dt
 import logging
+from notebook_intelligence import i18n
 from notebook_intelligence.api import BackendMessageType, CancelToken, ChatResponse, CompletionContext, MarkdownData
 from notebook_intelligence.config import _atomic_write_json
 from notebook_intelligence.inline_completion import (
@@ -1031,7 +1032,12 @@ def responses(model_id, messages, tools = None, response: ChatResponse = None, c
             msg = f"Failed to get responses from GitHub Copilot: [{request.status_code}]: {request.text}"
             log.error(msg)
             if response is not None:
-                response.stream(MarkdownData(msg))
+                trans = i18n.response_bundle(response)
+                response.stream(MarkdownData(trans.__(
+                    "Failed to get responses from GitHub Copilot: [%1]: %2",
+                    request.status_code,
+                    request.text,
+                )))
                 response.finish()
             raise Exception(msg)
 
@@ -1157,7 +1163,12 @@ def completions(model_id, messages, tools = None, response: ChatResponse = None,
             msg = f"Failed to get completions from GitHub Copilot: [{request.status_code}]: {request.text}"
             log.error(msg)
             if response is not None:
-                response.stream(MarkdownData(msg))
+                trans = i18n.response_bundle(response)
+                response.stream(MarkdownData(trans.__(
+                    "Failed to get completions from GitHub Copilot: [%1]: %2",
+                    request.status_code,
+                    request.text,
+                )))
                 response.finish()
             raise Exception(msg)
 

@@ -120,6 +120,22 @@ def test_bundle_of_a_removed_catalog_is_deleted(tmp_path, hatch_build):
     po_path.unlink()
     assert hatch_build.compile_catalogs(tmp_path, "6.3.0") == []
     assert not po_path.with_suffix(".json").exists()
+    assert not po_path.with_suffix(".mo").exists()
+
+
+def test_server_catalog_is_compiled_beside_the_bundle(tmp_path, hatch_build):
+    """notebook_intelligence/i18n.py reads the .mo with Python's gettext."""
+    import gettext
+
+    po_path = _write_catalog(tmp_path)
+    hatch_build.compile_catalogs(tmp_path, "6.3.0")
+    with po_path.with_suffix(".mo").open("rb") as mo:
+        catalog = gettext.GNUTranslations(mo)
+    assert catalog.gettext("Close") == "Schließen"
+    assert catalog.pgettext("schema", "Settings") == "Einstellungen"
+    assert catalog.ngettext("%1 file", "%1 files", 2) == "%1 Dateien"
+    # As in the frontend, unreviewed strings stay English.
+    assert catalog.gettext("Unreviewed") == "Unreviewed"
 
 
 @pytest.mark.parametrize(
@@ -180,15 +196,20 @@ def test_template_token_must_survive_translation(tmp_path, hatch_build):
         hatch_build.compile_catalogs(tmp_path, "6.3.0")
 
 
-def test_tour_contexts_match_the_frontend():
-    """scripts/i18n.py extracts the tour's strings under contexts that
-    src/tour/tour-text.ts must look them up with; a mismatch would leave the
-    whole tour English with no error."""
+def _script():
     spec = importlib.util.spec_from_file_location(
         "nbi_i18n_script", ROOT / "scripts" / "i18n.py"
     )
     script = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(script)
+    return script
+
+
+def test_tour_contexts_match_the_frontend():
+    """scripts/i18n.py extracts the tour's strings under contexts that
+    src/tour/tour-text.ts must look them up with; a mismatch would leave the
+    whole tour English with no error."""
+    script = _script()
     tour_text = (ROOT / "src" / "tour" / "tour-text.ts").read_text(encoding="utf-8")
     template_branch = tour_text.index("includes('{launchers}')")
     template_context = tour_text.index(f'"{script.TOUR_TEMPLATE_CONTEXT}"')
@@ -196,3 +217,48 @@ def test_tour_contexts_match_the_frontend():
     # The {launchers} branch looks up the template context; the other the
     # plain one.
     assert template_branch < template_context < plain_context
+
+
+def test_server_strings_are_extracted(tmp_path):
+    (tmp_path / "server.py").write_text(
+        "def f(trans, n, name):\n"
+        "    trans.__('Rule not found')\n"
+        "    trans._p('approval button', 'Approve')\n"
+        "    trans._n('%1 model', '%1 models', n)\n"
+        "    trans._np('ctx', '%1 issue', '%1 issues', n)\n"
+        "    other.__('Not a bundle')\n",
+        encoding="utf-8",
+    )
+    script = _script()
+    script.ROOT = tmp_path
+    items = script.extract_py_strings(tmp_path)
+    assert [(i["msgctxt"], i["msgid"], i["msgid_plural"]) for i in items] == [
+        (None, "Rule not found", None),
+        ("approval button", "Approve", None),
+        (None, "%1 model", "%1 models"),
+        ("ctx", "%1 issue", "%1 issues"),
+    ]
+
+
+def test_a_non_literal_server_msgid_fails_extraction(tmp_path):
+    """A msgid built at runtime can never be in the catalog."""
+    (tmp_path / "server.py").write_text(
+        "def f(trans, name):\n    trans.__(f'Skill {name} not found')\n",
+        encoding="utf-8",
+    )
+    script = _script()
+    script.ROOT = tmp_path
+    with pytest.raises(SystemExit, match="string literals"):
+        script.extract_py_strings(tmp_path)
+
+
+def test_a_bundle_reached_through_an_attribute_fails_extraction(tmp_path):
+    """`self.trans.__(...)` would be skipped, and its string never translated."""
+    (tmp_path / "server.py").write_text(
+        "def f(self):\n    self.trans.__('Shell')\n", encoding="utf-8"
+    )
+    script = _script()
+    script.ROOT = tmp_path
+    with pytest.raises(SystemExit, match="local first"):
+        script.extract_py_strings(tmp_path)
+

@@ -207,7 +207,10 @@ exclude = [".github", "binder", "src", "style", "media"]
 # .pot stays in: it keeps notebook_intelligence/locale/ present even before
 # any catalog exists, and jupyterlab_server, finding the jupyterlab.locale
 # entry point without that folder, serves no translations for any package.
-artifacts = ["notebook_intelligence/locale/*/LC_MESSAGES/*.json"]
+artifacts = [
+    "notebook_intelligence/locale/*/LC_MESSAGES/*.json",
+    "notebook_intelligence/locale/*/LC_MESSAGES/*.mo",
+]
 exclude = ["notebook_intelligence/locale/**/*.po"]
 
 [tool.hatch.build.targets.wheel.shared-data]

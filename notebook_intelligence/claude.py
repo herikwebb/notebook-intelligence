@@ -20,6 +20,7 @@ import unicodedata
 import uuid
 import re
 from anyio.abc import Process
+from notebook_intelligence import i18n
 from notebook_intelligence import perf
 from notebook_intelligence.api import AskUserQuestionData, BackendMessageType, CancelToken, ChatCommand, ChatModel, ChatRequest, ChatResponse, ClaudeToolType, CompletionContext, ConfirmationData, Host, InlineCompletionModel, MarkdownData, ProgressData, SignalImpl, ToolCallData, UICommandCancelledError, UserInputCancelledError
 from notebook_intelligence.base_chat_participant import BaseChatParticipant
@@ -1670,6 +1671,7 @@ class ClaudeCodeClient():
 
                             set_current_request(request)
                             set_current_response(response)
+                            trans = i18n.response_bundle(response)
                             # Refresh per query: the websocket reconnects on
                             # every page reload while this client thread (and
                             # its agent subprocess) persists, so the connector
@@ -1693,11 +1695,11 @@ class ClaudeCodeClient():
                             # frontend but still work when typed.
                             if client_query.startswith('/enter-plan-mode'):
                                 await apply_permission_mode(client, "plan")
-                                response.stream(MarkdownData("&#x2713; Entered plan mode"))
+                                response.stream(MarkdownData("&#x2713; " + trans.__("Entered plan mode")))
                                 already_handled = True
                             elif client_query.startswith('/exit-plan-mode'):
                                 await apply_permission_mode(client, DEFAULT_PERMISSION_MODE)
-                                response.stream(MarkdownData("&#x2713; Exit plan mode"))
+                                response.stream(MarkdownData("&#x2713; " + trans.__("Exit plan mode")))
                                 already_handled = True
 
                             if not already_handled and not request.cancel_token.is_cancel_requested:
@@ -1880,7 +1882,10 @@ class ClaudeCodeClient():
                             err_msg = f"Error communicating with Claude agent: {str(e)}"
                             log.error(err_msg)
                             if not self._reconnect_required:
-                                response.stream(MarkdownData(err_msg))
+                                trans = i18n.response_bundle(response)
+                                response.stream(MarkdownData(
+                                    trans.__("Error communicating with Claude agent: %1", str(e))
+                                ))
                         finally:
                             _emit(signal, {"id": event_id, "data": "query completed"})
                             set_current_request(None)
@@ -2671,25 +2676,26 @@ async def _custom_permission_handler(
         return PermissionResultAllow()
 
     response = get_current_response()
+    trans = i18n.response_bundle(response)
     callback_id = str(uuid.uuid4())
 
     if tool_name == "EnterPlanMode":
         pending_user_input = response.stream_user_input_request(
             callback_id,
             ConfirmationData(
-            title="Enter Plan Mode",
-            message="Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan.",
+            title=trans.__("Enter Plan Mode"),
+            message=trans.__("Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan."),
             confirmArgs={"id": response.message_id, "data": { "callback_id": callback_id, "data": {"confirmed": True}}},
             cancelArgs={"id": response.message_id, "data": { "callback_id": callback_id, "data": {"confirmed": False}}},
-            confirmLabel="Yes, enter plan mode",
-            cancelLabel="No, start implementing now",
+            confirmLabel=trans._p("approval button", "Yes, enter plan mode"),
+            cancelLabel=trans._p("approval button", "No, start implementing now"),
             ),
         )
         user_input = await ChatResponse.wait_for_chat_user_input(
             response, callback_id, pending_user_input
         )
         if user_input['confirmed'] == True:
-            response.stream(MarkdownData(f"&#x2713; Entered plan mode"))
+            response.stream(MarkdownData("&#x2713; " + trans.__("Entered plan mode")))
             return PermissionResultAllow()
         else:
             return PermissionResultDeny(message="Skipping plan mode...")
@@ -2702,11 +2708,11 @@ async def _custom_permission_handler(
         pending_user_input = response.stream_user_input_request(
             callback_id,
             ConfirmationData(
-            message="Do you want to confirm the plan above?",
+            message=trans.__("Do you want to confirm the plan above?"),
             confirmArgs={"id": response.message_id, "data": { "callback_id": callback_id, "data": {"confirmed": True}}},
             cancelArgs={"id": response.message_id, "data": { "callback_id": callback_id, "data": {"confirmed": False}}},
-            confirmLabel="Yes, approve plan",
-            cancelLabel="No, continue planning",
+            confirmLabel=trans._p("approval button", "Yes, approve plan"),
+            cancelLabel=trans._p("approval button", "No, continue planning"),
             ),
         )
         user_input = await ChatResponse.wait_for_chat_user_input(
@@ -2745,8 +2751,13 @@ async def _custom_permission_handler(
         if _contains_bidi_control(command):
             controls = _describe_bidi_controls(command)
             response.stream(MarkdownData(
-                "&#x26A0; **Bash command blocked: hidden Unicode "
-                f"bidirectional controls detected ({controls}).**\n"
+                "&#x26A0; "
+                + trans.__(
+                    "**Bash command blocked: hidden Unicode "
+                    "bidirectional controls detected (%1).**",
+                    controls,
+                )
+                + "\n"
                 + _untrusted_code_block(command, "shell")
             ))
             return PermissionResultDeny(
@@ -2763,7 +2774,7 @@ async def _custom_permission_handler(
         pending_user_input = response.stream_user_input_request(
             callback_id,
             ConfirmationData(
-            message=f"Approve Bash tool to execute the command above?",
+            message=trans.__("Approve Bash tool to execute the command above?"),
             confirmArgs={"id": response.message_id, "data": { "callback_id": callback_id, "data": {"confirmed": True}}},
             cancelArgs={"id": response.message_id, "data": { "callback_id": callback_id, "data": {"confirmed": False}}},
             ),
@@ -2782,11 +2793,11 @@ async def _custom_permission_handler(
 
         if tool_name in _approved_tools_for_response:
             return PermissionResultAllow()
-        response.stream(MarkdownData(f"&#x2713; Calling tool '{tool_name}'...", detail={"title": "Parameters", "content": json.dumps(input_data)}))
+        response.stream(MarkdownData("&#x2713; " + trans.__("Calling tool '%1'...", tool_name), detail={"title": trans.__("Parameters"), "content": json.dumps(input_data)}))
         pending_user_input = response.stream_user_input_request(
             callback_id,
             ConfirmationData(
-            message=f"Are you sure you want to call this tool?",
+            message=trans.__("Are you sure you want to call this tool?"),
             confirmArgs={"id": response.message_id, "data": { "callback_id": callback_id, "data": {"confirmed": True}}},
             confirmSessionArgs={"id": response.message_id, "data": { "callback_id": callback_id, "data": {"confirmed_for_session": True}}},
             cancelArgs={"id": response.message_id, "data": { "callback_id": callback_id, "data": {"confirmed": False}}},
@@ -2890,19 +2901,20 @@ class ClaudeCodeChatParticipant(BaseChatParticipant):
             return await self.handle_inline_chat_request(request, response, options)
         self._current_chat_request = request
 
+        trans = i18n.response_bundle(response)
         try:
-            response.stream(ProgressData("Thinking…"))
+            response.stream(ProgressData(trans.__("Thinking…")))
             result = self._client.query(request, response)
             # query() returns a string when it bails early without dispatching —
             # e.g. the agent isn't connected, a response timeout elapsed, or the
             # worker thread died. Surface it so the user sees why instead of a
             # silent spinner stop.
             if isinstance(result, str) and result:
-                response.stream(MarkdownData(f"**Claude agent error:** {result}"))
+                response.stream(MarkdownData(trans.__("**Claude agent error:** %1", result)))
         except Exception as e:
             log.error(f"Error while handling Claude chat request: {e}", exc_info=True)
             try:
-                response.stream(MarkdownData(f"**Error:** {e}"))
+                response.stream(MarkdownData(trans.__("**Error:** %1", e)))
             except Exception as stream_err:
                 log.debug(f"Could not stream error to client (likely closed websocket): {stream_err}")
         finally:
@@ -2948,7 +2960,8 @@ class ClaudeCodeChatParticipant(BaseChatParticipant):
             )
         except Exception as e:
             log.error(f"Error while handling chat request!\n{e}")
-            response.stream(MarkdownData(f"Oops! There was a problem handling chat request. Please try again with a different prompt."))
+            trans = i18n.response_bundle(response)
+            response.stream(MarkdownData(trans.__("Oops! There was a problem handling chat request. Please try again with a different prompt.")))
             response.finish()
     
     def _create_client_options(self) -> ClaudeAgentOptions:

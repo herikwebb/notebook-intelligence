@@ -2,7 +2,9 @@
 
 Only the ``.po`` sources are committed. Each one is compiled next to itself
 into the ``.json`` bundle JupyterLab's frontend loads, which
-``jupyterlab_server`` finds through the ``jupyterlab.locale`` entry point. The
+``jupyterlab_server`` finds through the ``jupyterlab.locale`` entry point, and
+the ``.mo`` file ``notebook_intelligence/i18n.py`` reads for the server's own
+text. The
 layout mirrors ``jupyterlab_translate.converters``, which this does not import
 so the build only needs ``polib``.
 """
@@ -96,11 +98,21 @@ def compile_catalogs(root, version: str) -> list:
     locale_dir = Path(root, DOMAIN, "locale")
     # Bundles are gitignored build outputs that the wheel picks up by glob, so
     # one left behind by a deleted or renamed catalog would still ship.
-    for stale in locale_dir.glob(f"*/LC_MESSAGES/{DOMAIN}.json"):
-        if not stale.with_suffix(".po").exists():
-            stale.unlink()
+    for suffix in (".json", ".mo"):
+        for stale in locale_dir.glob(f"*/LC_MESSAGES/{DOMAIN}{suffix}"):
+            if not stale.with_suffix(".po").exists():
+                stale.unlink()
     for po_path in sorted(locale_dir.glob(f"*/LC_MESSAGES/{DOMAIN}.po")):
-        bundle = _jed_bundle(polib.pofile(str(po_path)), po_path, version)
+        po = polib.pofile(str(po_path))
+        bundle = _jed_bundle(po, po_path, version)
+        # Python's gettext decodes a catalog without a declared charset as
+        # ASCII and fails on the first accented string, so write UTF-8 and
+        # say so.
+        po.encoding = "utf-8"
+        po.metadata["Content-Type"] = "text/plain; charset=UTF-8"
+        # Untranslated and fuzzy entries are left out, as msgfmt does, so the
+        # server falls back to English for them just as the frontend does.
+        po.save_as_mofile(str(po_path.with_suffix(".mo")))
         json_path = po_path.with_suffix(".json")
         json_path.write_text(
             json.dumps(bundle, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
