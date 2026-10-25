@@ -490,7 +490,7 @@ class BaseChatParticipant(ChatParticipant):
         chat_model = request.host.chat_model
         messages = request.chat_history.copy()
         messages.pop()
-        messages.insert(0, {"role": "system", "content": f"You are an assistant that explains the provided code using markdown. Don't include any code, just narrative markdown text. Keep it concise, only generate few lines. First create a title that suits the code and then explain the code briefly. You should return the markdown directly, without wrapping it inside ```."})
+        messages.insert(0, {"role": "system", "content": i18n.with_reply_language(f"You are an assistant that explains the provided code using markdown. Don't include any code, just narrative markdown text. Keep it concise, only generate few lines. First create a title that suits the code and then explain the code briefly. You should return the markdown directly, without wrapping it inside ```.", request.reply_language)})
         messages.append({"role": "user", "content": f"Generate markdown that explains this code: {code}"})
         messages = budget_chat_messages(
             messages,
@@ -508,7 +508,7 @@ class BaseChatParticipant(ChatParticipant):
         if request.chat_mode.id == "ask":
             return await self.handle_ask_mode_chat_request(request, response, options)
         elif request.chat_mode.id == "agent":
-            system_prompt = None
+            system_prompt = ""
             if len(self.tools) > 0:
                 system_prompt = "Try to answer the question with a tool first. If the tool you use has default values for parameters and user didn't provide a value for those, make sure to set the default value for the parameter.\n\n"
 
@@ -529,8 +529,8 @@ class BaseChatParticipant(ChatParticipant):
             else:
                 # Even if no system prompt, we might have rules to inject
                 system_prompt = self._inject_rules_into_system_prompt("", request)
-                if system_prompt == "":
-                    system_prompt = None
+            if system_prompt == "":
+                system_prompt = None
             
             options = options.copy()
             options["system_prompt"] = system_prompt
@@ -597,7 +597,10 @@ class BaseChatParticipant(ChatParticipant):
 
         # Inject rules into system prompt
         base_system_prompt = options.get("system_prompt", self.chat_prompt(chat_model.provider.name, chat_model.name))
-        enhanced_system_prompt = self._inject_rules_into_system_prompt(base_system_prompt, request)
+        enhanced_system_prompt = i18n.with_reply_language(
+            self._inject_rules_into_system_prompt(base_system_prompt, request),
+            request.reply_language,
+        )
         
         messages = [
             {"role": "system", "content": enhanced_system_prompt},

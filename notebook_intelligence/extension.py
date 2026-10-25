@@ -942,6 +942,7 @@ class GetCapabilitiesHandler(APIHandler):
             ),
             "chatbook_llm_danger_scan": nbi_config.chatbook_llm_danger_scan,
             "chatbook_backend_kernel": nbi_config.chatbook_backend_kernel,
+            "reply_in_user_language": nbi_config.reply_in_user_language,
             "chatbook_max_execution_mode": parse_execution_mode(
                 getattr(
                     self,
@@ -999,7 +1000,7 @@ class GetCapabilitiesHandler(APIHandler):
         self.finish(json.dumps(response))
 
 class ChatbookGenerateHandler(APIHandler):
-    """Generate either Python or an English representation for Chatbook."""
+    """Generate either Python or a cell description for Chatbook."""
 
     chatbook_enabled = True
 
@@ -1056,10 +1057,16 @@ class ChatbookGenerateHandler(APIHandler):
             language = str(data.get("language") or "python")
         try:
             if operation == "summarize":
+                reply_language = i18n.request_reply_language(
+                    self, ai_service_manager.nbi_config.reply_in_user_language
+                )
                 english = await tornado.ioloop.IOLoop.current().run_in_executor(
                     None,
                     lambda: summarize_chatbook_code(
-                        ai_service_manager, str(code_source), language
+                        ai_service_manager,
+                        str(code_source),
+                        language,
+                        reply_language=reply_language,
                     ),
                 )
                 self.finish(json.dumps({"prompt": english}))
@@ -1094,7 +1101,7 @@ class ChatbookGenerateHandler(APIHandler):
             log.error("Chatbook generate failed: %s", exc)
             self.set_status(500)
             message = (
-                "Chatbook English generation failed"
+                "Chatbook description failed"
                 if operation == "summarize"
                 else "Chatbook code generation failed"
             )
@@ -1169,6 +1176,7 @@ class ConfigHandler(APIHandler):
             "chatbook_execution_mode",
             "chatbook_llm_danger_scan",
             "chatbook_backend_kernel",
+            "reply_in_user_language",
         ])
         # Top-level keys whose write is rejected outright when locked.
         locked_keys = set()
@@ -1293,7 +1301,7 @@ class ConfigHandler(APIHandler):
                         DEFAULT_CHATBOOK_MAX_EXECUTION_MODE,
                     ),
                 )
-            elif key == "chatbook_llm_danger_scan":
+            elif key in ("chatbook_llm_danger_scan", "reply_in_user_language"):
                 value = bool(value)
             elif key == "chatbook_backend_kernel":
                 value = str(value or "").strip()
@@ -3881,6 +3889,22 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
 
                 chat_history.append({"role": "user", "content": prompt})
 
+                reply_language = i18n.request_reply_language(
+                    self, ai_service_manager.nbi_config.reply_in_user_language
+                )
+                # Providers put the language in the system prompt, built per
+                # request. An agent CLI keeps its own conversation with a
+                # system prompt fixed at launch, so it gets the instruction
+                # after this turn's prompt, in the query only: never in NBI's
+                # stored history, never ahead of the question (session
+                # previews show the first line), and not for slash commands,
+                # whose arguments it would join.
+                # The slash test matches the CLI query assembly in claude.py
+                # and acp_agent.py, which treats such a prompt as a command.
+                request_prompt = prompt
+                if reply_language and is_agent_session_mode and not prompt.startswith("/"):
+                    request_prompt = i18n.with_reply_language(prompt, reply_language)
+
                 response_emitter = WebsocketCopilotResponseEmitter(chatId, messageId, self, self.chat_history)
                 cancel_token = CancelTokenImpl()
                 self._messageCallbackHandlers[messageId] = MessageCallbackHandlers(response_emitter, cancel_token)
@@ -3898,7 +3922,7 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
 
                 # last prompt is added later
                 request_chat_history = chat_history[chat_history_initial_size:-1] if is_agent_session_mode else chat_history[:-1]
-                coro = ai_service_manager.handle_chat_request(ChatRequest(chat_mode=chat_mode, tool_selection=tool_selection, prompt=prompt, language=language, kernel_name=kernel_name, chat_history=request_chat_history, cancel_token=cancel_token, rule_context=rule_context, permission_mode=permission_mode), response_emitter)
+                coro = ai_service_manager.handle_chat_request(ChatRequest(chat_mode=chat_mode, tool_selection=tool_selection, prompt=request_prompt, language=language, kernel_name=kernel_name, chat_history=request_chat_history, cancel_token=cancel_token, rule_context=rule_context, permission_mode=permission_mode, reply_language=reply_language), response_emitter)
                 thread = threading.Thread(target=self._run_request_thread, args=(coro, messageId, response_emitter))
                 thread.start()
             except BaseException:

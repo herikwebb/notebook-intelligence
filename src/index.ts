@@ -1580,10 +1580,8 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     });
 
     app.commands.addCommand(CommandIDs.refreshChatbookEnglish, {
-      label: trans.__('Refresh English representation'),
-      caption: trans.__(
-        'Regenerate the English representation of this code cell'
-      ),
+      label: trans.__('Refresh description'),
+      caption: trans.__('Regenerate the description of this code cell'),
       isEnabled: () => {
         const cell = currentChatbookNotebook()?.content.activeCell;
         return Boolean(

@@ -507,6 +507,10 @@ export class NBIConfig {
     return this.capabilities.chatbook_llm_danger_scan === true;
   }
 
+  get replyInUserLanguage(): boolean {
+    return this.capabilities.reply_in_user_language === true;
+  }
+
   get chatbookBackendKernel(): string {
     return String(this.capabilities.chatbook_backend_kernel || '').trim();
   }
@@ -1422,7 +1426,7 @@ export class NBIAPI {
     const prompt = (data?.prompt || '').trim();
     if (!prompt) {
       throw new Error(
-        data?.error || 'Chatbook summary produced no English representation'
+        data?.error || 'Chatbook summary produced no description'
       );
     }
     return prompt;

@@ -726,6 +726,7 @@ def _strip_context_preamble(title: str) -> str:
     all of it, and is empty otherwise. A title with no file and no question
     that was not truncated is kept as before.
     """
+    title = i18n.without_reply_instruction(title)
     lines = [line for line in title.splitlines() if line.strip()]
     while lines and (
         lines[0].startswith(NBI_CONTEXT_PREFIX)

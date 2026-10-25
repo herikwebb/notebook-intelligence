@@ -584,6 +584,14 @@ function SettingsPanelComponentGeneral(props: any) {
     });
   };
 
+  // Like the other toggles here, the box follows the saved config (through
+  // configChanged) rather than flipping before the server has it.
+  const toggleReplyInUserLanguage = () => {
+    NBIAPI.setConfig({
+      reply_in_user_language: !NBIAPI.config.replyInUserLanguage
+    });
+  };
+
   const toggleRefreshOpenFilesOnDiskChange = () => {
     NBIAPI.setConfig({
       refresh_open_files_on_disk_change:
@@ -1099,6 +1107,26 @@ function SettingsPanelComponentGeneral(props: any) {
                     featurePolicies.output_toolbar.locked
                   )}
                   onClick={toggleOutputToolbar}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="model-config-section">
+          <div className="model-config-section-header">
+            {trans._p('settings section', 'Language')}
+          </div>
+          <div className="model-config-section-body">
+            <div className="model-config-section-row">
+              <div className="model-config-section-column">
+                <CheckBoxItem
+                  label={trans.__('Reply in my JupyterLab language')}
+                  title={trans.__(
+                    'Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English.'
+                  )}
+                  checked={NBIAPI.config.replyInUserLanguage}
+                  onClick={toggleReplyInUserLanguage}
                 />
               </div>
             </div>

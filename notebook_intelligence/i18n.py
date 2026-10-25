@@ -117,27 +117,55 @@ def _catalog_path(locale: str) -> Optional[Path]:
 
 
 @functools.lru_cache(maxsize=1)
-def _installed_language_packs() -> Optional[frozenset]:
-    """Locales with a JupyterLab language pack, or None if unknown. Cached:
-    jupyterlab_server asks a subprocess, and installing a pack needs a
-    server restart to take effect anyway."""
+def _installed_language_packs() -> Optional[dict]:
+    """Each locale with a JupyterLab language pack, mapped to its English
+    display name ("German (Germany)"), or None if they cannot be listed
+    (a pack that fails to load makes jupyterlab_server report none at all).
+    Cached: jupyterlab_server asks a subprocess, and installing a pack needs
+    a server restart to take effect anyway."""
     try:
         from jupyterlab_server.translation_utils import get_language_packs
 
-        return frozenset(get_language_packs()[0])
+        packs, message = get_language_packs()
     except Exception as error:
         log.warning("Could not list JupyterLab language packs: %s", error)
         return None
+    if message:
+        # Also reported alongside a valid list ("The following locales are
+        # invalid: ..."), which is kept.
+        log.warning("JupyterLab language packs: %s", message)
+    if not packs:
+        return None
+    return {locale: _pack_name(locale, info) for locale, info in packs.items()}
+
+
+def _pack_name(locale: str, info: Any) -> str:
+    """A pack's English display name, or its locale code when there is no
+    usable one: babel cannot name some locales jupyterlab_server accepts
+    (no_NO), and jupyterlab_server then reports the display locale ("En")."""
+    name = str((info or {}).get("displayName") or "").strip()
+    if not name or (
+        name.lower() in ("en", "english") and not locale.lower().startswith("en")
+    ):
+        return locale
+    return name
+
+
+def _displayed(locale: str) -> bool:
+    """Whether JupyterLab shows its UI in this locale: it does only with a
+    language pack installed for exactly that locale (or when the installed
+    packs cannot be listed, in which case the request is taken at its word)."""
+    packs = _installed_language_packs()
+    return packs is None or locale in packs
 
 
 @functools.lru_cache(maxsize=64)
 def _bundle(locale: Optional[str]) -> TranslationBundle:
     if locale is None:
         return TranslationBundle(gettext.NullTranslations(), "en")
-    packs = _installed_language_packs()
     # Without a language pack JupyterLab serves the frontend no translations
     # (and matches its name exactly), so NBI's own UI is English.
-    if packs is not None and locale not in packs:
+    if not _displayed(locale):
         return TranslationBundle(gettext.NullTranslations(), locale)
     path = _catalog_path(locale)
     if path is None:
@@ -175,3 +203,73 @@ def request_bundle(handler: Any) -> TranslationBundle:
     except Exception:
         locale = None
     return load(locale)
+
+
+# Crowdin's in-context translation pseudo-language: shown, but not a
+# language to reply in.
+_PSEUDO_LANGUAGE = "ach_UG"
+
+
+def reply_language(locale: Optional[str]) -> Optional[str]:
+    """The language a model should reply in for the user's JupyterLab
+    locale, by the English name its language pack gives it ("German
+    (Germany)"), or None to leave prompts unchanged: English, unset,
+    malformed, the pseudo-language, or a locale JupyterLab does not display.
+    When the packs cannot be listed it is named by its locale code, which
+    models understand."""
+    value = normalize_locale(locale)
+    if value is None or value == _PSEUDO_LANGUAGE or not _displayed(value):
+        return None
+    if value.split("_")[0].lower() == "en":
+        return None
+    name = (_installed_language_packs() or {}).get(value)
+    return name if name and name != value else f"the language of locale {value}"
+
+
+def request_reply_language(handler: Any, enabled: bool) -> Optional[str]:
+    """The language a model should reply in for this request, or None when
+    the user has not asked for replies in their language (``enabled``) or
+    JupyterLab is in English."""
+    if enabled is not True:
+        return None
+    try:
+        locale = handler.get_query_argument(LOCALE_QUERY_ARG, None)
+    except Exception:
+        locale = None
+    return reply_language(locale)
+
+
+def with_reply_language(prompt: Optional[str], language: Optional[str]) -> Optional[str]:
+    """``prompt`` with the reply-language instruction appended, or unchanged
+    when there is no language to ask for."""
+    instruction = reply_language_instruction(language)
+    if not instruction:
+        return prompt
+    return f"{prompt}\n\n{instruction}" if prompt else instruction
+
+
+# From the instruction's first sentence to the end, so a title the agent
+# truncated inside the second sentence is matched too.
+_REPLY_INSTRUCTION = re.compile(
+    r"\s*Reply in [^\n]*?, the user's JupyterLab language\.[\s\S]*$"
+)
+
+
+def without_reply_instruction(text: str) -> str:
+    """``text`` without a trailing reply-language instruction: an agent's
+    session transcript holds the query as sent, and a session preview or
+    title should show only what the user asked."""
+    return _REPLY_INSTRUCTION.sub("", text)
+
+
+def reply_language_instruction(language: Optional[str]) -> str:
+    """The instruction that asks a model to write its prose in ``language``.
+    Empty when there is no language to ask for, so prompts stay unchanged."""
+    if not language:
+        return ""
+    return (
+        f"Reply in {language}, the user's JupyterLab language. Leave code, "
+        "identifiers, file names, file contents, commands and quoted output "
+        "as they are."
+    )
+

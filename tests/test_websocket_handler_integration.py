@@ -207,6 +207,104 @@ class TestWebsocketHandlerIntegration:
         assert chat_request.language == 'python'
         assert chat_request.kernel_name == ''
     
+    def _send_chat_turn(self, mock_ai_manager, *, enabled, agent, prompt, chat_id="reply-language-chat"):
+        """One chat turn from a German JupyterLab; returns the ChatRequest."""
+        mock_ai_manager.handle_chat_request = Mock()
+        mock_ai_manager.nbi_config.reply_in_user_language = enabled
+        mock_ai_manager.is_claude_code_mode = agent
+        mock_ai_manager.is_acp_mode = False
+        with patch('notebook_intelligence.extension.ThreadSafeWebSocketConnector'):
+            handler = WebsocketCopilotHandler(
+                self._create_mock_application(),
+                self._create_mock_request(),
+                context_factory=Mock(spec=RuleContextFactory),
+            )
+        handler.get_query_argument = lambda name, default=None: (
+            "de-DE" if name == "nbi_locale" else default
+        )
+        handler.chat_history = self._shared_history
+        message = {
+            'id': f'reply-language-{prompt}',
+            'type': 'chat-request',
+            'data': {
+                'chatId': chat_id,
+                'prompt': prompt,
+                'language': 'python',
+                'filename': 'test.ipynb',
+                'chatMode': 'ask',
+                'toolSelections': {},
+                'additionalContext': [],
+            },
+        }
+        with patch(
+            "notebook_intelligence.i18n._installed_language_packs",
+            return_value={"en": "English", "de_DE": "German (Germany)"},
+        ):
+            handler.on_message(json.dumps(message))
+        return mock_ai_manager.handle_chat_request.call_args[0][0]
+
+    @pytest.fixture(autouse=False)
+    def shared_history(self):
+        from notebook_intelligence.extension import ChatHistory
+
+        self._shared_history = ChatHistory()
+        return self._shared_history
+
+    @patch('notebook_intelligence.extension.ai_service_manager')
+    @patch('notebook_intelligence.extension.NotebookIntelligence')
+    @patch('notebook_intelligence.extension.threading.Thread')
+    def test_provider_turns_carry_the_language_outside_history(
+        self, mock_thread, mock_nb_intel, mock_ai_manager, shared_history
+    ):
+        """Providers get the language as a request field (their system prompt
+        is built per request), so nothing is stored in the chat history and
+        nothing piles up across turns."""
+        mock_nb_intel.root_dir = "/workspace"
+        # A stored exchange, so get_history hands on_message the live list.
+        shared_history.add_message("reply-language-chat", {"role": "user", "content": "Hallo"})
+        shared_history.add_message("reply-language-chat", {"role": "assistant", "content": "Hallo!"})
+        first = self._send_chat_turn(mock_ai_manager, enabled=True, agent=False, prompt="Erste Frage")
+        second = self._send_chat_turn(mock_ai_manager, enabled=True, agent=False, prompt="Zweite Frage")
+        for request, prompt in ((first, "Erste Frage"), (second, "Zweite Frage")):
+            assert request.reply_language == "German (Germany)"
+            assert request.prompt == prompt
+            assert not any(
+                "Reply in" in str(m["content"]) for m in request.chat_history
+            )
+        stored = shared_history.get_history("reply-language-chat")
+        assert not any("Reply in" in str(m["content"]) for m in stored)
+
+    @pytest.mark.parametrize(
+        "enabled, prompt, asks",
+        [
+            (True, "Was macht print()?", True),
+            (True, "/review 42", False),
+            (False, "Was macht print()?", False),
+        ],
+        ids=["on", "slash-command", "off"],
+    )
+    @patch('notebook_intelligence.extension.ai_service_manager')
+    @patch('notebook_intelligence.extension.NotebookIntelligence')
+    @patch('notebook_intelligence.extension.threading.Thread')
+    def test_agent_turns_ask_after_the_prompt(
+        self, mock_thread, mock_nb_intel, mock_ai_manager, shared_history,
+        enabled, prompt, asks,
+    ):
+        """An agent CLI keeps its own conversation, so the instruction rides
+        on this turn's query, after the question (session previews show the
+        first line), never on a slash command's arguments, and never in
+        NBI's stored history."""
+        mock_nb_intel.root_dir = "/workspace"
+        shared_history.add_message("reply-language-chat", {"role": "user", "content": "Hallo"})
+        request = self._send_chat_turn(mock_ai_manager, enabled=enabled, agent=True, prompt=prompt)
+        if asks:
+            assert request.prompt.startswith(prompt + "\n\nReply in German (Germany),")
+        else:
+            assert request.prompt == prompt
+        assert not any("Reply in" in str(m["content"]) for m in request.chat_history)
+        stored = shared_history.get_history("reply-language-chat")
+        assert stored[-1]["content"] == prompt
+
     @patch('notebook_intelligence.extension.ai_service_manager')
     @patch('notebook_intelligence.extension.NotebookIntelligence')
     @patch('notebook_intelligence.extension.threading.Thread')

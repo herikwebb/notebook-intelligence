@@ -34,6 +34,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+from notebook_intelligence import i18n
 from notebook_intelligence.util import get_claude_config_dir
 
 log = logging.getLogger(__name__)
@@ -328,7 +329,7 @@ def _extract_preview(obj: dict) -> str:
     # the front of the user's actual prompt (issue #329). Without
     # this, the preview reads "Additional context: ..." instead of
     # what the user asked.
-    text = _strip_nbi_context_preamble(text)
+    text = i18n.without_reply_instruction(_strip_nbi_context_preamble(text))
 
     # Collapse whitespace so multi-line prompts render as a single row.
     text = " ".join(text.split())

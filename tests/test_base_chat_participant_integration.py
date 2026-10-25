@@ -1,4 +1,6 @@
 import asyncio
+
+import pytest
 from unittest.mock import Mock, AsyncMock
 
 import notebook_intelligence.base_chat_participant as base_participant_module
@@ -121,6 +123,37 @@ class TestBaseChatParticipantIntegration:
         assert len(messages) >= 1
         assert messages[0]["role"] == "system"
         assert messages[0]["content"] == "Enhanced system prompt"
+
+    @pytest.mark.parametrize("reply_language", [None, "German (Germany)"])
+    def test_ask_mode_system_prompt_names_the_reply_language(self, reply_language):
+        """The language goes at the end of the system prompt, after the
+        rules, and only when the user asked for it; otherwise the system
+        prompt is exactly what it was."""
+        mock_injector = Mock(spec=RuleInjector)
+        mock_injector.inject_rules.return_value = "Enhanced system prompt"
+        participant = BaseChatParticipant(rule_injector=mock_injector)
+        mock_chat_model = Mock()
+        mock_chat_model.provider.name = "test-provider"
+        mock_chat_model.name = "test-model"
+        mock_chat_model.completions = Mock()
+        request = ChatRequest(
+            host=Mock(chat_model=mock_chat_model),
+            chat_mode=ChatMode("ask", "Ask"),
+            prompt="Was macht print()?",
+            chat_history=[],
+            cancel_token=Mock(spec=CancelToken),
+            reply_language=reply_language,
+        )
+        response = Mock(spec=ChatResponse)
+        response.stream = Mock()
+
+        asyncio.run(participant.handle_ask_mode_chat_request(request, response))
+
+        system = mock_chat_model.completions.call_args[0][0][0]
+        if reply_language is None:
+            assert system["content"] == "Enhanced system prompt"
+        else:
+            assert system["content"].startswith("Enhanced system prompt\n\nReply in German (Germany),")
 
     def test_ask_mode_budgets_oversized_history_as_complete_turns(self):
         mock_injector = Mock(spec=RuleInjector)
