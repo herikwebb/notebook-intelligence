@@ -4073,6 +4073,11 @@ msgid_plural "Terminal drop upload failed for %2 (+%1 more)"
 msgstr[0] ""
 msgstr[1] ""
 
+#: src/i18n.ts
+msgctxt "text direction: translate as 'rtl' for a right-to-left language, otherwise 'ltr'"
+msgid "ltr"
+msgstr ""
+
 #: src/components/tool-call-card.tsx
 msgctxt "tool call status"
 msgid "cancelled"

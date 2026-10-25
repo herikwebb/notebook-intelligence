@@ -140,7 +140,7 @@ import { SettingsPanel } from './components/settings-panel';
 import { ITerminalConnection } from '@jupyterlab/services/lib/terminal/terminal';
 import { ITerminalTracker } from '@jupyterlab/terminal';
 import { ITranslator } from '@jupyterlab/translation';
-import { getTrans, initTranslations } from './i18n';
+import { getTrans, initTranslations, withTextDirection } from './i18n';
 import { Token } from '@lumino/coreutils';
 import { NotebookGenerationToolbarExtension } from './notebook-generation-toolbar';
 import {
@@ -1401,12 +1401,14 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
               resolve(formData);
             }
           });
-          dialog = new Dialog({
-            title: title,
-            hasClose: true,
-            body: dialogBody,
-            buttons: []
-          });
+          dialog = new Dialog(
+            withTextDirection({
+              title: title,
+              hasClose: true,
+              body: dialogBody,
+              buttons: []
+            })
+          );
 
           dialog
             .launch()
@@ -1534,15 +1536,17 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         const body = document.createElement('pre');
         body.className = 'nbi-chatbook-generated-code';
         body.textContent = code;
-        const dialog = new Dialog({
-          title: trans.__('Generated code'),
-          body: new (class extends Widget {
-            constructor() {
-              super({ node: body });
-            }
-          })(),
-          buttons: [Dialog.okButton({ label: trans.__('Close') })]
-        });
+        const dialog = new Dialog(
+          withTextDirection({
+            title: trans.__('Generated code'),
+            body: new (class extends Widget {
+              constructor() {
+                super({ node: body });
+              }
+            })(),
+            buttons: [Dialog.okButton({ label: trans.__('Close') })]
+          })
+        );
         await dialog.launch();
       }
     });
@@ -1822,15 +1826,17 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
         const picker = new PickerWidget();
         picker.addClass('nbi-claude-code-picker');
-        const dialog = new Dialog({
-          title: trans.__('Claude Code terminal session'),
-          body: picker,
-          buttons: [
-            Dialog.cancelButton(),
-            Dialog.okButton({ label: trans.__('＋ New Session') })
-          ],
-          hasClose: true
-        });
+        const dialog = new Dialog(
+          withTextDirection({
+            title: trans.__('Claude Code terminal session'),
+            body: picker,
+            buttons: [
+              Dialog.cancelButton(),
+              Dialog.okButton({ label: trans.__('＋ New Session') })
+            ],
+            hasClose: true
+          })
+        );
         const result = await dialog.launch();
         if (result.button.accept) {
           // New Session: let the user choose a start directory (defaulting
@@ -2330,12 +2336,14 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         const dialogBody = new GitHubCopilotLoginDialogBody({
           onLoggedIn: () => dialog?.dispose()
         });
-        dialog = new Dialog({
-          title: trans.__('GitHub Copilot Status'),
-          hasClose: true,
-          body: dialogBody,
-          buttons: []
-        });
+        dialog = new Dialog(
+          withTextDirection({
+            title: trans.__('GitHub Copilot Status'),
+            hasClose: true,
+            body: dialogBody,
+            buttons: []
+          })
+        );
 
         dialog.launch();
       }

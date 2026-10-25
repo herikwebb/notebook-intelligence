@@ -262,3 +262,77 @@ def test_a_bundle_reached_through_an_attribute_fails_extraction(tmp_path):
     with pytest.raises(SystemExit, match="local first"):
         script.extract_py_strings(tmp_path)
 
+
+
+def test_every_committed_catalog_builds(tmp_path, hatch_build):
+    """The shipped catalogs pass the build's checks (headers, plural forms,
+    placeholders), so a bad edit fails here rather than at release."""
+    import shutil
+
+    source = ROOT / "notebook_intelligence" / "locale"
+    catalogs = sorted(source.glob("*/LC_MESSAGES/notebook_intelligence.po"))
+    if not catalogs:
+        pytest.skip("no catalogs committed")
+    for po_path in catalogs:
+        target = tmp_path / po_path.relative_to(ROOT)
+        target.parent.mkdir(parents=True)
+        shutil.copy(po_path, target)
+    compiled = hatch_build.compile_catalogs(tmp_path, "0.0.0")
+    assert len(compiled) == len(catalogs)
+    for po_path in catalogs:
+        # Each folder's Language header names it, as JupyterLab's packs do.
+        language = polib.pofile(str(po_path)).metadata.get("Language")
+        assert language == po_path.parts[-3], po_path
+
+
+def test_a_plural_entry_needs_every_form(tmp_path, hatch_build):
+    """Russian has three plural forms; an entry with two would show form 0 in
+    the frontend and English on the server for the third."""
+    po = polib.POFile()
+    po.metadata = dict(
+        HEADERS,
+        Language="ru_RU",
+        **{
+            "Plural-Forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : "
+            "n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
+        },
+    )
+    po.append(
+        polib.POEntry(
+            msgid="%1 file",
+            msgid_plural="%1 files",
+            msgstr_plural={0: "%1 файл", 1: "%1 файла"},
+        )
+    )
+    path = tmp_path / "notebook_intelligence" / "locale" / "ru_RU" / "LC_MESSAGES"
+    path.mkdir(parents=True)
+    po.save(str(path / "notebook_intelligence.po"))
+    with pytest.raises(ValueError, match="needs 3 plural forms"):
+        hatch_build.compile_catalogs(tmp_path, "6.3.0")
+
+
+def test_a_partly_translated_plural_is_refused(tmp_path, hatch_build):
+    """Editors write every msgstr[n] slot; one left empty must fail the build
+    rather than drop the entry silently."""
+    po = polib.POFile()
+    po.metadata = dict(
+        HEADERS,
+        Language="ru_RU",
+        **{
+            "Plural-Forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : "
+            "n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
+        },
+    )
+    po.append(
+        polib.POEntry(
+            msgid="%1 file",
+            msgid_plural="%1 files",
+            msgstr_plural={0: "%1 файл", 1: "%1 файла", 2: ""},
+        )
+    )
+    path = tmp_path / "notebook_intelligence" / "locale" / "ru_RU" / "LC_MESSAGES"
+    path.mkdir(parents=True)
+    po.save(str(path / "notebook_intelligence.po"))
+    with pytest.raises(ValueError, match="needs 3 plural forms"):
+        hatch_build.compile_catalogs(tmp_path, "6.3.0")
+

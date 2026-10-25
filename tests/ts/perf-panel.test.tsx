@@ -488,8 +488,9 @@ describe('SettingsPanelComponentPerf', () => {
 
     // Without the depth, a wrapper span sits alongside the phases it
     // contains and its bar swamps them.
-    expect(screen.getByText('dispatch')).toHaveStyle({ paddingLeft: '0px' });
-    expect(screen.getByText('connect')).toHaveStyle({ paddingLeft: '12px' });
+    // Logical, so the indent follows the panel's direction.
+    expect(screen.getByText('dispatch').style.paddingInlineStart).toBe('0px');
+    expect(screen.getByText('connect').style.paddingInlineStart).toBe('12px');
   });
 
   it('labels the directory-level claude_home check without a dangling colon', async () => {

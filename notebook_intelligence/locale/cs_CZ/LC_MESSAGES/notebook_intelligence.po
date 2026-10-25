@@ -1,0 +1,4259 @@
+# Notebook Intelligence translation catalog.
+# AI-drafted (Claude) from the English source; not yet reviewed by a
+# native speaker. A reviewer: replace this note and Last-Translator.
+# See docs/translating.md.
+msgid ""
+msgstr ""
+"Project-Id-Version: notebook_intelligence\n"
+"Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
+"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"PO-Revision-Date: 2026-10-24 22:00-0400\n"
+"Last-Translator: AI draft, not yet reviewed\n"
+"Language-Team: cs_CZ\n"
+"Language: cs_CZ\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already exists in this bundle."
+msgstr "Soubor „%1“ v tomto balíčku již existuje."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already up to date at %2."
+msgstr "Dovednost „%1“ je již aktuální ve verzi %2."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be deleted."
+msgstr "Dovednost „%1“ bude smazána."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be permanently deleted."
+msgstr "Soubor „%1“ bude trvale smazán."
+
+#: src/components/plugins-panel.tsx
+msgid "\"%1\" will be removed from Claude's plugin marketplaces."
+msgstr "„%1“ bude odebrán ze seznamu marketplace pluginů Claude."
+
+#: src/components/settings-panel.tsx
+msgid "%1 (not installed)"
+msgstr "%1 (není nainstalováno)"
+
+#: src/components/setting-lock.ts
+msgid "%1 (optional)"
+msgstr "%1 (volitelné)"
+
+#: src/chat-sidebar.tsx
+msgid "%1 (required)"
+msgstr "%1 (povinné)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 (scan truncated)"
+msgstr "%1 (prohledávání zkráceno)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 MB peak since server start"
+msgstr "Špička %1 MB od spuštění serveru"
+
+#: src/components/perf-panel.tsx
+msgid "%1 active with no phase dominating."
+msgstr "%1 aktivně, žádná fáze nepřevládá."
+
+#: src/components/skills-panel.tsx
+msgid "%1 added"
+msgid_plural "%1 added"
+msgstr[0] "přidáno: %1"
+msgstr[1] "přidáno: %1"
+msgstr[2] "přidáno: %1"
+
+#: src/components/perf-panel.tsx
+msgid "%1 and %2 were dropped by the per-turn caps, so this timeline is incomplete."
+msgstr "%1 a %2 bylo vynecháno kvůli limitům na kolo, takže tato časová osa je neúplná."
+
+#: src/components/perf-panel.tsx
+msgid "%1 attribute"
+msgid_plural "%1 attributes"
+msgstr[0] "%1 atribut"
+msgstr[1] "%1 atributy"
+msgstr[2] "%1 atributů"
+
+#: src/open-file-refresh-watcher.ts
+msgid "%1 changed on disk and was reloaded"
+msgstr "Soubor %1 se na disku změnil a byl znovu načten"
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 character"
+msgid_plural "%1 characters"
+msgstr[0] "%1 znak"
+msgstr[1] "%1 znaky"
+msgstr[2] "%1 znaků"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at %2 ms, %3 ms total."
+msgid_plural "%1 chunks, first at %2 ms, %3 ms total."
+msgstr[0] "%1 blok, první po %2 ms, celkem %3 ms."
+msgstr[1] "%1 bloky, první po %2 ms, celkem %3 ms."
+msgstr[2] "%1 bloků, první po %2 ms, celkem %3 ms."
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at n/a ms, %2 ms total."
+msgid_plural "%1 chunks, first at n/a ms, %2 ms total."
+msgstr[0] "%1 blok, první po n/a ms, celkem %2 ms."
+msgstr[1] "%1 bloky, první po n/a ms, celkem %2 ms."
+msgstr[2] "%1 bloků, první po n/a ms, celkem %2 ms."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 decides which tools to ask about, so some actions may run without a prompt."
+msgstr "%1 rozhoduje, na které nástroje se ptát, takže některé akce mohou proběhnout bez dotazu."
+
+#: src/chat-sidebar.tsx
+msgid "%1 duplicate skipped."
+msgid_plural "%1 duplicates skipped."
+msgstr[0] "Přeskočen %1 duplikát."
+msgstr[1] "Přeskočeny %1 duplikáty."
+msgstr[2] "Přeskočeno %1 duplikátů."
+
+#: src/components/skills-panel.tsx
+msgid "%1 error"
+msgid_plural "%1 errors"
+msgstr[0] "%1 chyba"
+msgstr[1] "%1 chyby"
+msgstr[2] "%1 chyb"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 failed"
+msgid_plural "%1 failed"
+msgstr[0] "selhalo: %1"
+msgstr[1] "selhalo: %1"
+msgstr[2] "selhalo: %1"
+
+#: src/chat-sidebar.tsx
+msgid "%1 file skipped (limit of %2)."
+msgid_plural "%1 files skipped (limit of %2)."
+msgstr[0] "Přeskočen %1 soubor (limit: %2)."
+msgstr[1] "Přeskočeny %1 soubory (limit: %2)."
+msgstr[2] "Přeskočeno %1 souborů (limit: %2)."
+
+#: src/components/perf-panel.tsx
+msgid "%1 gap during streaming. Each stall event below is tagged with what preceded it."
+msgid_plural "%1 gaps during streaming. Each stall event below is tagged with what preceded it."
+msgstr[0] "%1 mezera během streamování. Každá událost zaseknutí níže je označena tím, co jí předcházelo."
+msgstr[1] "%1 mezery během streamování. Každá událost zaseknutí níže je označena tím, co jí předcházelo."
+msgstr[2] "%1 mezer během streamování. Každá událost zaseknutí níže je označena tím, co jí předcházelo."
+
+#: src/components/settings-panel.tsx
+msgid "%1 is required."
+msgstr "%1 je povinné."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 line"
+msgid_plural "%1 lines"
+msgstr[0] "%1 řádek"
+msgstr[1] "%1 řádky"
+msgstr[2] "%1 řádků"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 model available."
+msgid_plural "%1 models available."
+msgstr[0] "K dispozici je %1 model."
+msgstr[1] "K dispozici jsou %1 modely."
+msgstr[2] "K dispozici je %1 modelů."
+
+#: src/components/plugins-panel.tsx
+msgid "%1 plugin"
+msgid_plural "%1 plugins"
+msgstr[0] "%1 plugin"
+msgstr[1] "%1 pluginy"
+msgstr[2] "%1 pluginů"
+
+#: src/components/skills-panel.tsx
+msgid "%1 removed"
+msgid_plural "%1 removed"
+msgstr[0] "odebráno: %1"
+msgstr[1] "odebráno: %1"
+msgstr[2] "odebráno: %1"
+
+#: src/chat-sidebar.tsx
+msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
+msgstr "%1 vyžaduje předplatné a nabízí bezplatnou úroveň. Na GitHub Copilot se vztahují: %2."
+
+#: src/components/perf-panel.tsx
+msgid "%1 span"
+msgid_plural "%1 spans"
+msgstr[0] "%1 span"
+msgstr[1] "%1 spany"
+msgstr[2] "%1 spanů"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 tool call"
+msgid_plural "%1 tool calls"
+msgstr[0] "%1 volání nástroje"
+msgstr[1] "%1 volání nástrojů"
+msgstr[2] "%1 volání nástrojů"
+
+#: src/components/skills-panel.tsx
+msgid "%1 unchanged"
+msgid_plural "%1 unchanged"
+msgstr[0] "beze změny: %1"
+msgstr[1] "beze změny: %1"
+msgstr[2] "beze změny: %1"
+
+#: src/components/skills-panel.tsx
+msgid "%1 updated"
+msgid_plural "%1 updated"
+msgstr[0] "aktualizováno: %1"
+msgstr[1] "aktualizováno: %1"
+msgstr[2] "aktualizováno: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, launched as: %2"
+msgstr "%1, spuštěno jako: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, model '%2'"
+msgstr "%1, model '%2'"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, no model selected"
+msgstr "%1, není vybrán žádný model"
+
+#: src/components/perf-panel.tsx
+msgid "%1; TLS handshake failed (%2)"
+msgstr "%1; handshake TLS selhal (%2)"
+
+#: src/components/perf-panel.tsx
+msgid "%1; clock skew %2"
+msgstr "%1; odchylka hodin %2"
+
+#: src/components/perf-panel.tsx
+msgid "%1; issuer %2"
+msgstr "%1; vydavatel %2"
+
+#: src/components/perf-panel.tsx
+msgid "%2 %1 file, %3"
+msgid_plural "%2 %1 files, %3"
+msgstr[0] "%2: %1 soubor, %3"
+msgstr[1] "%2: %1 soubory, %3"
+msgstr[2] "%2: %1 souborů, %3"
+
+#: src/components/skills-panel.tsx
+msgid "%2 + %1 other"
+msgid_plural "%2 + %1 others"
+msgstr[0] "%2 + %1 další"
+msgstr[1] "%2 + %1 další"
+msgstr[2] "%2 + %1 dalších"
+
+#: src/components/plugins-panel.tsx
+msgid "%2, +%1 more"
+msgid_plural "%2, +%1 more"
+msgstr[0] "%2, +%1 další"
+msgstr[1] "%2, +%1 další"
+msgstr[2] "%2, +%1 dalších"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' and its declared interpreter are available."
+msgstr "'%1' a jeho deklarovaný interpret jsou k dispozici."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' has no content to attach."
+msgstr "'%1' nemá žádný obsah k připojení."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' is empty"
+msgstr "'%1' je prázdný"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' is not in the list this endpoint serves."
+msgstr "'%1' není v seznamu, který tento koncový bod poskytuje."
+
+#: src/components/plugins-panel.tsx
+msgid "(disabled)"
+msgstr "(zakázáno)"
+
+#: src/components/safe-anchor.tsx
+msgid "(link blocked)"
+msgstr "(odkaz zablokován)"
+
+#: src/components/safe-anchor.tsx
+msgid "(opens in new tab)"
+msgstr "(otevře se na nové kartě)"
+
+#: src/components/plugins-panel.tsx
+msgid "(unnamed)"
+msgstr "(bez názvu)"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 agent error:** %2"
+msgstr "**Chyba agenta %1:** %2"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: it is too large to show in full for approval.**"
+msgstr "**Volání nástroje %1 bylo odmítnuto: je příliš velké na to, aby se dalo celé zobrazit ke schválení.**"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: its command contains hidden Unicode bidirectional controls (%2).**"
+msgstr "**Volání nástroje %1 bylo odmítnuto: jeho příkaz obsahuje skryté obousměrné řídicí znaky Unicode (%2).**"
+
+#: notebook_intelligence/mcp_manager.py
+msgid "**%1** server tools:"
+msgstr "Nástroje serveru **%1**:"
+
+#: notebook_intelligence/claude.py
+msgid "**Bash command blocked: hidden Unicode bidirectional controls detected (%1).**"
+msgstr "**Příkaz Bash byl zablokován: byly zjištěny skryté obousměrné řídicí znaky Unicode (%1).**"
+
+#: notebook_intelligence/claude.py
+msgid "**Claude agent error:** %1"
+msgstr "**Chyba agenta Claude:** %1"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/claude.py
+msgid "**Error:** %1"
+msgstr "**Chyba:** %1"
+
+#: src/components/skills-panel.tsx
+msgid "+ New project skill"
+msgstr "+ Nová dovednost projektu"
+
+#: src/components/skills-panel.tsx
+msgid "+ New user skill"
+msgstr "+ Nová dovednost uživatele"
+
+#: src/components/perf-panel.tsx
+msgid "1m %1, 5m %2, 15m %3"
+msgstr "1 min %1, 5 min %2, 15 min %3"
+
+#: notebook_intelligence/extension.py
+msgid "A duplicate submission with this message ID was ignored; the original request is still running."
+msgstr "Duplicitní odeslání s tímto ID zprávy bylo ignorováno; původní požadavek stále probíhá."
+
+#: src/components/perf-panel.tsx
+msgid "A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost."
+msgstr "Velký strom ~/.claude znamená, že každé spuštění agenta musí nákladně projít jeho obsah. Na síťovém souborovém systému to často tvoří většinu nákladů na spuštění."
+
+#: notebook_intelligence/extension.py
+msgid "A live endpoint test is already running."
+msgstr "Živý test koncového bodu již probíhá."
+
+#: src/components/perf-panel.tsx
+msgid "A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local."
+msgstr "Síťový souborový systém. Každou hodnotu latence v této skupině posuzujte s ohledem na tuto skutečnost a nasměrujte NBI_PERF_LOG_DIR na místní umístění."
+
+#: src/components/perf-panel.tsx
+msgid "A one-line reading of where this turn's time went, derived from the columns to the left."
+msgstr "Jednořádkové shrnutí toho, kam šel čas tohoto kola, odvozené ze sloupců vlevo."
+
+#: src/components/skills-panel.tsx
+msgid "A project skill named \"%1\" already exists."
+msgstr "Dovednost projektu s názvem „%1“ již existuje."
+
+#: src/components/skills-panel.tsx
+msgid "A user skill named \"%1\" already exists."
+msgstr "Dovednost uživatele s názvem „%1“ již existuje."
+
+#: src/components/readiness-card.tsx
+msgid "ACP agent"
+msgstr "Agent ACP"
+
+#: src/chat-sidebar.tsx
+msgid "ACP mode"
+msgstr "Režim ACP"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode is not enabled"
+msgstr "Režim ACP není povolen"
+
+#: src/chat-sidebar.tsx
+msgid "AI Assistant"
+msgstr "Asistent AI"
+
+#: src/components/settings-panel.tsx
+msgid "API Key"
+msgstr "Klíč API"
+
+#: notebook_intelligence/readiness.py
+msgid "API key present from %1."
+msgstr "Klíč API je k dispozici z %1."
+
+#: src/chat-sidebar.tsx
+msgid "Accept"
+msgstr "Přijmout"
+
+#: src/components/skills-panel.tsx
+msgid "Actions for %1"
+msgstr "Akce pro %1"
+
+#: src/chat-sidebar.tsx
+msgid "Activating device..."
+msgstr "Aktivace zařízení..."
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Add"
+msgstr "Přidat"
+
+#: src/components/settings-panel.tsx
+msgid "Add / Edit"
+msgstr "Přidat / upravit"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add MCP server"
+msgstr "Přidat server MCP"
+
+#: src/components/plugins-panel.tsx
+msgid "Add a marketplace to discover plugins, then install one to extend Claude Code with new commands, agents, and tool integrations."
+msgstr "Přidejte marketplace, abyste mohli objevovat pluginy, a pak některý nainstalujte a rozšiřte tak Claude Code o nové příkazy, agenty a integrace nástrojů."
+
+#: src/markdown-renderer.tsx
+msgid "Add as new cell"
+msgstr "Přidat jako novou buňku"
+
+#: src/markdown-renderer.tsx
+msgid "Add code as new cell"
+msgstr "Přidat kód jako novou buňku"
+
+#: src/components/skills-panel.tsx
+msgid "Add file"
+msgstr "Přidat soubor"
+
+#: src/chat-sidebar.tsx
+msgid "Add files as context"
+msgstr "Přidat soubory jako kontext"
+
+#: src/components/plugins-panel.tsx
+msgid "Add marketplace"
+msgstr "Přidat marketplace"
+
+#: src/components/plugins-panel.tsx
+msgid "Add plugin marketplace"
+msgstr "Přidat marketplace pluginů"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add server"
+msgstr "Přidat server"
+
+#: src/chat-sidebar.tsx
+msgid "Add workspace file as context"
+msgstr "Přidat soubor z pracovního prostoru jako kontext"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Adding…"
+msgstr "Přidávání…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Additional permissions"
+msgstr "Další oprávnění"
+
+#: src/components/settings-panel.tsx
+msgid "Adds a small footer under each reply."
+msgstr "Přidá pod každou odpověď malé zápatí."
+
+#: src/components/perf-panel.tsx
+msgid "Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate."
+msgstr "Naváže spojení s nakonfigurovaným koncovým bodem, aby změřilo časy DNS, TCP a TLS a zachytilo předložený certifikát."
+
+#: src/components/settings-panel.tsx
+msgid "Agent account"
+msgstr "Účet agenta"
+
+#: src/components/settings-panel.tsx
+msgid "Agent default (e.g. '%1')"
+msgstr "Výchozí nastavení agenta (např. '%1')"
+
+#: notebook_intelligence/readiness.py
+msgid "Agent mode and every built-in tool need tool calling. The model may not support it, or a proxy in front of the endpoint may be stripping the tools field."
+msgstr "Režim agenta i všechny vestavěné nástroje vyžadují volání nástrojů. Model je nemusí podporovat, nebo proxy před koncovým bodem může odstraňovat pole tools."
+
+#: src/components/settings-panel.tsx
+msgid "Agent type"
+msgstr "Typ agenta"
+
+#: src/components/skills-panel.tsx
+msgid "Allowed tools"
+msgstr "Povolené nástroje"
+
+#: src/components/perf-panel.tsx
+msgid "Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines."
+msgstr "Navíc připisovat každé kolo ve formátu JSON Lines do adresáře protokolu výkonu, pro shromažďování napříč relacemi nebo počítači."
+
+#: src/components/settings-panel.tsx
+msgid "Also classify with the chat model"
+msgstr "Klasifikovat také pomocí modelu chatu"
+
+#: src/components/settings-panel.tsx
+msgid "Always confirm"
+msgstr "Vždy potvrzovat"
+
+#: notebook_intelligence/claude.py
+msgid "Approve Bash tool to execute the command above?"
+msgstr "Povolit nástroji Bash spustit výše uvedený příkaz?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve running this command?"
+msgstr "Povolit spuštění tohoto příkazu?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve this %1 tool call?"
+msgstr "Schválit toto volání nástroje %1?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approving grants a lasting permission, not only this request."
+msgstr "Schválením udělíte trvalé oprávnění, nejen pro tento požadavek."
+
+#: notebook_intelligence/claude.py
+msgid "Are you sure you want to call this tool?"
+msgstr "Opravdu chcete zavolat tento nástroj?"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Args (one per line)"
+msgstr "Argumenty (jeden na řádek)"
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence to generate Python code..."
+msgstr "Požádejte Notebook Intelligence o vygenerování kódu Python..."
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence..."
+msgstr "Zeptejte se Notebook Intelligence..."
+
+#: src/components/settings-panel.tsx
+msgid "Ask about cell outputs"
+msgstr "Ptát se na výstupy buněk"
+
+#: src/cell-output-toolbar.ts src/index.ts
+msgid "Ask about this output"
+msgstr "Zeptat se na tento výstup"
+
+#: src/components/settings-panel.tsx
+msgid "Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English."
+msgstr "Požádat AI, aby psala odpovědi v chatu a popisy buněk Chatbook v jazyce nastaveném v JupyterLab. Kód, identifikátory a obsah souborů zůstávají beze změny. Nemá žádný účinek, když je JupyterLab v angličtině."
+
+#: src/components/perf-panel.tsx
+msgid "Attribute detail"
+msgstr "Podrobnost atributů"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (milliseconds)"
+msgstr "Zpoždění debounceru automatického dokončování (milisekundy)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (ms)"
+msgstr "Zpoždění debounceru automatického dokončování (ms)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete model"
+msgstr "Model automatického dokončování"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run"
+msgstr "Automatické spuštění"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run when a static scan looks clean. Confirm when it flags a risk or cannot parse the cell. The scan is a speed bump, not a security boundary; false negatives are inevitable."
+msgstr "Spustit automaticky, když statická kontrola nic nenajde. Vyžádat potvrzení, když označí riziko nebo nedokáže buňku analyzovat. Kontrola je jen zpomalovací práh, ne bezpečnostní hranice; falešně negativní výsledky jsou nevyhnutelné."
+
+#: src/components/settings-panel.tsx
+msgid "Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
+msgstr "Automaticky znovu načítat karty sešitů a editoru souborů, když soubor upraví externí proces (příkaz terminálu, synchronizační klient nebo agent AI). Přeskočí se, pokud karta obsahuje neuložené místní úpravy."
+
+#: src/components/skills-panel.tsx
+msgid "Back"
+msgstr "Zpět"
+
+#: src/components/settings-panel.tsx
+msgid "Backend kernel"
+msgstr "Jádro backendu"
+
+#: src/chat-sidebar.tsx
+msgid "Bad response"
+msgstr "Špatná odpověď"
+
+#: src/components/settings-panel.tsx
+msgid "Base URL"
+msgstr "Základní URL"
+
+#: src/components/perf-panel.tsx
+msgid "Below what local storage delivers. Worth comparing against a known-good node."
+msgstr "Pod úrovní, kterou poskytuje místní úložiště. Vyplatí se porovnat s uzlem, o kterém víte, že funguje správně."
+
+#: src/chat-sidebar.tsx
+msgid "Binary files cannot be attached as chat context."
+msgstr "Binární soubory nelze připojit jako kontext chatu."
+
+#: src/components/skills-panel.tsx
+msgid "Breadcrumb"
+msgstr "Drobečková navigace"
+
+#: src/chat-sidebar.tsx
+msgid "Built-in"
+msgstr "Vestavěné"
+
+#: src/components/skills-panel.tsx
+msgid "Bundle contains %1 file; showing %2 only. Edit supporting files directly on disk."
+msgid_plural "Bundle contains %1 files; showing %2 only. Edit supporting files directly on disk."
+msgstr[0] "Balíček obsahuje %1 soubor; zobrazuje se pouze %2. Podpůrné soubory upravujte přímo na disku."
+msgstr[1] "Balíček obsahuje %1 soubory; zobrazuje se pouze %2. Podpůrné soubory upravujte přímo na disku."
+msgstr[2] "Balíček obsahuje %1 souborů; zobrazuje se pouze %2. Podpůrné soubory upravujte přímo na disku."
+
+#: src/components/settings-panel.tsx
+msgid "By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs."
+msgstr "Ve výchozím nastavení se agent ptá před čímkoli nad rámec důvěryhodných příkazů jen pro čtení. Úplný přístup mu umožňuje upravovat soubory pracovního prostoru a spouštět příkazy shellu bez dotazu, v sandboxu s přístupem k síti ve výchozím stavu vypnutým. Cokoli sandbox zablokuje, selže, místo aby se zobrazil dotaz. Obsah, který agent čte, může ovlivnit, co spustí."
+
+#: src/chat-sidebar.tsx
+msgid "By using Notebook Intelligence with GitHub Copilot subscription you agree to %1. Review the terms to understand about usage, limitations and ways to improve GitHub Copilot. Please review %2."
+msgstr "Používáním Notebook Intelligence s předplatným GitHub Copilot souhlasíte s dokumentem %1. Projděte si podmínky, abyste porozuměli využití, omezením a způsobům zlepšování GitHub Copilot. Projděte si také %2."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions is active: tool calls run without confirmation"
+msgstr "Režim „Obejít oprávnění“ je aktivní: volání nástrojů se spouštějí bez potvrzení"
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions runs every tool call without asking for confirmation, with your full user account access. Content the agent reads can steer what it runs. Stays on until you switch modes or start a new session."
+msgstr "Režim „Obejít oprávnění“ spouští každé volání nástroje bez žádosti o potvrzení, s plným přístupem vašeho uživatelského účtu. Obsah, který agent čte, může ovlivnit, co spustí. Zůstane zapnutý, dokud nepřepnete režim nebo nezahájíte novou relaci."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass permissions"
+msgstr "Obejít oprávnění"
+
+#: notebook_intelligence/claude.py
+msgid "Calling tool '%1'..."
+msgstr "Volání nástroje '%1'..."
+
+#: src/chatbook-toolbar.ts
+msgid "Can't convert this notebook yet"
+msgstr "Tento sešit zatím nelze převést"
+
+#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: src/chat-sidebar.tsx
+msgid "Cancel activation"
+msgstr "Zrušit aktivaci"
+
+#: src/chat-sidebar.tsx
+msgid "Canceled"
+msgstr "Zrušeno"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for %1"
+msgstr "Nespuštěné buňky Chatbook nelze exportovat: pro %1 neexistuje bezpečný řádkový komentář"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for the selected language"
+msgstr "Nespuštěné buňky Chatbook nelze exportovat: pro vybraný jazyk neexistuje bezpečný řádkový komentář"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1"
+msgstr "Buňka %1"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output"
+msgstr "Výstup buňky %1"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output (%2)"
+msgstr "Výstup buňky %1 (%2)"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output"
+msgstr "Výstup buňky"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output (%1)"
+msgstr "Výstup buňky (%1)"
+
+#: src/components/settings-panel.tsx
+msgid "Cell output features"
+msgstr "Funkce výstupů buněk"
+
+#: src/chat-sidebar.tsx
+msgid "Change provider"
+msgstr "Změnit poskytovatele"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Characters that would not display are shown as \\u{XXXX}."
+msgstr "Znaky, které by se nezobrazily, jsou zobrazeny jako \\u{XXXX}."
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent setting sources"
+msgstr "Zdroje nastavení agenta chatu"
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent tools"
+msgstr "Nástroje agenta chatu"
+
+#: src/chat-sidebar.tsx
+msgid "Chat is disabled as you don't have a model configured."
+msgstr "Chat je zakázán, protože nemáte nakonfigurovaný žádný model."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by ACP agent mode."
+msgstr "Chat obsluhuje režim agenta ACP."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by Claude mode."
+msgstr "Chat obsluhuje režim Claude."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by the configured chat model provider."
+msgstr "Chat obsluhuje nakonfigurovaný poskytovatel modelu chatu."
+
+#: src/chat-sidebar.tsx
+msgid "Chat mode"
+msgstr "Režim chatu"
+
+#: src/components/settings-panel.tsx
+msgid "Chat model"
+msgstr "Model chatu"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Chat model is not set!"
+msgstr "Model chatu není nastaven!"
+
+#: src/components/readiness-card.tsx
+msgid "Chat path"
+msgstr "Cesta chatu"
+
+#: src/chat-sidebar.tsx
+msgid "Chat response image"
+msgstr "Obrázek z odpovědi chatu"
+
+#: src/chat-sidebar.tsx
+msgid "Chat transcript"
+msgstr "Přepis konverzace"
+
+#: src/index.ts
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
+msgstr "Chatbook generuje kód v jazyce %1 a spouští ho v %2. Tento proces má stejná oprávnění jako jakékoli jádro Jupyter: soubory, síť, proměnné prostředí a instalace balíčků."
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook is disabled by your administrator"
+msgstr "Chatbook zakázal váš správce"
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm every natural-language run."
+msgstr "Chatbook je nastaven tak, aby potvrzoval každé spuštění v přirozeném jazyce."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm only when the scan flags a risk."
+msgstr "Chatbook je nastaven tak, aby potvrzoval pouze tehdy, když kontrola označí riziko."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to run generated code immediately."
+msgstr "Chatbook je nastaven tak, aby vygenerovaný kód spouštěl okamžitě."
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
+msgstr "Chatbook zůstává jádrem sešitu, ale vygenerovaný kód se spouští v tomto kernelspec Jupyter. Jazyk, zvýrazňování syntaxe a export se řídí tímto jádrem. Po změně restartujte otevřené sešity Chatbook."
+
+#: src/components/perf-panel.tsx
+msgid "Check status: %1"
+msgstr "Stav kontroly: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key and Base URL for this provider in NBI Settings, and that the endpoint is reachable from the Jupyter server process."
+msgstr "Zkontrolujte klíč API a základní URL tohoto poskytovatele v nastavení NBI a také to, zda je koncový bod dosažitelný z procesu serveru Jupyter."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key, the Base URL, and that the selected model id is one this endpoint serves. The server log carries the provider's own error text."
+msgstr "Zkontrolujte klíč API, základní URL a to, zda vybrané ID modelu tento koncový bod poskytuje. Protokol serveru obsahuje vlastní text chyby od poskytovatele."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the Jupyter server log for the underlying error."
+msgstr "Příčinu chyby najdete v protokolu serveru Jupyter."
+
+#: src/components/readiness-card.tsx
+msgid "Checking configuration…"
+msgstr "Kontrola konfigurace…"
+
+#: src/components/readiness-card.tsx
+msgid "Checking…"
+msgstr "Kontrola…"
+
+#: src/index.ts
+msgid "Choose start directory for %1"
+msgstr "Zvolte počáteční adresář pro %1"
+
+#: notebook_intelligence/extension.py
+msgid "Claude Code mode is not enabled"
+msgstr "Režim Claude Code není povolen"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Claude Code mode is still starting. Please try again in a moment."
+msgstr "Režim Claude Code se stále spouští. Zkuste to prosím za chvíli znovu."
+
+#: src/index.ts
+msgid "Claude Code terminal session"
+msgstr "Relace terminálu Claude Code"
+
+#: src/components/settings-panel.tsx
+msgid "Claude Code tools"
+msgstr "Nástroje Claude Code"
+
+#: notebook_intelligence/extension.py
+msgid "Claude MCP management is disabled by your administrator"
+msgstr "Správu MCP pro Claude zakázal váš správce"
+
+#: src/components/settings-panel.tsx
+msgid "Claude account"
+msgstr "Účet Claude"
+
+#: src/chat-sidebar.tsx src/components/readiness-card.tsx
+msgid "Claude mode"
+msgstr "Režim Claude"
+
+#: src/components/permission-mode-select.tsx
+msgid "Claude permission mode"
+msgstr "Režim oprávnění Claude"
+
+#: notebook_intelligence/claude.py
+msgid "Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan."
+msgstr "Claude chce přejít do režimu plánování, aby prozkoumal kód a navrhl postup implementace. V režimu plánování Claude důkladně prozkoumá kódovou základnu, identifikuje existující vzory, navrhne strategii implementace a předloží plán ke schválení. Dokud plán neschválíte, nebudou provedeny žádné změny kódu."
+
+#: src/components/settings-panel.tsx
+msgid "Click to learn more about security implications"
+msgstr "Klikněte pro další informace o dopadech na zabezpečení"
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Close"
+msgstr "Zavřít"
+
+#: src/chat-sidebar.tsx
+msgid "Close file picker"
+msgstr "Zavřít výběr souborů"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Close notebook generation popover"
+msgstr "Zavřít okno generování sešitu"
+
+#: src/chat-sidebar.tsx
+msgid "Close tools picker"
+msgstr "Zavřít výběr nástrojů"
+
+#: src/chatbook.ts
+msgid "Code cell (%1): switch to natural language"
+msgstr "Buňka s kódem (%1): přepnout na přirozený jazyk"
+
+#: src/chatbook.ts
+msgid "Code cell: switch to natural language"
+msgstr "Buňka s kódem: přepnout na přirozený jazyk"
+
+#: src/components/perf-panel.tsx
+msgid "Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn."
+msgstr "Studenému startu zde dominuje čtení instalačního stromu. Právě tato hodnota se v každém kole promítá do sloupce Spuštění."
+
+#: notebook_intelligence/acp_agent.py src/components/claude-mcp-panel.tsx
+msgid "Command"
+msgstr "Příkaz"
+
+#: src/components/perf-panel.tsx
+msgid "Compare %1 against %2: close together means the time is in the model or the gateway, far apart means it is local. Expand a row for that turn's phase breakdown."
+msgstr "Porovnejte %1 s %2: blízké hodnoty znamenají, že čas se tráví v modelu nebo bráně, velký rozdíl znamená, že se ztrácí lokálně. Rozbalením řádku zobrazíte rozpis fází daného kola."
+
+#: src/components/settings-panel.tsx
+msgid "Config file path"
+msgstr "Cesta ke konfiguračnímu souboru"
+
+#: src/chat-sidebar.tsx
+msgid "Configure models"
+msgstr "Konfigurovat modely"
+
+#: src/chat-sidebar.tsx
+msgid "Configure providers, API keys, MCP servers, and skills"
+msgstr "Konfigurovat poskytovatele, klíče API, servery MCP a dovednosti"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools"
+msgstr "Konfigurovat nástroje"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools (warning: irreversible tools selected)"
+msgstr "Konfigurovat nástroje (upozornění: jsou vybrány nevratné nástroje)"
+
+#: src/components/perf-panel.tsx
+msgid "Configured endpoint"
+msgstr "Nakonfigurovaný koncový bod"
+
+#: src/components/permission-mode-select.tsx
+msgid "Confirm Bypass Permissions"
+msgstr "Potvrdit režim „Obejít oprávnění“"
+
+#: src/components/perf-panel.tsx
+msgid "Confirm and run"
+msgstr "Potvrdit a spustit"
+
+#: src/components/settings-panel.tsx
+msgid "Confirm if risky"
+msgstr "Potvrdit při riziku"
+
+#: src/components/perf-panel.tsx
+msgid "Connect and spawn took %1. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up."
+msgstr "Připojení a spuštění trvalo %1. Jde o start podprocesu a CLI, obvykle node plus čtení balíčku, a právě zde se projeví pomalé úložiště."
+
+#: src/components/mcp-util.ts
+msgid "Connection failed. Reload MCP servers to retry."
+msgstr "Připojení selhalo. Opakujte pokus opětovným načtením serverů MCP."
+
+#: src/components/perf-panel.tsx
+msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
+msgstr "Samotné navázání spojení stojí tolik ještě před začátkem jakékoli práce modelu a platí to každé studené připojení k bráně."
+
+#: src/components/settings-panel.tsx
+msgid "Conversation History"
+msgstr "Historie konverzace"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert"
+msgstr "Převést"
+
+#: src/index.ts
+msgid "Convert notebook to Chatbook"
+msgstr "Převést sešit na Chatbook"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert to Chatbook"
+msgstr "Převést na Chatbook"
+
+#: src/components/perf-panel.tsx
+msgid "Copied"
+msgstr "Zkopírováno"
+
+#: src/markdown-renderer.tsx
+msgid "Copy"
+msgstr "Kopírovat"
+
+#: src/components/perf-panel.tsx
+msgid "Copy as JSON"
+msgstr "Kopírovat jako JSON"
+
+#: src/chat-sidebar.tsx
+msgid "Copy code %1 and enter at %2 to allow access to GitHub Copilot from this app. Activation could take up to a minute after you enter the code."
+msgstr "Zkopírujte kód %1 a zadejte ho na stránce %2, abyste této aplikaci povolili přístup ke GitHub Copilot. Aktivace může po zadání kódu trvat až minutu."
+
+#: src/markdown-renderer.tsx
+msgid "Copy code to clipboard"
+msgstr "Kopírovat kód do schránky"
+
+#: src/components/claude-session-picker.tsx
+msgid "Copy resume command"
+msgstr "Kopírovat příkaz pro pokračování"
+
+#: src/chat-sidebar.tsx
+msgid "Could not attach: %1"
+msgstr "Nelze připojit: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Could not convert to Chatbook: %1"
+msgstr "Nelze převést na Chatbook: %1"
+
+#: src/chatbook.ts
+msgid "Could not generate a description: %1"
+msgstr "Nelze vygenerovat popis: %1"
+
+#: notebook_intelligence/extension.py
+msgid "Could not list workspace mentions"
+msgstr "Nelze načíst seznam zmínek z pracovního prostoru"
+
+#: src/index.ts
+msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
+msgstr "Vytvořit kopii tohoto sešitu jako Chatbook a ponechat originál beze změny"
+
+#: src/chatbook-toolbar.ts
+msgid "Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments."
+msgstr "Vytvořit z tohoto sešitu Chatbook nový sešit %1. Původní Chatbook zůstane beze změny. Buňky, které nebyly spuštěny, se stanou komentáři."
+
+#: src/index.ts
+msgid "Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged"
+msgstr "Vytvořit z tohoto sešitu Chatbook nový sešit pomocí nakonfigurovaného jádra backendu a ponechat originál beze změny"
+
+#: src/index.ts
+msgid "Create a notebook whose cells are natural-language prompts"
+msgstr "Vytvořit sešit, jehož buňky jsou prompty v přirozeném jazyce"
+
+#: src/markdown-renderer.tsx
+msgid "Create new file from code"
+msgstr "Vytvořit nový soubor z kódu"
+
+#: src/markdown-renderer.tsx
+msgid "Create new notebook from code"
+msgstr "Vytvořit nový sešit z kódu"
+
+#: src/chatbook-toolbar.ts
+msgid "Created Chatbook copy: %1"
+msgstr "Vytvořena kopie Chatbook: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Vytvoří vedle tohoto sešitu jeho kopii jako Chatbook a otevře ji, včetně všech neuložených změn. Buňky s kódem se stanou buňkami s kódem Chatbook a spouštějí se přesně tak, jak jsou napsané; výstupy a markdown zůstanou zachovány. Originál se nemění. Jeho kód se bude spouštět v %1, prováděcím jádře Chatbook, místo v %2. Nyní se modelu nic neodesílá. Při prvním úspěšném spuštění každé buňky s kódem se její kód odešle modelu kvůli jednořádkovému popisu."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Vytvoří vedle tohoto sešitu jeho kopii jako Chatbook a otevře ji, včetně všech neuložených změn. Buňky s kódem se stanou buňkami s kódem Chatbook a spouštějí se přesně tak, jak jsou napsané; výstupy a markdown zůstanou zachovány. Originál se nemění. Jeho kód se bude spouštět v %1, prováděcím jádře Chatbook. Nyní se modelu nic neodesílá. Při prvním úspěšném spuštění každé buňky s kódem se její kód odešle modelu kvůli jednořádkovému popisu."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Vytvoří vedle tohoto sešitu jeho kopii jako Chatbook a otevře ji, včetně všech neuložených změn. Buňky s kódem se stanou buňkami s kódem Chatbook a spouštějí se přesně tak, jak jsou napsané; výstupy a markdown zůstanou zachovány. Originál se nemění. Nyní se modelu nic neodesílá. Při prvním úspěšném spuštění každé buňky s kódem se její kód odešle modelu kvůli jednořádkovému popisu."
+
+#: notebook_intelligence/readiness.py
+msgid "Credential present from %1."
+msgstr "Přihlašovací údaje jsou k dispozici z %1."
+
+#: src/components/settings-panel.tsx
+msgid "Default (recommended)"
+msgstr "Výchozí (doporučeno)"
+
+#: src/components/settings-panel.tsx
+msgid "Default chat mode"
+msgstr "Výchozí režim chatu"
+
+#: src/components/skills-panel.tsx
+msgid "Delete"
+msgstr "Smazat"
+
+#: src/components/skills-panel.tsx
+msgid "Delete file?"
+msgstr "Smazat soubor?"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill"
+msgstr "Smazat dovednost"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill?"
+msgstr "Smazat dovednost?"
+
+#: src/components/skills-panel.tsx
+msgid "Deleted \"%1\""
+msgstr "Smazáno „%1“"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Denial recorded"
+msgstr "Odmítnutí zaznamenáno"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Describe how to update the active notebook..."
+msgstr "Popište, jak aktualizovat aktivní sešit..."
+
+#: src/components/skills-panel.tsx
+msgid "Description"
+msgstr "Popis"
+
+#: src/components/skills-panel.tsx
+msgid "Description is required."
+msgstr "Popis je povinný."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Details from %1"
+msgstr "Podrobnosti od %1"
+
+#: src/components/perf-panel.tsx
+msgid "Diagnostics"
+msgstr "Diagnostika"
+
+#: src/chat-sidebar.tsx
+msgid "Directories cannot be attached as chat context."
+msgstr "Adresáře nelze připojit jako kontext chatu."
+
+#: src/components/plugins-panel.tsx
+msgid "Disable"
+msgstr "Zakázat"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disable for workspace"
+msgstr "Zakázat pro pracovní prostor"
+
+#: src/components/perf-panel.tsx
+msgid "Disabled by your administrator (%1)"
+msgstr "Zakázáno správcem (%1)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabled for workspace"
+msgstr "Zakázáno pro pracovní prostor"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabling…"
+msgstr "Zakazování…"
+
+#: src/components/skills-panel.tsx
+msgid "Discard"
+msgstr "Zahodit"
+
+#: src/components/skills-panel.tsx
+msgid "Discard unsaved changes?"
+msgstr "Zahodit neuložené změny?"
+
+#: src/components/skills-panel.tsx
+msgid "Dismiss"
+msgstr "Zavřít"
+
+#: notebook_intelligence/claude.py
+msgid "Do you want to confirm the plan above?"
+msgstr "Chcete potvrdit výše uvedený plán?"
+
+#: src/chat-sidebar.tsx
+msgid "Don't use as context"
+msgstr "Nepoužívat jako kontext"
+
+#: src/chat-sidebar.tsx
+msgid "Done"
+msgstr "Hotovo"
+
+#: src/chat-sidebar.tsx
+msgid "Drop files to attach as context"
+msgstr "Přetažením souborů je připojíte jako kontext"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: @-mention"
+msgstr "Režim přetažení: @-zmínka"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: raw path"
+msgstr "Režim přetažení: nezpracovaná cesta"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate"
+msgstr "Duplikovat"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate skill"
+msgstr "Duplikovat dovednost"
+
+#: src/components/perf-panel.tsx
+msgid "Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local."
+msgstr "Doba, kterou SDK přisuzuje API modelu. Porovnejte se sloupcem Aktivní: blízké hodnoty znamenají, že čas se tráví v bráně nebo modelu, velký rozdíl znamená, že se ztrácí lokálně."
+
+#: src/components/skills-panel.tsx
+msgid "Edit"
+msgstr "Upravit"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit Python files using the JupyterLab file editor"
+msgstr "Upravovat soubory Python pomocí editoru souborů JupyterLab"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit notebook using the JupyterLab notebook editor"
+msgstr "Upravovat sešit pomocí editoru sešitů JupyterLab"
+
+#: src/components/skills-panel.tsx
+msgid "Edit skill"
+msgstr "Upravit dovednost"
+
+#: src/chat-sidebar.tsx
+msgid "Empty files do not provide useful context."
+msgstr "Prázdné soubory neposkytují užitečný kontext."
+
+#: src/components/plugins-panel.tsx
+msgid "Enable"
+msgstr "Povolit"
+
+#: src/components/settings-panel.tsx
+msgid "Enable ACP mode"
+msgstr "Povolit režim ACP"
+
+#: src/components/settings-panel.tsx
+msgid "Enable Claude mode"
+msgstr "Povolit režim Claude"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enable for workspace"
+msgstr "Povolit pro pracovní prostor"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enabling…"
+msgstr "Povolování…"
+
+#: notebook_intelligence/claude.py
+msgid "Enter Plan Mode"
+msgstr "Přejít do režimu plánování"
+
+#: src/components/plugins-panel.tsx
+msgid "Enter a plugin name or the plugin@marketplace shorthand."
+msgstr "Zadejte název pluginu nebo zkratku plugin@marketplace."
+
+#: notebook_intelligence/claude.py
+msgid "Entered plan mode"
+msgstr "Přepnuto do režimu plánování"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Environment (KEY=value, one per line)"
+msgstr "Prostředí (KLÍČ=hodnota, jedna na řádek)"
+
+#: notebook_intelligence/claude.py
+msgid "Error communicating with Claude agent: %1"
+msgstr "Chyba komunikace s agentem Claude: %1"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Execute shell commands using embedded terminal in Agent UI or JupyterLab terminal"
+msgstr "Spouštět příkazy shellu pomocí vestavěného terminálu v rozhraní agenta nebo terminálu JupyterLab"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgid "Execution kernel"
+msgstr "Prováděcí jádro"
+
+#: src/components/settings-panel.tsx
+msgid "Execution mode"
+msgstr "Režim provádění"
+
+#: notebook_intelligence/claude.py
+msgid "Exit plan mode"
+msgstr "Ukončit režim plánování"
+
+#: src/components/perf-panel.tsx
+msgid "Expand"
+msgstr "Rozbalit"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Expected at least one server entry."
+msgstr "Byl očekáván alespoň jeden záznam serveru."
+
+#: src/components/settings-panel.tsx
+msgid "Experimental. Routes chat through an external coding agent over the %1. Requires a preinstalled %2 adapter (%3). See the %4. ACP mode and Claude mode are mutually exclusive: enabling one turns the other off."
+msgstr "Experimentální. Směruje chat přes externího agenta pro kódování pomocí protokolu %1. Vyžaduje předem nainstalovaný adaptér %2 (%3). Viz %4. Režim ACP a režim Claude se vzájemně vylučují: zapnutím jednoho se druhý vypne."
+
+#: src/components/settings-panel.tsx
+msgid "Explain cell errors"
+msgstr "Vysvětlovat chyby buněk"
+
+#: src/index.ts
+msgid "Explain code"
+msgstr "Vysvětlit kód"
+
+#: src/index.ts
+msgid "Explain output"
+msgstr "Vysvětlit výstup"
+
+#: src/cell-output-toolbar.ts
+msgid "Explain this cell's output"
+msgstr "Vysvětlit výstup této buňky"
+
+#: src/chatbook-toolbar.ts
+msgid "Export"
+msgstr "Exportovat"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as %1 notebook"
+msgstr "Exportovat jako sešit %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as a notebook for the Chatbook backend kernel"
+msgstr "Exportovat jako sešit pro jádro backendu Chatbook"
+
+#: src/index.ts
+msgid "Export as code notebook"
+msgstr "Exportovat jako sešit s kódem"
+
+#: src/chatbook-toolbar.ts
+msgid "Export failed: %1"
+msgstr "Export selhal: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Exported %1"
+msgstr "Exportováno: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Extension tools"
+msgstr "Nástroje rozšíření"
+
+#: src/components/settings-panel.tsx
+msgid "External changes"
+msgstr "Externí změny"
+
+#: src/index.ts
+msgid "Failed to access the notebook: %1"
+msgstr "Nelze získat přístup k sešitu: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach '%1'."
+msgstr "Nelze připojit '%1'."
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach workspace file '%1'."
+msgstr "Nelze připojit soubor pracovního prostoru '%1'."
+
+#: src/components/claude-session-picker.tsx
+msgid "Failed to copy resume command"
+msgstr "Nelze zkopírovat příkaz pro pokračování"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to delete skill: %1"
+msgstr "Nelze smazat dovednost: %1"
+
+#: src/index.ts
+msgid "Failed to find active file"
+msgstr "Aktivní soubor nebyl nalezen"
+
+#: src/index.ts
+msgid "Failed to find active notebook"
+msgstr "Aktivní sešit nebyl nalezen"
+
+#: src/index.ts
+msgid "Failed to find notebook: %1"
+msgstr "Sešit nebyl nalezen: %1"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get completions from GitHub Copilot: [%1]: %2"
+msgstr "Nelze získat dokončení z GitHub Copilot: [%1]: %2"
+
+#: notebook_intelligence/extension.py
+msgid "Failed to get device verification info from GitHub Copilot"
+msgstr "Nelze získat ověřovací údaje zařízení z GitHub Copilot"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get responses from GitHub Copilot: [%1]: %2"
+msgstr "Nelze získat odpovědi z GitHub Copilot: [%1]: %2"
+
+#: src/index.ts
+msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
+msgstr "Vložení na pozici kurzoru selhalo. Pro vložení kódu otevřete sešit nebo soubor."
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to load plugins: %1"
+msgstr "Nelze načíst pluginy: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Failed to load report: %1"
+msgstr "Nelze načíst sestavu: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to load workspace files."
+msgstr "Nelze načíst soubory pracovního prostoru."
+
+#: src/components/skills-panel.tsx
+msgid "Failed to read skill: %1"
+msgstr "Nelze přečíst dovednost: %1"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Failed to remove: %1"
+msgstr "Nelze odebrat: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to restore skill: %1"
+msgstr "Nelze obnovit dovednost: %1"
+
+#: src/index.ts
+msgid "Failed to save MCP config: %1"
+msgstr "Nelze uložit konfiguraci MCP: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to uninstall: %1"
+msgstr "Nelze odinstalovat: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update marketplace: %1"
+msgstr "Nelze aktualizovat marketplace: %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Failed to update workspace state: %1"
+msgstr "Nelze aktualizovat stav pracovního prostoru: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update: %1"
+msgstr "Nelze aktualizovat: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Fetching…"
+msgstr "Načítání…"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "File '%1' created successfully"
+msgstr "Soubor '%1' byl úspěšně vytvořen"
+
+#: notebook_intelligence/extension.py
+msgid "File exceeds %1 MB upload limit"
+msgstr "Soubor překračuje limit pro nahrávání %1 MB"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system read operations within Jupyter root directory"
+msgstr "Operace čtení souborového systému v kořenovém adresáři Jupyter"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system write operations within Jupyter root directory"
+msgstr "Operace zápisu souborového systému v kořenovém adresáři Jupyter"
+
+#: notebook_intelligence/acp_agent.py src/components/skills-panel.tsx
+msgid "Files"
+msgstr "Soubory"
+
+#: src/components/launcher-picker.tsx
+msgid "Filter sessions..."
+msgstr "Filtrovat relace..."
+
+#: src/components/perf-panel.tsx
+msgid "First content chunk to last. Excludes connect."
+msgstr "Od prvního do posledního bloku obsahu. Bez navazování spojení."
+
+#: src/index.ts
+msgid "Fix code"
+msgstr "Opravit kód"
+
+#: src/index.ts
+msgid "Focus Notebook Intelligence chat input"
+msgstr "Přejít na vstup chatu Notebook Intelligence"
+
+#: src/components/settings-panel.tsx
+msgid "Full access (run without asking)"
+msgstr "Úplný přístup (spouštět bez dotazu)"
+
+#: src/components/perf-panel.tsx
+msgid "Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket."
+msgstr "Úplné: názvy souborů a názvy modelů, nástrojů a serverů se zaznamenávají tak, jak jsou. Snáze se čtou lokálně; před vložením do tiketu je zkontrolujte."
+
+#: src/components/perf-panel.tsx
+msgid "Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text."
+msgstr "Mezery mezi bloky streamu delší než práh zaseknutí. Každá je označena podle toho, zda následovala po použití nástroje, nebo po textu."
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate"
+msgstr "Generovat"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate (Enter)"
+msgstr "Generovat (Enter)"
+
+#: src/components/settings-panel.tsx
+msgid "Generate and execute immediately, same as a normal notebook cell. Inspect generated code afterward if you need to."
+msgstr "Vygenerovat a okamžitě spustit, stejně jako běžnou buňku sešitu. Vygenerovaný kód můžete v případě potřeby zkontrolovat později."
+
+#: src/index.ts
+msgid "Generate code"
+msgstr "Generovat kód"
+
+#: src/index.ts
+msgid "Generated code"
+msgstr "Vygenerovaný kód"
+
+#: src/chat-sidebar.tsx
+msgid "Generating"
+msgstr "Generování"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generating notebook…"
+msgstr "Generování sešitu…"
+
+#: src/chat-sidebar.tsx
+msgid "Generating response."
+msgstr "Generování odpovědi."
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generation failed: %1"
+msgstr "Generování selhalo: %1"
+
+#: src/index.ts
+msgid "GitHub Copilot Status"
+msgstr "Stav GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot chat terms"
+msgstr "Podmínky chatu GitHub Copilot"
+
+#: src/components/settings-panel.tsx
+msgid "GitHub Copilot login"
+msgstr "Přihlášení ke GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Logged in"
+msgstr "GitHub Copilot: přihlášeno"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Not logged in"
+msgstr "GitHub Copilot: nepřihlášeno"
+
+#: notebook_intelligence/extension.py
+msgid "GitHub Skill import is disabled by configuration"
+msgstr "Import dovedností z GitHubu je zakázán konfigurací"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Terms for Additional Products and Features"
+msgstr "Podmínky GitHubu pro další produkty a funkce"
+
+#: src/components/skills-panel.tsx
+msgid "GitHub repo URL"
+msgstr "URL repozitáře GitHub"
+
+#: src/components/plugins-panel.tsx
+msgid "GitHub-sourced marketplaces are disabled by your administrator. Use a non-GitHub URL or a local filesystem path."
+msgstr "Marketplace ze zdrojů na GitHubu zakázal váš správce. Použijte URL mimo GitHub nebo cestu v místním souborovém systému."
+
+#: src/chat-sidebar.tsx
+msgid "Good response"
+msgstr "Dobrá odpověď"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Headers (Name: value, one per line)"
+msgstr "Hlavičky (Název: hodnota, jedna na řádek)"
+
+#: src/components/tool-call-card.tsx
+msgid "Hide diff"
+msgstr "Skrýt rozdíly"
+
+#: src/components/perf-panel.tsx
+msgid "Hide raw output"
+msgstr "Skrýt nezpracovaný výstup"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)"
+msgstr "Skrýt tento server před Claude v aktuálním pracovním prostoru Jupyter (ostatní pracovní prostory nejsou ovlivněny)"
+
+#: src/components/perf-panel.tsx
+msgid "Hide timeline for the turn at %1"
+msgstr "Skrýt časovou osu kola zahájeného v %1"
+
+#: src/components/perf-panel.tsx
+msgid "Host load average"
+msgstr "Průměrné zatížení hostitele"
+
+#: notebook_intelligence/readiness.py
+msgid "If turns fail with a 401, sign in again from NBI Settings under GitHub Copilot."
+msgstr "Pokud kola selhávají s chybou 401, přihlaste se znovu v nastavení NBI v části GitHub Copilot."
+
+#: src/components/skills-panel.tsx
+msgid "Import"
+msgstr "Importovat"
+
+#: src/components/skills-panel.tsx
+msgid "Import from GitHub"
+msgstr "Importovat z GitHubu"
+
+#: src/components/skills-panel.tsx
+msgid "Import skill from GitHub"
+msgstr "Importovat dovednost z GitHubu"
+
+#: src/components/perf-panel.tsx
+msgid "Include network check"
+msgstr "Zahrnout test sítě"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from chat model"
+msgstr "Převzít z modelu chatu"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from general settings"
+msgstr "Převzít z obecného nastavení"
+
+#: src/index.ts
+msgid "Inline chat failed: %1"
+msgstr "Vložený chat selhal: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Inline chat model"
+msgstr "Model vloženého chatu"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Input"
+msgstr "Vstup"
+
+#: src/chat-sidebar.tsx
+msgid "Input Parameters"
+msgstr "Vstupní parametry"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Input mode"
+msgstr "Režim zadávání"
+
+#: src/components/perf-panel.tsx
+msgid "Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them."
+msgstr "Vstupní tokeny včetně čtení a zápisů do mezipaměti, sečtené stejně jako v zápatí s využitím chatu."
+
+#: src/markdown-renderer.tsx
+msgid "Insert at cursor"
+msgstr "Vložit na pozici kurzoru"
+
+#: src/markdown-renderer.tsx
+msgid "Insert code at cursor"
+msgstr "Vložit kód na pozici kurzoru"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Install"
+msgstr "Nainstalovat"
+
+#: src/components/plugins-panel.tsx
+msgid "Install from"
+msgstr "Nainstalovat z"
+
+#: src/components/skills-panel.tsx
+msgid "Install into"
+msgstr "Nainstalovat do"
+
+#: src/components/plugins-panel.tsx
+msgid "Install plugin"
+msgstr "Nainstalovat plugin"
+
+#: notebook_intelligence/readiness.py
+msgid "Install the Claude Code CLI and make sure it is on the PATH of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH to its absolute path and restart."
+msgstr "Nainstalujte Claude Code CLI a ujistěte se, že je v PATH procesu, ve kterém běží JupyterLab, nebo nastavte NBI_CLAUDE_CLI_PATH na jeho absolutní cestu a restartujte."
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Installing…"
+msgstr "Instalace…"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Invalid JSON: %1"
+msgstr "Neplatný JSON: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Invalid name. %1"
+msgstr "Neplatný název. %1"
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON is empty."
+msgstr "JSON je prázdný."
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON must describe a server entry."
+msgstr "JSON musí popisovat záznam serveru."
+
+#: src/components/settings-panel.tsx
+msgid "Jupyter UI tools"
+msgstr "Nástroje rozhraní Jupyter"
+
+#: src/components/perf-panel.tsx
+msgid "Jupyter root directory"
+msgstr "Kořenový adresář Jupyter"
+
+#: src/components/skills-panel.tsx
+msgid "Keep editing"
+msgstr "Pokračovat v úpravách"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Lasting rule"
+msgstr "Trvalé pravidlo"
+
+#: src/components/skills-panel.tsx
+msgid "Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server."
+msgstr "Odkaz na kořen repozitáře, větev nebo podadresář obsahující %1. Soukromé repozitáře fungují, pokud je nastaveno %2 nebo je na serveru Jupyter nakonfigurováno %3."
+
+#: notebook_intelligence/readiness.py
+msgid "Listing models failed (%1)."
+msgstr "Načtení seznamu modelů selhalo (%1)."
+
+#: src/components/readiness-card.tsx
+msgid "Live endpoint check"
+msgstr "Živý test koncového bodu"
+
+#: src/components/plugins-panel.tsx
+msgid "Loading marketplace plugins..."
+msgstr "Načítání pluginů z marketplace..."
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Loading sessions…"
+msgstr "Načítání relací…"
+
+#: src/components/skills-panel.tsx
+msgid "Loading skill…"
+msgstr "Načítání dovednosti…"
+
+#: src/chat-sidebar.tsx
+msgid "Loading workspace files..."
+msgstr "Načítání souborů pracovního prostoru..."
+
+#: src/components/settings-panel.tsx
+msgid "Loading..."
+msgstr "Načítání..."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Loading…"
+msgstr "Načítání…"
+
+#: src/components/setting-lock.ts
+msgid "Locked by your administrator"
+msgstr "Uzamčeno správcem"
+
+#: src/components/perf-panel.tsx
+msgid "Log to file"
+msgstr "Zapisovat do souboru"
+
+#: src/chat-sidebar.tsx
+msgid "Logged in"
+msgstr "Přihlášeno"
+
+#: src/chat-sidebar.tsx
+msgid "Logging in..."
+msgstr "Přihlašování..."
+
+#: src/chat-sidebar.tsx
+msgid "Login status: %1"
+msgstr "Stav přihlášení: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Login to GitHub Copilot"
+msgstr "Přihlásit se ke GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "Login using your GitHub account"
+msgstr "Přihlásit se pomocí účtu GitHub"
+
+#: src/chat-sidebar.tsx
+msgid "Logout"
+msgstr "Odhlásit se"
+
+#: src/chat-sidebar.tsx
+msgid "MCP Server Tools"
+msgstr "Nástroje serverů MCP"
+
+#: src/components/settings-panel.tsx
+msgid "MCP Servers"
+msgstr "Servery MCP"
+
+#: notebook_intelligence/extension.py
+msgid "MCP server '%1' not found in %2 scope"
+msgstr "Server MCP '%1' nebyl v rozsahu %2 nalezen"
+
+#: src/components/skills-panel.tsx
+msgid "Managed by org manifest (%1)"
+msgstr "Spravováno manifestem organizace (%1)"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace"
+msgstr "Marketplace"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace picker"
+msgstr "Výběr marketplace"
+
+#: src/components/perf-panel.tsx
+msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
+msgstr "Měří tento počítač, nikoli kolo: latenci a propustnost souborového systému pro konfigurační adresář a adresář %1, náklady na studený start interpretu a CLI a soupeření o prostředky hostitele. V měřených adresářích zapisuje a maže malé dočasné soubory."
+
+#: src/components/settings-panel.tsx
+msgid "Model"
+msgstr "Model"
+
+#: src/components/perf-panel.tsx
+msgid "Model name, hashed when attribute detail is set to redacted."
+msgstr "Název modelu, hashovaný, když je podrobnost atributů nastavena na redigované."
+
+#: src/components/readiness-card.tsx
+msgid "Model provider"
+msgstr "Poskytovatel modelu"
+
+#: src/components/settings-panel.tsx
+msgid "Models"
+msgstr "Modely"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Multiple servers found; paste one entry at a time."
+msgstr "Bylo nalezeno více serverů; vkládejte vždy jen jeden záznam."
+
+#: src/components/skills-panel.tsx
+msgid "Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars."
+msgstr "Povolena jsou malá písmena, číslice nebo spojovníky (na začátku písmeno nebo číslice), max. 64 znaků."
+
+#: src/chatbook-toolbar.ts src/chatbook.ts src/index.ts
+msgid "NBI Settings"
+msgstr "Nastavení NBI"
+
+#: src/components/perf-panel.tsx
+msgid "NBI config directory"
+msgstr "Konfigurační adresář NBI"
+
+#: src/components/claude-mcp-panel.tsx src/components/skills-panel.tsx
+msgid "Name"
+msgstr "Název"
+
+#: src/components/skills-panel.tsx
+msgid "Name (optional override)"
+msgstr "Název (volitelné přepsání)"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to %1 code"
+msgstr "Buňka v přirozeném jazyce: přepnout na kód %1"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to code"
+msgstr "Buňka v přirozeném jazyce: přepnout na kód"
+
+#: src/components/settings-panel.tsx
+msgid "Natural-language execution"
+msgstr "Spouštění v přirozeném jazyce"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Network access"
+msgstr "Přístup k síti"
+
+#: src/components/skills-panel.tsx
+msgid "New Skill"
+msgstr "Nová dovednost"
+
+#: src/chat-sidebar.tsx
+msgid "New chat session started."
+msgstr "Byla zahájena nová relace chatu."
+
+#: src/markdown-renderer.tsx
+msgid "New file"
+msgstr "Nový soubor"
+
+#: src/components/skills-panel.tsx
+msgid "New name"
+msgstr "Nový název"
+
+#: src/markdown-renderer.tsx
+msgid "New notebook"
+msgstr "Nový sešit"
+
+#: src/components/skills-panel.tsx
+msgid "New skill"
+msgstr "Nová dovednost"
+
+#: src/components/skills-panel.tsx
+msgid "Next"
+msgstr "Další"
+
+#: notebook_intelligence/readiness.py
+msgid "No API key is configured (%1 is unset)."
+msgstr "Není nakonfigurován žádný klíč API (%1 není nastaveno)."
+
+#: notebook_intelligence/readiness.py
+msgid "No Anthropic API key or auth token is visible to NBI."
+msgstr "NBI nevidí žádný klíč API ani ověřovací token Anthropic."
+
+#: src/components/settings-panel.tsx
+msgid "No MCP servers found. Add MCP servers in the configuration file."
+msgstr "Nebyly nalezeny žádné servery MCP. Přidejte servery MCP v konfiguračním souboru."
+
+#: src/components/settings-panel.tsx
+msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
+msgstr "Nebyly nalezeny žádné modely Ollama! Ujistěte se, že %1 běží a modely jsou stažené do vašeho počítače. %2, až bude vše připraveno."
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model is resolved, so there is nothing to call."
+msgstr "Není určen žádný model chatu, takže není co volat."
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model provider is selected."
+msgstr "Není vybrán žádný poskytovatel modelu chatu."
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "No chat participant is available."
+msgstr "Není k dispozici žádný účastník chatu."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached."
+msgid_plural "No files added: %1 files are already attached."
+msgstr[0] "Nebyly přidány žádné soubory: %1 soubor je již připojen."
+msgstr[1] "Nebyly přidány žádné soubory: %1 soubory jsou již připojeny."
+msgstr[2] "Nebyly přidány žádné soubory: %1 souborů je již připojeno."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: the limit of %1 file is reached."
+msgid_plural "No files added: the limit of %1 files is reached."
+msgstr[0] "Nebyly přidány žádné soubory: byl dosažen limit %1 souboru."
+msgstr[1] "Nebyly přidány žádné soubory: byl dosažen limit %1 souborů."
+msgstr[2] "Nebyly přidány žádné soubory: byl dosažen limit %1 souborů."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches kernel \"%1\"."
+msgstr "Jádru „%1“ neodpovídá žádné nainstalované jádro Jupyter."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches language \"%1\"."
+msgstr "Jazyku „%1“ neodpovídá žádné nainstalované jádro Jupyter."
+
+#: notebook_intelligence/extension.py
+msgid "No managed-skills manifest configured (set %1, comma-separated for multiple manifests)."
+msgstr "Není nakonfigurován žádný manifest spravovaných dovedností (nastavte %1; více manifestů oddělte čárkami)."
+
+#: src/components/plugins-panel.tsx
+msgid "No marketplaces configured. Add one to discover plugins."
+msgstr "Není nakonfigurován žádný marketplace. Přidejte některý, abyste mohli objevovat pluginy."
+
+#: src/chat-sidebar.tsx
+msgid "No matching files found."
+msgstr "Nebyly nalezeny žádné odpovídající soubory."
+
+#: notebook_intelligence/readiness.py
+msgid "No model name is set for this provider, so requests carry none."
+msgstr "Pro tohoto poskytovatele není nastaven název modelu, takže ho požadavky neobsahují."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins in this scope."
+msgstr "V tomto rozsahu nejsou žádné pluginy."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins were found in this marketplace."
+msgstr "V tomto marketplace nebyly nalezeny žádné pluginy."
+
+#: src/components/claude-session-picker.tsx
+msgid "No previous Claude sessions found for this working directory."
+msgstr "Pro tento pracovní adresář nebyly nalezeny žádné předchozí relace Claude."
+
+#: src/chat-sidebar.tsx
+msgid "No previous sessions found for this working directory."
+msgstr "Pro tento pracovní adresář nebyly nalezeny žádné předchozí relace."
+
+#: src/components/launcher-picker.tsx
+msgid "No previous sessions found."
+msgstr "Nebyly nalezeny žádné předchozí relace."
+
+#: src/components/skills-panel.tsx
+msgid "No project skills. They live in %1."
+msgstr "Žádné dovednosti projektu. Nacházejí se v %1."
+
+#: notebook_intelligence/readiness.py
+msgid "No response within %1s."
+msgstr "Žádná odpověď do %1 s."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "No servers in this scope."
+msgstr "V tomto rozsahu nejsou žádné servery."
+
+#: src/components/launcher-picker.tsx
+msgid "No sessions match your filter."
+msgstr "Filtru neodpovídají žádné relace."
+
+#: src/components/perf-panel.tsx
+msgid "No spans recorded for this turn."
+msgstr "Pro toto kolo nebyly zaznamenány žádné spany."
+
+#: src/components/skills-panel.tsx
+msgid "No user skills. They live in %1."
+msgstr "Žádné dovednosti uživatele. Nacházejí se v %1."
+
+#: src/chat-sidebar.tsx
+msgid "No workspace files available."
+msgstr "Nejsou k dispozici žádné soubory pracovního prostoru."
+
+#: notebook_intelligence/readiness.py
+msgid "Not applicable: the agent owns the model call in %1 mode."
+msgstr "Nepoužije se: v režimu %1 volání modelu řídí agent."
+
+#: notebook_intelligence/readiness.py
+msgid "Not determined: the request failed (%1) for a reason unrelated to tools."
+msgstr "Neurčeno: požadavek selhal (%1) z důvodu nesouvisejícího s nástroji."
+
+#: src/chat-sidebar.tsx
+msgid "Not logged in"
+msgstr "Nepřihlášeno"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %1: %2"
+msgstr "Nepřipraveno. %1: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %2: %3 (%1 more issue.)"
+msgid_plural "Not ready. %2: %3 (%1 more issues.)"
+msgstr[0] "Nepřipraveno. %2: %3 (a ještě %1 problém)."
+msgstr[1] "Nepřipraveno. %2: %3 (a ještě %1 problémy)."
+msgstr[2] "Nepřipraveno. %2: %3 (a ještě %1 problémů)."
+
+#: notebook_intelligence/readiness.py
+msgid "Not signed in. The model list shown in Settings is a built-in fallback, not the models this account can use."
+msgstr "Nepřihlášeno. Seznam modelů zobrazený v nastavení je vestavěná záloha, nikoli modely, které může tento účet používat."
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Notebook '%1' created and opened successfully"
+msgstr "Sešit '%1' byl úspěšně vytvořen a otevřen"
+
+#: src/index.ts
+msgid "Notebook Intelligence Settings"
+msgstr "Nastavení Notebook Intelligence"
+
+#: src/cell-output-toolbar.ts
+msgid "Notebook Intelligence cell actions"
+msgstr "Akce buňky Notebook Intelligence"
+
+#: src/chat-sidebar.tsx
+msgid "Notebook file"
+msgstr "Soubor sešitu"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Notebook generation complete"
+msgstr "Generování sešitu dokončeno"
+
+#: src/chat-sidebar.tsx
+msgid "Notice"
+msgstr "Upozornění"
+
+#: src/components/perf-panel.tsx
+msgid "Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it."
+msgstr "Posun od začátku kola k prvnímu bloku s obsahem. Zaznamenává se jako událost, takže místní indikátory průběhu se do něj nezapočítávají."
+
+#: notebook_intelligence/api.py
+msgid "Oops! Failed to find requested tool. Please try again with a different prompt."
+msgstr "Jejda! Požadovaný nástroj nebyl nalezen. Zkuste to prosím znovu s jiným promptem."
+
+#: notebook_intelligence/api.py
+msgid "Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."
+msgstr "Jejda! Omlouvám se, při generování odpovědi s nástroji došlo k problému. Zkuste to prosím znovu. Další podrobnosti najdete v protokolech serveru."
+
+#: notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py
+msgid "Oops! There was a problem handling chat request. Please try again with a different prompt."
+msgstr "Jejda! Při zpracování požadavku chatu došlo k problému. Zkuste to prosím znovu s jiným promptem."
+
+#: notebook_intelligence/extension.py
+msgid "Oops! There was a problem handling this request. Please try again. Check the server logs for details."
+msgstr "Jejda! Při zpracování tohoto požadavku došlo k problému. Zkuste to prosím znovu. Podrobnosti najdete v protokolech serveru."
+
+#: src/chatbook-toolbar.ts
+msgid "Open Chatbook settings"
+msgstr "Otevřít nastavení Chatbook"
+
+#: src/index.ts
+msgid "Open MCP Config Editor"
+msgstr "Otevřít editor konfigurace MCP"
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and pick a provider and model under General, or enable Claude mode."
+msgstr "Otevřete nastavení NBI a vyberte poskytovatele a model v části Obecné, nebo povolte režim Claude."
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and set a model for this provider under General. The endpoint rejects a request with no model, so every turn fails until it is set."
+msgstr "Otevřete nastavení NBI a v části Obecné nastavte model pro tohoto poskytovatele. Koncový bod odmítá požadavky bez modelu, takže dokud ho nenastavíte, každé kolo selže."
+
+#: src/chat-sidebar.tsx
+msgid "Open Notebook Intelligence settings"
+msgstr "Otevřít nastavení Notebook Intelligence"
+
+#: src/index.ts
+msgid "Open a notebook to insert the code as new cell"
+msgstr "Otevřete sešit, abyste mohli vložit kód jako novou buňku"
+
+#: src/chat-sidebar.tsx
+msgid "Open notebook %1"
+msgstr "Otevřít sešit %1"
+
+#: src/chat-sidebar.tsx
+msgid "Open slash commands"
+msgstr "Otevřít příkazy s lomítkem"
+
+#: src/chatbook.ts
+msgid "Open the Chatbook tab of Notebook Intelligence Settings"
+msgstr "Otevřít kartu Chatbook v nastavení Notebook Intelligence"
+
+#: src/index.ts
+msgid "Open the NBI sidebar and move focus to the prompt textarea"
+msgstr "Otevřít postranní panel NBI a přesunout fokus do textového pole promptu"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Opened the settings dialog"
+msgstr "Bylo otevřeno dialogové okno nastavení"
+
+#: src/components/settings-panel.tsx
+msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
+msgstr "Volitelná dodatečná kontrola. Nález statické kontroly má vždy přednost; model může riziko pouze zvýšit. Při selhání klasifikátoru se vyžaduje potvrzení místo automatického spuštění."
+
+#: src/components/perf-panel.tsx
+msgid "Output tokens."
+msgstr "Výstupní tokeny."
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing project skill \"%1\""
+msgstr "Přepsat existující dovednost projektu „%1“"
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing user skill \"%1\""
+msgstr "Přepsat existující dovednost uživatele „%1“"
+
+#: notebook_intelligence/claude.py
+msgid "Parameters"
+msgstr "Parametry"
+
+#: src/components/skills-panel.tsx
+msgid "Path: %1"
+msgstr "Cesta: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Performance diagnostics are disabled. Enable them above to start collecting turn data."
+msgstr "Diagnostika výkonu je vypnutá. Povolte ji výše, aby se začala shromažďovat data o kolech."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Permission granted"
+msgstr "Oprávnění uděleno"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: %1"
+msgstr "Režim oprávnění: %1"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: Bypass Permissions is active"
+msgstr "Režim oprávnění: aktivní režim „Obejít oprávnění“"
+
+#: notebook_intelligence/readiness.py
+msgid "Pick a model from the dropdown in NBI Settings. A pinned NBI_CHAT_MODEL_ID that the endpoint no longer serves will fail on every turn."
+msgstr "Vyberte model z rozevíracího seznamu v nastavení NBI. Připnuté NBI_CHAT_MODEL_ID, které koncový bod již neposkytuje, způsobí selhání každého kola."
+
+#: src/components/plugins-panel.tsx
+msgid "Plugin"
+msgstr "Plugin"
+
+#: src/components/plugins-panel.tsx
+msgid "Plugins"
+msgstr "Pluginy"
+
+#: notebook_intelligence/extension.py
+msgid "Plugins management is disabled by your administrator"
+msgstr "Správu pluginů zakázal váš správce"
+
+#: notebook_intelligence/readiness.py
+msgid "Preinstall the pinned adapter package %1 in a trusted location outside the workspace and put its absolute executable directory on PATH, or set NBI_ACP_AGENT_COMMAND to the absolute path of an installed adapter executable. Install its required interpreter on the adapter PATH; default discovery excludes workspace directories. Do not use a package runner such as npx. Relative commands are not supported."
+msgstr "Předem nainstalujte připnutý balíček adaptéru %1 do důvěryhodného umístění mimo pracovní prostor a přidejte absolutní cestu k jeho adresáři se spustitelnými soubory do PATH, nebo nastavte NBI_ACP_AGENT_COMMAND na absolutní cestu k nainstalovanému spustitelnému souboru adaptéru. Požadovaný interpret nainstalujte do PATH adaptéru; výchozí vyhledávání vynechává adresáře pracovního prostoru. Nepoužívejte spouštěče balíčků, jako je npx. Relativní příkazy nejsou podporovány."
+
+#: notebook_intelligence/readiness.py
+msgid "Present."
+msgstr "K dispozici."
+
+#: src/chat-sidebar.tsx
+msgid "Privacy Statement"
+msgstr "Prohlášení o ochraně osobních údajů"
+
+#: src/chat-sidebar.tsx
+msgid "Privacy and terms"
+msgstr "Ochrana osobních údajů a podmínky"
+
+#: src/components/plugins-panel.tsx
+msgid "Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server."
+msgstr "Soukromé zdroje na GitHubu fungují, pokud je nastaveno %1 nebo je na serveru Jupyter nakonfigurováno %2."
+
+#: src/components/perf-panel.tsx
+msgid "Probe failed: %1"
+msgstr "Sonda selhala: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Project (Jupyter root directory)"
+msgstr "Projekt (kořenový adresář Jupyter)"
+
+#: src/components/skills-panel.tsx
+msgid "Project (this project only)"
+msgstr "Projekt (pouze tento projekt)"
+
+#: src/components/mcp-util.ts
+msgid "Prompt refresh failed. Reload MCP servers to retry."
+msgstr "Obnovení promptů selhalo. Opakujte pokus opětovným načtením serverů MCP."
+
+#: src/components/settings-panel.tsx
+msgid "Prompts"
+msgstr "Prompty"
+
+#: src/components/settings-panel.tsx
+msgid "Provider"
+msgstr "Poskytovatel"
+
+#: notebook_intelligence/readiness.py
+msgid "Provider '%1' is selected but not registered."
+msgstr "Je vybrán poskytovatel '%1', ale není zaregistrován."
+
+#: src/components/perf-panel.tsx
+msgid "Python interpreter"
+msgstr "Interpret Pythonu"
+
+#: src/components/skills-panel.tsx
+msgid "Quick-add pills cover common tools. Type patterns like %1 or %2 for finer-grained permissions."
+msgstr "Tlačítka pro rychlé přidání pokrývají běžné nástroje. Pro jemnější oprávnění zadejte vzory jako %1 nebo %2."
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as bad"
+msgstr "Ohodnotit odpověď jako špatnou"
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as good"
+msgstr "Ohodnotit odpověď jako dobrou"
+
+#: src/components/readiness-card.tsx
+msgid "Re-check"
+msgstr "Zkontrolovat znovu"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-enable this server for the current Jupyter workspace"
+msgstr "Znovu povolit tento server pro aktuální pracovní prostor Jupyter"
+
+#: src/components/skills-panel.tsx
+msgid "Re-fetch every skill set to track upstream from GitHub"
+msgstr "Znovu stáhnout z GitHubu všechny dovednosti nastavené na sledování zdroje"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-read Claude's MCP config from disk"
+msgstr "Znovu načíst konfiguraci MCP Claude z disku"
+
+#: notebook_intelligence/readiness.py
+msgid "Re-run the endpoint test once the endpoint is answering again. A transient failure cannot tell us whether tool calling works."
+msgstr "Spusťte test koncového bodu znovu, až bude koncový bod opět odpovídat. Z přechodného selhání nelze zjistit, zda volání nástrojů funguje."
+
+#: src/components/readiness-card.tsx
+msgid "Readiness check failed: %1"
+msgstr "Kontrola připravenosti selhala: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Reading the configuration failed (%1)."
+msgstr "Čtení konfigurace selhalo (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "Ready, with %1 warning. %2: %3"
+msgid_plural "Ready, with %1 warnings. %2: %3"
+msgstr[0] "Připraveno, s %1 upozorněním. %2: %3"
+msgstr[1] "Připraveno, s %1 upozorněními. %2: %3"
+msgstr[2] "Připraveno, s %1 upozorněními. %2: %3"
+
+#: notebook_intelligence/readiness.py
+msgid "Ready. Nothing needs configuring."
+msgstr "Připraveno. Nic není třeba konfigurovat."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Reason"
+msgstr "Důvod"
+
+#: src/components/perf-panel.tsx
+msgid "Recent turns"
+msgstr "Nedávná kola"
+
+#: src/components/skills-panel.tsx
+msgid "Reconcile managed skills against the org manifest"
+msgstr "Sladit spravované dovednosti s manifestem organizace"
+
+#: src/components/perf-panel.tsx
+msgid "Recording is on, but no turns have been captured yet. Run a chat turn, then press Refresh."
+msgstr "Záznam je zapnutý, ale zatím nebyla zachycena žádná kola. Proveďte kolo chatu a potom stiskněte Obnovit."
+
+#: src/components/perf-panel.tsx
+msgid "Records where each chat turn spends its time, so a slow deployment can be told apart from a slow model. Off by default, and when off it costs one boolean check per instrumentation site. Prompts, responses, file contents, and hostnames are never recorded."
+msgstr "Zaznamenává, kde každé kolo chatu tráví čas, aby bylo možné rozlišit pomalé nasazení od pomalého modelu. Ve výchozím stavu vypnuto; ve vypnutém stavu stojí jednu kontrolu logické hodnoty v každém měřicím bodě. Prompty, odpovědi, obsah souborů a názvy hostitelů se nikdy nezaznamenávají."
+
+#: src/components/perf-panel.tsx
+msgid "Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine."
+msgstr "Redigované: názvy souborů a názvy modelů, nástrojů a serverů jsou hashovány. Časy a počty nejsou ovlivněny. Ponechte tuto volbu, pokud sestava opustí váš počítač."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
+msgid "Refresh"
+msgstr "Obnovit"
+
+#: src/index.ts
+msgid "Refresh description"
+msgstr "Obnovit popis"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh file list"
+msgstr "Obnovit seznam souborů"
+
+#: src/components/settings-panel.tsx
+msgid "Refresh open files when changed on disk"
+msgstr "Obnovovat otevřené soubory při změně na disku"
+
+#: src/components/plugins-panel.tsx
+msgid "Refresh this marketplace from its source"
+msgstr "Obnovit tento marketplace z jeho zdroje"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh workspace file list"
+msgstr "Obnovit seznam souborů pracovního prostoru"
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx
+msgid "Refreshing…"
+msgstr "Obnovování…"
+
+#: src/index.ts
+msgid "Regenerate the description of this code cell"
+msgstr "Znovu vygenerovat popis této buňky s kódem"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Rejecting records a lasting denial, not only for this request."
+msgstr "Odmítnutím zaznamenáte trvalé zamítnutí, nejen pro tento požadavek."
+
+#: src/components/settings-panel.tsx
+msgid "Reload"
+msgstr "Znovu načíst"
+
+#: src/components/settings-panel.tsx
+msgid "Remember conversation history"
+msgstr "Pamatovat si historii konverzace"
+
+#: src/components/settings-panel.tsx
+msgid "Remember my GitHub Copilot access token"
+msgstr "Zapamatovat si můj přístupový token GitHub Copilot"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Remove"
+msgstr "Odebrat"
+
+#: src/components/skills-panel.tsx
+msgid "Remove %1"
+msgstr "Odebrat %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Remove MCP server?"
+msgstr "Odebrat server MCP?"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file"
+msgstr "Odebrat připojený soubor"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file %1"
+msgstr "Odebrat připojený soubor %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Remove marketplace?"
+msgstr "Odebrat marketplace?"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Removing…"
+msgstr "Odebírání…"
+
+#: src/components/skills-panel.tsx
+msgid "Rename"
+msgstr "Přejmenovat"
+
+#: src/components/skills-panel.tsx
+msgid "Rename skill"
+msgstr "Přejmenovat dovednost"
+
+#: src/index.ts
+msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr "Znovu přehrát úvodní prohlídku zvýrazňující prvky postranního panelu chatu"
+
+#: src/components/settings-panel.tsx
+msgid "Reply in my JupyterLab language"
+msgstr "Odpovídat v jazyce mého JupyterLab"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Request"
+msgstr "Požadavek"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Requested permissions"
+msgstr "Požadovaná oprávnění"
+
+#: src/components/skills-panel.tsx
+msgid "Required. Claude uses this to decide when to apply the skill."
+msgstr "Povinné. Claude podle toho rozhoduje, kdy dovednost použít."
+
+#: src/chat-sidebar.tsx
+msgid "Response complete."
+msgstr "Odpověď dokončena."
+
+#: src/components/settings-panel.tsx
+msgid "Restart the Chatbook kernel in open notebooks so they pick up %1."
+msgstr "Restartujte jádro Chatbook v otevřených sešitech, aby převzaly %1."
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume Claude session"
+msgstr "Pokračovat v relaci Claude"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a previous session"
+msgstr "Pokračovat v předchozí relaci"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a session you started earlier in this workspace"
+msgstr "Pokračovat v relaci, kterou jste dříve zahájili v tomto pracovním prostoru"
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume command copied"
+msgstr "Příkaz pro pokračování zkopírován"
+
+#: src/index.ts
+msgid "Resume or start a Claude Code session"
+msgstr "Pokračovat v relaci Claude Code nebo zahájit novou"
+
+#: src/chat-sidebar.tsx
+msgid "Resume session"
+msgstr "Pokračovat v relaci"
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1."
+msgstr "Navázáno na relaci Claude %1."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1: %2."
+msgstr "Navázáno na relaci Claude %1: %2."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1."
+msgstr "Navázáno na relaci %1."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1: %2."
+msgstr "Navázáno na relaci %1: %2."
+
+#: src/components/perf-panel.tsx
+msgid "Retry"
+msgstr "Opakovat"
+
+#: src/chatbook.ts
+msgid "Review generated code before running it in this kernel."
+msgstr "Před spuštěním v tomto jádře zkontrolujte vygenerovaný kód."
+
+#: src/components/settings-panel.tsx
+msgid "Right-click a cell output to attach it to the chat"
+msgstr "Kliknutím pravým tlačítkem na výstup buňky ho připojíte k chatu"
+
+#: src/components/perf-panel.tsx
+msgid "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory."
+msgstr "Zjišťování pravidel a dovedností trvalo %1. Tato práce je omezena rychlostí souborového systému v domovském adresáři serveru."
+
+#: notebook_intelligence/extension.py
+msgid "Rule not found"
+msgstr "Pravidlo nebylo nalezeno"
+
+#: notebook_intelligence/extension.py
+msgid "Rule system not enabled"
+msgstr "Systém pravidel není povolen"
+
+#: notebook_intelligence/readiness.py
+msgid "Run 'claude --version' in a terminal as the Jupyter user to see the underlying error."
+msgstr "Spusťte 'claude --version' v terminálu jako uživatel Jupyter, abyste viděli původní chybu."
+
+#: src/components/readiness-card.tsx
+msgid "Run it"
+msgstr "Spustit"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Run notebooks in JupyterLab UI"
+msgstr "Spouštět sešity v rozhraní JupyterLab"
+
+#: src/components/perf-panel.tsx
+msgid "Run probe"
+msgstr "Spustit sondu"
+
+#: src/chat-sidebar.tsx
+msgid "Running (%1 s)"
+msgstr "Probíhá (%1 s)"
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other, plus the network check. This takes a few seconds, longer on a slow filesystem."
+msgstr "Spouštění testů souborového systému, podprocesů a soupeření o prostředky jeden po druhém, aby se navzájem neovlivňovaly, a navíc testu sítě. Trvá to několik sekund, na pomalém souborovém systému déle."
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other. This takes a few seconds, longer on a slow filesystem."
+msgstr "Spouštění testů souborového systému, podprocesů a soupeření o prostředky jeden po druhém, aby se navzájem neovlivňovaly. Trvá to několik sekund, na pomalém souborovém systému déle."
+
+#: src/components/perf-panel.tsx src/components/readiness-card.tsx
+msgid "Running…"
+msgstr "Probíhá…"
+
+#: src/components/skills-panel.tsx
+msgid "Save"
+msgstr "Uložit"
+
+#: src/components/skills-panel.tsx
+msgid "Saving…"
+msgstr "Ukládání…"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Scope"
+msgstr "Rozsah"
+
+#: src/components/skills-panel.tsx
+msgid "Scope and name are set at creation and can't be changed. Delete and recreate to change them."
+msgstr "Rozsah a název se nastavují při vytvoření a nelze je změnit. Chcete-li je změnit, dovednost smažte a vytvořte znovu."
+
+#: src/components/confirmation-details.tsx
+msgid "Scroll to see all of this value."
+msgstr "Posuňte se, abyste viděli celou hodnotu."
+
+#: src/chat-sidebar.tsx
+msgid "Search files by path"
+msgstr "Hledat soubory podle cesty"
+
+#: src/chat-sidebar.tsx
+msgid "Send message"
+msgstr "Odeslat zprávu"
+
+#: src/components/readiness-card.tsx
+msgid "Sends one short request to your configured model to verify streaming and tool support."
+msgstr "Odešle jeden krátký požadavek nakonfigurovanému modelu, aby ověřil podporu streamování a nástrojů."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server \"%1\" config must be an object."
+msgstr "Konfigurace serveru „%1“ musí být objekt."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server config must include \"command\" or \"url\"."
+msgstr "Konfigurace serveru musí obsahovat „command“ nebo „url“."
+
+#: src/components/perf-panel.tsx
+msgid "Server process peak memory"
+msgstr "Špičková paměť procesu serveru"
+
+#: src/components/settings-panel.tsx
+msgid "Settings sections"
+msgstr "Oddíly nastavení"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Shell"
+msgstr "Shell"
+
+#: src/components/settings-panel.tsx
+msgid "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+msgstr "Zobrazovat u neúspěšných buněk položku místní nabídky 'Řešit chyby ve výstupu'"
+
+#: src/components/settings-panel.tsx
+msgid "Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons"
+msgstr "Zobrazovat nad výstupy buněk plovoucí panel nástrojů s tlačítky Vysvětlit / Zeptat se / Řešit problém"
+
+#: src/components/tool-call-card.tsx
+msgid "Show diff"
+msgstr "Zobrazit rozdíly"
+
+#: src/index.ts
+msgid "Show generated code"
+msgstr "Zobrazit vygenerovaný kód"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Show in chat"
+msgstr "Zobrazit v chatu"
+
+#: src/components/settings-panel.tsx
+msgid "Show output toolbar"
+msgstr "Zobrazovat panel nástrojů výstupu"
+
+#: src/components/perf-panel.tsx
+msgid "Show raw output"
+msgstr "Zobrazit nezpracovaný výstup"
+
+#: src/index.ts
+msgid "Show the hidden code generated for this Chatbook cell"
+msgstr "Zobrazit skrytý kód vygenerovaný pro tuto buňku Chatbook"
+
+#: src/components/perf-panel.tsx
+msgid "Show timeline for the turn at %1"
+msgstr "Zobrazit časovou osu kola zahájeného v %1"
+
+#: src/components/settings-panel.tsx
+msgid "Show usage after each turn (time / tokens / cost)"
+msgstr "Zobrazovat využití po každém kole (čas / tokeny / náklady)"
+
+#: src/chat-sidebar.tsx
+msgid "Showing the first %1 file found in the workspace."
+msgid_plural "Showing the first %1 files found in the workspace."
+msgstr[0] "Zobrazuje se první %1 soubor nalezený v pracovním prostoru."
+msgstr[1] "Zobrazují se první %1 soubory nalezené v pracovním prostoru."
+msgstr[2] "Zobrazuje se prvních %1 souborů nalezených v pracovním prostoru."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign in from NBI Settings under GitHub Copilot. Until then every chat turn will fail with a 401."
+msgstr "Přihlaste se v nastavení NBI v části GitHub Copilot. Do té doby každé kolo chatu selže s chybou 401."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign-in state could not be determined."
+msgstr "Stav přihlášení nelze určit."
+
+#: src/components/perf-panel.tsx
+msgid "Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod."
+msgstr "Jednotky MB/s spolu s vysokou latencí fsync jsou typickým příznakem vyčerpání burst kreditů EFS. Ověřte to v metrice CloudWatch BurstCreditBalance, nikoli zevnitř podu."
+
+#: notebook_intelligence/extension.py
+msgid "Skill '%1' not found in %2 scope"
+msgstr "Dovednost '%1' nebyla v rozsahu %2 nalezena"
+
+#: src/components/skills-panel.tsx
+msgid "Skills"
+msgstr "Dovednosti"
+
+#: src/components/skills-panel.tsx
+msgid "Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here."
+msgstr "Dovednosti využívá Claude Code. Chcete-li používat dovednosti, které zde vytvoříte, povolte režim Claude na kartě nastavení Claude."
+
+#: notebook_intelligence/extension.py
+msgid "Skills management is disabled by your administrator"
+msgstr "Správu dovedností zakázal váš správce"
+
+#: src/chat-sidebar.tsx
+msgid "Skills reloaded and applied to the current session."
+msgstr "Dovednosti byly znovu načteny a použity v aktuální relaci."
+
+#: src/chat-sidebar.tsx
+msgid "Skip to message input"
+msgstr "Přeskočit na vstup zprávy"
+
+#: src/chat-sidebar.tsx
+msgid "Slash commands"
+msgstr "Příkazy s lomítkem"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Source"
+msgstr "Zdroj"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1"
+msgstr "Zdroj: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1 · last sync: %2"
+msgstr "Zdroj: %1 · poslední synchronizace: %2"
+
+#: src/components/plugins-panel.tsx
+msgid "Specify manually"
+msgstr "Zadat ručně"
+
+#: src/index.ts
+msgid "Start a GitHub Copilot CLI session in a Jupyter terminal"
+msgstr "Zahájit relaci GitHub Copilot CLI v terminálu Jupyter"
+
+#: src/index.ts
+msgid "Start a Pi session in a Jupyter terminal"
+msgstr "Zahájit relaci Pi v terminálu Jupyter"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session"
+msgstr "Zahájit novou relaci chatu"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (restarts the Claude client)"
+msgstr "Zahájit novou relaci chatu (restartuje klienta Claude)"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (starts a fresh agent session)"
+msgstr "Zahájit novou relaci chatu (zahájí novou relaci agenta)"
+
+#: src/index.ts
+msgid "Start an OpenAI Codex CLI session in a Jupyter terminal"
+msgstr "Zahájit relaci OpenAI Codex CLI v terminálu Jupyter"
+
+#: src/index.ts
+msgid "Start an opencode session in a Jupyter terminal"
+msgstr "Zahájit relaci opencode v terminálu Jupyter"
+
+#: src/components/settings-panel.tsx
+msgid "Status"
+msgstr "Stav"
+
+#: src/chat-sidebar.tsx
+msgid "Still working, server may be slow"
+msgstr "Stále se pracuje, server může být pomalý"
+
+#: src/chat-sidebar.tsx
+msgid "Stop generating"
+msgstr "Zastavit generování"
+
+#: src/chat-sidebar.tsx
+msgid "Stop using current file as context"
+msgstr "Přestat používat aktuální soubor jako kontext"
+
+#: src/components/perf-panel.tsx
+msgid "Stopped before completing, so these timings are partial."
+msgstr "Zastaveno před dokončením, takže tyto časy jsou neúplné."
+
+#: src/chat-sidebar.tsx
+msgid "Stopped by you"
+msgstr "Zastaveno vámi"
+
+#: src/components/perf-panel.tsx
+msgid "Sum of every tool span in the turn. Expand the row to see them individually."
+msgstr "Součet všech spanů nástrojů v kole. Rozbalením řádku je zobrazíte jednotlivě."
+
+#: src/index.ts
+msgid "Switch all cells to code"
+msgstr "Přepnout všechny buňky na kód"
+
+#: src/index.ts
+msgid "Switch all cells to natural language"
+msgstr "Přepnout všechny buňky na přirozený jazyk"
+
+#: src/index.ts
+msgid "Switch cell to code"
+msgstr "Přepnout buňku na kód"
+
+#: src/index.ts
+msgid "Switch cell to natural language"
+msgstr "Přepnout buňku na přirozený jazyk"
+
+#: src/chatbook-toolbar.ts src/index.ts
+msgid "Switch every cell of this Chatbook between its prompt and its code"
+msgstr "Přepnout každou buňku tohoto sešitu Chatbook mezi jejím promptem a kódem"
+
+#: src/index.ts
+msgid "Switch the active Chatbook cell between natural language and code"
+msgstr "Přepnout aktivní buňku Chatbook mezi přirozeným jazykem a kódem"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed for \"%1\": %2"
+msgstr "Synchronizace „%1“ selhala: %2"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed: %1"
+msgstr "Synchronizace selhala: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Sync from GitHub"
+msgstr "Synchronizovat z GitHubu"
+
+#: src/components/skills-panel.tsx
+msgid "Sync managed skills"
+msgstr "Synchronizovat spravované dovednosti"
+
+#: src/components/skills-panel.tsx
+msgid "Sync skill from GitHub"
+msgstr "Synchronizovat dovednost z GitHubu"
+
+#: src/components/skills-panel.tsx
+msgid "Sync tracking skills"
+msgstr "Synchronizovat sledující dovednosti"
+
+#: src/components/skills-panel.tsx
+msgid "Synced \"%1\" to %2."
+msgstr "„%1“ synchronizováno na verzi %2."
+
+#: src/components/skills-panel.tsx
+msgid "Syncing…"
+msgstr "Synchronizace…"
+
+#: src/components/skills-panel.tsx
+msgid "Target scope"
+msgstr "Cílový rozsah"
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop."
+msgstr "Přetažení do terminálu vkládá cesty jako @-zmínky. Kliknutím přepnete do režimu nezpracovaných cest. Podržením klávesy Shift při přetažení režim jednorázově obrátíte."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop."
+msgstr "Přetažení do terminálu vkládá nezpracované absolutní cesty escapované pro shell. Kliknutím přepnete do režimu @-zmínek. Podržením klávesy Shift při přetažení režim jednorázově obrátíte."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop skipped %1 path containing control or invisible formatting characters. Rename them before dropping."
+msgid_plural "Terminal drop skipped %1 paths containing control or invisible formatting characters. Rename them before dropping."
+msgstr[0] "Při přetažení do terminálu byla vynechána %1 cesta obsahující řídicí nebo neviditelné formátovací znaky. Před přetažením ji přejmenujte."
+msgstr[1] "Při přetažení do terminálu byly vynechány %1 cesty obsahující řídicí nebo neviditelné formátovací znaky. Před přetažením je přejmenujte."
+msgstr[2] "Při přetažení do terminálu bylo vynecháno %1 cest obsahujících řídicí nebo neviditelné formátovací znaky. Před přetažením je přejmenujte."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop upload failed for %1"
+msgstr "Nahrání souboru %1 přetaženého do terminálu selhalo"
+
+#: src/components/readiness-card.tsx
+msgid "Test the endpoint"
+msgstr "Otestovat koncový bod"
+
+#: src/chat-sidebar.tsx
+msgid "Text file"
+msgstr "Textový soubor"
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI did not respond to --version within its budget."
+msgstr "CLI neodpovědělo na --version ve vyhrazeném čase."
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI resolved but --version failed."
+msgstr "CLI bylo nalezeno, ale --version selhalo."
+
+#: src/components/perf-panel.tsx
+msgid "The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI."
+msgstr "SDK přisuzuje API %1 z %2 aktivního času, takže čas se ztrácí na druhé straně sítě, a ne v NBI."
+
+#: notebook_intelligence/readiness.py
+msgid "The binary resolves but does not start. On a network filesystem this is often the install tree being slow to read; otherwise check it runs from a terminal."
+msgstr "Binární soubor je nalezen, ale nespustí se. Na síťovém souborovém systému to často znamená pomalé čtení instalačního stromu; jinak ověřte, zda se spustí z terminálu."
+
+#: src/components/perf-panel.tsx
+msgid "The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding."
+msgstr "Kontrola se nevrátila ve vyhrazeném čase. Zaseknuté volání stat na síťovém souborovém systému vypadá přesně takto a samo o sobě je zjištěním."
+
+#: notebook_intelligence/readiness.py
+msgid "The claude CLI was not found."
+msgstr "CLI claude nebylo nalezeno."
+
+#: notebook_intelligence/acp_agent.py
+msgid "The command contains non-ASCII characters, which can look like quotes or letters they are not."
+msgstr "Příkaz obsahuje znaky mimo ASCII, které mohou vypadat jako uvozovky nebo písmena, kterými nejsou."
+
+#: src/components/perf-panel.tsx
+msgid "The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage."
+msgstr "Span připojení: spuštění podprocesu agenta a CLI. Velké hodnoty obvykle znamenají start node a čtení balíčku z pomalého úložiště."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted a request carrying a tool schema."
+msgstr "Koncový bod přijal požadavek obsahující schéma nástrojů."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the connection but did not answer. Check the Base URL and whether it is reachable from the Jupyter server process."
+msgstr "Koncový bod přijal spojení, ale neodpověděl. Zkontrolujte základní URL a to, zda je dosažitelná z procesu serveru Jupyter."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the request but did not answer. Check the gateway and whether it is queueing behind a cold model."
+msgstr "Koncový bod přijal požadavek, ale neodpověděl. Zkontrolujte bránu a to, zda požadavek nečeká ve frontě na studený model."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint answered in one piece. Replies will appear only when the turn finishes rather than as they are generated; a proxy that buffers responses is the usual cause."
+msgstr "Koncový bod odpověděl najednou. Odpovědi se zobrazí až po dokončení kola, nikoli průběžně při generování; obvyklou příčinou je proxy, která odpovědi ukládá do vyrovnávací paměti."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint rejected a request carrying a tool schema, but accepted the same request without one."
+msgstr "Koncový bod odmítl požadavek obsahující schéma nástrojů, ale stejný požadavek bez něj přijal."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint test could not run (%1)."
+msgstr "Test koncového bodu nelze spustit (%1)."
+
+#: src/components/perf-panel.tsx
+msgid "The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses."
+msgstr "Handshake nebyl dokončen. Za zachytávající proxy to obvykle znamená, že zachytávací certifikát není v úložišti důvěryhodných certifikátů, které tento proces používá."
+
+#: src/components/perf-panel.tsx
+msgid "The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor."
+msgstr "Předložený certifikát nelze ověřit vůči výchozímu úložišti důvěryhodných certifikátů, což znamená, že provoz TLS je zachytáván. CN vydavatele určuje zachytávající systém."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider did not return a model list within %1s."
+msgstr "Poskytovatel nevrátil seznam modelů do %1 s."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider may be disabled by an administrator (see disabled_providers) or supplied by an extension that is not installed. Pick a different provider in NBI Settings."
+msgstr "Poskytovatel může být zakázán správcem (viz disabled_providers) nebo dodáván rozšířením, které není nainstalováno. Vyberte jiného poskytovatele v nastavení NBI."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider returned no models."
+msgstr "Poskytovatel nevrátil žádné modely."
+
+#: notebook_intelligence/readiness.py
+msgid "The request failed (%1)."
+msgstr "Požadavek selhal (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "The request succeeded but nothing streamed."
+msgstr "Požadavek byl úspěšný, ale nic se nestreamovalo."
+
+#: notebook_intelligence/readiness.py
+msgid "The stored configuration could not be read. Check %1 for invalid JSON, and the Jupyter server log for the underlying error."
+msgstr "Uloženou konfiguraci nelze přečíst. Zkontrolujte, zda %1 neobsahuje neplatný JSON, a v protokolu serveru Jupyter vyhledejte původní chybu."
+
+#: src/components/perf-panel.tsx
+msgid "The turn ended in an error."
+msgstr "Kolo skončilo chybou."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab."
+msgstr "Toto jsou vlastní servery MCP Claude Code (načtené z %1, z projektu %2 a z bloku pro daného uživatele a projekt). Nezávislé na kartě Servery MCP v NBI."
+
+#: src/chat-sidebar.tsx
+msgid "Thinking (%1 s)"
+msgstr "Přemýšlení (%1 s)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py notebook_intelligence/mcp_manager.py
+msgid "Thinking…"
+msgstr "Přemýšlení…"
+
+#: src/components/perf-panel.tsx
+msgid "This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network."
+msgstr "Tento kontejner byl omezován kvótou CPU své skupiny cgroup, takže místní fáze (příprava kontextu, spuštění) mohou vypadat pomalé z důvodů, které nesouvisejí s úložištěm ani se sítí."
+
+#: notebook_intelligence/extension.py
+msgid "This feature is disabled by your administrator"
+msgstr "Tuto funkci zakázal váš správce"
+
+#: src/components/perf-panel.tsx
+msgid "This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows."
+msgstr "Čas na tomto hostiteli se od času koncového bodu liší o více než minutu, což narušuje vypršení platnosti tokenů a období platnosti certifikátů."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the Claude CLI is signed in with a subscription login, or if the SDK resolves a credential of its own from a profile or custom headers. If chat turns fail with a 401, or Claude auto-complete produces nothing, add a key in NBI Settings under Claude or set ANTHROPIC_API_KEY before starting JupyterLab."
+msgstr "To nevadí, pokud je CLI Claude přihlášeno pomocí předplatného nebo pokud SDK získá vlastní přihlašovací údaje z profilu nebo vlastních hlaviček. Pokud kola chatu selhávají s chybou 401 nebo automatické dokončování Claude nic nevytváří, přidejte klíč v nastavení NBI v části Claude, nebo před spuštěním JupyterLab nastavte ANTHROPIC_API_KEY."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the agent is signed in with its own OAuth login. Otherwise set the key in NBI Settings under ACP."
+msgstr "To nevadí, pokud je agent přihlášen pomocí vlastního přihlášení OAuth. Jinak nastavte klíč v nastavení NBI v části ACP."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3."
+msgstr "Tento sešit je napsán v jazyce %1, ale Chatbook spouští veškerý kód v %2, takže jeho buňky s kódem by selhaly. Není nainstalováno žádné jádro %1, které by Chatbook mohl použít. Nainstalujte ho a potom ho vyberte v %3."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too."
+msgstr "Tento sešit je napsán v jazyce %1, ale Chatbook spouští veškerý kód v %2, takže jeho buňky s kódem by selhaly. Chcete-li ho převést, nastavte v %3 jádro pro jazyk %1 a potom převod opakujte. Toto nastavení platí pro všechny sešity Chatbook, takže i vaše stávající sešity Chatbook by spouštěly %1."
+
+#: src/components/perf-panel.tsx
+msgid "This opens connections to %1 from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request."
+msgstr "Z tohoto počítače se otevřou spojení s %1: dvě neověřená spojení TLS pro změření handshaku a kontrolu certifikátu a jeden neověřený požadavek HTTP."
+
+#: src/components/perf-panel.tsx
+msgid "This opens unauthenticated connections to your configured endpoint from this machine."
+msgstr "Z tohoto počítače se otevřou neověřená spojení s nakonfigurovaným koncovým bodem."
+
+#: src/components/settings-panel.tsx
+msgid "This requires a %1 account and %2 installed in your system."
+msgstr "Vyžaduje účet %1 a v systému nainstalovaný %2."
+
+#: src/components/readiness-card.tsx
+msgid "This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls."
+msgstr "Odešle se jeden krátký požadavek nakonfigurovanému modelu. Stojí to několik tokenů a je to jediný způsob, jak ověřit, že koncový bod skutečně streamuje a skutečně přijímá volání nástrojů."
+
+#: src/components/skills-panel.tsx
+msgid "This skill has unsaved changes. Discard them?"
+msgstr "Tato dovednost obsahuje neuložené změny. Zahodit je?"
+
+#: src/components/skills-panel.tsx
+msgid "This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync."
+msgstr "Tuto dovednost spravuje manifest organizace a je jen pro čtení. Změny budou při příští synchronizaci přepsány."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Tool call"
+msgstr "Volání nástroje"
+
+#: src/components/mcp-util.ts
+msgid "Tool refresh failed. Reload MCP servers to retry."
+msgstr "Obnovení nástrojů selhalo. Opakujte pokus opětovným načtením serverů MCP."
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection"
+msgstr "Výběr nástrojů"
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection (%1)"
+msgstr "Výběr nástrojů (%1)"
+
+#: src/chat-sidebar.tsx
+msgid ""
+"Tool selection can cause irreversible changes! Review each tool execution carefully.\n"
+"%1"
+msgstr ""
+"Vybrané nástroje mohou způsobit nevratné změny! Pečlivě kontrolujte každé spuštění nástroje.\n"
+"%1"
+
+#: src/components/settings-panel.tsx
+msgid "Tools"
+msgstr "Nástroje"
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active."
+msgstr "Nástroje zabraly %1 z %2 aktivního času."
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active. Slowest: %3 at %4."
+msgstr "Nástroje zabraly %1 z %2 aktivního času. Nejpomalejší: %3 (%4)."
+
+#: src/components/perf-panel.tsx
+msgid "Total minus time the turn spent blocked on your input. This is the number to judge performance by."
+msgstr "Celkový čas bez doby, kdy kolo čekalo na váš vstup. Podle této hodnoty je třeba posuzovat výkon."
+
+#: src/tour/tour-overlay.tsx
+msgid "Tour progress: step %1 of %2"
+msgstr "Průběh prohlídky: krok %1 z %2"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream"
+msgstr "Sledovat zdroj"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream. Show a Sync button so I can re-pull this skill from GitHub later"
+msgstr "Sledovat zdroj. Zobrazit tlačítko Synchronizovat, aby bylo možné tuto dovednost později znovu stáhnout z GitHubu"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1"
+msgstr "Sleduje zdroj %1"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1 (last sync: %2)"
+msgstr "Sleduje zdroj %1 (poslední synchronizace: %2)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Transport"
+msgstr "Přenos"
+
+#: src/index.ts
+msgid "Troubleshoot errors in output"
+msgstr "Řešit chyby ve výstupu"
+
+#: src/cell-output-toolbar.ts
+msgid "Troubleshoot the error in this cell"
+msgstr "Řešit chybu v této buňce"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "URL"
+msgstr "URL"
+
+#: src/components/skills-panel.tsx
+msgid "Undo"
+msgstr "Vrátit zpět"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall"
+msgstr "Odinstalovat"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall plugin?"
+msgstr "Odinstalovat plugin?"
+
+#: src/chat-sidebar.tsx
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Unknown error"
+msgstr "Neznámá chyba"
+
+#: src/components/skills-panel.tsx
+msgid "Unsaved changes"
+msgstr "Neuložené změny"
+
+#: src/components/plugins-panel.tsx
+msgid "Update"
+msgstr "Aktualizovat"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Update active notebook"
+msgstr "Aktualizovat aktivní sešit"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Update active notebook with AI"
+msgstr "Aktualizovat aktivní sešit pomocí AI"
+
+#: src/components/plugins-panel.tsx
+msgid "Updating…"
+msgstr "Aktualizace…"
+
+#: src/chat-sidebar.tsx
+msgid "Upload file from computer"
+msgstr "Nahrát soubor z počítače"
+
+#: src/chat-sidebar.tsx
+msgid "Uploaded: %1"
+msgstr "Nahráno: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Uploading"
+msgstr "Nahrávání"
+
+#: src/components/settings-panel.tsx
+msgid "Usage footer"
+msgstr "Zápatí s využitím"
+
+#: src/chat-sidebar.tsx
+msgid "Use as context"
+msgstr "Použít jako kontext"
+
+#: src/chat-sidebar.tsx
+msgid "Use current file as context"
+msgstr "Použít aktuální soubor jako kontext"
+
+#: src/chat-sidebar.tsx
+msgid "User"
+msgstr "Uživatel"
+
+#: src/components/skills-panel.tsx
+msgid "User (available in all projects)"
+msgstr "Uživatel (k dispozici ve všech projektech)"
+
+#: notebook_intelligence/readiness.py
+msgid "Usually an expired or missing API key, or a Base URL that does not point at the provider's API root. For GitHub Copilot, sign in again from NBI Settings."
+msgstr "Obvykle jde o vypršený nebo chybějící klíč API, nebo o základní URL, která neukazuje na kořen API poskytovatele. U GitHub Copilot se znovu přihlaste v nastavení NBI."
+
+#: src/components/skills-panel.tsx
+msgid "View (managed, read-only)"
+msgstr "Zobrazit (spravovaná, jen pro čtení)"
+
+#: src/components/skills-panel.tsx
+msgid "View skill"
+msgstr "Zobrazit dovednost"
+
+#: src/components/perf-panel.tsx
+msgid "Wall time from the request arriving to the response finishing, including any time spent waiting on you."
+msgstr "Reálný čas od přijetí požadavku do dokončení odpovědi, včetně doby čekání na vás."
+
+#: src/chat-sidebar.tsx
+msgid "Welcome! How can I assist you today?"
+msgstr "Vítejte! Jak vám dnes mohu pomoci?"
+
+#: src/components/skills-panel.tsx
+msgid "What this skill does, shown to Claude when deciding whether to use it"
+msgstr "Co tato dovednost dělá; zobrazuje se Claude při rozhodování, zda ji použít"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr "Když je zapnuto, prompt otevře postranní panel chatu Notebook Intelligence. Vypněte, chcete-li chat ponechat skrytý a průběh zobrazovat jen na panelu nástrojů sešitu."
+
+#: src/components/perf-panel.tsx
+msgid "When the turn started, in local time."
+msgstr "Kdy kolo začalo, v místním čase."
+
+#: src/components/perf-panel.tsx
+msgid "Which backend served the turn, and the surface it came from."
+msgstr "Který backend kolo obsloužil a z jaké části rozhraní pocházelo."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Working directory"
+msgstr "Pracovní adresář"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Working…"
+msgstr "Zpracování…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Write access under"
+msgstr "Přístup pro zápis v"
+
+#: src/chat-sidebar.tsx
+msgid "You are not logged in to GitHub Copilot. Please login now to activate chat."
+msgstr "Nejste přihlášeni ke GitHub Copilot. Přihlaste se prosím, abyste aktivovali chat."
+
+#: src/chat-sidebar.tsx
+msgid "Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory."
+msgstr "Váš kód a data se podle potřeby přenášejí přímo do GitHub Copilot, aniž by se ukládaly jakékoli kopie mimo paměť procesu."
+
+#: src/components/claude-scope.ts
+msgid "available in all your projects"
+msgstr "k dispozici ve všech vašich projektech"
+
+#: src/components/perf-panel.tsx
+msgid "cgroup CPU throttling"
+msgstr "Omezování CPU skupinou cgroup"
+
+#: src/components/tool-call-card.tsx
+msgid "diff truncated"
+msgstr "rozdíly zkráceny"
+
+#: src/components/skills-panel.tsx
+msgid "e.g. %1"
+msgstr "např. %1"
+
+#: src/components/perf-panel.tsx
+msgid "failed (%1)"
+msgstr "selhalo (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it."
+msgstr "Latence fsync v tomto rozsahu je typickým příznakem síťového souborového systému. Pokud jde o ~/.claude nebo domovský adresář Jupyter, platí ji každé spuštění agenta a každé prohledávání pravidel."
+
+#: src/components/skills-panel.tsx
+msgid "https://github.com/owner/repo or .../tree/main/path/to/skill"
+msgstr "https://github.com/owner/repo nebo .../tree/main/path/to/skill"
+
+#: src/components/plugins-panel.tsx
+msgid "https://… or local path"
+msgstr "https://… nebo místní cesta"
+
+#: src/components/plugins-panel.tsx
+msgid "no plugins"
+msgstr "žádné pluginy"
+
+#: src/components/perf-panel.tsx
+msgid "no projects/ or sessions/ directory"
+msgstr "žádný adresář projects/ ani sessions/"
+
+#: src/components/perf-panel.tsx
+msgid "ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success."
+msgstr "ok, chyba nebo zrušeno. Zrušené kolo se zaznamená jako zrušené, nikoli jako rychlý úspěch."
+
+#: src/chat-sidebar.tsx
+msgid "open notebook"
+msgstr "otevřít sešit"
+
+#: src/components/plugins-panel.tsx
+msgid "owner/repo, https://github.com/owner/repo, or local path"
+msgstr "owner/repo, https://github.com/owner/repo nebo místní cesta"
+
+#: notebook_intelligence/acp_agent.py
+msgid "run by %1"
+msgstr "spouští %1"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo"
+msgstr "sdíleno přes repozitář projektu"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo (%1)"
+msgstr "sdíleno přes repozitář projektu (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "skipped: %1"
+msgstr "přeskočeno: %1"
+
+#: src/components/perf-panel.tsx
+msgid "stat %1, write+fsync %2 (median of %3)"
+msgstr "stat %1, write+fsync %2 (medián z %3)"
+
+#: src/components/claude-scope.ts
+msgid "this project, this user only"
+msgstr "tento projekt, pouze tento uživatel"
+
+#: src/components/perf-panel.tsx
+msgid "timed out after %1s"
+msgstr "časový limit vypršel po %1 s"
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"%1\" requires a \"url\" field."
+msgstr "transport: „%1“ vyžaduje pole „url“."
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"stdio\" requires a \"command\" field."
+msgstr "transport: „stdio“ vyžaduje pole „command“."
+
+#: src/components/perf-panel.tsx
+msgid "via proxy"
+msgstr "přes proxy"
+
+#: src/components/perf-panel.tsx
+msgid "write %1, read %2"
+msgstr "zápis %1, čtení %2"
+
+#: src/index.ts
+msgid "＋ New Session"
+msgstr "＋ Nová relace"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP description: the link to the admin guide"
+msgid "administrator installation guide"
+msgstr "instalační příručku pro správce"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP settings section"
+msgid "Agent"
+msgstr "Agent"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a code cell; at most 3 characters"
+msgid "Cd"
+msgstr "Kód"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a natural-language cell; at most 3 characters"
+msgid "NL"
+msgstr "PJ"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Don't run"
+msgstr "Nespouštět"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Run"
+msgstr "Spustit"
+
+#: src/components/settings-panel.tsx
+msgctxt "Chatbook mode description; %1 and %2 are the confirm bar buttons"
+msgid "Show the generated code and wait for %1 or %2 on every natural-language run."
+msgstr "Zobrazit vygenerovaný kód a při každém spuštění v přirozeném jazyce čekat na %1 nebo %2."
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "LOCAL"
+msgstr "MÍSTNÍ"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "PROJECT"
+msgstr "PROJEKT"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "USER"
+msgstr "UŽIVATEL"
+
+#: src/components/claude-mcp-panel.tsx
+msgctxt "MCP server input mode"
+msgid "Form"
+msgstr "Formulář"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connected"
+msgstr "připojeno"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connecting"
+msgstr "připojování"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "disconnecting"
+msgstr "odpojování"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "not connected"
+msgstr "nepřipojeno"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated prompt list"
+msgstr "seznam promptů aktualizován"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated tool list"
+msgstr "seznam nástrojů aktualizován"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating prompt list"
+msgstr "aktualizace seznamu promptů"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating tool list"
+msgstr "aktualizace seznamu nástrojů"
+
+#: src/components/settings-panel.tsx
+msgctxt "Ollama hint: the button that retries listing models"
+msgid "Try again"
+msgstr "Zkusit znovu"
+
+#: src/components/perf-panel.tsx
+msgctxt "Python version on an operating system"
+msgid "%1 on %2"
+msgstr "%1 v systému %2"
+
+#: src/chatbook-toolbar.ts
+msgctxt "a settings path: %1 the settings window, %2 its tab, %3 the field"
+msgid "%1 > %2 > %3"
+msgstr "%1 > %2 > %3"
+
+#: src/components/perf-panel.tsx
+msgctxt "a value that was not recorded"
+msgid "n/a"
+msgstr "n/a"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "an approval card detail: its label, then notes such as its size"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve"
+msgstr "Schválit"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve for this request"
+msgstr "Schválit pro tento požadavek"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, continue planning"
+msgstr "Ne, pokračovat v plánování"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, start implementing now"
+msgstr "Ne, začít hned s implementací"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval button"
+msgid "Reject"
+msgstr "Odmítnout"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, approve plan"
+msgstr "Ano, schválit plán"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, enter plan mode"
+msgstr "Ano, přejít do režimu plánování"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval card title"
+msgid "%1 tool call"
+msgstr "Volání nástroje %1"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "full"
+msgstr "úplné"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "redacted"
+msgstr "redigované"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "between notes on an approval card detail"
+msgid ", "
+msgstr ", "
+
+#: src/components/perf-panel.tsx
+msgctxt "bytes"
+msgid "%1 B"
+msgstr "%1 B"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Ask"
+msgstr "Zeptat se"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Explain"
+msgstr "Vysvětlit"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Troubleshoot"
+msgstr "Řešit problém"
+
+#: src/components/perf-panel.tsx
+msgctxt "certificate issuer"
+msgid "unknown"
+msgstr "neznámý"
+
+#: notebook_intelligence/ai_service_manager.py
+msgctxt "chat button"
+msgid "Configure"
+msgstr "Konfigurovat"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Agent"
+msgstr "Agent"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Ask"
+msgstr "Dotaz"
+
+#: src/chatbook.ts
+msgctxt "confirm bar link that opens settings; %1 is the settings window name"
+msgid "Change in %1"
+msgstr "Změnit v: %1"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected MCP server tools"
+msgid "%1 mcp"
+msgid_plural "%1 mcp"
+msgstr[0] "%1 mcp"
+msgstr[1] "%1 mcp"
+msgstr[2] "%1 mcp"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected extension tools"
+msgid "%1 ext"
+msgid_plural "%1 ext"
+msgstr[0] "%1 rozš."
+msgstr[1] "%1 rozš."
+msgstr[2] "%1 rozš."
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected tools"
+msgid "%1 built-in"
+msgid_plural "%1 built-in"
+msgstr[0] "%1 vestavěný"
+msgstr[1] "%1 vestavěné"
+msgstr[2] "%1 vestavěných"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "environment (%1)"
+msgstr "prostředí (%1)"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "settings"
+msgstr "nastavení"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "added"
+msgstr "přidáno"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "removed"
+msgstr "odebráno"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "mount"
+msgstr "připojení svazku"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "session tree size"
+msgstr "velikost stromu relací"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "small-file latency"
+msgstr "latence malých souborů"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "sustained throughput"
+msgstr "trvalá propustnost"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem type"
+msgid "not determined"
+msgstr "neurčeno"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Add files from outside the workspace. They're saved to the workspace and attached to this chat."
+msgstr "Přidávejte soubory mimo pracovní prostor. Uloží se do pracovního prostoru a připojí k tomuto chatu."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Ask is read-only and only answers questions. Agent can also run tools, such as file edits and shell commands."
+msgstr "Režim Dotaz je jen pro čtení a pouze odpovídá na otázky. Režim Agent může také spouštět nástroje, například úpravy souborů a příkazy shellu."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Attach files as context"
+msgstr "Připojit soubory jako kontext"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Back"
+msgstr "Zpět"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Begin a fresh session when context gets crowded or you want to switch tasks."
+msgstr "Zahajte novou relaci, když je kontext příliš zaplněný nebo chcete přejít k jinému úkolu."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Configure providers, API keys, and extensions (MCP servers, skills, admin policies)."
+msgstr "Konfigurujte poskytovatele, klíče API a rozšíření (servery MCP, dovednosti, zásady správce)."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Done"
+msgstr "Hotovo"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag and drop"
+msgstr "Přetažení myší"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag files from the JupyterLab file browser or your desktop onto the prompt. Keyboard users can attach the same files with the 'Attach files as context' and 'Upload from your computer' buttons."
+msgstr "Přetáhněte soubory z prohlížeče souborů JupyterLab nebo z plochy na prompt. Uživatelé klávesnice mohou stejné soubory připojit tlačítky 'Připojit soubory jako kontext' a 'Nahrát z počítače'."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Next"
+msgstr "Další"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Open the menu for built-in commands and installed skills. Typing / at the start of the prompt does the same thing."
+msgstr "Otevřete nabídku vestavěných příkazů a nainstalovaných dovedností. Stejně funguje i zadání / na začátku promptu."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick a chat mode"
+msgstr "Vyberte režim chatu"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick up where you left off"
+msgstr "Pokračujte tam, kde jste skončili"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pin workspace files so the assistant can reference them. Typing @ in the prompt opens the same picker."
+msgstr "Připněte soubory pracovního prostoru, aby se na ně asistent mohl odkazovat. Zadáním @ v promptu otevřete stejný výběr."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Reopen an earlier Claude session from this workspace."
+msgstr "Znovu otevřete dřívější relaci Claude z tohoto pracovního prostoru."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a coding agent in a terminal"
+msgstr "Spusťte agenta pro kódování v terminálu"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a slash command"
+msgstr "Spusťte příkaz s lomítkem"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Settings"
+msgstr "Nastavení"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Show NBI tour"
+msgstr "Zobrazit prohlídku NBI"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Skip tour"
+msgstr "Přeskočit prohlídku"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Start a new chat"
+msgstr "Zahajte nový chat"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Try this: open a notebook and ask, 'Explain what this notebook does and suggest one improvement.' You can replay this tour anytime from the command palette."
+msgstr "Vyzkoušejte: otevřete sešit a zeptejte se: „Vysvětli, co tento sešit dělá, a navrhni jedno vylepšení.“ Tuto prohlídku můžete kdykoli znovu spustit z palety příkazů."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Upload from your computer"
+msgstr "Nahrát z počítače"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Welcome to Notebook Intelligence"
+msgstr "Vítejte v Notebook Intelligence"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "You're ready"
+msgstr "Vše je připraveno"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Your AI assistant lives in this sidebar. Take a quick tour of the settings, attachments, and chat modes so you can use it confidently."
+msgstr "Váš asistent AI sídlí v tomto postranním panelu. Projděte si krátkou prohlídku nastavení, příloh a režimů chatu, abyste ho mohli používat s jistotou."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a 'Coding Agent' section with tiles for {launchers}. Each tile opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "Spouštěč JupyterLab obsahuje sekci 'Coding Agent' s dlaždicemi pro {launchers}. Každá dlaždice otevře relaci CLI v terminálu Jupyter vedle vašeho sešitu."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a {launchers} tile in the 'Coding Agent' section. It opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "Spouštěč JupyterLab obsahuje dlaždici {launchers} v sekci 'Coding Agent'. Otevře relaci CLI v terminálu Jupyter vedle vašeho sešitu."
+
+#: src/components/perf-panel.tsx
+msgctxt "gigabytes"
+msgid "%1 GB"
+msgstr "%1 GB"
+
+#: src/components/perf-panel.tsx
+msgctxt "kilobytes"
+msgid "%1 KB"
+msgstr "%1 kB"
+
+#: src/components/setting-lock.ts
+msgctxt "lock reason: %1 is an environment variable name"
+msgid "Locked by %1"
+msgstr "Uzamčeno pomocí %1"
+
+#: src/components/perf-panel.tsx
+msgctxt "machine measurement"
+msgid "Probe"
+msgstr "Sonda"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes"
+msgid "%1 MB"
+msgstr "%1 MB"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes per second"
+msgid "%1 MB/s"
+msgstr "%1 MB/s"
+
+#: src/components/perf-panel.tsx
+msgctxt "milliseconds"
+msgid "%1 ms"
+msgstr "%1 ms"
+
+#: src/components/settings-panel.tsx
+msgctxt "model"
+msgid "None"
+msgstr "Žádný"
+
+#: src/components/perf-panel.tsx
+msgctxt "model name"
+msgid "unknown"
+msgstr "neznámý"
+
+#: src/components/settings-panel.tsx
+msgctxt "model provider"
+msgid "None"
+msgstr "Žádný"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance diagnostics setting"
+msgid "Enabled"
+msgstr "Povoleno"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "API ms"
+msgstr "API ms"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Active"
+msgstr "Aktivní"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "First token"
+msgstr "První token"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Mode"
+msgstr "Režim"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Model"
+msgstr "Model"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Spawn"
+msgstr "Spuštění"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stalls"
+msgstr "Zaseknutí"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Status"
+msgstr "Stav"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stream"
+msgstr "Stream"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Time"
+msgstr "Čas"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens in"
+msgstr "Tokeny vstup"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens out"
+msgstr "Tokeny výstup"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tools"
+msgstr "Nástroje"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Total"
+msgstr "Celkem"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Verdict"
+msgstr "Verdikt"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Accept Edits"
+msgstr "Přijímat úpravy"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Bypass Permissions"
+msgstr "Obejít oprávnění"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Default"
+msgstr "Výchozí"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Plan"
+msgstr "Plánování"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugin count, then the plugin names"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugins section heading"
+msgid "MARKETPLACES"
+msgstr "MARKETPLACE"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "bad"
+msgstr "špatné"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "error"
+msgstr "chyba"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "info"
+msgstr "info"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "skipped"
+msgstr "přeskočeno"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "timed out"
+msgstr "vypršel čas"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "warn"
+msgstr "upozornění"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check: %1 is a directory, %2 what was measured"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Filesystem"
+msgstr "Souborový systém"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Network"
+msgstr "Síť"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Process and host"
+msgstr "Proces a hostitel"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Subprocess startup"
+msgstr "Spouštění podprocesů"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Submit"
+msgstr "Odeslat"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "ACP agent"
+msgstr "Agent ACP"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Active chat path"
+msgstr "Aktivní cesta chatu"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Adapter runtime"
+msgstr "Běhové prostředí adaptéru"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Agent credentials"
+msgstr "Přihlašovací údaje agenta"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Anthropic credentials"
+msgstr "Přihlašovací údaje Anthropic"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model"
+msgstr "Model chatu"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model provider"
+msgstr "Poskytovatel modelu chatu"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Claude Code CLI"
+msgstr "Claude Code CLI"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Configuration"
+msgstr "Konfigurace"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "GitHub Copilot sign-in"
+msgstr "Přihlášení ke GitHub Copilot"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Live completion"
+msgstr "Živé dokončení"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model list"
+msgstr "Seznam modelů"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model name"
+msgstr "Název modelu"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Selected model"
+msgstr "Vybraný model"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Tool schema"
+msgstr "Schéma nástrojů"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "blocked"
+msgstr "blokováno"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "skipped"
+msgstr "přeskočeno"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "warn"
+msgstr "upozornění"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Checking…"
+msgstr "Kontrola…"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Not ready"
+msgstr "Nepřipraveno"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready"
+msgstr "Připraveno"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready, with warnings"
+msgstr "Připraveno, s upozorněními"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Output"
+msgstr "Výstup"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Thought"
+msgstr "Úvaha"
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "Plugin „%1“ bude odebrán z konfigurace Claude v místním rozsahu."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "Plugin „%1“ bude odebrán z konfigurace Claude v rozsahu projektu."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "Plugin „%1“ bude odebrán z konfigurace Claude v rozsahu uživatele."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "Plugin „%1“ bude odebrán z konfigurace Claude v rozsahu %2."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "Server „%1“ bude odebrán z konfigurace Claude v místním rozsahu."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "Server „%1“ bude odebrán z konfigurace Claude v rozsahu projektu."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "Server „%1“ bude odebrán z konfigurace Claude v rozsahu uživatele."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "Server „%1“ bude odebrán z konfigurace Claude v rozsahu %2."
+
+#: src/components/skills-panel.tsx
+msgctxt "scope heading, then the project name"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: src/components/claude-scope.ts
+msgctxt "scope picker option: %1 is the scope id, %2 what it means"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "seconds"
+msgid "%1s"
+msgstr "%1 s"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgctxt "separator between list items"
+msgid ", "
+msgstr ", "
+
+#: src/components/settings-panel.tsx
+msgctxt "setting source"
+msgid "User"
+msgstr "Uživatel"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings section"
+msgid "Language"
+msgstr "Jazyk"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "General"
+msgstr "Obecné"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "MCP Servers"
+msgstr "Servery MCP"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Performance"
+msgstr "Výkon"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Plugins"
+msgstr "Pluginy"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Skills"
+msgstr "Dovednosti"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Managed"
+msgstr "Spravovaná"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Tracking"
+msgstr "Sledovaná"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "Project"
+msgstr "Projekt"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "User"
+msgstr "Uživatel"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill sync result; %1 is a list of counts"
+msgid "Sync complete. %1."
+msgstr "Synchronizace dokončena. %1."
+
+#: src/components/perf-panel.tsx
+msgctxt "skip reason"
+msgid "not applicable"
+msgstr "nepoužije se"
+
+#: src/components/skills-panel.tsx
+msgctxt "stands in for the project folder name"
+msgid "<project>"
+msgstr "<projekt>"
+
+#: src/terminal-drag.ts
+msgctxt "terminal upload failure; %2 lists files, %1 counts the rest"
+msgid "Terminal drop upload failed for %2 (+%1 more)"
+msgid_plural "Terminal drop upload failed for %2 (+%1 more)"
+msgstr[0] "Nahrání souborů přetažených do terminálu selhalo: %2 (+%1 další)"
+msgstr[1] "Nahrání souborů přetažených do terminálu selhalo: %2 (+%1 další)"
+msgstr[2] "Nahrání souborů přetažených do terminálu selhalo: %2 (+%1 dalších)"
+
+#: src/i18n.ts
+msgctxt "text direction: translate as 'rtl' for a right-to-left language, otherwise 'ltr'"
+msgid "ltr"
+msgstr "ltr"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "cancelled"
+msgstr "zrušeno"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "completed"
+msgstr "dokončeno"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "failed"
+msgstr "selhalo"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "in progress"
+msgstr "probíhá"
+
+#: src/components/tool-call-group.tsx
+msgctxt "tool call summary: %1 is the call count, %2 the failed count"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: src/chat-sidebar.tsx
+msgctxt "tool selection"
+msgid "clear"
+msgstr "vymazat"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Command execute"
+msgstr "Spouštění příkazů"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File edit"
+msgstr "Úpravy souborů"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File read"
+msgstr "Čtení souborů"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook edit"
+msgstr "Úpravy sešitů"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook execute"
+msgstr "Spouštění sešitů"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Python file edit"
+msgstr "Úpravy souborů Python"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "cancelled"
+msgstr "zrušeno"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "error"
+msgstr "chyba"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn timeline section"
+msgid "Events"
+msgstr "Události"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Agent cold start"
+msgstr "Studený start agenta"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Cancelled"
+msgstr "Zrušeno"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Context preparation"
+msgstr "Příprava kontextu"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Failed"
+msgstr "Selhalo"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Mid-stream stalls"
+msgstr "Zaseknutí během streamu"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Model or gateway"
+msgstr "Model nebo brána"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No single hotspot"
+msgstr "Žádné jednoznačné úzké hrdlo"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No timing recorded"
+msgstr "Nezaznamenány žádné časy"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Tool execution"
+msgstr "Spouštění nástrojů"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "not valid JSON. %1"
+msgstr "neplatný JSON. %1"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "the save failed for an unknown reason"
+msgstr "uložení selhalo z neznámého důvodu"

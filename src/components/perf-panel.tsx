@@ -591,7 +591,9 @@ function PerfTurnDetail(props: { turn: IPerfTurn }): JSX.Element {
               <div
                 className="nbi-perf-span-name"
                 title={span.name}
-                style={{ paddingLeft: `${(depths.get(span) ?? 0) * 12}px` }}
+                style={{
+                  paddingInlineStart: `${(depths.get(span) ?? 0) * 12}px`
+                }}
               >
                 {span.name}
               </div>

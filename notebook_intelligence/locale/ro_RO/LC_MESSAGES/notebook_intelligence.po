@@ -1,0 +1,4259 @@
+# Notebook Intelligence translation catalog.
+# AI-drafted (Claude) from the English source; not yet reviewed by a
+# native speaker. A reviewer: replace this note and Last-Translator.
+# See docs/translating.md.
+msgid ""
+msgstr ""
+"Project-Id-Version: notebook_intelligence\n"
+"Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
+"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"PO-Revision-Date: 2026-10-24 22:00-0400\n"
+"Last-Translator: AI draft, not yet reviewed\n"
+"Language-Team: ro_RO\n"
+"Language: ro_RO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already exists in this bundle."
+msgstr "„%1” există deja în acest pachet."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already up to date at %2."
+msgstr "„%1” este deja actualizat la %2."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be deleted."
+msgstr "„%1” va fi șters."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be permanently deleted."
+msgstr "„%1” va fi șters definitiv."
+
+#: src/components/plugins-panel.tsx
+msgid "\"%1\" will be removed from Claude's plugin marketplaces."
+msgstr "„%1” va fi eliminat din marketplace-urile de pluginuri ale lui Claude."
+
+#: src/components/settings-panel.tsx
+msgid "%1 (not installed)"
+msgstr "%1 (neinstalat)"
+
+#: src/components/setting-lock.ts
+msgid "%1 (optional)"
+msgstr "%1 (opțional)"
+
+#: src/chat-sidebar.tsx
+msgid "%1 (required)"
+msgstr "%1 (obligatoriu)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 (scan truncated)"
+msgstr "%1 (scanare trunchiată)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 MB peak since server start"
+msgstr "Vârf de %1 MB de la pornirea serverului"
+
+#: src/components/perf-panel.tsx
+msgid "%1 active with no phase dominating."
+msgstr "%1 de activitate, fără o fază dominantă."
+
+#: src/components/skills-panel.tsx
+msgid "%1 added"
+msgid_plural "%1 added"
+msgstr[0] "%1 adăugat"
+msgstr[1] "%1 adăugate"
+msgstr[2] "%1 de adăugate"
+
+#: src/components/perf-panel.tsx
+msgid "%1 and %2 were dropped by the per-turn caps, so this timeline is incomplete."
+msgstr "%1 și %2 au fost eliminate de limitele per tură, așa că această cronologie este incompletă."
+
+#: src/components/perf-panel.tsx
+msgid "%1 attribute"
+msgid_plural "%1 attributes"
+msgstr[0] "%1 atribut"
+msgstr[1] "%1 atribute"
+msgstr[2] "%1 de atribute"
+
+#: src/open-file-refresh-watcher.ts
+msgid "%1 changed on disk and was reloaded"
+msgstr "%1 a fost modificat pe disc și a fost reîncărcat"
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 character"
+msgid_plural "%1 characters"
+msgstr[0] "%1 caracter"
+msgstr[1] "%1 caractere"
+msgstr[2] "%1 de caractere"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at %2 ms, %3 ms total."
+msgid_plural "%1 chunks, first at %2 ms, %3 ms total."
+msgstr[0] "%1 fragment, primul la %2 ms, %3 ms în total."
+msgstr[1] "%1 fragmente, primul la %2 ms, %3 ms în total."
+msgstr[2] "%1 de fragmente, primul la %2 ms, %3 ms în total."
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at n/a ms, %2 ms total."
+msgid_plural "%1 chunks, first at n/a ms, %2 ms total."
+msgstr[0] "%1 fragment, primul la n/a ms, %2 ms în total."
+msgstr[1] "%1 fragmente, primul la n/a ms, %2 ms în total."
+msgstr[2] "%1 de fragmente, primul la n/a ms, %2 ms în total."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 decides which tools to ask about, so some actions may run without a prompt."
+msgstr "%1 decide pentru ce instrumente cere confirmare, așa că unele acțiuni pot rula fără solicitare."
+
+#: src/chat-sidebar.tsx
+msgid "%1 duplicate skipped."
+msgid_plural "%1 duplicates skipped."
+msgstr[0] "%1 duplicat omis."
+msgstr[1] "%1 duplicate omise."
+msgstr[2] "%1 de duplicate omise."
+
+#: src/components/skills-panel.tsx
+msgid "%1 error"
+msgid_plural "%1 errors"
+msgstr[0] "%1 eroare"
+msgstr[1] "%1 erori"
+msgstr[2] "%1 de erori"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 failed"
+msgid_plural "%1 failed"
+msgstr[0] "%1 eșuat"
+msgstr[1] "%1 eșuate"
+msgstr[2] "%1 de eșuate"
+
+#: src/chat-sidebar.tsx
+msgid "%1 file skipped (limit of %2)."
+msgid_plural "%1 files skipped (limit of %2)."
+msgstr[0] "%1 fișier omis (limită de %2)."
+msgstr[1] "%1 fișiere omise (limită de %2)."
+msgstr[2] "%1 de fișiere omise (limită de %2)."
+
+#: src/components/perf-panel.tsx
+msgid "%1 gap during streaming. Each stall event below is tagged with what preceded it."
+msgid_plural "%1 gaps during streaming. Each stall event below is tagged with what preceded it."
+msgstr[0] "%1 pauză în timpul streamingului. Fiecare eveniment de blocare de mai jos este etichetat cu ceea ce l-a precedat."
+msgstr[1] "%1 pauze în timpul streamingului. Fiecare eveniment de blocare de mai jos este etichetat cu ceea ce l-a precedat."
+msgstr[2] "%1 de pauze în timpul streamingului. Fiecare eveniment de blocare de mai jos este etichetat cu ceea ce l-a precedat."
+
+#: src/components/settings-panel.tsx
+msgid "%1 is required."
+msgstr "%1 este obligatoriu."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 line"
+msgid_plural "%1 lines"
+msgstr[0] "%1 linie"
+msgstr[1] "%1 linii"
+msgstr[2] "%1 de linii"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 model available."
+msgid_plural "%1 models available."
+msgstr[0] "%1 model disponibil."
+msgstr[1] "%1 modele disponibile."
+msgstr[2] "%1 de modele disponibile."
+
+#: src/components/plugins-panel.tsx
+msgid "%1 plugin"
+msgid_plural "%1 plugins"
+msgstr[0] "%1 plugin"
+msgstr[1] "%1 pluginuri"
+msgstr[2] "%1 de pluginuri"
+
+#: src/components/skills-panel.tsx
+msgid "%1 removed"
+msgid_plural "%1 removed"
+msgstr[0] "%1 eliminat"
+msgstr[1] "%1 eliminate"
+msgstr[2] "%1 de eliminate"
+
+#: src/chat-sidebar.tsx
+msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
+msgstr "%1 necesită un abonament și are un nivel gratuit. GitHub Copilot se supune prevederilor din %2."
+
+#: src/components/perf-panel.tsx
+msgid "%1 span"
+msgid_plural "%1 spans"
+msgstr[0] "%1 span"
+msgstr[1] "%1 spanuri"
+msgstr[2] "%1 de spanuri"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 tool call"
+msgid_plural "%1 tool calls"
+msgstr[0] "%1 apel de instrument"
+msgstr[1] "%1 apeluri de instrumente"
+msgstr[2] "%1 de apeluri de instrumente"
+
+#: src/components/skills-panel.tsx
+msgid "%1 unchanged"
+msgid_plural "%1 unchanged"
+msgstr[0] "%1 neschimbat"
+msgstr[1] "%1 neschimbate"
+msgstr[2] "%1 de neschimbate"
+
+#: src/components/skills-panel.tsx
+msgid "%1 updated"
+msgid_plural "%1 updated"
+msgstr[0] "%1 actualizat"
+msgstr[1] "%1 actualizate"
+msgstr[2] "%1 de actualizate"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, launched as: %2"
+msgstr "%1, lansat ca: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, model '%2'"
+msgstr "%1, model „%2”"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, no model selected"
+msgstr "%1, niciun model selectat"
+
+#: src/components/perf-panel.tsx
+msgid "%1; TLS handshake failed (%2)"
+msgstr "%1; handshake TLS eșuat (%2)"
+
+#: src/components/perf-panel.tsx
+msgid "%1; clock skew %2"
+msgstr "%1; decalaj de ceas %2"
+
+#: src/components/perf-panel.tsx
+msgid "%1; issuer %2"
+msgstr "%1; emitent %2"
+
+#: src/components/perf-panel.tsx
+msgid "%2 %1 file, %3"
+msgid_plural "%2 %1 files, %3"
+msgstr[0] "%2 %1 fișier, %3"
+msgstr[1] "%2 %1 fișiere, %3"
+msgstr[2] "%2 %1 de fișiere, %3"
+
+#: src/components/skills-panel.tsx
+msgid "%2 + %1 other"
+msgid_plural "%2 + %1 others"
+msgstr[0] "%2 + încă %1"
+msgstr[1] "%2 + încă %1"
+msgstr[2] "%2 + încă %1"
+
+#: src/components/plugins-panel.tsx
+msgid "%2, +%1 more"
+msgid_plural "%2, +%1 more"
+msgstr[0] "%2, +încă %1"
+msgstr[1] "%2, +încă %1"
+msgstr[2] "%2, +încă %1"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' and its declared interpreter are available."
+msgstr "„%1” și interpretorul declarat al acestuia sunt disponibile."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' has no content to attach."
+msgstr "„%1” nu are conținut de atașat."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' is empty"
+msgstr "„%1” este gol"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' is not in the list this endpoint serves."
+msgstr "„%1” nu se află în lista oferită de acest endpoint."
+
+#: src/components/plugins-panel.tsx
+msgid "(disabled)"
+msgstr "(dezactivat)"
+
+#: src/components/safe-anchor.tsx
+msgid "(link blocked)"
+msgstr "(link blocat)"
+
+#: src/components/safe-anchor.tsx
+msgid "(opens in new tab)"
+msgstr "(se deschide într-o filă nouă)"
+
+#: src/components/plugins-panel.tsx
+msgid "(unnamed)"
+msgstr "(fără nume)"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 agent error:** %2"
+msgstr "**Eroare a agentului %1:** %2"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: it is too large to show in full for approval.**"
+msgstr "**Apelul de instrument %1 a fost respins: este prea mare pentru a fi afișat integral pentru aprobare.**"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: its command contains hidden Unicode bidirectional controls (%2).**"
+msgstr "**Apelul de instrument %1 a fost respins: comanda sa conține caractere de control bidirecționale Unicode ascunse (%2).**"
+
+#: notebook_intelligence/mcp_manager.py
+msgid "**%1** server tools:"
+msgstr "Instrumentele serverului **%1**:"
+
+#: notebook_intelligence/claude.py
+msgid "**Bash command blocked: hidden Unicode bidirectional controls detected (%1).**"
+msgstr "**Comandă Bash blocată: au fost detectate caractere de control bidirecționale Unicode ascunse (%1).**"
+
+#: notebook_intelligence/claude.py
+msgid "**Claude agent error:** %1"
+msgstr "**Eroare a agentului Claude:** %1"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/claude.py
+msgid "**Error:** %1"
+msgstr "**Eroare:** %1"
+
+#: src/components/skills-panel.tsx
+msgid "+ New project skill"
+msgstr "+ Skill nou de proiect"
+
+#: src/components/skills-panel.tsx
+msgid "+ New user skill"
+msgstr "+ Skill nou de utilizator"
+
+#: src/components/perf-panel.tsx
+msgid "1m %1, 5m %2, 15m %3"
+msgstr "1m %1, 5m %2, 15m %3"
+
+#: notebook_intelligence/extension.py
+msgid "A duplicate submission with this message ID was ignored; the original request is still running."
+msgstr "O trimitere duplicată cu acest ID de mesaj a fost ignorată; cererea inițială încă rulează."
+
+#: src/components/perf-panel.tsx
+msgid "A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost."
+msgstr "Un arbore ~/.claude mare face ca fiecare pornire de agent să plătească pentru parcurgerea lui. Pe un sistem de fișiere de rețea, aceasta reprezintă adesea cea mai mare parte a costului de pornire."
+
+#: notebook_intelligence/extension.py
+msgid "A live endpoint test is already running."
+msgstr "Un test live al endpointului rulează deja."
+
+#: src/components/perf-panel.tsx
+msgid "A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local."
+msgstr "Un sistem de fișiere de rețea. Interpretați fiecare valoare de latență din acest grup ținând cont de acest lucru și setați NBI_PERF_LOG_DIR către o locație locală."
+
+#: src/components/perf-panel.tsx
+msgid "A one-line reading of where this turn's time went, derived from the columns to the left."
+msgstr "O sinteză pe un rând a modului în care a fost folosit timpul acestei ture, derivată din coloanele din stânga."
+
+#: src/components/skills-panel.tsx
+msgid "A project skill named \"%1\" already exists."
+msgstr "Există deja un skill de proiect numit „%1”."
+
+#: src/components/skills-panel.tsx
+msgid "A user skill named \"%1\" already exists."
+msgstr "Există deja un skill de utilizator numit „%1”."
+
+#: src/components/readiness-card.tsx
+msgid "ACP agent"
+msgstr "Agent ACP"
+
+#: src/chat-sidebar.tsx
+msgid "ACP mode"
+msgstr "Mod ACP"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode is not enabled"
+msgstr "Modul ACP nu este activat"
+
+#: src/chat-sidebar.tsx
+msgid "AI Assistant"
+msgstr "Asistent AI"
+
+#: src/components/settings-panel.tsx
+msgid "API Key"
+msgstr "Cheie API"
+
+#: notebook_intelligence/readiness.py
+msgid "API key present from %1."
+msgstr "Cheie API prezentă din %1."
+
+#: src/chat-sidebar.tsx
+msgid "Accept"
+msgstr "Acceptă"
+
+#: src/components/skills-panel.tsx
+msgid "Actions for %1"
+msgstr "Acțiuni pentru %1"
+
+#: src/chat-sidebar.tsx
+msgid "Activating device..."
+msgstr "Se activează dispozitivul..."
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Add"
+msgstr "Adaugă"
+
+#: src/components/settings-panel.tsx
+msgid "Add / Edit"
+msgstr "Adaugă / Editează"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add MCP server"
+msgstr "Adaugă server MCP"
+
+#: src/components/plugins-panel.tsx
+msgid "Add a marketplace to discover plugins, then install one to extend Claude Code with new commands, agents, and tool integrations."
+msgstr "Adăugați un marketplace pentru a descoperi pluginuri, apoi instalați unul pentru a extinde Claude Code cu comenzi, agenți și integrări de instrumente noi."
+
+#: src/markdown-renderer.tsx
+msgid "Add as new cell"
+msgstr "Adaugă ca celulă nouă"
+
+#: src/markdown-renderer.tsx
+msgid "Add code as new cell"
+msgstr "Adaugă codul ca celulă nouă"
+
+#: src/components/skills-panel.tsx
+msgid "Add file"
+msgstr "Adaugă fișier"
+
+#: src/chat-sidebar.tsx
+msgid "Add files as context"
+msgstr "Adaugă fișiere ca context"
+
+#: src/components/plugins-panel.tsx
+msgid "Add marketplace"
+msgstr "Adaugă marketplace"
+
+#: src/components/plugins-panel.tsx
+msgid "Add plugin marketplace"
+msgstr "Adaugă marketplace de pluginuri"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add server"
+msgstr "Adaugă server"
+
+#: src/chat-sidebar.tsx
+msgid "Add workspace file as context"
+msgstr "Adaugă fișier din spațiul de lucru ca context"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Adding…"
+msgstr "Se adaugă…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Additional permissions"
+msgstr "Permisiuni suplimentare"
+
+#: src/components/settings-panel.tsx
+msgid "Adds a small footer under each reply."
+msgstr "Adaugă un mic subsol sub fiecare răspuns."
+
+#: src/components/perf-panel.tsx
+msgid "Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate."
+msgstr "Adaugă conexiuni către endpointul configurat pentru a măsura timpii DNS, TCP și TLS și pentru a captura certificatul prezentat."
+
+#: src/components/settings-panel.tsx
+msgid "Agent account"
+msgstr "Contul agentului"
+
+#: src/components/settings-panel.tsx
+msgid "Agent default (e.g. '%1')"
+msgstr "Implicit al agentului (de ex. „%1”)"
+
+#: notebook_intelligence/readiness.py
+msgid "Agent mode and every built-in tool need tool calling. The model may not support it, or a proxy in front of the endpoint may be stripping the tools field."
+msgstr "Modul agent și toate instrumentele integrate necesită apelarea instrumentelor (tool calling). Este posibil ca modelul să nu o accepte sau ca un proxy din fața endpointului să elimine câmpul tools."
+
+#: src/components/settings-panel.tsx
+msgid "Agent type"
+msgstr "Tip de agent"
+
+#: src/components/skills-panel.tsx
+msgid "Allowed tools"
+msgstr "Instrumente permise"
+
+#: src/components/perf-panel.tsx
+msgid "Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines."
+msgstr "Adaugă și fiecare tură în format JSON Lines în directorul jurnalelor de performanță, pentru colectare între sesiuni sau mașini."
+
+#: src/components/settings-panel.tsx
+msgid "Also classify with the chat model"
+msgstr "Clasifică și cu modelul de chat"
+
+#: src/components/settings-panel.tsx
+msgid "Always confirm"
+msgstr "Cere mereu confirmare"
+
+#: notebook_intelligence/claude.py
+msgid "Approve Bash tool to execute the command above?"
+msgstr "Aprobați executarea comenzii de mai sus de către instrumentul Bash?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve running this command?"
+msgstr "Aprobați rularea acestei comenzi?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve this %1 tool call?"
+msgstr "Aprobați acest apel al instrumentului %1?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approving grants a lasting permission, not only this request."
+msgstr "Aprobarea acordă o permisiune permanentă, nu doar pentru această cerere."
+
+#: notebook_intelligence/claude.py
+msgid "Are you sure you want to call this tool?"
+msgstr "Sigur doriți să apelați acest instrument?"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Args (one per line)"
+msgstr "Argumente (câte unul pe linie)"
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence to generate Python code..."
+msgstr "Cereți lui Notebook Intelligence să genereze cod Python..."
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence..."
+msgstr "Întrebați Notebook Intelligence..."
+
+#: src/components/settings-panel.tsx
+msgid "Ask about cell outputs"
+msgstr "Întrebări despre ieșirile celulelor"
+
+#: src/cell-output-toolbar.ts src/index.ts
+msgid "Ask about this output"
+msgstr "Întreabă despre această ieșire"
+
+#: src/components/settings-panel.tsx
+msgid "Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English."
+msgstr "Cere AI-ului să scrie răspunsurile din chat și descrierile celulelor Chatbook în limba setată în JupyterLab. Codul, identificatorii și conținutul fișierelor rămân neschimbate. Nu are efect cât timp JupyterLab este în engleză."
+
+#: src/components/perf-panel.tsx
+msgid "Attribute detail"
+msgstr "Nivel de detaliu al atributelor"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (milliseconds)"
+msgstr "Întârzierea debouncer-ului pentru completarea automată (milisecunde)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (ms)"
+msgstr "Întârzierea debouncer-ului pentru completarea automată (ms)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete model"
+msgstr "Model pentru completarea automată"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run"
+msgstr "Rulare automată"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run when a static scan looks clean. Confirm when it flags a risk or cannot parse the cell. The scan is a speed bump, not a security boundary; false negatives are inevitable."
+msgstr "Rulează automat când o scanare statică nu găsește probleme. Cere confirmare când semnalează un risc sau nu poate analiza celula. Scanarea este un factor de încetinire, nu o barieră de securitate; rezultatele fals negative sunt inevitabile."
+
+#: src/components/settings-panel.tsx
+msgid "Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
+msgstr "Reîncarcă automat filele de notebook și de editor de fișiere când un proces extern (comandă din terminal, client de sincronizare sau agent AI) editează fișierul. Se omite când fila are modificări locale nesalvate."
+
+#: src/components/skills-panel.tsx
+msgid "Back"
+msgstr "Înapoi"
+
+#: src/components/settings-panel.tsx
+msgid "Backend kernel"
+msgstr "Kernel de backend"
+
+#: src/chat-sidebar.tsx
+msgid "Bad response"
+msgstr "Răspuns neutil"
+
+#: src/components/settings-panel.tsx
+msgid "Base URL"
+msgstr "URL de bază"
+
+#: src/components/perf-panel.tsx
+msgid "Below what local storage delivers. Worth comparing against a known-good node."
+msgstr "Sub ceea ce oferă stocarea locală. Merită comparat cu un nod despre care se știe că funcționează bine."
+
+#: src/chat-sidebar.tsx
+msgid "Binary files cannot be attached as chat context."
+msgstr "Fișierele binare nu pot fi atașate ca context pentru chat."
+
+#: src/components/skills-panel.tsx
+msgid "Breadcrumb"
+msgstr "Cale de navigare"
+
+#: src/chat-sidebar.tsx
+msgid "Built-in"
+msgstr "Integrat"
+
+#: src/components/skills-panel.tsx
+msgid "Bundle contains %1 file; showing %2 only. Edit supporting files directly on disk."
+msgid_plural "Bundle contains %1 files; showing %2 only. Edit supporting files directly on disk."
+msgstr[0] "Pachetul conține %1 fișier; se afișează doar %2. Editați fișierele auxiliare direct pe disc."
+msgstr[1] "Pachetul conține %1 fișiere; se afișează doar %2. Editați fișierele auxiliare direct pe disc."
+msgstr[2] "Pachetul conține %1 de fișiere; se afișează doar %2. Editați fișierele auxiliare direct pe disc."
+
+#: src/components/settings-panel.tsx
+msgid "By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs."
+msgstr "În mod implicit, agentul cere confirmare pentru orice depășește comenzile de citire de încredere. Accesul complet îi permite să editeze fișierele din spațiul de lucru și să ruleze comenzi shell fără să întrebe, într-un sandbox cu accesul la rețea dezactivat implicit. Tot ce blochează sandboxul eșuează în loc să ceară confirmare. Conținutul citit de agent poate influența ceea ce rulează."
+
+#: src/chat-sidebar.tsx
+msgid "By using Notebook Intelligence with GitHub Copilot subscription you agree to %1. Review the terms to understand about usage, limitations and ways to improve GitHub Copilot. Please review %2."
+msgstr "Folosind Notebook Intelligence cu un abonament GitHub Copilot, sunteți de acord cu %1. Consultați termenii pentru a înțelege utilizarea, limitările și modalitățile de îmbunătățire a GitHub Copilot. Consultați %2."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions is active: tool calls run without confirmation"
+msgstr "Ocolirea permisiunilor este activă: apelurile de instrumente rulează fără confirmare"
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions runs every tool call without asking for confirmation, with your full user account access. Content the agent reads can steer what it runs. Stays on until you switch modes or start a new session."
+msgstr "Ocolirea permisiunilor rulează fiecare apel de instrument fără a cere confirmare, cu accesul complet al contului dvs. de utilizator. Conținutul citit de agent poate influența ceea ce rulează. Rămâne activă până când schimbați modul sau începeți o sesiune nouă."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass permissions"
+msgstr "Ocolire permisiuni"
+
+#: notebook_intelligence/claude.py
+msgid "Calling tool '%1'..."
+msgstr "Se apelează instrumentul „%1”..."
+
+#: src/chatbook-toolbar.ts
+msgid "Can't convert this notebook yet"
+msgstr "Acest notebook nu poate fi convertit încă"
+
+#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+msgid "Cancel"
+msgstr "Anulează"
+
+#: src/chat-sidebar.tsx
+msgid "Cancel activation"
+msgstr "Anulează activarea"
+
+#: src/chat-sidebar.tsx
+msgid "Canceled"
+msgstr "Anulat"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for %1"
+msgstr "Celulele Chatbook nerulate nu pot fi exportate: nu există un comentariu de linie sigur pentru %1"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for the selected language"
+msgstr "Celulele Chatbook nerulate nu pot fi exportate: nu există un comentariu de linie sigur pentru limbajul selectat"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1"
+msgstr "Celula %1"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output"
+msgstr "Ieșirea celulei %1"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output (%2)"
+msgstr "Ieșirea celulei %1 (%2)"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output"
+msgstr "Ieșirea celulei"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output (%1)"
+msgstr "Ieșirea celulei (%1)"
+
+#: src/components/settings-panel.tsx
+msgid "Cell output features"
+msgstr "Funcții pentru ieșirea celulelor"
+
+#: src/chat-sidebar.tsx
+msgid "Change provider"
+msgstr "Schimbă furnizorul"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Characters that would not display are shown as \\u{XXXX}."
+msgstr "Caracterele care nu s-ar afișa sunt prezentate ca \\u{XXXX}."
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent setting sources"
+msgstr "Surse de setări ale agentului de chat"
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent tools"
+msgstr "Instrumentele agentului de chat"
+
+#: src/chat-sidebar.tsx
+msgid "Chat is disabled as you don't have a model configured."
+msgstr "Chatul este dezactivat deoarece nu aveți un model configurat."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by ACP agent mode."
+msgstr "Chatul este deservit de modul agent ACP."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by Claude mode."
+msgstr "Chatul este deservit de modul Claude."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by the configured chat model provider."
+msgstr "Chatul este deservit de furnizorul de model de chat configurat."
+
+#: src/chat-sidebar.tsx
+msgid "Chat mode"
+msgstr "Mod chat"
+
+#: src/components/settings-panel.tsx
+msgid "Chat model"
+msgstr "Model de chat"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Chat model is not set!"
+msgstr "Modelul de chat nu este setat!"
+
+#: src/components/readiness-card.tsx
+msgid "Chat path"
+msgstr "Calea chatului"
+
+#: src/chat-sidebar.tsx
+msgid "Chat response image"
+msgstr "Imagine din răspunsul chatului"
+
+#: src/chat-sidebar.tsx
+msgid "Chat transcript"
+msgstr "Transcrierea chatului"
+
+#: src/index.ts
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
+msgstr "Chatbook generează cod %1 și îl rulează în %2. Acel proces are aceleași privilegii ca orice kernel Jupyter: fișiere, rețea, variabile de mediu și instalări de pachete."
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook is disabled by your administrator"
+msgstr "Chatbook este dezactivat de administrator"
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm every natural-language run."
+msgstr "Chatbook este setat să ceară confirmare la fiecare rulare în limbaj natural."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm only when the scan flags a risk."
+msgstr "Chatbook este setat să ceară confirmare doar când scanarea semnalează un risc."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to run generated code immediately."
+msgstr "Chatbook este setat să ruleze imediat codul generat."
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
+msgstr "Chatbook rămâne kernelul notebookului, dar codul generat rulează în acest kernelspec Jupyter. Limbajul, evidențierea sintaxei și exportul urmează acel kernel. Reporniți notebookurile Chatbook deschise după ce îl schimbați."
+
+#: src/components/perf-panel.tsx
+msgid "Check status: %1"
+msgstr "Starea verificării: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key and Base URL for this provider in NBI Settings, and that the endpoint is reachable from the Jupyter server process."
+msgstr "Verificați cheia API și URL-ul de bază pentru acest furnizor în Setări NBI și dacă endpointul este accesibil din procesul serverului Jupyter."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key, the Base URL, and that the selected model id is one this endpoint serves. The server log carries the provider's own error text."
+msgstr "Verificați cheia API, URL-ul de bază și dacă ID-ul modelului selectat este unul oferit de acest endpoint. Jurnalul serverului conține textul erorii furnizorului."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the Jupyter server log for the underlying error."
+msgstr "Verificați jurnalul serverului Jupyter pentru eroarea de bază."
+
+#: src/components/readiness-card.tsx
+msgid "Checking configuration…"
+msgstr "Se verifică configurația…"
+
+#: src/components/readiness-card.tsx
+msgid "Checking…"
+msgstr "Se verifică…"
+
+#: src/index.ts
+msgid "Choose start directory for %1"
+msgstr "Alegeți directorul de pornire pentru %1"
+
+#: notebook_intelligence/extension.py
+msgid "Claude Code mode is not enabled"
+msgstr "Modul Claude Code nu este activat"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Claude Code mode is still starting. Please try again in a moment."
+msgstr "Modul Claude Code încă pornește. Încercați din nou peste câteva momente."
+
+#: src/index.ts
+msgid "Claude Code terminal session"
+msgstr "Sesiune de terminal Claude Code"
+
+#: src/components/settings-panel.tsx
+msgid "Claude Code tools"
+msgstr "Instrumente Claude Code"
+
+#: notebook_intelligence/extension.py
+msgid "Claude MCP management is disabled by your administrator"
+msgstr "Gestionarea MCP pentru Claude este dezactivată de administrator"
+
+#: src/components/settings-panel.tsx
+msgid "Claude account"
+msgstr "Cont Claude"
+
+#: src/chat-sidebar.tsx src/components/readiness-card.tsx
+msgid "Claude mode"
+msgstr "Mod Claude"
+
+#: src/components/permission-mode-select.tsx
+msgid "Claude permission mode"
+msgstr "Modul de permisiuni Claude"
+
+#: notebook_intelligence/claude.py
+msgid "Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan."
+msgstr "Claude dorește să intre în modul de planificare pentru a explora și a proiecta o abordare de implementare. În modul de planificare, Claude va explora temeinic baza de cod, va identifica tiparele existente, va proiecta o strategie de implementare și va prezenta un plan spre aprobare. Nu se vor face modificări de cod până când nu aprobați planul."
+
+#: src/components/settings-panel.tsx
+msgid "Click to learn more about security implications"
+msgstr "Faceți clic pentru a afla mai multe despre implicațiile de securitate"
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Close"
+msgstr "Închide"
+
+#: src/chat-sidebar.tsx
+msgid "Close file picker"
+msgstr "Închide selectorul de fișiere"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Close notebook generation popover"
+msgstr "Închide fereastra de generare a notebookului"
+
+#: src/chat-sidebar.tsx
+msgid "Close tools picker"
+msgstr "Închide selectorul de instrumente"
+
+#: src/chatbook.ts
+msgid "Code cell (%1): switch to natural language"
+msgstr "Celulă de cod (%1): comută la limbaj natural"
+
+#: src/chatbook.ts
+msgid "Code cell: switch to natural language"
+msgstr "Celulă de cod: comută la limbaj natural"
+
+#: src/components/perf-panel.tsx
+msgid "Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn."
+msgstr "Pornirea la rece este dominată aici de citirea arborelui de instalare. Aceasta este valoarea care ajunge în coloana Pornire la fiecare tură."
+
+#: notebook_intelligence/acp_agent.py src/components/claude-mcp-panel.tsx
+msgid "Command"
+msgstr "Comandă"
+
+#: src/components/perf-panel.tsx
+msgid "Compare %1 against %2: close together means the time is in the model or the gateway, far apart means it is local. Expand a row for that turn's phase breakdown."
+msgstr "Comparați %1 cu %2: valori apropiate înseamnă că timpul este petrecut în model sau în gateway, valori îndepărtate înseamnă că este local. Extindeți un rând pentru defalcarea pe faze a acelei ture."
+
+#: src/components/settings-panel.tsx
+msgid "Config file path"
+msgstr "Calea fișierului de configurare"
+
+#: src/chat-sidebar.tsx
+msgid "Configure models"
+msgstr "Configurează modelele"
+
+#: src/chat-sidebar.tsx
+msgid "Configure providers, API keys, MCP servers, and skills"
+msgstr "Configurați furnizori, chei API, servere MCP și skilluri"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools"
+msgstr "Configurează instrumentele"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools (warning: irreversible tools selected)"
+msgstr "Configurează instrumentele (atenție: instrumente ireversibile selectate)"
+
+#: src/components/perf-panel.tsx
+msgid "Configured endpoint"
+msgstr "Endpoint configurat"
+
+#: src/components/permission-mode-select.tsx
+msgid "Confirm Bypass Permissions"
+msgstr "Confirmați ocolirea permisiunilor"
+
+#: src/components/perf-panel.tsx
+msgid "Confirm and run"
+msgstr "Confirmă și rulează"
+
+#: src/components/settings-panel.tsx
+msgid "Confirm if risky"
+msgstr "Cere confirmare dacă e riscant"
+
+#: src/components/perf-panel.tsx
+msgid "Connect and spawn took %1. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up."
+msgstr "Conectarea și pornirea au durat %1. Acesta este timpul de pornire al subprocesului și al CLI-ului, de obicei node plus citirea pachetelor, unde se observă stocarea lentă."
+
+#: src/components/mcp-util.ts
+msgid "Connection failed. Reload MCP servers to retry."
+msgstr "Conectarea a eșuat. Reîncărcați serverele MCP pentru a reîncerca."
+
+#: src/components/perf-panel.tsx
+msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
+msgstr "Doar stabilirea conexiunii costă atât înainte de a începe orice lucru al modelului, iar fiecare conexiune la rece către gateway plătește acest cost."
+
+#: src/components/settings-panel.tsx
+msgid "Conversation History"
+msgstr "Istoricul conversațiilor"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert"
+msgstr "Convertește"
+
+#: src/index.ts
+msgid "Convert notebook to Chatbook"
+msgstr "Convertește notebookul în Chatbook"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert to Chatbook"
+msgstr "Convertește în Chatbook"
+
+#: src/components/perf-panel.tsx
+msgid "Copied"
+msgstr "Copiat"
+
+#: src/markdown-renderer.tsx
+msgid "Copy"
+msgstr "Copiază"
+
+#: src/components/perf-panel.tsx
+msgid "Copy as JSON"
+msgstr "Copiază ca JSON"
+
+#: src/chat-sidebar.tsx
+msgid "Copy code %1 and enter at %2 to allow access to GitHub Copilot from this app. Activation could take up to a minute after you enter the code."
+msgstr "Copiați codul %1 și introduceți-l la %2 pentru a permite acestei aplicații accesul la GitHub Copilot. Activarea poate dura până la un minut după ce introduceți codul."
+
+#: src/markdown-renderer.tsx
+msgid "Copy code to clipboard"
+msgstr "Copiază codul în clipboard"
+
+#: src/components/claude-session-picker.tsx
+msgid "Copy resume command"
+msgstr "Copiază comanda de reluare"
+
+#: src/chat-sidebar.tsx
+msgid "Could not attach: %1"
+msgstr "Nu s-a putut atașa: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Could not convert to Chatbook: %1"
+msgstr "Nu s-a putut converti în Chatbook: %1"
+
+#: src/chatbook.ts
+msgid "Could not generate a description: %1"
+msgstr "Nu s-a putut genera o descriere: %1"
+
+#: notebook_intelligence/extension.py
+msgid "Could not list workspace mentions"
+msgstr "Nu s-au putut lista mențiunile din spațiul de lucru"
+
+#: src/index.ts
+msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
+msgstr "Creează o copie Chatbook a acestui notebook, lăsând originalul neschimbat"
+
+#: src/chatbook-toolbar.ts
+msgid "Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments."
+msgstr "Creează un notebook %1 nou din acest Chatbook. Chatbookul original rămâne neschimbat. Celulele care nu au fost rulate devin comentarii."
+
+#: src/index.ts
+msgid "Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged"
+msgstr "Creează un notebook nou din acest Chatbook folosind kernelul de backend configurat, lăsând originalul neschimbat"
+
+#: src/index.ts
+msgid "Create a notebook whose cells are natural-language prompts"
+msgstr "Creează un notebook ale cărui celule sunt prompturi în limbaj natural"
+
+#: src/markdown-renderer.tsx
+msgid "Create new file from code"
+msgstr "Creează un fișier nou din cod"
+
+#: src/markdown-renderer.tsx
+msgid "Create new notebook from code"
+msgstr "Creează un notebook nou din cod"
+
+#: src/chatbook-toolbar.ts
+msgid "Created Chatbook copy: %1"
+msgstr "Copie Chatbook creată: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Creează o copie Chatbook a acestui notebook lângă el și o deschide, inclusiv cu modificările nesalvate. Celulele de cod devin celule de cod Chatbook și rulează exact așa cum sunt scrise; ieșirile și markdown-ul sunt păstrate. Originalul nu este modificat. Codul său va rula în %1, kernelul de execuție Chatbook, în loc de %2. Acum nu se trimite nimic modelului. Prima dată când fiecare celulă de cod rulează cu succes, codul său este trimis modelului pentru o descriere de un rând."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Creează o copie Chatbook a acestui notebook lângă el și o deschide, inclusiv cu modificările nesalvate. Celulele de cod devin celule de cod Chatbook și rulează exact așa cum sunt scrise; ieșirile și markdown-ul sunt păstrate. Originalul nu este modificat. Codul său va rula în %1, kernelul de execuție Chatbook. Acum nu se trimite nimic modelului. Prima dată când fiecare celulă de cod rulează cu succes, codul său este trimis modelului pentru o descriere de un rând."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Creează o copie Chatbook a acestui notebook lângă el și o deschide, inclusiv cu modificările nesalvate. Celulele de cod devin celule de cod Chatbook și rulează exact așa cum sunt scrise; ieșirile și markdown-ul sunt păstrate. Originalul nu este modificat. Acum nu se trimite nimic modelului. Prima dată când fiecare celulă de cod rulează cu succes, codul său este trimis modelului pentru o descriere de un rând."
+
+#: notebook_intelligence/readiness.py
+msgid "Credential present from %1."
+msgstr "Credențiale prezente din %1."
+
+#: src/components/settings-panel.tsx
+msgid "Default (recommended)"
+msgstr "Implicit (recomandat)"
+
+#: src/components/settings-panel.tsx
+msgid "Default chat mode"
+msgstr "Mod chat implicit"
+
+#: src/components/skills-panel.tsx
+msgid "Delete"
+msgstr "Șterge"
+
+#: src/components/skills-panel.tsx
+msgid "Delete file?"
+msgstr "Ștergeți fișierul?"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill"
+msgstr "Șterge skillul"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill?"
+msgstr "Ștergeți skillul?"
+
+#: src/components/skills-panel.tsx
+msgid "Deleted \"%1\""
+msgstr "„%1” a fost șters"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Denial recorded"
+msgstr "Refuz înregistrat"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Describe how to update the active notebook..."
+msgstr "Descrieți cum să fie actualizat notebookul activ..."
+
+#: src/components/skills-panel.tsx
+msgid "Description"
+msgstr "Descriere"
+
+#: src/components/skills-panel.tsx
+msgid "Description is required."
+msgstr "Descrierea este obligatorie."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Details from %1"
+msgstr "Detalii de la %1"
+
+#: src/components/perf-panel.tsx
+msgid "Diagnostics"
+msgstr "Diagnosticare"
+
+#: src/chat-sidebar.tsx
+msgid "Directories cannot be attached as chat context."
+msgstr "Directoarele nu pot fi atașate ca context pentru chat."
+
+#: src/components/plugins-panel.tsx
+msgid "Disable"
+msgstr "Dezactivează"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disable for workspace"
+msgstr "Dezactivează pentru spațiul de lucru"
+
+#: src/components/perf-panel.tsx
+msgid "Disabled by your administrator (%1)"
+msgstr "Dezactivat de administrator (%1)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabled for workspace"
+msgstr "Dezactivat pentru spațiul de lucru"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabling…"
+msgstr "Se dezactivează…"
+
+#: src/components/skills-panel.tsx
+msgid "Discard"
+msgstr "Renunță"
+
+#: src/components/skills-panel.tsx
+msgid "Discard unsaved changes?"
+msgstr "Renunțați la modificările nesalvate?"
+
+#: src/components/skills-panel.tsx
+msgid "Dismiss"
+msgstr "Închide"
+
+#: notebook_intelligence/claude.py
+msgid "Do you want to confirm the plan above?"
+msgstr "Doriți să confirmați planul de mai sus?"
+
+#: src/chat-sidebar.tsx
+msgid "Don't use as context"
+msgstr "Nu folosi ca context"
+
+#: src/chat-sidebar.tsx
+msgid "Done"
+msgstr "Gata"
+
+#: src/chat-sidebar.tsx
+msgid "Drop files to attach as context"
+msgstr "Plasați fișierele aici pentru a le atașa ca context"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: @-mention"
+msgstr "Mod de plasare: mențiune @"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: raw path"
+msgstr "Mod de plasare: cale simplă"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate"
+msgstr "Duplică"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate skill"
+msgstr "Duplică skillul"
+
+#: src/components/perf-panel.tsx
+msgid "Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local."
+msgstr "Durata pe care SDK-ul o atribuie API-ului modelului. Comparați cu Activ: valori apropiate înseamnă că timpul este petrecut în gateway sau în model, valori îndepărtate înseamnă că este local."
+
+#: src/components/skills-panel.tsx
+msgid "Edit"
+msgstr "Editează"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit Python files using the JupyterLab file editor"
+msgstr "Editează fișiere Python folosind editorul de fișiere JupyterLab"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit notebook using the JupyterLab notebook editor"
+msgstr "Editează notebookul folosind editorul de notebook JupyterLab"
+
+#: src/components/skills-panel.tsx
+msgid "Edit skill"
+msgstr "Editează skillul"
+
+#: src/chat-sidebar.tsx
+msgid "Empty files do not provide useful context."
+msgstr "Fișierele goale nu oferă context util."
+
+#: src/components/plugins-panel.tsx
+msgid "Enable"
+msgstr "Activează"
+
+#: src/components/settings-panel.tsx
+msgid "Enable ACP mode"
+msgstr "Activează modul ACP"
+
+#: src/components/settings-panel.tsx
+msgid "Enable Claude mode"
+msgstr "Activează modul Claude"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enable for workspace"
+msgstr "Activează pentru spațiul de lucru"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enabling…"
+msgstr "Se activează…"
+
+#: notebook_intelligence/claude.py
+msgid "Enter Plan Mode"
+msgstr "Intră în modul de planificare"
+
+#: src/components/plugins-panel.tsx
+msgid "Enter a plugin name or the plugin@marketplace shorthand."
+msgstr "Introduceți un nume de plugin sau forma prescurtată plugin@marketplace."
+
+#: notebook_intelligence/claude.py
+msgid "Entered plan mode"
+msgstr "S-a intrat în modul de planificare"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Environment (KEY=value, one per line)"
+msgstr "Mediu (CHEIE=valoare, câte una pe linie)"
+
+#: notebook_intelligence/claude.py
+msgid "Error communicating with Claude agent: %1"
+msgstr "Eroare de comunicare cu agentul Claude: %1"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Execute shell commands using embedded terminal in Agent UI or JupyterLab terminal"
+msgstr "Execută comenzi shell folosind terminalul încorporat în interfața agentului sau terminalul JupyterLab"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgid "Execution kernel"
+msgstr "Kernel de execuție"
+
+#: src/components/settings-panel.tsx
+msgid "Execution mode"
+msgstr "Mod de execuție"
+
+#: notebook_intelligence/claude.py
+msgid "Exit plan mode"
+msgstr "Ieși din modul de planificare"
+
+#: src/components/perf-panel.tsx
+msgid "Expand"
+msgstr "Extinde"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Expected at least one server entry."
+msgstr "Era așteptată cel puțin o intrare de server."
+
+#: src/components/settings-panel.tsx
+msgid "Experimental. Routes chat through an external coding agent over the %1. Requires a preinstalled %2 adapter (%3). See the %4. ACP mode and Claude mode are mutually exclusive: enabling one turns the other off."
+msgstr "Experimental. Direcționează chatul printr-un agent de programare extern prin %1. Necesită un adaptor %2 preinstalat (%3). Consultați %4. Modul ACP și modul Claude se exclud reciproc: activarea unuia îl dezactivează pe celălalt."
+
+#: src/components/settings-panel.tsx
+msgid "Explain cell errors"
+msgstr "Explică erorile celulelor"
+
+#: src/index.ts
+msgid "Explain code"
+msgstr "Explică codul"
+
+#: src/index.ts
+msgid "Explain output"
+msgstr "Explică ieșirea"
+
+#: src/cell-output-toolbar.ts
+msgid "Explain this cell's output"
+msgstr "Explică ieșirea acestei celule"
+
+#: src/chatbook-toolbar.ts
+msgid "Export"
+msgstr "Exportă"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as %1 notebook"
+msgstr "Exportă ca notebook %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as a notebook for the Chatbook backend kernel"
+msgstr "Exportă ca notebook pentru kernelul de backend Chatbook"
+
+#: src/index.ts
+msgid "Export as code notebook"
+msgstr "Exportă ca notebook de cod"
+
+#: src/chatbook-toolbar.ts
+msgid "Export failed: %1"
+msgstr "Exportul a eșuat: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Exported %1"
+msgstr "S-a exportat %1"
+
+#: src/chat-sidebar.tsx
+msgid "Extension tools"
+msgstr "Instrumente din extensii"
+
+#: src/components/settings-panel.tsx
+msgid "External changes"
+msgstr "Modificări externe"
+
+#: src/index.ts
+msgid "Failed to access the notebook: %1"
+msgstr "Nu s-a putut accesa notebookul: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach '%1'."
+msgstr "Nu s-a putut atașa „%1”."
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach workspace file '%1'."
+msgstr "Nu s-a putut atașa fișierul din spațiul de lucru „%1”."
+
+#: src/components/claude-session-picker.tsx
+msgid "Failed to copy resume command"
+msgstr "Nu s-a putut copia comanda de reluare"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to delete skill: %1"
+msgstr "Nu s-a putut șterge skillul: %1"
+
+#: src/index.ts
+msgid "Failed to find active file"
+msgstr "Nu s-a găsit fișierul activ"
+
+#: src/index.ts
+msgid "Failed to find active notebook"
+msgstr "Nu s-a găsit notebookul activ"
+
+#: src/index.ts
+msgid "Failed to find notebook: %1"
+msgstr "Nu s-a găsit notebookul: %1"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get completions from GitHub Copilot: [%1]: %2"
+msgstr "Nu s-au putut obține completări de la GitHub Copilot: [%1]: %2"
+
+#: notebook_intelligence/extension.py
+msgid "Failed to get device verification info from GitHub Copilot"
+msgstr "Nu s-au putut obține informațiile de verificare a dispozitivului de la GitHub Copilot"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get responses from GitHub Copilot: [%1]: %2"
+msgstr "Nu s-au putut obține răspunsuri de la GitHub Copilot: [%1]: %2"
+
+#: src/index.ts
+msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
+msgstr "Nu s-a putut insera la cursor. Deschideți un notebook sau un fișier pentru a insera codul."
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to load plugins: %1"
+msgstr "Nu s-au putut încărca pluginurile: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Failed to load report: %1"
+msgstr "Nu s-a putut încărca raportul: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to load workspace files."
+msgstr "Nu s-au putut încărca fișierele din spațiul de lucru."
+
+#: src/components/skills-panel.tsx
+msgid "Failed to read skill: %1"
+msgstr "Nu s-a putut citi skillul: %1"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Failed to remove: %1"
+msgstr "Nu s-a putut elimina: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to restore skill: %1"
+msgstr "Nu s-a putut restaura skillul: %1"
+
+#: src/index.ts
+msgid "Failed to save MCP config: %1"
+msgstr "Nu s-a putut salva configurația MCP: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to uninstall: %1"
+msgstr "Nu s-a putut dezinstala: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update marketplace: %1"
+msgstr "Nu s-a putut actualiza marketplace-ul: %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Failed to update workspace state: %1"
+msgstr "Nu s-a putut actualiza starea spațiului de lucru: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update: %1"
+msgstr "Nu s-a putut actualiza: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Fetching…"
+msgstr "Se preia…"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "File '%1' created successfully"
+msgstr "Fișierul „%1” a fost creat cu succes"
+
+#: notebook_intelligence/extension.py
+msgid "File exceeds %1 MB upload limit"
+msgstr "Fișierul depășește limita de încărcare de %1 MB"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system read operations within Jupyter root directory"
+msgstr "Operații de citire din sistemul de fișiere în directorul rădăcină Jupyter"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system write operations within Jupyter root directory"
+msgstr "Operații de scriere în sistemul de fișiere în directorul rădăcină Jupyter"
+
+#: notebook_intelligence/acp_agent.py src/components/skills-panel.tsx
+msgid "Files"
+msgstr "Fișiere"
+
+#: src/components/launcher-picker.tsx
+msgid "Filter sessions..."
+msgstr "Filtrați sesiunile..."
+
+#: src/components/perf-panel.tsx
+msgid "First content chunk to last. Excludes connect."
+msgstr "De la primul la ultimul fragment de conținut. Exclude conectarea."
+
+#: src/index.ts
+msgid "Fix code"
+msgstr "Corectează codul"
+
+#: src/index.ts
+msgid "Focus Notebook Intelligence chat input"
+msgstr "Focalizează câmpul de introducere al chatului Notebook Intelligence"
+
+#: src/components/settings-panel.tsx
+msgid "Full access (run without asking)"
+msgstr "Acces complet (rulează fără a întreba)"
+
+#: src/components/perf-panel.tsx
+msgid "Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket."
+msgstr "Complet: numele de bază ale fișierelor și numele modelelor, instrumentelor și serverelor sunt înregistrate așa cum sunt scrise. Mai ușor de citit local; verificați-l înainte de a-l lipi într-un tichet."
+
+#: src/components/perf-panel.tsx
+msgid "Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text."
+msgstr "Pauze între fragmentele de stream mai lungi decât pragul de blocare. Fiecare este etichetat după cum a urmat utilizării unui instrument sau unui text."
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate"
+msgstr "Generează"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate (Enter)"
+msgstr "Generează (Enter)"
+
+#: src/components/settings-panel.tsx
+msgid "Generate and execute immediately, same as a normal notebook cell. Inspect generated code afterward if you need to."
+msgstr "Generează și execută imediat, la fel ca o celulă de notebook obișnuită. Inspectați ulterior codul generat, dacă este nevoie."
+
+#: src/index.ts
+msgid "Generate code"
+msgstr "Generează cod"
+
+#: src/index.ts
+msgid "Generated code"
+msgstr "Cod generat"
+
+#: src/chat-sidebar.tsx
+msgid "Generating"
+msgstr "Se generează"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generating notebook…"
+msgstr "Se generează notebookul…"
+
+#: src/chat-sidebar.tsx
+msgid "Generating response."
+msgstr "Se generează răspunsul."
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generation failed: %1"
+msgstr "Generarea a eșuat: %1"
+
+#: src/index.ts
+msgid "GitHub Copilot Status"
+msgstr "Starea GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot chat terms"
+msgstr "Termenii de chat GitHub Copilot"
+
+#: src/components/settings-panel.tsx
+msgid "GitHub Copilot login"
+msgstr "Autentificare GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Logged in"
+msgstr "GitHub Copilot: autentificat"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Not logged in"
+msgstr "GitHub Copilot: neautentificat"
+
+#: notebook_intelligence/extension.py
+msgid "GitHub Skill import is disabled by configuration"
+msgstr "Importul de skilluri din GitHub este dezactivat prin configurație"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Terms for Additional Products and Features"
+msgstr "Termenii GitHub pentru produse și funcții suplimentare"
+
+#: src/components/skills-panel.tsx
+msgid "GitHub repo URL"
+msgstr "URL-ul depozitului GitHub"
+
+#: src/components/plugins-panel.tsx
+msgid "GitHub-sourced marketplaces are disabled by your administrator. Use a non-GitHub URL or a local filesystem path."
+msgstr "Marketplace-urile din surse GitHub sunt dezactivate de administrator. Folosiți un URL care nu este GitHub sau o cale din sistemul de fișiere local."
+
+#: src/chat-sidebar.tsx
+msgid "Good response"
+msgstr "Răspuns util"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Headers (Name: value, one per line)"
+msgstr "Antete (Nume: valoare, câte unul pe linie)"
+
+#: src/components/tool-call-card.tsx
+msgid "Hide diff"
+msgstr "Ascunde diferențele"
+
+#: src/components/perf-panel.tsx
+msgid "Hide raw output"
+msgstr "Ascunde ieșirea brută"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)"
+msgstr "Ascunde acest server de Claude în spațiul de lucru Jupyter curent (celelalte spații de lucru nu sunt afectate)"
+
+#: src/components/perf-panel.tsx
+msgid "Hide timeline for the turn at %1"
+msgstr "Ascunde cronologia turei de la %1"
+
+#: src/components/perf-panel.tsx
+msgid "Host load average"
+msgstr "Încărcarea medie a gazdei"
+
+#: notebook_intelligence/readiness.py
+msgid "If turns fail with a 401, sign in again from NBI Settings under GitHub Copilot."
+msgstr "Dacă turele eșuează cu o eroare 401, autentificați-vă din nou din Setări NBI, la GitHub Copilot."
+
+#: src/components/skills-panel.tsx
+msgid "Import"
+msgstr "Importă"
+
+#: src/components/skills-panel.tsx
+msgid "Import from GitHub"
+msgstr "Importă din GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Import skill from GitHub"
+msgstr "Importă skill din GitHub"
+
+#: src/components/perf-panel.tsx
+msgid "Include network check"
+msgstr "Include verificarea rețelei"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from chat model"
+msgstr "Moștenește de la modelul de chat"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from general settings"
+msgstr "Moștenește din setările generale"
+
+#: src/index.ts
+msgid "Inline chat failed: %1"
+msgstr "Chatul inline a eșuat: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Inline chat model"
+msgstr "Model pentru chatul inline"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Input"
+msgstr "Intrare"
+
+#: src/chat-sidebar.tsx
+msgid "Input Parameters"
+msgstr "Parametri de intrare"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Input mode"
+msgstr "Mod de introducere"
+
+#: src/components/perf-panel.tsx
+msgid "Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them."
+msgstr "Tokenuri de intrare, inclusiv citirile și scrierile din cache, însumate la fel ca în subsolul de utilizare al chatului."
+
+#: src/markdown-renderer.tsx
+msgid "Insert at cursor"
+msgstr "Inserează la cursor"
+
+#: src/markdown-renderer.tsx
+msgid "Insert code at cursor"
+msgstr "Inserează codul la cursor"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Install"
+msgstr "Instalează"
+
+#: src/components/plugins-panel.tsx
+msgid "Install from"
+msgstr "Instalează din"
+
+#: src/components/skills-panel.tsx
+msgid "Install into"
+msgstr "Instalează în"
+
+#: src/components/plugins-panel.tsx
+msgid "Install plugin"
+msgstr "Instalează plugin"
+
+#: notebook_intelligence/readiness.py
+msgid "Install the Claude Code CLI and make sure it is on the PATH of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH to its absolute path and restart."
+msgstr "Instalați CLI-ul Claude Code și asigurați-vă că se află în PATH-ul procesului care rulează JupyterLab sau setați NBI_CLAUDE_CLI_PATH la calea sa absolută și reporniți."
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Installing…"
+msgstr "Se instalează…"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Invalid JSON: %1"
+msgstr "JSON nevalid: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Invalid name. %1"
+msgstr "Nume nevalid. %1"
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON is empty."
+msgstr "JSON-ul este gol."
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON must describe a server entry."
+msgstr "JSON-ul trebuie să descrie o intrare de server."
+
+#: src/components/settings-panel.tsx
+msgid "Jupyter UI tools"
+msgstr "Instrumente pentru interfața Jupyter"
+
+#: src/components/perf-panel.tsx
+msgid "Jupyter root directory"
+msgstr "Directorul rădăcină Jupyter"
+
+#: src/components/skills-panel.tsx
+msgid "Keep editing"
+msgstr "Continuă editarea"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Lasting rule"
+msgstr "Regulă permanentă"
+
+#: src/components/skills-panel.tsx
+msgid "Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server."
+msgstr "Link către rădăcina depozitului, o ramură sau un subdirector care conține %1. Depozitele private funcționează dacă %2 este setat sau %3 este configurat pe serverul Jupyter."
+
+#: notebook_intelligence/readiness.py
+msgid "Listing models failed (%1)."
+msgstr "Listarea modelelor a eșuat (%1)."
+
+#: src/components/readiness-card.tsx
+msgid "Live endpoint check"
+msgstr "Verificare live a endpointului"
+
+#: src/components/plugins-panel.tsx
+msgid "Loading marketplace plugins..."
+msgstr "Se încarcă pluginurile din marketplace..."
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Loading sessions…"
+msgstr "Se încarcă sesiunile…"
+
+#: src/components/skills-panel.tsx
+msgid "Loading skill…"
+msgstr "Se încarcă skillul…"
+
+#: src/chat-sidebar.tsx
+msgid "Loading workspace files..."
+msgstr "Se încarcă fișierele din spațiul de lucru..."
+
+#: src/components/settings-panel.tsx
+msgid "Loading..."
+msgstr "Se încarcă..."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Loading…"
+msgstr "Se încarcă…"
+
+#: src/components/setting-lock.ts
+msgid "Locked by your administrator"
+msgstr "Blocat de administrator"
+
+#: src/components/perf-panel.tsx
+msgid "Log to file"
+msgstr "Înregistrează în fișier"
+
+#: src/chat-sidebar.tsx
+msgid "Logged in"
+msgstr "Autentificat"
+
+#: src/chat-sidebar.tsx
+msgid "Logging in..."
+msgstr "Se autentifică..."
+
+#: src/chat-sidebar.tsx
+msgid "Login status: %1"
+msgstr "Starea autentificării: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Login to GitHub Copilot"
+msgstr "Autentificare la GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "Login using your GitHub account"
+msgstr "Autentificați-vă cu contul GitHub"
+
+#: src/chat-sidebar.tsx
+msgid "Logout"
+msgstr "Deconectare"
+
+#: src/chat-sidebar.tsx
+msgid "MCP Server Tools"
+msgstr "Instrumente ale serverelor MCP"
+
+#: src/components/settings-panel.tsx
+msgid "MCP Servers"
+msgstr "Servere MCP"
+
+#: notebook_intelligence/extension.py
+msgid "MCP server '%1' not found in %2 scope"
+msgstr "Serverul MCP „%1” nu a fost găsit în domeniul %2"
+
+#: src/components/skills-panel.tsx
+msgid "Managed by org manifest (%1)"
+msgstr "Gestionat de manifestul organizației (%1)"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace"
+msgstr "Marketplace"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace picker"
+msgstr "Selector de marketplace"
+
+#: src/components/perf-panel.tsx
+msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
+msgstr "Măsoară această mașină, nu o tură: latența și debitul sistemului de fișiere pentru directoarele de configurare și %1, costul pornirii la rece a interpretorului și a CLI-ului și concurența pentru resursele gazdei. Scrie și șterge fișiere temporare mici în directoarele pe care le măsoară."
+
+#: src/components/settings-panel.tsx
+msgid "Model"
+msgstr "Model"
+
+#: src/components/perf-panel.tsx
+msgid "Model name, hashed when attribute detail is set to redacted."
+msgstr "Numele modelului, sub formă de hash când nivelul de detaliu al atributelor este setat la anonimizat."
+
+#: src/components/readiness-card.tsx
+msgid "Model provider"
+msgstr "Furnizor de model"
+
+#: src/components/settings-panel.tsx
+msgid "Models"
+msgstr "Modele"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Multiple servers found; paste one entry at a time."
+msgstr "Au fost găsite mai multe servere; lipiți câte o intrare pe rând."
+
+#: src/components/skills-panel.tsx
+msgid "Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars."
+msgstr "Trebuie să conțină litere mici, cifre sau cratime (începând cu o literă sau o cifră), maximum 64 de caractere."
+
+#: src/chatbook-toolbar.ts src/chatbook.ts src/index.ts
+msgid "NBI Settings"
+msgstr "Setări NBI"
+
+#: src/components/perf-panel.tsx
+msgid "NBI config directory"
+msgstr "Directorul de configurare NBI"
+
+#: src/components/claude-mcp-panel.tsx src/components/skills-panel.tsx
+msgid "Name"
+msgstr "Nume"
+
+#: src/components/skills-panel.tsx
+msgid "Name (optional override)"
+msgstr "Nume (suprascriere opțională)"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to %1 code"
+msgstr "Celulă în limbaj natural: comută la cod %1"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to code"
+msgstr "Celulă în limbaj natural: comută la cod"
+
+#: src/components/settings-panel.tsx
+msgid "Natural-language execution"
+msgstr "Execuție în limbaj natural"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Network access"
+msgstr "Acces la rețea"
+
+#: src/components/skills-panel.tsx
+msgid "New Skill"
+msgstr "Skill nou"
+
+#: src/chat-sidebar.tsx
+msgid "New chat session started."
+msgstr "A început o nouă sesiune de chat."
+
+#: src/markdown-renderer.tsx
+msgid "New file"
+msgstr "Fișier nou"
+
+#: src/components/skills-panel.tsx
+msgid "New name"
+msgstr "Nume nou"
+
+#: src/markdown-renderer.tsx
+msgid "New notebook"
+msgstr "Notebook nou"
+
+#: src/components/skills-panel.tsx
+msgid "New skill"
+msgstr "Skill nou"
+
+#: src/components/skills-panel.tsx
+msgid "Next"
+msgstr "Înainte"
+
+#: notebook_intelligence/readiness.py
+msgid "No API key is configured (%1 is unset)."
+msgstr "Nu este configurată nicio cheie API (%1 nu este setat)."
+
+#: notebook_intelligence/readiness.py
+msgid "No Anthropic API key or auth token is visible to NBI."
+msgstr "Nicio cheie API sau token de autentificare Anthropic nu este vizibil pentru NBI."
+
+#: src/components/settings-panel.tsx
+msgid "No MCP servers found. Add MCP servers in the configuration file."
+msgstr "Nu s-au găsit servere MCP. Adăugați servere MCP în fișierul de configurare."
+
+#: src/components/settings-panel.tsx
+msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
+msgstr "Nu s-au găsit modele Ollama! Asigurați-vă că %1 rulează și că modelele sunt descărcate pe computer. %2 când este gata."
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model is resolved, so there is nothing to call."
+msgstr "Nu este rezolvat niciun model de chat, deci nu există nimic de apelat."
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model provider is selected."
+msgstr "Nu este selectat niciun furnizor de model de chat."
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "No chat participant is available."
+msgstr "Nu este disponibil niciun participant la chat."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached."
+msgid_plural "No files added: %1 files are already attached."
+msgstr[0] "Niciun fișier adăugat: %1 fișier este deja atașat."
+msgstr[1] "Niciun fișier adăugat: %1 fișiere sunt deja atașate."
+msgstr[2] "Niciun fișier adăugat: %1 de fișiere sunt deja atașate."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: the limit of %1 file is reached."
+msgid_plural "No files added: the limit of %1 files is reached."
+msgstr[0] "Niciun fișier adăugat: s-a atins limita de %1 fișier."
+msgstr[1] "Niciun fișier adăugat: s-a atins limita de %1 fișiere."
+msgstr[2] "Niciun fișier adăugat: s-a atins limita de %1 de fișiere."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches kernel \"%1\"."
+msgstr "Niciun kernel Jupyter instalat nu corespunde kernelului „%1”."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches language \"%1\"."
+msgstr "Niciun kernel Jupyter instalat nu corespunde limbajului „%1”."
+
+#: notebook_intelligence/extension.py
+msgid "No managed-skills manifest configured (set %1, comma-separated for multiple manifests)."
+msgstr "Nu este configurat niciun manifest de skilluri gestionate (setați %1, separat prin virgule pentru mai multe manifeste)."
+
+#: src/components/plugins-panel.tsx
+msgid "No marketplaces configured. Add one to discover plugins."
+msgstr "Nu este configurat niciun marketplace. Adăugați unul pentru a descoperi pluginuri."
+
+#: src/chat-sidebar.tsx
+msgid "No matching files found."
+msgstr "Nu s-au găsit fișiere corespunzătoare."
+
+#: notebook_intelligence/readiness.py
+msgid "No model name is set for this provider, so requests carry none."
+msgstr "Nu este setat niciun nume de model pentru acest furnizor, așa că cererile nu conțin niciunul."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins in this scope."
+msgstr "Niciun plugin în acest domeniu."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins were found in this marketplace."
+msgstr "Nu s-au găsit pluginuri în acest marketplace."
+
+#: src/components/claude-session-picker.tsx
+msgid "No previous Claude sessions found for this working directory."
+msgstr "Nu s-au găsit sesiuni Claude anterioare pentru acest director de lucru."
+
+#: src/chat-sidebar.tsx
+msgid "No previous sessions found for this working directory."
+msgstr "Nu s-au găsit sesiuni anterioare pentru acest director de lucru."
+
+#: src/components/launcher-picker.tsx
+msgid "No previous sessions found."
+msgstr "Nu s-au găsit sesiuni anterioare."
+
+#: src/components/skills-panel.tsx
+msgid "No project skills. They live in %1."
+msgstr "Niciun skill de proiect. Acestea se află în %1."
+
+#: notebook_intelligence/readiness.py
+msgid "No response within %1s."
+msgstr "Niciun răspuns în %1 s."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "No servers in this scope."
+msgstr "Niciun server în acest domeniu."
+
+#: src/components/launcher-picker.tsx
+msgid "No sessions match your filter."
+msgstr "Nicio sesiune nu corespunde filtrului."
+
+#: src/components/perf-panel.tsx
+msgid "No spans recorded for this turn."
+msgstr "Niciun span înregistrat pentru această tură."
+
+#: src/components/skills-panel.tsx
+msgid "No user skills. They live in %1."
+msgstr "Niciun skill de utilizator. Acestea se află în %1."
+
+#: src/chat-sidebar.tsx
+msgid "No workspace files available."
+msgstr "Nu există fișiere disponibile în spațiul de lucru."
+
+#: notebook_intelligence/readiness.py
+msgid "Not applicable: the agent owns the model call in %1 mode."
+msgstr "Nu se aplică: în modul %1, agentul gestionează apelul către model."
+
+#: notebook_intelligence/readiness.py
+msgid "Not determined: the request failed (%1) for a reason unrelated to tools."
+msgstr "Nedeterminat: cererea a eșuat (%1) dintr-un motiv care nu ține de instrumente."
+
+#: src/chat-sidebar.tsx
+msgid "Not logged in"
+msgstr "Neautentificat"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %1: %2"
+msgstr "Nu este pregătit. %1: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %2: %3 (%1 more issue.)"
+msgid_plural "Not ready. %2: %3 (%1 more issues.)"
+msgstr[0] "Nu este pregătit. %2: %3 (încă %1 problemă.)"
+msgstr[1] "Nu este pregătit. %2: %3 (încă %1 probleme.)"
+msgstr[2] "Nu este pregătit. %2: %3 (încă %1 de probleme.)"
+
+#: notebook_intelligence/readiness.py
+msgid "Not signed in. The model list shown in Settings is a built-in fallback, not the models this account can use."
+msgstr "Neautentificat. Lista de modele afișată în Setări este o listă de rezervă integrată, nu modelele pe care le poate folosi acest cont."
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Notebook '%1' created and opened successfully"
+msgstr "Notebookul „%1” a fost creat și deschis cu succes"
+
+#: src/index.ts
+msgid "Notebook Intelligence Settings"
+msgstr "Setări Notebook Intelligence"
+
+#: src/cell-output-toolbar.ts
+msgid "Notebook Intelligence cell actions"
+msgstr "Acțiuni Notebook Intelligence pentru celulă"
+
+#: src/chat-sidebar.tsx
+msgid "Notebook file"
+msgstr "Fișier notebook"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Notebook generation complete"
+msgstr "Generarea notebookului s-a încheiat"
+
+#: src/chat-sidebar.tsx
+msgid "Notice"
+msgstr "Notificare"
+
+#: src/components/perf-panel.tsx
+msgid "Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it."
+msgstr "Intervalul de la începutul turei până la primul fragment cu conținut. Înregistrat ca eveniment, așa că indicatorii locali de progres nu sunt luați în calcul."
+
+#: notebook_intelligence/api.py
+msgid "Oops! Failed to find requested tool. Please try again with a different prompt."
+msgstr "Hopa! Nu s-a găsit instrumentul solicitat. Încercați din nou cu alt prompt."
+
+#: notebook_intelligence/api.py
+msgid "Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."
+msgstr "Hopa! Ne pare rău, a apărut o problemă la generarea răspunsului cu instrumente. Încercați din nou. Puteți verifica jurnalele serverului pentru mai multe detalii."
+
+#: notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py
+msgid "Oops! There was a problem handling chat request. Please try again with a different prompt."
+msgstr "Hopa! A apărut o problemă la procesarea cererii de chat. Încercați din nou cu alt prompt."
+
+#: notebook_intelligence/extension.py
+msgid "Oops! There was a problem handling this request. Please try again. Check the server logs for details."
+msgstr "Hopa! A apărut o problemă la procesarea acestei cereri. Încercați din nou. Verificați jurnalele serverului pentru detalii."
+
+#: src/chatbook-toolbar.ts
+msgid "Open Chatbook settings"
+msgstr "Deschide setările Chatbook"
+
+#: src/index.ts
+msgid "Open MCP Config Editor"
+msgstr "Deschide editorul de configurație MCP"
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and pick a provider and model under General, or enable Claude mode."
+msgstr "Deschideți Setări NBI și alegeți un furnizor și un model în fila General sau activați modul Claude."
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and set a model for this provider under General. The endpoint rejects a request with no model, so every turn fails until it is set."
+msgstr "Deschideți Setări NBI și setați un model pentru acest furnizor în fila General. Endpointul respinge cererile fără model, așa că fiecare tură eșuează până când acesta este setat."
+
+#: src/chat-sidebar.tsx
+msgid "Open Notebook Intelligence settings"
+msgstr "Deschide setările Notebook Intelligence"
+
+#: src/index.ts
+msgid "Open a notebook to insert the code as new cell"
+msgstr "Deschideți un notebook pentru a insera codul ca celulă nouă"
+
+#: src/chat-sidebar.tsx
+msgid "Open notebook %1"
+msgstr "Deschide notebookul %1"
+
+#: src/chat-sidebar.tsx
+msgid "Open slash commands"
+msgstr "Deschide comenzile slash"
+
+#: src/chatbook.ts
+msgid "Open the Chatbook tab of Notebook Intelligence Settings"
+msgstr "Deschide fila Chatbook din Setări Notebook Intelligence"
+
+#: src/index.ts
+msgid "Open the NBI sidebar and move focus to the prompt textarea"
+msgstr "Deschide bara laterală NBI și mută focalizarea pe zona de text a promptului"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Opened the settings dialog"
+msgstr "S-a deschis dialogul de setări"
+
+#: src/components/settings-panel.tsx
+msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
+msgstr "Verificare suplimentară opțională. O detecție a scanării statice are întotdeauna prioritate; modelul poate doar să crească nivelul de risc. Erorile clasificatorului duc la cererea de confirmare în loc de rulare automată."
+
+#: src/components/perf-panel.tsx
+msgid "Output tokens."
+msgstr "Tokenuri de ieșire."
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing project skill \"%1\""
+msgstr "Suprascrie skillul de proiect existent „%1”"
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing user skill \"%1\""
+msgstr "Suprascrie skillul de utilizator existent „%1”"
+
+#: notebook_intelligence/claude.py
+msgid "Parameters"
+msgstr "Parametri"
+
+#: src/components/skills-panel.tsx
+msgid "Path: %1"
+msgstr "Cale: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Performance diagnostics are disabled. Enable them above to start collecting turn data."
+msgstr "Diagnosticarea performanței este dezactivată. Activați-o mai sus pentru a începe colectarea datelor despre ture."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Permission granted"
+msgstr "Permisiune acordată"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: %1"
+msgstr "Mod de permisiuni: %1"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: Bypass Permissions is active"
+msgstr "Mod de permisiuni: Ocolirea permisiunilor este activă"
+
+#: notebook_intelligence/readiness.py
+msgid "Pick a model from the dropdown in NBI Settings. A pinned NBI_CHAT_MODEL_ID that the endpoint no longer serves will fail on every turn."
+msgstr "Alegeți un model din lista derulantă din Setări NBI. Un NBI_CHAT_MODEL_ID fixat pe care endpointul nu îl mai oferă va eșua la fiecare tură."
+
+#: src/components/plugins-panel.tsx
+msgid "Plugin"
+msgstr "Plugin"
+
+#: src/components/plugins-panel.tsx
+msgid "Plugins"
+msgstr "Pluginuri"
+
+#: notebook_intelligence/extension.py
+msgid "Plugins management is disabled by your administrator"
+msgstr "Gestionarea pluginurilor este dezactivată de administrator"
+
+#: notebook_intelligence/readiness.py
+msgid "Preinstall the pinned adapter package %1 in a trusted location outside the workspace and put its absolute executable directory on PATH, or set NBI_ACP_AGENT_COMMAND to the absolute path of an installed adapter executable. Install its required interpreter on the adapter PATH; default discovery excludes workspace directories. Do not use a package runner such as npx. Relative commands are not supported."
+msgstr "Preinstalați pachetul de adaptor fixat %1 într-o locație de încredere din afara spațiului de lucru și adăugați în PATH directorul absolut al executabilului său sau setați NBI_ACP_AGENT_COMMAND la calea absolută a unui executabil de adaptor instalat. Instalați interpretorul necesar în PATH-ul adaptorului; descoperirea implicită exclude directoarele spațiului de lucru. Nu folosiți un executor de pachete precum npx. Comenzile relative nu sunt acceptate."
+
+#: notebook_intelligence/readiness.py
+msgid "Present."
+msgstr "Prezent."
+
+#: src/chat-sidebar.tsx
+msgid "Privacy Statement"
+msgstr "Declarația de confidențialitate"
+
+#: src/chat-sidebar.tsx
+msgid "Privacy and terms"
+msgstr "Confidențialitate și termeni"
+
+#: src/components/plugins-panel.tsx
+msgid "Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server."
+msgstr "Sursele GitHub private funcționează dacă %1 este setat sau %2 este configurat pe serverul Jupyter."
+
+#: src/components/perf-panel.tsx
+msgid "Probe failed: %1"
+msgstr "Sondarea a eșuat: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Project (Jupyter root directory)"
+msgstr "Proiect (directorul rădăcină Jupyter)"
+
+#: src/components/skills-panel.tsx
+msgid "Project (this project only)"
+msgstr "Proiect (doar acest proiect)"
+
+#: src/components/mcp-util.ts
+msgid "Prompt refresh failed. Reload MCP servers to retry."
+msgstr "Reîmprospătarea prompturilor a eșuat. Reîncărcați serverele MCP pentru a reîncerca."
+
+#: src/components/settings-panel.tsx
+msgid "Prompts"
+msgstr "Prompturi"
+
+#: src/components/settings-panel.tsx
+msgid "Provider"
+msgstr "Furnizor"
+
+#: notebook_intelligence/readiness.py
+msgid "Provider '%1' is selected but not registered."
+msgstr "Furnizorul „%1” este selectat, dar nu este înregistrat."
+
+#: src/components/perf-panel.tsx
+msgid "Python interpreter"
+msgstr "Interpretor Python"
+
+#: src/components/skills-panel.tsx
+msgid "Quick-add pills cover common tools. Type patterns like %1 or %2 for finer-grained permissions."
+msgstr "Butoanele de adăugare rapidă acoperă instrumentele uzuale. Introduceți modele precum %1 sau %2 pentru permisiuni mai granulare."
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as bad"
+msgstr "Evaluează răspunsul ca neutil"
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as good"
+msgstr "Evaluează răspunsul ca util"
+
+#: src/components/readiness-card.tsx
+msgid "Re-check"
+msgstr "Reverifică"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-enable this server for the current Jupyter workspace"
+msgstr "Reactivează acest server pentru spațiul de lucru Jupyter curent"
+
+#: src/components/skills-panel.tsx
+msgid "Re-fetch every skill set to track upstream from GitHub"
+msgstr "Preia din nou din GitHub fiecare skill setat să urmărească sursa upstream"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-read Claude's MCP config from disk"
+msgstr "Recitește de pe disc configurația MCP a lui Claude"
+
+#: notebook_intelligence/readiness.py
+msgid "Re-run the endpoint test once the endpoint is answering again. A transient failure cannot tell us whether tool calling works."
+msgstr "Rulați din nou testul endpointului după ce endpointul răspunde din nou. O eroare temporară nu ne poate spune dacă apelarea instrumentelor funcționează."
+
+#: src/components/readiness-card.tsx
+msgid "Readiness check failed: %1"
+msgstr "Verificarea pregătirii a eșuat: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Reading the configuration failed (%1)."
+msgstr "Citirea configurației a eșuat (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "Ready, with %1 warning. %2: %3"
+msgid_plural "Ready, with %1 warnings. %2: %3"
+msgstr[0] "Pregătit, cu %1 avertisment. %2: %3"
+msgstr[1] "Pregătit, cu %1 avertismente. %2: %3"
+msgstr[2] "Pregătit, cu %1 de avertismente. %2: %3"
+
+#: notebook_intelligence/readiness.py
+msgid "Ready. Nothing needs configuring."
+msgstr "Pregătit. Nu este nimic de configurat."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Reason"
+msgstr "Motiv"
+
+#: src/components/perf-panel.tsx
+msgid "Recent turns"
+msgstr "Ture recente"
+
+#: src/components/skills-panel.tsx
+msgid "Reconcile managed skills against the org manifest"
+msgstr "Aliniază skillurile gestionate la manifestul organizației"
+
+#: src/components/perf-panel.tsx
+msgid "Recording is on, but no turns have been captured yet. Run a chat turn, then press Refresh."
+msgstr "Înregistrarea este activă, dar nu a fost capturată încă nicio tură. Rulați o tură de chat, apoi apăsați Reîmprospătează."
+
+#: src/components/perf-panel.tsx
+msgid "Records where each chat turn spends its time, so a slow deployment can be told apart from a slow model. Off by default, and when off it costs one boolean check per instrumentation site. Prompts, responses, file contents, and hostnames are never recorded."
+msgstr "Înregistrează unde își petrece timpul fiecare tură de chat, astfel încât o implementare lentă să poată fi deosebită de un model lent. Dezactivat implicit, iar când este dezactivat costă o verificare booleană per punct de instrumentare. Prompturile, răspunsurile, conținutul fișierelor și numele de gazdă nu sunt niciodată înregistrate."
+
+#: src/components/perf-panel.tsx
+msgid "Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine."
+msgstr "Anonimizat: numele de bază ale fișierelor și numele modelelor, instrumentelor și serverelor sunt transformate în hash. Timpii și numărătorile nu sunt afectate. Păstrați această opțiune când raportul va părăsi mașina dvs."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
+msgid "Refresh"
+msgstr "Reîmprospătează"
+
+#: src/index.ts
+msgid "Refresh description"
+msgstr "Reîmprospătează descrierea"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh file list"
+msgstr "Reîmprospătează lista de fișiere"
+
+#: src/components/settings-panel.tsx
+msgid "Refresh open files when changed on disk"
+msgstr "Reîmprospătează fișierele deschise când sunt modificate pe disc"
+
+#: src/components/plugins-panel.tsx
+msgid "Refresh this marketplace from its source"
+msgstr "Reîmprospătează acest marketplace din sursa sa"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh workspace file list"
+msgstr "Reîmprospătează lista de fișiere din spațiul de lucru"
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx
+msgid "Refreshing…"
+msgstr "Se reîmprospătează…"
+
+#: src/index.ts
+msgid "Regenerate the description of this code cell"
+msgstr "Regenerează descrierea acestei celule de cod"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Rejecting records a lasting denial, not only for this request."
+msgstr "Respingerea înregistrează un refuz permanent, nu doar pentru această cerere."
+
+#: src/components/settings-panel.tsx
+msgid "Reload"
+msgstr "Reîncarcă"
+
+#: src/components/settings-panel.tsx
+msgid "Remember conversation history"
+msgstr "Reține istoricul conversațiilor"
+
+#: src/components/settings-panel.tsx
+msgid "Remember my GitHub Copilot access token"
+msgstr "Reține tokenul meu de acces GitHub Copilot"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Remove"
+msgstr "Elimină"
+
+#: src/components/skills-panel.tsx
+msgid "Remove %1"
+msgstr "Elimină %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Remove MCP server?"
+msgstr "Eliminați serverul MCP?"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file"
+msgstr "Elimină fișierul atașat"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file %1"
+msgstr "Elimină fișierul atașat %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Remove marketplace?"
+msgstr "Eliminați marketplace-ul?"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Removing…"
+msgstr "Se elimină…"
+
+#: src/components/skills-panel.tsx
+msgid "Rename"
+msgstr "Redenumește"
+
+#: src/components/skills-panel.tsx
+msgid "Rename skill"
+msgstr "Redenumește skillul"
+
+#: src/index.ts
+msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr "Redă turul introductiv care evidențiază funcțiile barei laterale de chat"
+
+#: src/components/settings-panel.tsx
+msgid "Reply in my JupyterLab language"
+msgstr "Răspunde în limba mea din JupyterLab"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Request"
+msgstr "Cerere"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Requested permissions"
+msgstr "Permisiuni solicitate"
+
+#: src/components/skills-panel.tsx
+msgid "Required. Claude uses this to decide when to apply the skill."
+msgstr "Obligatoriu. Claude folosește aceasta pentru a decide când să aplice skillul."
+
+#: src/chat-sidebar.tsx
+msgid "Response complete."
+msgstr "Răspuns complet."
+
+#: src/components/settings-panel.tsx
+msgid "Restart the Chatbook kernel in open notebooks so they pick up %1."
+msgstr "Reporniți kernelul Chatbook în notebookurile deschise pentru ca acestea să preia %1."
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume Claude session"
+msgstr "Reia sesiunea Claude"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a previous session"
+msgstr "Reia o sesiune anterioară"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a session you started earlier in this workspace"
+msgstr "Reia o sesiune începută anterior în acest spațiu de lucru"
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume command copied"
+msgstr "Comanda de reluare a fost copiată"
+
+#: src/index.ts
+msgid "Resume or start a Claude Code session"
+msgstr "Reia sau începe o sesiune Claude Code"
+
+#: src/chat-sidebar.tsx
+msgid "Resume session"
+msgstr "Reia sesiunea"
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1."
+msgstr "S-a reluat sesiunea Claude %1."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1: %2."
+msgstr "S-a reluat sesiunea Claude %1: %2."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1."
+msgstr "S-a reluat sesiunea %1."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1: %2."
+msgstr "S-a reluat sesiunea %1: %2."
+
+#: src/components/perf-panel.tsx
+msgid "Retry"
+msgstr "Reîncearcă"
+
+#: src/chatbook.ts
+msgid "Review generated code before running it in this kernel."
+msgstr "Verificați codul generat înainte de a-l rula în acest kernel."
+
+#: src/components/settings-panel.tsx
+msgid "Right-click a cell output to attach it to the chat"
+msgstr "Faceți clic dreapta pe o ieșire de celulă pentru a o atașa la chat"
+
+#: src/components/perf-panel.tsx
+msgid "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory."
+msgstr "Descoperirea regulilor și a skillurilor a durat %1. Această operație depinde de sistemul de fișiere al directorului home al serverului."
+
+#: notebook_intelligence/extension.py
+msgid "Rule not found"
+msgstr "Regula nu a fost găsită"
+
+#: notebook_intelligence/extension.py
+msgid "Rule system not enabled"
+msgstr "Sistemul de reguli nu este activat"
+
+#: notebook_intelligence/readiness.py
+msgid "Run 'claude --version' in a terminal as the Jupyter user to see the underlying error."
+msgstr "Rulați 'claude --version' într-un terminal ca utilizator Jupyter pentru a vedea eroarea de bază."
+
+#: src/components/readiness-card.tsx
+msgid "Run it"
+msgstr "Rulează-l"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Run notebooks in JupyterLab UI"
+msgstr "Rulează notebookuri în interfața JupyterLab"
+
+#: src/components/perf-panel.tsx
+msgid "Run probe"
+msgstr "Rulează sondarea"
+
+#: src/chat-sidebar.tsx
+msgid "Running (%1 s)"
+msgstr "Se rulează (%1 s)"
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other, plus the network check. This takes a few seconds, longer on a slow filesystem."
+msgstr "Se rulează pe rând verificările sistemului de fișiere, ale subproceselor și ale concurenței pentru resurse, ca să nu se influențeze reciproc, plus verificarea rețelei. Durează câteva secunde, mai mult pe un sistem de fișiere lent."
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other. This takes a few seconds, longer on a slow filesystem."
+msgstr "Se rulează pe rând verificările sistemului de fișiere, ale subproceselor și ale concurenței pentru resurse, ca să nu se influențeze reciproc. Durează câteva secunde, mai mult pe un sistem de fișiere lent."
+
+#: src/components/perf-panel.tsx src/components/readiness-card.tsx
+msgid "Running…"
+msgstr "Se rulează…"
+
+#: src/components/skills-panel.tsx
+msgid "Save"
+msgstr "Salvează"
+
+#: src/components/skills-panel.tsx
+msgid "Saving…"
+msgstr "Se salvează…"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Scope"
+msgstr "Domeniu"
+
+#: src/components/skills-panel.tsx
+msgid "Scope and name are set at creation and can't be changed. Delete and recreate to change them."
+msgstr "Domeniul și numele sunt setate la creare și nu pot fi modificate. Ștergeți și recreați skillul pentru a le schimba."
+
+#: src/components/confirmation-details.tsx
+msgid "Scroll to see all of this value."
+msgstr "Derulați pentru a vedea întreaga valoare."
+
+#: src/chat-sidebar.tsx
+msgid "Search files by path"
+msgstr "Caută fișiere după cale"
+
+#: src/chat-sidebar.tsx
+msgid "Send message"
+msgstr "Trimite mesajul"
+
+#: src/components/readiness-card.tsx
+msgid "Sends one short request to your configured model to verify streaming and tool support."
+msgstr "Trimite o cerere scurtă către modelul configurat pentru a verifica streamingul și suportul pentru instrumente."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server \"%1\" config must be an object."
+msgstr "Configurația serverului „%1” trebuie să fie un obiect."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server config must include \"command\" or \"url\"."
+msgstr "Configurația serverului trebuie să includă \"command\" sau \"url\"."
+
+#: src/components/perf-panel.tsx
+msgid "Server process peak memory"
+msgstr "Vârful de memorie al procesului serverului"
+
+#: src/components/settings-panel.tsx
+msgid "Settings sections"
+msgstr "Secțiuni de setări"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Shell"
+msgstr "Shell"
+
+#: src/components/settings-panel.tsx
+msgid "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+msgstr "Afișează elementul de meniu contextual „Depanează erorile din ieșire” pe celulele eșuate"
+
+#: src/components/settings-panel.tsx
+msgid "Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons"
+msgstr "Afișează peste ieșirile celulelor o bară de instrumente la trecerea cursorului, cu butoanele Explică / Întreabă / Depanează"
+
+#: src/components/tool-call-card.tsx
+msgid "Show diff"
+msgstr "Afișează diferențele"
+
+#: src/index.ts
+msgid "Show generated code"
+msgstr "Afișează codul generat"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Show in chat"
+msgstr "Afișează în chat"
+
+#: src/components/settings-panel.tsx
+msgid "Show output toolbar"
+msgstr "Afișează bara de instrumente pentru ieșire"
+
+#: src/components/perf-panel.tsx
+msgid "Show raw output"
+msgstr "Afișează ieșirea brută"
+
+#: src/index.ts
+msgid "Show the hidden code generated for this Chatbook cell"
+msgstr "Afișează codul ascuns generat pentru această celulă Chatbook"
+
+#: src/components/perf-panel.tsx
+msgid "Show timeline for the turn at %1"
+msgstr "Afișează cronologia turei de la %1"
+
+#: src/components/settings-panel.tsx
+msgid "Show usage after each turn (time / tokens / cost)"
+msgstr "Afișează utilizarea după fiecare tură (timp / tokenuri / cost)"
+
+#: src/chat-sidebar.tsx
+msgid "Showing the first %1 file found in the workspace."
+msgid_plural "Showing the first %1 files found in the workspace."
+msgstr[0] "Se afișează primul %1 fișier găsit în spațiul de lucru."
+msgstr[1] "Se afișează primele %1 fișiere găsite în spațiul de lucru."
+msgstr[2] "Se afișează primele %1 de fișiere găsite în spațiul de lucru."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign in from NBI Settings under GitHub Copilot. Until then every chat turn will fail with a 401."
+msgstr "Autentificați-vă din Setări NBI, la GitHub Copilot. Până atunci, fiecare tură de chat va eșua cu o eroare 401."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign-in state could not be determined."
+msgstr "Starea autentificării nu a putut fi determinată."
+
+#: src/components/perf-panel.tsx
+msgid "Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod."
+msgstr "Câțiva MB/s împreună cu o latență fsync ridicată sunt semnul tipic al epuizării creditelor de burst EFS. Confirmați din CloudWatch BurstCreditBalance, nu din interiorul podului."
+
+#: notebook_intelligence/extension.py
+msgid "Skill '%1' not found in %2 scope"
+msgstr "Skillul „%1” nu a fost găsit în domeniul %2"
+
+#: src/components/skills-panel.tsx
+msgid "Skills"
+msgstr "Skilluri"
+
+#: src/components/skills-panel.tsx
+msgid "Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here."
+msgstr "Skillurile sunt folosite de Claude Code. Activați modul Claude în fila de setări Claude pentru a folosi skillurile create aici."
+
+#: notebook_intelligence/extension.py
+msgid "Skills management is disabled by your administrator"
+msgstr "Gestionarea skillurilor este dezactivată de administrator"
+
+#: src/chat-sidebar.tsx
+msgid "Skills reloaded and applied to the current session."
+msgstr "Skillurile au fost reîncărcate și aplicate sesiunii curente."
+
+#: src/chat-sidebar.tsx
+msgid "Skip to message input"
+msgstr "Salt la câmpul de mesaj"
+
+#: src/chat-sidebar.tsx
+msgid "Slash commands"
+msgstr "Comenzi slash"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Source"
+msgstr "Sursă"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1"
+msgstr "Sursă: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1 · last sync: %2"
+msgstr "Sursă: %1 · ultima sincronizare: %2"
+
+#: src/components/plugins-panel.tsx
+msgid "Specify manually"
+msgstr "Specifică manual"
+
+#: src/index.ts
+msgid "Start a GitHub Copilot CLI session in a Jupyter terminal"
+msgstr "Începe o sesiune GitHub Copilot CLI într-un terminal Jupyter"
+
+#: src/index.ts
+msgid "Start a Pi session in a Jupyter terminal"
+msgstr "Începe o sesiune Pi într-un terminal Jupyter"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session"
+msgstr "Începe o nouă sesiune de chat"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (restarts the Claude client)"
+msgstr "Începe o nouă sesiune de chat (repornește clientul Claude)"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (starts a fresh agent session)"
+msgstr "Începe o nouă sesiune de chat (pornește o sesiune nouă a agentului)"
+
+#: src/index.ts
+msgid "Start an OpenAI Codex CLI session in a Jupyter terminal"
+msgstr "Începe o sesiune OpenAI Codex CLI într-un terminal Jupyter"
+
+#: src/index.ts
+msgid "Start an opencode session in a Jupyter terminal"
+msgstr "Începe o sesiune opencode într-un terminal Jupyter"
+
+#: src/components/settings-panel.tsx
+msgid "Status"
+msgstr "Stare"
+
+#: src/chat-sidebar.tsx
+msgid "Still working, server may be slow"
+msgstr "Încă se lucrează, serverul poate fi lent"
+
+#: src/chat-sidebar.tsx
+msgid "Stop generating"
+msgstr "Oprește generarea"
+
+#: src/chat-sidebar.tsx
+msgid "Stop using current file as context"
+msgstr "Nu mai folosi fișierul curent ca context"
+
+#: src/components/perf-panel.tsx
+msgid "Stopped before completing, so these timings are partial."
+msgstr "Oprit înainte de finalizare, așa că acești timpi sunt parțiali."
+
+#: src/chat-sidebar.tsx
+msgid "Stopped by you"
+msgstr "Oprit de dvs."
+
+#: src/components/perf-panel.tsx
+msgid "Sum of every tool span in the turn. Expand the row to see them individually."
+msgstr "Suma tuturor spanurilor de instrumente din tură. Extindeți rândul pentru a le vedea individual."
+
+#: src/index.ts
+msgid "Switch all cells to code"
+msgstr "Comută toate celulele la cod"
+
+#: src/index.ts
+msgid "Switch all cells to natural language"
+msgstr "Comută toate celulele la limbaj natural"
+
+#: src/index.ts
+msgid "Switch cell to code"
+msgstr "Comută celula la cod"
+
+#: src/index.ts
+msgid "Switch cell to natural language"
+msgstr "Comută celula la limbaj natural"
+
+#: src/chatbook-toolbar.ts src/index.ts
+msgid "Switch every cell of this Chatbook between its prompt and its code"
+msgstr "Comută fiecare celulă a acestui Chatbook între prompt și cod"
+
+#: src/index.ts
+msgid "Switch the active Chatbook cell between natural language and code"
+msgstr "Comută celula Chatbook activă între limbaj natural și cod"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed for \"%1\": %2"
+msgstr "Sincronizarea a eșuat pentru „%1”: %2"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed: %1"
+msgstr "Sincronizarea a eșuat: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Sync from GitHub"
+msgstr "Sincronizează din GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Sync managed skills"
+msgstr "Sincronizează skillurile gestionate"
+
+#: src/components/skills-panel.tsx
+msgid "Sync skill from GitHub"
+msgstr "Sincronizează skillul din GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Sync tracking skills"
+msgstr "Sincronizează skillurile care urmăresc upstream"
+
+#: src/components/skills-panel.tsx
+msgid "Synced \"%1\" to %2."
+msgstr "„%1” a fost sincronizat la %2."
+
+#: src/components/skills-panel.tsx
+msgid "Syncing…"
+msgstr "Se sincronizează…"
+
+#: src/components/skills-panel.tsx
+msgid "Target scope"
+msgstr "Domeniu țintă"
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop."
+msgstr "Plasarea în terminal inserează căi ca mențiuni @. Faceți clic pentru a comuta la modul cale simplă. Țineți apăsat Shift în timpul plasării pentru a inversa modul pentru o singură plasare."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop."
+msgstr "Plasarea în terminal inserează căi absolute simple, escapate pentru shell. Faceți clic pentru a comuta la modul mențiune @. Țineți apăsat Shift în timpul plasării pentru a inversa modul pentru o singură plasare."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop skipped %1 path containing control or invisible formatting characters. Rename them before dropping."
+msgid_plural "Terminal drop skipped %1 paths containing control or invisible formatting characters. Rename them before dropping."
+msgstr[0] "La plasarea în terminal a fost omisă %1 cale care conține caractere de control sau de formatare invizibile. Redenumiți-o înainte de plasare."
+msgstr[1] "La plasarea în terminal au fost omise %1 căi care conțin caractere de control sau de formatare invizibile. Redenumiți-le înainte de plasare."
+msgstr[2] "La plasarea în terminal au fost omise %1 de căi care conțin caractere de control sau de formatare invizibile. Redenumiți-le înainte de plasare."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop upload failed for %1"
+msgstr "Încărcarea prin plasare în terminal a eșuat pentru %1"
+
+#: src/components/readiness-card.tsx
+msgid "Test the endpoint"
+msgstr "Testează endpointul"
+
+#: src/chat-sidebar.tsx
+msgid "Text file"
+msgstr "Fișier text"
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI did not respond to --version within its budget."
+msgstr "CLI-ul nu a răspuns la --version în timpul alocat."
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI resolved but --version failed."
+msgstr "CLI-ul a fost găsit, dar --version a eșuat."
+
+#: src/components/perf-panel.tsx
+msgid "The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI."
+msgstr "SDK-ul atribuie API-ului %1 din %2 de activitate, deci timpul este petrecut de cealaltă parte a rețelei, nu în NBI."
+
+#: notebook_intelligence/readiness.py
+msgid "The binary resolves but does not start. On a network filesystem this is often the install tree being slow to read; otherwise check it runs from a terminal."
+msgstr "Binarul este găsit, dar nu pornește. Pe un sistem de fișiere de rețea, cauza este adesea citirea lentă a arborelui de instalare; altfel, verificați dacă rulează dintr-un terminal."
+
+#: src/components/perf-panel.tsx
+msgid "The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding."
+msgstr "Verificarea nu s-a încheiat în timpul alocat. Un stat blocat pe un sistem de fișiere de rețea arată exact așa și este el însuși constatarea."
+
+#: notebook_intelligence/readiness.py
+msgid "The claude CLI was not found."
+msgstr "CLI-ul claude nu a fost găsit."
+
+#: notebook_intelligence/acp_agent.py
+msgid "The command contains non-ASCII characters, which can look like quotes or letters they are not."
+msgstr "Comanda conține caractere non-ASCII, care pot arăta ca ghilimele sau litere pe care nu le reprezintă."
+
+#: src/components/perf-panel.tsx
+msgid "The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage."
+msgstr "Spanul de conectare: pornirea subprocesului agentului și a CLI-ului. Valorile mari înseamnă de obicei pornirea node plus citirea pachetelor pe o stocare lentă."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted a request carrying a tool schema."
+msgstr "Endpointul a acceptat o cerere care conține o schemă de instrumente."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the connection but did not answer. Check the Base URL and whether it is reachable from the Jupyter server process."
+msgstr "Endpointul a acceptat conexiunea, dar nu a răspuns. Verificați URL-ul de bază și dacă este accesibil din procesul serverului Jupyter."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the request but did not answer. Check the gateway and whether it is queueing behind a cold model."
+msgstr "Endpointul a acceptat cererea, dar nu a răspuns. Verificați gateway-ul și dacă cererea stă la coadă în spatele unui model pornit la rece."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint answered in one piece. Replies will appear only when the turn finishes rather than as they are generated; a proxy that buffers responses is the usual cause."
+msgstr "Endpointul a răspuns dintr-o singură bucată. Răspunsurile vor apărea doar când tura se termină, nu pe măsură ce sunt generate; cauza obișnuită este un proxy care pune răspunsurile în buffer."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint rejected a request carrying a tool schema, but accepted the same request without one."
+msgstr "Endpointul a respins o cerere care conține o schemă de instrumente, dar a acceptat aceeași cerere fără ea."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint test could not run (%1)."
+msgstr "Testul endpointului nu a putut rula (%1)."
+
+#: src/components/perf-panel.tsx
+msgid "The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses."
+msgstr "Handshake-ul nu s-a finalizat. În spatele unui proxy de interceptare, aceasta înseamnă de obicei că certificatul de interceptare nu se află în depozitul de încredere folosit de acest proces."
+
+#: src/components/perf-panel.tsx
+msgid "The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor."
+msgstr "Certificatul prezentat nu se verifică în raport cu depozitul de încredere implicit, ceea ce înseamnă că TLS este interceptat. CN-ul emitentului identifică interceptorul."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider did not return a model list within %1s."
+msgstr "Furnizorul nu a returnat o listă de modele în %1 s."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider may be disabled by an administrator (see disabled_providers) or supplied by an extension that is not installed. Pick a different provider in NBI Settings."
+msgstr "Este posibil ca furnizorul să fie dezactivat de un administrator (vedeți disabled_providers) sau să fie oferit de o extensie care nu este instalată. Alegeți alt furnizor în Setări NBI."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider returned no models."
+msgstr "Furnizorul nu a returnat niciun model."
+
+#: notebook_intelligence/readiness.py
+msgid "The request failed (%1)."
+msgstr "Cererea a eșuat (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "The request succeeded but nothing streamed."
+msgstr "Cererea a reușit, dar nu s-a transmis nimic în stream."
+
+#: notebook_intelligence/readiness.py
+msgid "The stored configuration could not be read. Check %1 for invalid JSON, and the Jupyter server log for the underlying error."
+msgstr "Configurația stocată nu a putut fi citită. Verificați dacă %1 conține JSON nevalid și consultați jurnalul serverului Jupyter pentru eroarea de bază."
+
+#: src/components/perf-panel.tsx
+msgid "The turn ended in an error."
+msgstr "Tura s-a încheiat cu o eroare."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab."
+msgstr "Acestea sunt serverele MCP proprii ale Claude Code (citite din %1, din proiectul %2 și din blocul per utilizator per proiect). Independente de fila Servere MCP din NBI."
+
+#: src/chat-sidebar.tsx
+msgid "Thinking (%1 s)"
+msgstr "Se gândește (%1 s)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py notebook_intelligence/mcp_manager.py
+msgid "Thinking…"
+msgstr "Se gândește…"
+
+#: src/components/perf-panel.tsx
+msgid "This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network."
+msgstr "Acest container a fost limitat la CPU de cota cgroup, așa că fazele locale (pregătirea contextului, pornirea) pot părea lente din motive care nu țin de stocare sau de rețea."
+
+#: notebook_intelligence/extension.py
+msgid "This feature is disabled by your administrator"
+msgstr "Această funcție este dezactivată de administrator"
+
+#: src/components/perf-panel.tsx
+msgid "This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows."
+msgstr "Ora acestei gazde diferă de cea a endpointului cu mai mult de un minut, ceea ce strică expirarea tokenurilor și intervalele de valabilitate ale certificatelor."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the Claude CLI is signed in with a subscription login, or if the SDK resolves a credential of its own from a profile or custom headers. If chat turns fail with a 401, or Claude auto-complete produces nothing, add a key in NBI Settings under Claude or set ANTHROPIC_API_KEY before starting JupyterLab."
+msgstr "Este în regulă dacă CLI-ul Claude este autentificat cu un abonament sau dacă SDK-ul își obține propriile credențiale dintr-un profil sau din antete personalizate. Dacă turele de chat eșuează cu o eroare 401 sau completarea automată Claude nu produce nimic, adăugați o cheie în Setări NBI, la Claude, sau setați ANTHROPIC_API_KEY înainte de a porni JupyterLab."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the agent is signed in with its own OAuth login. Otherwise set the key in NBI Settings under ACP."
+msgstr "Este în regulă dacă agentul este autentificat prin propriul login OAuth. Altfel, setați cheia în Setări NBI, la ACP."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3."
+msgstr "Acest notebook este scris în %1, dar Chatbook rulează tot codul în %2, așa că celulele sale de cod ar eșua. Nu este instalat niciun kernel %1 pe care Chatbook să îl poată folosi. Instalați unul, apoi alegeți-l în %3."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too."
+msgstr "Acest notebook este scris în %1, dar Chatbook rulează tot codul în %2, așa că celulele sale de cod ar eșua. Pentru a-l converti, setați %3 la un kernel pentru %1, apoi convertiți din nou. Setarea se aplică fiecărui Chatbook, așa că și Chatbookurile existente ar rula %1."
+
+#: src/components/perf-panel.tsx
+msgid "This opens connections to %1 from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request."
+msgstr "Aceasta deschide conexiuni către %1 de pe această mașină: două conexiuni TLS neautentificate pentru a măsura handshake-ul și a verifica certificatul și o cerere HTTP neautentificată."
+
+#: src/components/perf-panel.tsx
+msgid "This opens unauthenticated connections to your configured endpoint from this machine."
+msgstr "Aceasta deschide conexiuni neautentificate către endpointul configurat de pe această mașină."
+
+#: src/components/settings-panel.tsx
+msgid "This requires a %1 account and %2 installed in your system."
+msgstr "Necesită un cont %1 și %2 instalat în sistem."
+
+#: src/components/readiness-card.tsx
+msgid "This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls."
+msgstr "Aceasta trimite o cerere scurtă către modelul configurat. Costă câteva tokenuri și este singura modalitate de a confirma că endpointul chiar face streaming și chiar acceptă apeluri de instrumente."
+
+#: src/components/skills-panel.tsx
+msgid "This skill has unsaved changes. Discard them?"
+msgstr "Acest skill are modificări nesalvate. Renunțați la ele?"
+
+#: src/components/skills-panel.tsx
+msgid "This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync."
+msgstr "Acest skill este gestionat de manifestul organizației și este doar în citire. Modificările vor fi suprascrise la următoarea sincronizare."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Tool call"
+msgstr "Apel de instrument"
+
+#: src/components/mcp-util.ts
+msgid "Tool refresh failed. Reload MCP servers to retry."
+msgstr "Reîmprospătarea instrumentelor a eșuat. Reîncărcați serverele MCP pentru a reîncerca."
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection"
+msgstr "Selecția instrumentelor"
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection (%1)"
+msgstr "Selecția instrumentelor (%1)"
+
+#: src/chat-sidebar.tsx
+msgid ""
+"Tool selection can cause irreversible changes! Review each tool execution carefully.\n"
+"%1"
+msgstr ""
+"Selecția instrumentelor poate provoca modificări ireversibile! Verificați cu atenție fiecare execuție a instrumentelor.\n"
+"%1"
+
+#: src/components/settings-panel.tsx
+msgid "Tools"
+msgstr "Instrumente"
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active."
+msgstr "Instrumentele au ocupat %1 din %2 de activitate."
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active. Slowest: %3 at %4."
+msgstr "Instrumentele au ocupat %1 din %2 de activitate. Cel mai lent: %3, cu %4."
+
+#: src/components/perf-panel.tsx
+msgid "Total minus time the turn spent blocked on your input. This is the number to judge performance by."
+msgstr "Totalul minus timpul în care tura a așteptat introducerea dvs. Aceasta este valoarea după care se judecă performanța."
+
+#: src/tour/tour-overlay.tsx
+msgid "Tour progress: step %1 of %2"
+msgstr "Progresul turului: pasul %1 din %2"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream"
+msgstr "Urmărește upstream"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream. Show a Sync button so I can re-pull this skill from GitHub later"
+msgstr "Urmărește upstream. Afișează un buton Sincronizează pentru a putea prelua din nou mai târziu acest skill din GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1"
+msgstr "Urmărește upstream de la %1"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1 (last sync: %2)"
+msgstr "Urmărește upstream de la %1 (ultima sincronizare: %2)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Transport"
+msgstr "Transport"
+
+#: src/index.ts
+msgid "Troubleshoot errors in output"
+msgstr "Depanează erorile din ieșire"
+
+#: src/cell-output-toolbar.ts
+msgid "Troubleshoot the error in this cell"
+msgstr "Depanează eroarea din această celulă"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "URL"
+msgstr "URL"
+
+#: src/components/skills-panel.tsx
+msgid "Undo"
+msgstr "Anulează"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall"
+msgstr "Dezinstalează"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall plugin?"
+msgstr "Dezinstalați pluginul?"
+
+#: src/chat-sidebar.tsx
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Unknown error"
+msgstr "Eroare necunoscută"
+
+#: src/components/skills-panel.tsx
+msgid "Unsaved changes"
+msgstr "Modificări nesalvate"
+
+#: src/components/plugins-panel.tsx
+msgid "Update"
+msgstr "Actualizează"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Update active notebook"
+msgstr "Actualizează notebookul activ"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Update active notebook with AI"
+msgstr "Actualizează notebookul activ cu AI"
+
+#: src/components/plugins-panel.tsx
+msgid "Updating…"
+msgstr "Se actualizează…"
+
+#: src/chat-sidebar.tsx
+msgid "Upload file from computer"
+msgstr "Încarcă un fișier de pe computer"
+
+#: src/chat-sidebar.tsx
+msgid "Uploaded: %1"
+msgstr "Încărcat: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Uploading"
+msgstr "Se încarcă"
+
+#: src/components/settings-panel.tsx
+msgid "Usage footer"
+msgstr "Subsol de utilizare"
+
+#: src/chat-sidebar.tsx
+msgid "Use as context"
+msgstr "Folosește ca context"
+
+#: src/chat-sidebar.tsx
+msgid "Use current file as context"
+msgstr "Folosește fișierul curent ca context"
+
+#: src/chat-sidebar.tsx
+msgid "User"
+msgstr "Utilizator"
+
+#: src/components/skills-panel.tsx
+msgid "User (available in all projects)"
+msgstr "Utilizator (disponibil în toate proiectele)"
+
+#: notebook_intelligence/readiness.py
+msgid "Usually an expired or missing API key, or a Base URL that does not point at the provider's API root. For GitHub Copilot, sign in again from NBI Settings."
+msgstr "De obicei, o cheie API expirată sau lipsă ori un URL de bază care nu indică rădăcina API-ului furnizorului. Pentru GitHub Copilot, autentificați-vă din nou din Setări NBI."
+
+#: src/components/skills-panel.tsx
+msgid "View (managed, read-only)"
+msgstr "Vizualizare (gestionat, doar în citire)"
+
+#: src/components/skills-panel.tsx
+msgid "View skill"
+msgstr "Vizualizează skillul"
+
+#: src/components/perf-panel.tsx
+msgid "Wall time from the request arriving to the response finishing, including any time spent waiting on you."
+msgstr "Timpul real de la sosirea cererii până la finalizarea răspunsului, inclusiv timpul petrecut așteptându-vă pe dvs."
+
+#: src/chat-sidebar.tsx
+msgid "Welcome! How can I assist you today?"
+msgstr "Bun venit! Cu ce vă pot ajuta astăzi?"
+
+#: src/components/skills-panel.tsx
+msgid "What this skill does, shown to Claude when deciding whether to use it"
+msgstr "Ce face acest skill, afișat lui Claude când decide dacă să îl folosească"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr "Când este activat, promptul deschide bara laterală de chat Notebook Intelligence. Dezactivați pentru a păstra chatul ascuns și a afișa progresul doar în bara de instrumente a notebookului."
+
+#: src/components/perf-panel.tsx
+msgid "When the turn started, in local time."
+msgstr "Momentul în care a început tura, în ora locală."
+
+#: src/components/perf-panel.tsx
+msgid "Which backend served the turn, and the surface it came from."
+msgstr "Ce backend a deservit tura și interfața din care a provenit."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Working directory"
+msgstr "Director de lucru"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Working…"
+msgstr "Se lucrează…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Write access under"
+msgstr "Acces de scriere în"
+
+#: src/chat-sidebar.tsx
+msgid "You are not logged in to GitHub Copilot. Please login now to activate chat."
+msgstr "Nu sunteți autentificat la GitHub Copilot. Autentificați-vă acum pentru a activa chatul."
+
+#: src/chat-sidebar.tsx
+msgid "Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory."
+msgstr "Codul și datele dvs. sunt transferate direct către GitHub Copilot după necesități, fără a se stoca nicio copie, în afară de păstrarea lor în memoria procesului."
+
+#: src/components/claude-scope.ts
+msgid "available in all your projects"
+msgstr "disponibil în toate proiectele dvs."
+
+#: src/components/perf-panel.tsx
+msgid "cgroup CPU throttling"
+msgstr "Limitarea CPU de către cgroup"
+
+#: src/components/tool-call-card.tsx
+msgid "diff truncated"
+msgstr "diferențe trunchiate"
+
+#: src/components/skills-panel.tsx
+msgid "e.g. %1"
+msgstr "de ex. %1"
+
+#: src/components/perf-panel.tsx
+msgid "failed (%1)"
+msgstr "eșuat (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it."
+msgstr "O latență fsync în acest interval este semnul tipic al unui sistem de fișiere de rețea. Dacă este vorba de ~/.claude sau de directorul home Jupyter, fiecare pornire de agent și fiecare scanare a regulilor plătesc acest cost."
+
+#: src/components/skills-panel.tsx
+msgid "https://github.com/owner/repo or .../tree/main/path/to/skill"
+msgstr "https://github.com/owner/repo sau .../tree/main/path/to/skill"
+
+#: src/components/plugins-panel.tsx
+msgid "https://… or local path"
+msgstr "https://… sau cale locală"
+
+#: src/components/plugins-panel.tsx
+msgid "no plugins"
+msgstr "niciun plugin"
+
+#: src/components/perf-panel.tsx
+msgid "no projects/ or sessions/ directory"
+msgstr "niciun director projects/ sau sessions/"
+
+#: src/components/perf-panel.tsx
+msgid "ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success."
+msgstr "ok, eroare sau anulată. O tură anulată este înregistrată ca anulată, nu ca un succes rapid."
+
+#: src/chat-sidebar.tsx
+msgid "open notebook"
+msgstr "deschide notebookul"
+
+#: src/components/plugins-panel.tsx
+msgid "owner/repo, https://github.com/owner/repo, or local path"
+msgstr "owner/repo, https://github.com/owner/repo sau cale locală"
+
+#: notebook_intelligence/acp_agent.py
+msgid "run by %1"
+msgstr "rulat de %1"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo"
+msgstr "partajat prin depozitul proiectului"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo (%1)"
+msgstr "partajat prin depozitul proiectului (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "skipped: %1"
+msgstr "omis: %1"
+
+#: src/components/perf-panel.tsx
+msgid "stat %1, write+fsync %2 (median of %3)"
+msgstr "stat %1, write+fsync %2 (mediana a %3)"
+
+#: src/components/claude-scope.ts
+msgid "this project, this user only"
+msgstr "acest proiect, doar acest utilizator"
+
+#: src/components/perf-panel.tsx
+msgid "timed out after %1s"
+msgstr "timp expirat după %1 s"
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"%1\" requires a \"url\" field."
+msgstr "transport: \"%1\" necesită un câmp \"url\"."
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"stdio\" requires a \"command\" field."
+msgstr "transport: \"stdio\" necesită un câmp \"command\"."
+
+#: src/components/perf-panel.tsx
+msgid "via proxy"
+msgstr "prin proxy"
+
+#: src/components/perf-panel.tsx
+msgid "write %1, read %2"
+msgstr "scriere %1, citire %2"
+
+#: src/index.ts
+msgid "＋ New Session"
+msgstr "＋ Sesiune nouă"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP description: the link to the admin guide"
+msgid "administrator installation guide"
+msgstr "ghidul de instalare pentru administratori"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP settings section"
+msgid "Agent"
+msgstr "Agent"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a code cell; at most 3 characters"
+msgid "Cd"
+msgstr "Cod"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a natural-language cell; at most 3 characters"
+msgid "NL"
+msgstr "LN"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Don't run"
+msgstr "Nu rula"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Run"
+msgstr "Rulează"
+
+#: src/components/settings-panel.tsx
+msgctxt "Chatbook mode description; %1 and %2 are the confirm bar buttons"
+msgid "Show the generated code and wait for %1 or %2 on every natural-language run."
+msgstr "Afișează codul generat și așteaptă %1 sau %2 la fiecare rulare în limbaj natural."
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "LOCAL"
+msgstr "LOCAL"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "PROJECT"
+msgstr "PROIECT"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "USER"
+msgstr "UTILIZATOR"
+
+#: src/components/claude-mcp-panel.tsx
+msgctxt "MCP server input mode"
+msgid "Form"
+msgstr "Formular"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connected"
+msgstr "conectat"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connecting"
+msgstr "se conectează"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "disconnecting"
+msgstr "se deconectează"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "not connected"
+msgstr "neconectat"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated prompt list"
+msgstr "listă de prompturi actualizată"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated tool list"
+msgstr "listă de instrumente actualizată"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating prompt list"
+msgstr "se actualizează lista de prompturi"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating tool list"
+msgstr "se actualizează lista de instrumente"
+
+#: src/components/settings-panel.tsx
+msgctxt "Ollama hint: the button that retries listing models"
+msgid "Try again"
+msgstr "Încercați din nou"
+
+#: src/components/perf-panel.tsx
+msgctxt "Python version on an operating system"
+msgid "%1 on %2"
+msgstr "%1 pe %2"
+
+#: src/chatbook-toolbar.ts
+msgctxt "a settings path: %1 the settings window, %2 its tab, %3 the field"
+msgid "%1 > %2 > %3"
+msgstr "%1 > %2 > %3"
+
+#: src/components/perf-panel.tsx
+msgctxt "a value that was not recorded"
+msgid "n/a"
+msgstr "n/a"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "an approval card detail: its label, then notes such as its size"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve"
+msgstr "Aprobă"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve for this request"
+msgstr "Aprobă pentru această cerere"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Cancel"
+msgstr "Anulează"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, continue planning"
+msgstr "Nu, continuă planificarea"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, start implementing now"
+msgstr "Nu, începe implementarea acum"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval button"
+msgid "Reject"
+msgstr "Respinge"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, approve plan"
+msgstr "Da, aprobă planul"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, enter plan mode"
+msgstr "Da, intră în modul de planificare"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval card title"
+msgid "%1 tool call"
+msgstr "Apel al instrumentului %1"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "full"
+msgstr "complet"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "redacted"
+msgstr "anonimizat"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "between notes on an approval card detail"
+msgid ", "
+msgstr ", "
+
+#: src/components/perf-panel.tsx
+msgctxt "bytes"
+msgid "%1 B"
+msgstr "%1 B"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Ask"
+msgstr "Întreabă"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Explain"
+msgstr "Explică"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Troubleshoot"
+msgstr "Depanează"
+
+#: src/components/perf-panel.tsx
+msgctxt "certificate issuer"
+msgid "unknown"
+msgstr "necunoscut"
+
+#: notebook_intelligence/ai_service_manager.py
+msgctxt "chat button"
+msgid "Configure"
+msgstr "Configurează"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Agent"
+msgstr "Agent"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Ask"
+msgstr "Întreabă"
+
+#: src/chatbook.ts
+msgctxt "confirm bar link that opens settings; %1 is the settings window name"
+msgid "Change in %1"
+msgstr "Modifică în %1"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected MCP server tools"
+msgid "%1 mcp"
+msgid_plural "%1 mcp"
+msgstr[0] "%1 mcp"
+msgstr[1] "%1 mcp"
+msgstr[2] "%1 mcp"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected extension tools"
+msgid "%1 ext"
+msgid_plural "%1 ext"
+msgstr[0] "%1 ext"
+msgstr[1] "%1 ext"
+msgstr[2] "%1 ext"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected tools"
+msgid "%1 built-in"
+msgid_plural "%1 built-in"
+msgstr[0] "%1 integrat"
+msgstr[1] "%1 integrate"
+msgstr[2] "%1 integrate"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "environment (%1)"
+msgstr "mediu (%1)"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "settings"
+msgstr "setări"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "added"
+msgstr "adăugată"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "removed"
+msgstr "eliminată"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "mount"
+msgstr "montare"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "session tree size"
+msgstr "dimensiunea arborelui de sesiuni"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "small-file latency"
+msgstr "latența fișierelor mici"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "sustained throughput"
+msgstr "debit susținut"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem type"
+msgid "not determined"
+msgstr "nedeterminat"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Add files from outside the workspace. They're saved to the workspace and attached to this chat."
+msgstr "Adăugați fișiere din afara spațiului de lucru. Acestea sunt salvate în spațiul de lucru și atașate la acest chat."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Ask is read-only and only answers questions. Agent can also run tools, such as file edits and shell commands."
+msgstr "Modul Întreabă este doar în citire și doar răspunde la întrebări. Modul Agent poate și să ruleze instrumente, cum ar fi editări de fișiere și comenzi shell."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Attach files as context"
+msgstr "Atașează fișiere ca context"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Back"
+msgstr "Înapoi"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Begin a fresh session when context gets crowded or you want to switch tasks."
+msgstr "Începeți o sesiune nouă când contextul devine aglomerat sau doriți să treceți la altă sarcină."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Configure providers, API keys, and extensions (MCP servers, skills, admin policies)."
+msgstr "Configurați furnizori, chei API și extensii (servere MCP, skilluri, politici de administrare)."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Done"
+msgstr "Gata"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag and drop"
+msgstr "Glisare și plasare"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag files from the JupyterLab file browser or your desktop onto the prompt. Keyboard users can attach the same files with the 'Attach files as context' and 'Upload from your computer' buttons."
+msgstr "Glisați fișiere din Browser Fișiere al JupyterLab sau de pe desktop pe prompt. Utilizatorii de tastatură pot atașa aceleași fișiere cu butoanele „Atașează fișiere ca context” și „Încarcă de pe computer”."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Next"
+msgstr "Înainte"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Open the menu for built-in commands and installed skills. Typing / at the start of the prompt does the same thing."
+msgstr "Deschideți meniul pentru comenzile integrate și skillurile instalate. Tastarea / la începutul promptului are același efect."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick a chat mode"
+msgstr "Alegeți un mod de chat"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick up where you left off"
+msgstr "Continuați de unde ați rămas"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pin workspace files so the assistant can reference them. Typing @ in the prompt opens the same picker."
+msgstr "Fixați fișiere din spațiul de lucru pentru ca asistentul să le poată folosi ca referință. Tastarea @ în prompt deschide același selector."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Reopen an earlier Claude session from this workspace."
+msgstr "Redeschideți o sesiune Claude anterioară din acest spațiu de lucru."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a coding agent in a terminal"
+msgstr "Rulați un agent de programare într-un terminal"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a slash command"
+msgstr "Rulați o comandă slash"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Settings"
+msgstr "Setări"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Show NBI tour"
+msgstr "Afișează turul NBI"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Skip tour"
+msgstr "Omite turul"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Start a new chat"
+msgstr "Începeți un chat nou"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Try this: open a notebook and ask, 'Explain what this notebook does and suggest one improvement.' You can replay this tour anytime from the command palette."
+msgstr "Încercați: deschideți un notebook și întrebați „Explică ce face acest notebook și sugerează o îmbunătățire.” Puteți relua acest tur oricând din Paleta de comenzi."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Upload from your computer"
+msgstr "Încarcă de pe computer"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Welcome to Notebook Intelligence"
+msgstr "Bun venit în Notebook Intelligence"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "You're ready"
+msgstr "Sunteți gata"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Your AI assistant lives in this sidebar. Take a quick tour of the settings, attachments, and chat modes so you can use it confidently."
+msgstr "Asistentul dvs. AI se află în această bară laterală. Faceți un tur rapid al setărilor, atașamentelor și modurilor de chat pentru a-l folosi cu încredere."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a 'Coding Agent' section with tiles for {launchers}. Each tile opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "Launcherul JupyterLab are o secțiune „Coding Agent” cu plăci pentru {launchers}. Fiecare placă deschide o sesiune CLI într-un terminal Jupyter lângă notebookul dvs."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a {launchers} tile in the 'Coding Agent' section. It opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "Launcherul JupyterLab are o placă {launchers} în secțiunea „Coding Agent”. Aceasta deschide o sesiune CLI într-un terminal Jupyter lângă notebookul dvs."
+
+#: src/components/perf-panel.tsx
+msgctxt "gigabytes"
+msgid "%1 GB"
+msgstr "%1 GB"
+
+#: src/components/perf-panel.tsx
+msgctxt "kilobytes"
+msgid "%1 KB"
+msgstr "%1 KB"
+
+#: src/components/setting-lock.ts
+msgctxt "lock reason: %1 is an environment variable name"
+msgid "Locked by %1"
+msgstr "Blocat de %1"
+
+#: src/components/perf-panel.tsx
+msgctxt "machine measurement"
+msgid "Probe"
+msgstr "Sondare"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes"
+msgid "%1 MB"
+msgstr "%1 MB"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes per second"
+msgid "%1 MB/s"
+msgstr "%1 MB/s"
+
+#: src/components/perf-panel.tsx
+msgctxt "milliseconds"
+msgid "%1 ms"
+msgstr "%1 ms"
+
+#: src/components/settings-panel.tsx
+msgctxt "model"
+msgid "None"
+msgstr "Niciunul"
+
+#: src/components/perf-panel.tsx
+msgctxt "model name"
+msgid "unknown"
+msgstr "necunoscut"
+
+#: src/components/settings-panel.tsx
+msgctxt "model provider"
+msgid "None"
+msgstr "Niciunul"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance diagnostics setting"
+msgid "Enabled"
+msgstr "Activat"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "API ms"
+msgstr "ms API"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Active"
+msgstr "Activ"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "First token"
+msgstr "Primul token"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Mode"
+msgstr "Mod"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Model"
+msgstr "Model"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Spawn"
+msgstr "Pornire"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stalls"
+msgstr "Blocări"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Status"
+msgstr "Stare"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stream"
+msgstr "Stream"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Time"
+msgstr "Ora"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens in"
+msgstr "Tokenuri intrare"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens out"
+msgstr "Tokenuri ieșire"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tools"
+msgstr "Instrumente"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Total"
+msgstr "Total"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Verdict"
+msgstr "Verdict"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Accept Edits"
+msgstr "Acceptă editările"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Bypass Permissions"
+msgstr "Ocolire permisiuni"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Default"
+msgstr "Implicit"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Plan"
+msgstr "Planificare"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugin count, then the plugin names"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugins section heading"
+msgid "MARKETPLACES"
+msgstr "MARKETPLACE-URI"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "bad"
+msgstr "problemă"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "error"
+msgstr "eroare"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "info"
+msgstr "info"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "skipped"
+msgstr "omis"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "timed out"
+msgstr "timp expirat"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "warn"
+msgstr "avertisment"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check: %1 is a directory, %2 what was measured"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Filesystem"
+msgstr "Sistem de fișiere"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Network"
+msgstr "Rețea"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Process and host"
+msgstr "Proces și gazdă"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Subprocess startup"
+msgstr "Pornirea subproceselor"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Cancel"
+msgstr "Anulează"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Submit"
+msgstr "Trimite"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "ACP agent"
+msgstr "Agent ACP"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Active chat path"
+msgstr "Calea activă a chatului"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Adapter runtime"
+msgstr "Runtime-ul adaptorului"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Agent credentials"
+msgstr "Credențialele agentului"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Anthropic credentials"
+msgstr "Credențiale Anthropic"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model"
+msgstr "Model de chat"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model provider"
+msgstr "Furnizor de model de chat"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Claude Code CLI"
+msgstr "CLI Claude Code"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Configuration"
+msgstr "Configurație"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "GitHub Copilot sign-in"
+msgstr "Autentificare GitHub Copilot"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Live completion"
+msgstr "Completare live"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model list"
+msgstr "Lista de modele"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model name"
+msgstr "Numele modelului"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Selected model"
+msgstr "Model selectat"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Tool schema"
+msgstr "Schema instrumentelor"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "blocked"
+msgstr "blocat"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "skipped"
+msgstr "omis"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "warn"
+msgstr "avertisment"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Checking…"
+msgstr "Se verifică…"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Not ready"
+msgstr "Nu este pregătit"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready"
+msgstr "Pregătit"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready, with warnings"
+msgstr "Pregătit, cu avertismente"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Output"
+msgstr "Ieșire"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Thought"
+msgstr "Raționament"
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "„%1” va fi eliminat din configurația cu domeniu local a lui Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "„%1” va fi eliminat din configurația cu domeniu de proiect a lui Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "„%1” va fi eliminat din configurația cu domeniu de utilizator a lui Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "„%1” va fi eliminat din configurația cu domeniul %2 a lui Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "„%1” va fi eliminat din configurația cu domeniu local a lui Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "„%1” va fi eliminat din configurația cu domeniu de proiect a lui Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "„%1” va fi eliminat din configurația cu domeniu de utilizator a lui Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "„%1” va fi eliminat din configurația cu domeniul %2 a lui Claude."
+
+#: src/components/skills-panel.tsx
+msgctxt "scope heading, then the project name"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: src/components/claude-scope.ts
+msgctxt "scope picker option: %1 is the scope id, %2 what it means"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "seconds"
+msgid "%1s"
+msgstr "%1 s"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgctxt "separator between list items"
+msgid ", "
+msgstr ", "
+
+#: src/components/settings-panel.tsx
+msgctxt "setting source"
+msgid "User"
+msgstr "Utilizator"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings section"
+msgid "Language"
+msgstr "Limbă"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "General"
+msgstr "General"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "MCP Servers"
+msgstr "Servere MCP"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Performance"
+msgstr "Performanță"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Plugins"
+msgstr "Pluginuri"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Skills"
+msgstr "Skilluri"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Managed"
+msgstr "Gestionat"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Tracking"
+msgstr "Urmărește upstream"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "Project"
+msgstr "Proiect"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "User"
+msgstr "Utilizator"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill sync result; %1 is a list of counts"
+msgid "Sync complete. %1."
+msgstr "Sincronizare finalizată. %1."
+
+#: src/components/perf-panel.tsx
+msgctxt "skip reason"
+msgid "not applicable"
+msgstr "nu se aplică"
+
+#: src/components/skills-panel.tsx
+msgctxt "stands in for the project folder name"
+msgid "<project>"
+msgstr "<proiect>"
+
+#: src/terminal-drag.ts
+msgctxt "terminal upload failure; %2 lists files, %1 counts the rest"
+msgid "Terminal drop upload failed for %2 (+%1 more)"
+msgid_plural "Terminal drop upload failed for %2 (+%1 more)"
+msgstr[0] "Încărcarea prin plasare în terminal a eșuat pentru %2 (+încă %1)"
+msgstr[1] "Încărcarea prin plasare în terminal a eșuat pentru %2 (+încă %1)"
+msgstr[2] "Încărcarea prin plasare în terminal a eșuat pentru %2 (+încă %1)"
+
+#: src/i18n.ts
+msgctxt "text direction: translate as 'rtl' for a right-to-left language, otherwise 'ltr'"
+msgid "ltr"
+msgstr "ltr"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "cancelled"
+msgstr "anulat"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "completed"
+msgstr "finalizat"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "failed"
+msgstr "eșuat"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "in progress"
+msgstr "în curs"
+
+#: src/components/tool-call-group.tsx
+msgctxt "tool call summary: %1 is the call count, %2 the failed count"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: src/chat-sidebar.tsx
+msgctxt "tool selection"
+msgid "clear"
+msgstr "golește"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Command execute"
+msgstr "Executare comenzi"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File edit"
+msgstr "Editare fișiere"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File read"
+msgstr "Citire fișiere"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook edit"
+msgstr "Editare notebook"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook execute"
+msgstr "Executare notebook"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Python file edit"
+msgstr "Editare fișiere Python"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "cancelled"
+msgstr "anulată"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "error"
+msgstr "eroare"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn timeline section"
+msgid "Events"
+msgstr "Evenimente"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Agent cold start"
+msgstr "Pornirea la rece a agentului"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Cancelled"
+msgstr "Anulată"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Context preparation"
+msgstr "Pregătirea contextului"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Failed"
+msgstr "Eșuată"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Mid-stream stalls"
+msgstr "Blocări în timpul streamului"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Model or gateway"
+msgstr "Model sau gateway"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No single hotspot"
+msgstr "Niciun punct critic unic"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No timing recorded"
+msgstr "Niciun timp înregistrat"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Tool execution"
+msgstr "Executarea instrumentelor"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "not valid JSON. %1"
+msgstr "JSON nevalid. %1"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "the save failed for an unknown reason"
+msgstr "salvarea a eșuat dintr-un motiv necunoscut"

@@ -19,7 +19,7 @@ import {
 import { markTourCompleted } from './tour-state';
 import { NBIAPI } from '../api';
 import { uiLabel } from './tour-config';
-import { formatNumber, useTrans } from '../i18n';
+import { formatNumber, getTextDirection, useTrans } from '../i18n';
 import { tourText } from './tour-text';
 
 const TOOLTIP_GAP_PX = 12;
@@ -284,13 +284,17 @@ export function TourOverlay(props: ITourOverlayProps): JSX.Element | null {
       if (inEditable) {
         return;
       }
+      // Next sits on the left when the tour is laid out right to left.
+      const rtl = getTextDirection() === 'rtl';
+      const forward = rtl ? 'ArrowLeft' : 'ArrowRight';
+      const backward = rtl ? 'ArrowRight' : 'ArrowLeft';
       if (e.key === 'Escape') {
         e.preventDefault();
         finishRef.current();
-      } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
+      } else if (e.key === forward || e.key === 'Enter') {
         e.preventDefault();
         advanceRef.current();
-      } else if (e.key === 'ArrowLeft') {
+      } else if (e.key === backward) {
         e.preventDefault();
         backRef.current();
       }
@@ -415,6 +419,7 @@ export function TourOverlay(props: ITourOverlayProps): JSX.Element | null {
     <div
       ref={rootRef}
       className="nbi-tour-root"
+      dir={getTextDirection()}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}

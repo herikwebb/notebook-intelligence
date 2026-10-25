@@ -203,11 +203,11 @@ If you work with a coding agent, [AGENTS.md](AGENTS.md) holds these `jlpm` and l
 
 ## Translations
 
-NBI's user interface is translated through JupyterLab's own translation system, so it follows the language a user picks under **Settings → Language** (which lists the JupyterLab language packs installed on the server). The gettext domain is `notebook_intelligence`. Catalogs live in the package:
+Translators: see [docs/translating.md](docs/translating.md). NBI's user interface is translated through JupyterLab's own translation system, so it follows the language a user picks under **Settings → Language** (which lists the JupyterLab language packs installed on the server). The gettext domain is `notebook_intelligence`. Catalogs live in the package:
 
 - `notebook_intelligence/locale/notebook_intelligence.pot` is the template of every translatable string. It is generated; do not edit it by hand.
 - `notebook_intelligence/locale/<locale>/LC_MESSAGES/notebook_intelligence.po` is one language, for example `de_DE`. These are the only catalog files translators edit.
-- The `.json` bundle the frontend loads is compiled from each `.po` when a wheel is built (`hatch_build.py`) and is not committed. The `jupyterlab.locale` entry point in `pyproject.toml` is how `jupyterlab_server` finds it.
+- The `.json` bundle the frontend loads and the `.mo` file the server reads are compiled from each `.po` when a wheel is built (`hatch_build.py`) and are not committed. The `jupyterlab.locale` entry point in `pyproject.toml` is how `jupyterlab_server` finds it.
 - Strings in `schema/plugin.json` stay English: `jupyterlab_server` translates settings schemas only from JupyterLab language packs, never from an extension's own catalog. Put user-visible text on the command instead (a toolbar button's tooltip falls back to its command's label and caption).
 
 ### Writing translatable strings

@@ -272,6 +272,13 @@ def update(args) -> int:
     for locale in locales:
         po_path = LOCALE_DIR / locale / "LC_MESSAGES" / f"{DOMAIN}.po"
         command = ["update", "--ignore-obsolete"] if po_path.exists() else ["init"]
+        kept = {}
+        if po_path.exists():
+            kept = {
+                key: value
+                for key, value in polib.pofile(str(po_path)).metadata.items()
+                if key in ("Language", "Plural-Forms")
+            }
         subprocess.check_call(
             [
                 sys.executable,
@@ -285,7 +292,35 @@ def update(args) -> int:
                 f"--locale={locale}",
             ]
         )
+        _drop_format_flags(po_path)
+        _restore_headers(po_path, kept)
     return 0
+
+
+def _restore_headers(po_path: Path, kept: dict) -> None:
+    """Babel drops Plural-Forms on update for a locale it does not know
+    (no_NO), and the build then refuses the catalog; put back what the
+    catalog had."""
+    po = polib.pofile(str(po_path), wrapwidth=WRAP)
+    missing = {k: v for k, v in kept.items() if not po.metadata.get(k)}
+    if missing:
+        po.metadata.update(missing)
+        po.save(str(po_path))
+
+
+def _drop_format_flags(po_path: Path) -> None:
+    """Babel flags msgids with % or {name} in them as Python format strings,
+    but NBI's %1 placeholders and {launchers} token are not, and the flag
+    makes `msgfmt -c` reject valid translations ("%1 s" for "%1s")."""
+    po = polib.pofile(str(po_path), wrapwidth=WRAP)
+    changed = False
+    for entry in po:
+        for flag in ("python-format", "python-brace-format"):
+            if flag in entry.flags:
+                entry.flags.remove(flag)
+                changed = True
+    if changed:
+        po.save(str(po_path))
 
 
 def compile_(_args) -> int:

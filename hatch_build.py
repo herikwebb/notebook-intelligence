@@ -69,6 +69,7 @@ def _jed_bundle(po: polib.POFile, po_path: Path, version: str) -> dict:
         )
     if not _PLURAL_FORMS.match(plural_forms):
         raise ValueError(f"{po_path} has an invalid Plural-Forms: {plural_forms!r}")
+    nplurals = int(re.search(r"nplurals\s*=\s*(\d+)", plural_forms).group(1))
     bundle = {
         "": {
             "domain": DOMAIN,
@@ -79,6 +80,17 @@ def _jed_bundle(po: polib.POFile, po_path: Path, version: str) -> dict:
             "plural_forms": plural_forms,
         }
     }
+    # A plural entry with only some forms filled is not "translated" to
+    # polib, so it would be dropped silently, and the frontend and server
+    # would each fall back differently; refuse it instead.
+    for entry in po:
+        if entry.msgid_plural and not entry.obsolete:
+            filled = sum(1 for text in entry.msgstr_plural.values() if text)
+            if filled and (filled != nplurals or len(entry.msgstr_plural) != nplurals):
+                raise ValueError(
+                    f"{po_path}: {entry.msgid!r} needs {nplurals} plural forms "
+                    f"(Plural-Forms), and has {filled}"
+                )
     for entry in po.translated_entries():
         _check_placeholders(entry, po_path)
         key = f"{entry.msgctxt}\x04{entry.msgid}" if entry.msgctxt else entry.msgid

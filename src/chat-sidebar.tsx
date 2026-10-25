@@ -101,7 +101,13 @@ import { hasCompletedTour, shouldAutoShowTour } from './tour/tour-state';
 import { cancelInFlightTurns, registerInFlightTurn } from './chat-cancel';
 import { recordStoppedTurn } from './chat-stopped-turn';
 import { upsertMessageById } from './chat-transcript';
-import { getLanguageCode, getTrans, interpolate, useTrans } from './i18n';
+import {
+  getLanguageCode,
+  getTextDirection,
+  getTrans,
+  interpolate,
+  useTrans
+} from './i18n';
 import { builtinToolsetLabel } from './builtin-toolset-labels';
 import { IClaudeSessionInfo } from './api';
 import {
@@ -897,6 +903,8 @@ function ChatResponse(props: any) {
         </div>
         <div className="chat-message-timestamp">{timestamp}</div>
       </div>
+      {/* Each block takes its own direction (unicode-bidi: plaintext in
+          style/base.css), so mixed-language replies read correctly. */}
       <div className="chat-message-content">
         {groupedContents.map((item, index) => {
           switch (item.type) {
@@ -4231,6 +4239,7 @@ function SidebarComponent(props: any) {
     <div
       ref={sidebarRootRef}
       className={`sidebar${isDragOver ? ' drag-over' : ''}`}
+      dir={getTextDirection()}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -4440,6 +4449,7 @@ function SidebarComponent(props: any) {
             placeholder={trans.__('Ask Notebook Intelligence...')}
             spellCheck={false}
             value={prompt}
+            dir="auto"
           />
           {(activeDocumentInfo?.filename ||
             selectedContextFiles.length > 0 ||

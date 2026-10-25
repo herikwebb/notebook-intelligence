@@ -20,6 +20,32 @@ import { IActiveDocumentInfo } from './tokens';
 import { resolveCodeClassName } from './markdown-code-class';
 import { useTrans } from './i18n';
 
+// Block elements take their direction from their own text (dir="auto"), so
+// an English paragraph, list or table reads left to right in an Arabic reply
+// and the reverse, bullets, columns and borders included. Code stays left to
+// right (style/base.css).
+const AUTO_DIRECTION_BLOCKS = [
+  'p',
+  'ul',
+  'ol',
+  'table',
+  'blockquote',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6'
+] as const;
+const autoDirectionComponents = Object.fromEntries(
+  AUTO_DIRECTION_BLOCKS.map(tag => [
+    tag,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    ({ node, ...props }: any) =>
+      React.createElement(tag, { ...props, dir: 'auto' })
+  ])
+);
+
 type MarkdownRendererProps = {
   children: string;
   getApp: () => JupyterFrontEnd;
@@ -52,6 +78,7 @@ export function MarkdownRenderer({
     <Markdown
       remarkPlugins={[remarkGfm, remarkBreaks]}
       components={{
+        ...autoDirectionComponents,
         // CommonMark `<https://...>` autolinks, `[text](url)`, and
         // reference-style links all normalize to the same `a` node.
         // `MarkdownLink` routes fragment-only and workspace-relative

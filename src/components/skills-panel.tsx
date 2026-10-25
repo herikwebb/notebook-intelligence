@@ -10,7 +10,7 @@ import React, {
 import { Dialog, showDialog } from '@jupyterlab/apputils';
 import { VscCopy, VscEdit, VscTrash } from '../icons';
 import { TranslationBundle } from '@jupyterlab/translation';
-import { interpolate, useTrans } from '../i18n';
+import { interpolate, useTrans, withTextDirection } from '../i18n';
 import { scopeHeading } from './claude-scope';
 import {
   ISkillDetail,
@@ -307,14 +307,16 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
   };
 
   const handleDelete = async (skill: ISkillSummary) => {
-    const result = await showDialog({
-      title: trans.__('Delete skill?'),
-      body: trans.__('"%1" will be deleted.', skill.name),
-      buttons: [
-        Dialog.cancelButton(),
-        Dialog.warnButton({ label: trans.__('Delete') })
-      ]
-    });
+    const result = await showDialog(
+      withTextDirection({
+        title: trans.__('Delete skill?'),
+        body: trans.__('"%1" will be deleted.', skill.name),
+        buttons: [
+          Dialog.cancelButton(),
+          Dialog.warnButton({ label: trans.__('Delete') })
+        ]
+      })
+    );
     if (!result.button.accept) {
       return;
     }
@@ -1582,14 +1584,16 @@ function SkillEditor(props: {
 
   const handleBack = async () => {
     if (anyDirty) {
-      const result = await showDialog({
-        title: trans.__('Discard unsaved changes?'),
-        body: trans.__('This skill has unsaved changes. Discard them?'),
-        buttons: [
-          Dialog.cancelButton({ label: trans.__('Keep editing') }),
-          Dialog.warnButton({ label: trans.__('Discard') })
-        ]
-      });
+      const result = await showDialog(
+        withTextDirection({
+          title: trans.__('Discard unsaved changes?'),
+          body: trans.__('This skill has unsaved changes. Discard them?'),
+          buttons: [
+            Dialog.cancelButton({ label: trans.__('Keep editing') }),
+            Dialog.warnButton({ label: trans.__('Discard') })
+          ]
+        })
+      );
       if (!result.button.accept) {
         return;
       }
@@ -1632,14 +1636,16 @@ function SkillEditor(props: {
   };
 
   const handleDeleteFile = async (path: string) => {
-    const result = await showDialog({
-      title: trans.__('Delete file?'),
-      body: trans.__('"%1" will be permanently deleted.', path),
-      buttons: [
-        Dialog.cancelButton(),
-        Dialog.warnButton({ label: trans.__('Delete') })
-      ]
-    });
+    const result = await showDialog(
+      withTextDirection({
+        title: trans.__('Delete file?'),
+        body: trans.__('"%1" will be permanently deleted.', path),
+        buttons: [
+          Dialog.cancelButton(),
+          Dialog.warnButton({ label: trans.__('Delete') })
+        ]
+      })
+    );
     if (!result.button.accept) {
       return;
     }
