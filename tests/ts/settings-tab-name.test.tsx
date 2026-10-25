@@ -22,10 +22,10 @@ function renderTabs() {
   render(
     <SettingsPanelTabsComponent
       tabs={[
-        { id: 'general', label: 'General' },
+        { id: 'general', label: () => 'General' },
         {
           id: 'claude',
-          label: 'Claude',
+          label: () => 'Claude',
           icon: () => (
             <span
               className="claude-icon"

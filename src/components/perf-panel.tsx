@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { NBIAPI } from '../api';
 import { requestAPI } from '../handler';
+import { useTrans } from '../i18n';
+import { lockedTip } from './setting-lock';
 import { writeTextToClipboard } from '../utils';
 import {
   VscCheck,
@@ -108,11 +110,6 @@ interface IProbeReading {
   // Rendered only for warn/bad, so a healthy probe stays quiet.
   note?: string;
 }
-
-// Duplicated from settings-panel.tsx rather than exported from there, since
-// this panel is meant to stay independent of the rest of that file.
-const lockedTip = (locked: boolean): string =>
-  locked ? 'Locked by your administrator' : '';
 
 function isNotFoundError(error: any): boolean {
   return error?.response?.status === 404;
@@ -993,6 +990,7 @@ function CopyButton(props: {
 }
 
 export function SettingsPanelComponentPerf(_props: any): JSX.Element {
+  const trans = useTrans();
   const [config, setConfig] = useState<IPerfDiagnosticsConfig>(
     NBIAPI.config.capabilities?.perf_diagnostics ?? DEFAULT_PERF_CONFIG
   );
@@ -1127,7 +1125,10 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
           contents, and hostnames are never recorded.
         </div>
         <div className="nbi-perf-controls">
-          <label className="nbi-perf-control" title={lockedTip(perfLocked)}>
+          <label
+            className="nbi-perf-control"
+            title={lockedTip(trans, perfLocked)}
+          >
             <input
               type="checkbox"
               checked={config.enabled}
@@ -1140,8 +1141,10 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
             className="nbi-perf-control"
             title={
               perfLocked
-                ? lockedTip(perfLocked)
-                : 'Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines.'
+                ? lockedTip(trans, perfLocked)
+                : trans.__(
+                    'Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines.'
+                  )
             }
           >
             <input
@@ -1152,7 +1155,10 @@ export function SettingsPanelComponentPerf(_props: any): JSX.Element {
             />
             Log to file
           </label>
-          <label className="nbi-perf-control" title={lockedTip(perfLocked)}>
+          <label
+            className="nbi-perf-control"
+            title={lockedTip(trans, perfLocked)}
+          >
             Attribute detail
             <select
               className="jp-mod-styled"
