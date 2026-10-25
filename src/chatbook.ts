@@ -432,7 +432,7 @@ export async function summarizeCodeCell(
     if (options.notifyOnError) {
       const trans = getTrans();
       Notification.warning(
-        trans.__('Could not generate English representation: %1', message)
+        trans.__('Could not generate a description: %1', message)
       );
     }
     return undefined;

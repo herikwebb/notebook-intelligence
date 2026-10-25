@@ -264,6 +264,12 @@ class NBIConfig:
         return bool(self.get('chatbook_llm_danger_scan', False))
 
     @property
+    def reply_in_user_language(self) -> bool:
+        """Ask the model to write its prose in the user's JupyterLab
+        language. Off by default, so prompts are unchanged."""
+        return self.get('reply_in_user_language', False) is True
+
+    @property
     def chatbook_backend_kernel(self) -> str:
         """Kernelspec name used to execute Chatbook-generated code (not 'chatbook')."""
         return str(self.get('chatbook_backend_kernel', '') or '').strip()

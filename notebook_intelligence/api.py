@@ -201,6 +201,9 @@ class ChatRequest:
     # of the existing public ChatRequest fields.
     mcp_prompt_message_count: int = 0
     required_context_message_count: int = 0
+    # The user's JupyterLab language by English name when they asked for
+    # replies in it (i18n.reply_language); None leaves prompts unchanged.
+    reply_language: Optional[str] = None
 
 @dataclass
 class ResponseStreamData:
@@ -956,7 +959,11 @@ class ChatParticipant:
 
         messages = request.chat_history.copy()
 
-        system_prompt = options.get("system_prompt")
+        # Every tool-using participant (agent mode, @mcp, extensions) builds
+        # its system prompt here, so the reply language is added here.
+        system_prompt = i18n.with_reply_language(
+            options.get("system_prompt"), request.reply_language
+        )
         if system_prompt is not None:
             messages = [
                 {"role": "system", "content": system_prompt}

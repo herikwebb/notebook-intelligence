@@ -94,11 +94,13 @@ def test_catalogs_are_matched_like_the_frontends(german, tmp_path):
 def test_no_translation_without_a_jupyterlab_language_pack(german, monkeypatch):
     """jupyterlab_server serves the frontend no translations for a locale
     without a language pack, so the server must not translate either."""
-    monkeypatch.setattr(i18n, "_installed_language_packs", lambda: frozenset({"en"}))
+    monkeypatch.setattr(i18n, "_installed_language_packs", lambda: {"en": "English"})
     i18n._bundle.cache_clear()
     assert i18n.load("de_DE").__("Rule not found") == "Rule not found"
     monkeypatch.setattr(
-        i18n, "_installed_language_packs", lambda: frozenset({"en", "de_DE"})
+        i18n,
+        "_installed_language_packs",
+        lambda: {"en": "English", "de_DE": "German (Germany)"},
     )
     i18n._bundle.cache_clear()
     assert i18n.load("de-DE").__("Rule not found") == "Regel nicht gefunden"
@@ -172,3 +174,150 @@ def test_every_admin_gate_message_is_translatable():
     assert messages <= set(listed)
     # English maps to itself, so the table cannot drift from the handlers.
     assert all(key == value for key, value in listed.items())
+
+
+PACKS = {
+    "en": "English",
+    "de_DE": "German (Germany)",
+    "pt_BR": "Portuguese (Brazil)",
+    "ach_UG": "Acoli (Uganda)",
+}
+
+
+@pytest.mark.parametrize(
+    "locale, expected",
+    [
+        ("de_DE", "German (Germany)"),
+        ("de-DE", "German (Germany)"),
+        ("pt_BR", "Portuguese (Brazil)"),
+        # No pack: JupyterLab is shown in English, so replies stay as is.
+        ("fr_FR", None),
+        # The translators' pseudo-language is not a language to reply in.
+        ("ach_UG", None),
+        ("en", None),
+        (None, None),
+        ("not a locale", None),
+    ],
+)
+def test_reply_language_is_the_language_packs_name(monkeypatch, locale, expected):
+    monkeypatch.setattr(i18n, "_installed_language_packs", lambda: PACKS)
+    assert i18n.reply_language(locale) == expected
+
+
+def test_reply_language_when_the_packs_cannot_be_listed(monkeypatch):
+    monkeypatch.setattr(i18n, "_installed_language_packs", lambda: None)
+    assert i18n.reply_language("sv_SE") == "the language of locale sv_SE"
+
+
+def test_a_failed_pack_listing_is_unknown_not_empty(monkeypatch):
+    """jupyterlab_server reports no packs at all when one fails to load;
+    that must not switch the feature off for the packs that work."""
+    import jupyterlab_server.translation_utils as utils
+
+    monkeypatch.setattr(utils, "get_language_packs", lambda: ({}, "a pack failed to load"))
+    i18n._installed_language_packs.cache_clear()
+    try:
+        assert i18n._installed_language_packs() is None
+    finally:
+        i18n._installed_language_packs.cache_clear()
+
+
+def test_reply_language_instruction():
+    assert i18n.reply_language_instruction(None) == ""
+    instruction = i18n.reply_language_instruction("German")
+    assert instruction.startswith("Reply in German")
+    assert "Leave code, identifiers" in instruction
+    assert i18n.with_reply_language("Be brief.", None) == "Be brief."
+    assert i18n.with_reply_language("Be brief.", "German") == (
+        "Be brief.\n\n" + instruction
+    )
+    assert i18n.with_reply_language("", "German") == instruction
+
+
+def test_request_reply_language_needs_the_setting(monkeypatch):
+    monkeypatch.setattr(i18n, "_installed_language_packs", lambda: PACKS)
+    handler = _handler({"nbi_locale": "de_DE"})
+    assert i18n.request_reply_language(handler, True) == "German (Germany)"
+    assert i18n.request_reply_language(handler, False) is None
+    # Anything but True (a mocked or malformed config value) leaves it off.
+    assert i18n.request_reply_language(handler, "yes") is None
+
+
+def test_chatbook_descriptions_follow_the_reply_language():
+    from notebook_intelligence.chatbook_generate import cell_summary_instructions
+
+    default = cell_summary_instructions("python")
+    assert "Use English unless" in default
+    german = cell_summary_instructions("python", "German")
+    assert "Write the prompt in German" in german
+    assert "Use English unless" not in german
+
+
+def test_tool_using_participants_get_the_reply_language():
+    """handle_chat_request_with_tools is where agent mode, @mcp and extension
+    participants build their system prompt, so one place covers them all."""
+    import asyncio
+    import types
+    from unittest.mock import Mock
+
+    from notebook_intelligence.api import ChatParticipant, ChatRequest
+
+    def run(options, reply_language):
+        chat_model = Mock()
+        request = ChatRequest(
+            host=Mock(chat_model=chat_model),
+            chat_history=[{"role": "user", "content": "Hallo"}],
+            cancel_token=Mock(),
+            reply_language=reply_language,
+        )
+        participant = types.SimpleNamespace(tools=[])
+        asyncio.run(
+            ChatParticipant.handle_chat_request_with_tools(
+                participant, request, Mock(), options
+            )
+        )
+        return chat_model.completions.call_args[0][0]
+
+    assert run({}, None)[0] == {"role": "user", "content": "Hallo"}
+    assert run({"system_prompt": "Be brief."}, None)[0]["content"] == "Be brief."
+    german = run({}, "German (Germany)")[0]
+    assert german["role"] == "system"
+    assert german["content"].startswith("Reply in German (Germany),")
+    combined = run({"system_prompt": "Be brief."}, "German (Germany)")[0]
+    assert combined["content"].startswith("Be brief.\n\nReply in German (Germany),")
+
+
+def test_a_pack_babel_cannot_name_is_named_by_its_code(monkeypatch):
+    """jupyterlab_server reports the display locale ("En") for no_NO."""
+    import jupyterlab_server.translation_utils as utils
+
+    monkeypatch.setattr(
+        utils,
+        "get_language_packs",
+        lambda: (
+            {
+                "en": {"displayName": "English"},
+                "no_NO": {"displayName": "En"},
+                "de_DE": {"displayName": "German (Germany)"},
+            },
+            "The following locales are invalid: ['sr_SP']!",
+        ),
+    )
+    i18n._installed_language_packs.cache_clear()
+    try:
+        # The warning does not discard the valid list.
+        assert i18n._installed_language_packs()["de_DE"] == "German (Germany)"
+        assert i18n.reply_language("no_NO") == "the language of locale no_NO"
+        assert i18n.reply_language("fr_FR") is None
+    finally:
+        i18n._installed_language_packs.cache_clear()
+
+
+def test_session_previews_leave_out_the_instruction():
+    instruction = i18n.reply_language_instruction("German (Germany)")
+    assert i18n.without_reply_instruction("Hallo\n\n" + instruction) == "Hallo"
+    # A title the agent cut short inside the instruction's second sentence.
+    assert i18n.without_reply_instruction("Hallo " + instruction[:75] + "...") == "Hallo"
+    assert i18n.without_reply_instruction("Please reply in kind.") == (
+        "Please reply in kind."
+    )

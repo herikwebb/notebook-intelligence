@@ -492,6 +492,10 @@ msgstr ""
 msgid "Ask about this output"
 msgstr ""
 
+#: src/components/settings-panel.tsx
+msgid "Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English."
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "Attribute detail"
 msgstr ""
@@ -915,7 +919,7 @@ msgid "Could not convert to Chatbook: %1"
 msgstr ""
 
 #: src/chatbook.ts
-msgid "Could not generate English representation: %1"
+msgid "Could not generate a description: %1"
 msgstr ""
 
 #: notebook_intelligence/extension.py
@@ -951,15 +955,15 @@ msgid "Created Chatbook copy: %1"
 msgstr ""
 
 #: src/chatbook-toolbar.ts
-msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description."
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
 msgstr ""
 
 #: src/chatbook-toolbar.ts
-msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description."
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
 msgstr ""
 
 #: src/chatbook-toolbar.ts
-msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description."
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
 msgstr ""
 
 #: notebook_intelligence/readiness.py
@@ -2179,7 +2183,7 @@ msgid "Refresh"
 msgstr ""
 
 #: src/index.ts
-msgid "Refresh English representation"
+msgid "Refresh description"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -2203,7 +2207,7 @@ msgid "Refreshing…"
 msgstr ""
 
 #: src/index.ts
-msgid "Regenerate the English representation of this code cell"
+msgid "Regenerate the description of this code cell"
 msgstr ""
 
 #: notebook_intelligence/acp_agent.py
@@ -2260,6 +2264,10 @@ msgstr ""
 
 #: src/index.ts
 msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Reply in my JupyterLab language"
 msgstr ""
 
 #: notebook_intelligence/acp_agent.py
@@ -3986,6 +3994,11 @@ msgstr ""
 #: src/components/settings-panel.tsx
 msgctxt "setting source"
 msgid "User"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings section"
+msgid "Language"
 msgstr ""
 
 #: src/chatbook-toolbar.ts src/components/settings-panel.tsx
