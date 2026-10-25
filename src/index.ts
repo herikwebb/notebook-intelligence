@@ -138,6 +138,8 @@ import { createRoot, Root } from 'react-dom/client';
 import { SettingsPanel } from './components/settings-panel';
 import { ITerminalConnection } from '@jupyterlab/services/lib/terminal/terminal';
 import { ITerminalTracker } from '@jupyterlab/terminal';
+import { ITranslator } from '@jupyterlab/translation';
+import { getTrans, initTranslations } from './i18n';
 import { Token } from '@lumino/coreutils';
 import { NotebookGenerationToolbarExtension } from './notebook-generation-toolbar';
 import {
@@ -922,7 +924,8 @@ class MCPConfigEditor {
       this._docWidget.context.model.toJSON()
     );
     if (error !== null) {
-      Notification.error(`Failed to save MCP config: ${error}`, {
+      const trans = getTrans();
+      Notification.error(trans.__('Failed to save MCP config: %1', error), {
         autoClose: 5000
       });
     }
@@ -958,7 +961,8 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     IStatusBar,
     ILauncher,
     ITerminalTracker as unknown as Token<unknown>,
-    IInlineCompleterFactory
+    IInlineCompleterFactory,
+    ITranslator
   ],
   provides: INotebookIntelligence,
   activate: async (
@@ -973,8 +977,11 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     statusBar: IStatusBar | null,
     launcher: ILauncher | null,
     terminalTracker: ITerminalTracker | null,
-    defaultInlineCompleterFactory: IInlineCompleterFactory | null
+    defaultInlineCompleterFactory: IInlineCompleterFactory | null,
+    translator: ITranslator | null
   ) => {
+    initTranslations(translator);
+    const trans = getTrans();
     console.log(
       'JupyterLab extension @plmbr/notebook-intelligence is activated!'
     );
@@ -1188,8 +1195,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     // a DOM-id `querySelector`. Matches the existing
     // `copilotSidebar:*` event pattern used elsewhere in this file.
     app.commands.addCommand(CommandIDs.focusChatInput, {
-      label: 'Focus Notebook Intelligence chat input',
-      caption: 'Open the NBI sidebar and move focus to the prompt textarea',
+      label: trans.__('Focus Notebook Intelligence chat input'),
+      caption: trans.__(
+        'Open the NBI sidebar and move focus to the prompt textarea'
+      ),
       execute: () => {
         app.shell.activateById(panel.id);
         document.dispatchEvent(new CustomEvent('copilotSidebar:focusPrompt'));
@@ -1266,8 +1275,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         }
 
         app.commands.execute('apputils:notify', {
-          message:
-            'Failed to insert at cursor. Open a notebook or file to insert the code.',
+          message: trans.__(
+            'Failed to insert at cursor. Open a notebook or file to insert the code.'
+          ),
           type: 'error',
           options: { autoClose: true }
         });
@@ -1292,7 +1302,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           currentWidget.content.activeCellIndex = activeCellIndex;
         } else {
           app.commands.execute('apputils:notify', {
-            message: 'Open a notebook to insert the code as new cell',
+            message: trans.__('Open a notebook to insert the code as new cell'),
             type: 'error',
             options: { autoClose: true }
           });
@@ -1326,8 +1336,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           NBIAPI.config.tourOverrides,
           TOUR_DEFAULTS.command?.label ?? 'Show NBI tour'
         ),
-      caption:
-        'Replay the first-run tour highlighting the chat sidebar affordances',
+      caption: trans.__(
+        'Replay the first-run tour highlighting the chat sidebar affordances'
+      ),
       execute: async () => {
         // Make sure the sidebar is open before the tour fires; the
         // overlay anchors to elements that only exist when the
@@ -1472,8 +1483,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     });
 
     app.commands.addCommand(CommandIDs.createChatbookNotebook, {
-      label: 'Chatbook',
-      caption: 'Create a notebook whose cells are natural-language prompts',
+      label: trans.__('Chatbook'),
+      caption: trans.__(
+        'Create a notebook whose cells are natural-language prompts'
+      ),
       icon: () => sidebarIcon,
       isVisible: () => NBIAPI.config.chatbookEnabled,
       execute: async () => {
@@ -1484,8 +1497,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     });
 
     app.commands.addCommand(CommandIDs.showChatbookGeneratedCode, {
-      label: 'Show generated code',
-      caption: 'Show the hidden code generated for this Chatbook cell',
+      label: trans.__('Show generated code'),
+      caption: trans.__(
+        'Show the hidden code generated for this Chatbook cell'
+      ),
       isEnabled: () => {
         const current = app.shell.currentWidget;
         if (!(current instanceof NotebookPanel)) {
@@ -1518,13 +1533,13 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         body.className = 'nbi-chatbook-generated-code';
         body.textContent = code;
         const dialog = new Dialog({
-          title: 'Generated code',
+          title: trans.__('Generated code'),
           body: new (class extends Widget {
             constructor() {
               super({ node: body });
             }
           })(),
-          buttons: [Dialog.okButton({ label: 'Close' })]
+          buttons: [Dialog.okButton({ label: trans.__('Close') })]
         });
         await dialog.launch();
       }
@@ -1545,11 +1560,12 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           ? getChatbookCellMode(getChatbookCellMeta(cell.model.metadata))
           : 'prompt';
         return mode === 'code'
-          ? 'Switch cell to natural language'
-          : 'Switch cell to code';
+          ? trans.__('Switch cell to natural language')
+          : trans.__('Switch cell to code');
       },
-      caption:
-        'Switch the active Chatbook cell between natural language and code',
+      caption: trans.__(
+        'Switch the active Chatbook cell between natural language and code'
+      ),
       isEnabled: () =>
         currentChatbookNotebook()?.content.activeCell?.model.type === 'code',
       isVisible: () => NBIAPI.config.chatbookEnabled,
@@ -1562,8 +1578,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     });
 
     app.commands.addCommand(CommandIDs.refreshChatbookEnglish, {
-      label: 'Refresh English representation',
-      caption: 'Regenerate the English representation of this code cell',
+      label: trans.__('Refresh English representation'),
+      caption: trans.__(
+        'Regenerate the English representation of this code cell'
+      ),
       isEnabled: () => {
         const cell = currentChatbookNotebook()?.content.activeCell;
         return Boolean(
@@ -1589,11 +1607,12 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       label: () => {
         const panel = currentChatbookNotebook();
         return panel && nextChatbookNotebookMode(panel) === 'prompt'
-          ? 'Switch all cells to natural language'
-          : 'Switch all cells to code';
+          ? trans.__('Switch all cells to natural language')
+          : trans.__('Switch all cells to code');
       },
-      caption:
-        'Switch every cell of this Chatbook between its prompt and its code',
+      caption: trans.__(
+        'Switch every cell of this Chatbook between its prompt and its code'
+      ),
       isEnabled: () => currentChatbookNotebook() !== null,
       isVisible: () => NBIAPI.config.chatbookEnabled,
       execute: () => {
@@ -1606,9 +1625,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     });
 
     app.commands.addCommand(CommandIDs.convertChatbookNotebook, {
-      label: 'Export as code notebook',
-      caption:
-        'Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged',
+      label: trans.__('Export as code notebook'),
+      caption: trans.__(
+        'Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged'
+      ),
       isEnabled: () => currentChatbookNotebook() !== null,
       isVisible: () => NBIAPI.config.chatbookEnabled,
       execute: async () => {
@@ -1627,9 +1647,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         : null;
     };
     app.commands.addCommand(CommandIDs.convertNotebookToChatbook, {
-      label: 'Convert notebook to Chatbook',
-      caption:
-        'Create a Chatbook copy of this notebook, leaving the original unchanged',
+      label: trans.__('Convert notebook to Chatbook'),
+      caption: trans.__(
+        'Create a Chatbook copy of this notebook, leaving the original unchanged'
+      ),
       icon: convertToChatbookIcon,
       isEnabled: () => currentConvertibleNotebook() !== null,
       isVisible: () => NBIAPI.config.chatbookEnabled,
@@ -1770,7 +1791,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.openClaudeCodeLauncher, {
       label: 'Claude Code',
-      caption: 'Resume or start a Claude Code session',
+      caption: trans.__('Resume or start a Claude Code session'),
       icon: claudeIcon,
       // The launcher tile opens a Jupyter terminal that runs the
       // `claude` CLI directly — it doesn't depend on NBI being in
@@ -1802,11 +1823,11 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         const picker = new PickerWidget();
         picker.addClass('nbi-claude-code-picker');
         const dialog = new Dialog({
-          title: 'Claude Code terminal session',
+          title: trans.__('Claude Code terminal session'),
           body: picker,
           buttons: [
-            Dialog.cancelButton({ label: 'Cancel' }),
-            Dialog.okButton({ label: '＋ New Session' })
+            Dialog.cancelButton(),
+            Dialog.okButton({ label: trans.__('＋ New Session') })
           ],
           hasClose: true
         });
@@ -1818,7 +1839,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           // unexpected location.
           const cwd = await chooseWorkspaceDirectory(
             docManager,
-            'Choose start directory for Claude Code',
+            trans.__('Choose start directory for %1', 'Claude Code'),
             defaultBrowser?.model.path
           );
           if (cwd === undefined) {
@@ -1863,6 +1884,8 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     syncLauncherEntry(
       CommandIDs.openClaudeCodeLauncher,
+      // Not translated: the launcher writes the category into each tile's
+      // data-category, which style/base.css pins to the top of the launcher.
       { category: 'Coding Agent', rank: -1 },
       () =>
         NBIAPI.config.isClaudeCliAvailable &&
@@ -1889,7 +1912,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         execute: async () => {
           const cwd = await chooseWorkspaceDirectory(
             docManager,
-            `Choose start directory for ${config.label}`,
+            trans.__('Choose start directory for %1', config.label),
             defaultBrowser?.model.path
           );
           if (cwd === undefined) {
@@ -1911,7 +1934,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     registerAgentCliLauncher({
       commandId: CommandIDs.openOpenCodeLauncher,
       label: 'opencode',
-      caption: 'Start an opencode session in a Jupyter terminal',
+      caption: trans.__('Start an opencode session in a Jupyter terminal'),
       icon: opencodeIcon,
       cliCommand: 'opencode',
       isAvailable: () =>
@@ -1922,7 +1945,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     registerAgentCliLauncher({
       commandId: CommandIDs.openPiLauncher,
       label: 'Pi',
-      caption: 'Start a Pi session in a Jupyter terminal',
+      caption: trans.__('Start a Pi session in a Jupyter terminal'),
       icon: terminalIcon,
       cliCommand: 'pi',
       isAvailable: () =>
@@ -1933,7 +1956,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     registerAgentCliLauncher({
       commandId: CommandIDs.openGitHubCopilotCliLauncher,
       label: 'GitHub Copilot CLI',
-      caption: 'Start a GitHub Copilot CLI session in a Jupyter terminal',
+      caption: trans.__(
+        'Start a GitHub Copilot CLI session in a Jupyter terminal'
+      ),
       icon: githubCopilotIcon,
       cliCommand: 'copilot',
       isAvailable: () =>
@@ -1946,7 +1971,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     registerAgentCliLauncher({
       commandId: CommandIDs.openCodexLauncher,
       label: 'Codex',
-      caption: 'Start an OpenAI Codex CLI session in a Jupyter terminal',
+      caption: trans.__(
+        'Start an OpenAI Codex CLI session in a Jupyter terminal'
+      ),
       icon: openaiIcon,
       cliCommand: 'codex',
       isAvailable: () =>
@@ -2009,7 +2036,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         widget instanceof NotebookPanel && widget.model ? widget : null;
       if (!notebook) {
         app.commands.execute('apputils:notify', {
-          message: `Failed to access the notebook: ${filePath}`,
+          message: trans.__('Failed to access the notebook: %1', filePath),
           type: 'error',
           options: { autoClose: true }
         });
@@ -2075,7 +2102,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           return widget;
         }
         app.commands.execute('apputils:notify', {
-          message: `Failed to find notebook: ${requestedPath}`,
+          message: trans.__('Failed to find notebook: %1', requestedPath),
           type: 'error',
           options: { autoClose: true }
         });
@@ -2086,7 +2113,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         return currentWidget;
       }
       app.commands.execute('apputils:notify', {
-        message: 'Failed to find active notebook',
+        message: trans.__('Failed to find active notebook'),
         type: 'error',
         options: { autoClose: true }
       });
@@ -2098,7 +2125,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       const textFileOpen = currentWidget instanceof FileEditorWidget;
       if (!textFileOpen) {
         app.commands.execute('apputils:notify', {
-          message: 'Failed to find active file',
+          message: trans.__('Failed to find active file'),
           type: 'error',
           options: { autoClose: true }
         });
@@ -2304,7 +2331,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           onLoggedIn: () => dialog?.dispose()
         });
         dialog = new Dialog({
-          title: 'GitHub Copilot Status',
+          title: trans.__('GitHub Copilot Status'),
           hasClose: true,
           body: dialogBody,
           buttons: []
@@ -2326,7 +2353,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
       const widget = new MainAreaWidget({ content: settingsPanel });
       widget.id = 'nbi-settings';
-      widget.title.label = 'NBI Settings';
+      widget.title.label = trans.__('NBI Settings');
       widget.title.closable = true;
 
       return widget;
@@ -2335,7 +2362,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     let settingsWidget = createNewSettingsWidget();
 
     app.commands.addCommand(CommandIDs.openConfigurationDialog, {
-      label: 'Notebook Intelligence Settings',
+      label: trans.__('Notebook Intelligence Settings'),
       execute: args => {
         const tab = typeof args?.tab === 'string' ? args.tab : undefined;
         if (settingsWidget.isDisposed) {
@@ -2352,7 +2379,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     });
 
     app.commands.addCommand(CommandIDs.openMCPConfigEditor, {
-      label: 'Open MCP Config Editor',
+      label: trans.__('Open MCP Config Editor'),
       execute: args => {
         if (mcpConfigEditor && mcpConfigEditor.isOpen) {
           mcpConfigEditor.close();
@@ -2669,7 +2696,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
             generatedContent = '';
             removePopover();
             app.commands.execute('apputils:notify', {
-              message: `Inline chat failed: ${streamError}`,
+              message: trans.__('Inline chat failed: %1', streamError),
               type: 'error',
               options: { autoClose: true }
             });
@@ -2816,7 +2843,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       execute: args => {
         generateCodeForCellOrFileEditor();
       },
-      label: 'Generate code',
+      label: trans.__('Generate code'),
       isEnabled: () =>
         isChatEnabled() &&
         (isActiveCellCodeCell() || isCurrentWidgetFileEditor())
@@ -2859,7 +2886,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           }
         });
       },
-      label: 'Explain code',
+      label: trans.__('Explain code'),
       isEnabled: () => isChatEnabled() && isActiveCellCodeCell()
     });
     copilotMenuCommands.addCommand(CommandIDs.editorFixThisCode, {
@@ -2890,7 +2917,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           }
         });
       },
-      label: 'Fix code',
+      label: trans.__('Fix code'),
       isEnabled: () => isChatEnabled() && isActiveCellCodeCell()
     });
     const registerOutputContextCommand = (opts: {
@@ -2970,20 +2997,20 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     registerOutputContextCommand({
       commandId: CommandIDs.editorExplainThisOutput,
-      label: 'Explain output',
+      label: trans.__('Explain output'),
       telemetryType: TelemetryEventType.ExplainThisOutputRequest,
       autoSubmitPrompt: "Explain this cell's output.",
       featureFlag: 'output_followup'
     });
     registerOutputContextCommand({
       commandId: CommandIDs.editorAskAboutThisOutput,
-      label: 'Ask about this output',
+      label: trans.__('Ask about this output'),
       telemetryType: TelemetryEventType.OutputFollowUpRequest,
       featureFlag: 'output_followup'
     });
     registerOutputContextCommand({
       commandId: CommandIDs.editorTroubleshootThisOutput,
-      label: 'Troubleshoot errors in output',
+      label: trans.__('Troubleshoot errors in output'),
       telemetryType: TelemetryEventType.TroubleshootThisOutputRequest,
       autoSubmitPrompt: "Troubleshoot the error in this cell's output.",
       featureFlag: 'explain_error',

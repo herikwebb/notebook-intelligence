@@ -26,7 +26,9 @@ module.exports = {
     '^@jupyterlab/apputils$':
       '<rootDir>/tests/ts/__mocks__/jupyterlab-apputils.ts',
     '^@jupyterlab/filebrowser$':
-      '<rootDir>/tests/ts/__mocks__/jupyterlab-filebrowser.ts'
+      '<rootDir>/tests/ts/__mocks__/jupyterlab-filebrowser.ts',
+    '^@jupyterlab/translation$':
+      '<rootDir>/tests/ts/__mocks__/jupyterlab-translation.ts'
   },
   clearMocks: true
 };

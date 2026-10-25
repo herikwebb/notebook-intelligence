@@ -2663,7 +2663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/translation@npm:^4.2.5":
+"@jupyterlab/translation@npm:^4.0.0, @jupyterlab/translation@npm:^4.2.5":
   version: 4.2.5
   resolution: "@jupyterlab/translation@npm:4.2.5"
   dependencies:
@@ -3546,6 +3546,7 @@ __metadata:
     "@jupyterlab/services": ^7.0.0
     "@jupyterlab/settingregistry": ^4.0.0
     "@jupyterlab/terminal": ^4.0.0
+    "@jupyterlab/translation": ^4.0.0
     "@testing-library/jest-dom": ^6.4.0
     "@testing-library/react": ^14.2.0
     "@types/jest": ^29.5.12

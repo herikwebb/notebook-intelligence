@@ -46,6 +46,10 @@
         "clean:all": "jlpm clean:lib && jlpm clean:labextension && jlpm clean:lintcache",
         "eslint": "jlpm eslint:check --fix",
         "eslint:check": "eslint . --cache --ext .ts,.tsx",
+        "i18n:check": "python scripts/i18n.py check",
+        "i18n:compile": "python scripts/i18n.py compile",
+        "i18n:extract": "python scripts/i18n.py extract",
+        "i18n:update": "python scripts/i18n.py update",
         "install:extension": "jlpm build",
         "lint": "jlpm stylelint && jlpm prettier && jlpm eslint",
         "lint:check": "jlpm stylelint:check && jlpm prettier:check && jlpm eslint:check",
@@ -75,6 +79,7 @@
         "@jupyterlab/services": "^7.0.0",
         "@jupyterlab/settingregistry": "^4.0.0",
         "@jupyterlab/terminal": "^4.0.0",
+        "@jupyterlab/translation": "^4.0.0",
         "monaco-editor": "0.21.3",
         "react-icons": "~5.6.0",
         "react-markdown": "^9.0.1",
@@ -252,6 +257,25 @@
                 "all"
             ],
             "eqeqeq": "error",
+            "no-restricted-syntax": [
+                "error",
+                {
+                    "selector": "CallExpression[callee.object.name='trans'][callee.property.name=/^(__|_n|gettext|ngettext)$/][arguments.0.type!='Literal']",
+                    "message": "Pass a string literal: the catalog extractor skips any other argument, so the string would never be translated."
+                },
+                {
+                    "selector": "CallExpression[callee.object.name='trans'][callee.property.name=/^(_n|ngettext|_p|pgettext|_np|npgettext)$/][arguments.1.type!='Literal']",
+                    "message": "Pass a string literal: the catalog extractor skips any other argument, so the string would never be translated."
+                },
+                {
+                    "selector": "CallExpression[callee.object.name='trans'][callee.property.name=/^(_p|pgettext|_np|npgettext)$/][arguments.0.type!='Literal']",
+                    "message": "Pass a string literal: the catalog extractor skips any other argument, so the string would never be translated."
+                },
+                {
+                    "selector": "CallExpression[callee.object.name='trans'][callee.property.name=/^(_np|npgettext)$/][arguments.2.type!='Literal']",
+                    "message": "Pass a string literal: the catalog extractor skips any other argument, so the string would never be translated."
+                }
+            ],
             "prefer-arrow-callback": "error"
         }
     },
