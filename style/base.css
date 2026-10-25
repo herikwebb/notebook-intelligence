@@ -4362,6 +4362,11 @@ svg.access-token-warning {
   width: var(--nbi-chatbook-cell-mode-width);
   height: var(--nbi-chatbook-cell-mode-height);
   padding: 0;
+
+  /* A translated badge longer than the pill is clipped rather than spilling
+     under the cell toolbar beside it. */
+  overflow: hidden;
+  white-space: nowrap;
   border: 1px solid var(--jp-border-color2);
   border-radius: calc(var(--nbi-chatbook-cell-mode-height) / 2);
   background: var(--jp-layout-color2);

@@ -8,6 +8,8 @@ import { CommandRegistry } from '@lumino/commands';
 import { IDisposable } from '@lumino/disposable';
 import { CellOutputActionFlag, NBIAPI } from './api';
 import { cellOutputHasError } from './utils';
+import { TranslationBundle } from '@jupyterlab/translation';
+import { getTrans } from './i18n';
 import sparkleSvgstr from '../style/icons/cell-toolbar-sparkle.svg';
 import chatSvgstr from '../style/icons/cell-toolbar-chat.svg';
 import bugSvgstr from '../style/icons/cell-toolbar-bug.svg';
@@ -44,27 +46,29 @@ const bugIcon = new LabIcon({
   svgstr: bugSvgstr
 });
 
-const ACTIONS: IToolbarAction[] = [
+// A function so the labels are translated when the toolbar is built, not
+// when this module loads.
+const actions = (trans: TranslationBundle): IToolbarAction[] => [
   {
     id: 'explain',
-    label: 'Explain',
-    title: "Explain this cell's output",
+    label: trans._p('cell output toolbar', 'Explain'),
+    title: trans.__("Explain this cell's output"),
     icon: sparkleIcon,
     command: 'notebook-intelligence:editor-explain-this-output',
     featureFlag: 'output_followup'
   },
   {
     id: 'ask',
-    label: 'Ask',
-    title: 'Ask about this output',
+    label: trans._p('cell output toolbar', 'Ask'),
+    title: trans.__('Ask about this output'),
     icon: chatIcon,
     command: 'notebook-intelligence:editor-ask-about-this-output',
     featureFlag: 'output_followup'
   },
   {
     id: 'troubleshoot',
-    label: 'Troubleshoot',
-    title: 'Troubleshoot the error in this cell',
+    label: trans._p('cell output toolbar', 'Troubleshoot'),
+    title: trans.__('Troubleshoot the error in this cell'),
     icon: bugIcon,
     command: 'notebook-intelligence:editor-troubleshoot-this-output',
     featureFlag: 'explain_error',
@@ -189,7 +193,8 @@ export class CellOutputHoverToolbar implements IDisposable {
     const features = NBIAPI.config.cellOutputFeatures;
     const hasError = cellOutputHasError(cell);
 
-    const visible = ACTIONS.filter(a => {
+    const trans = getTrans();
+    const visible = actions(trans).filter(a => {
       if (!features[a.featureFlag].enabled) {
         return false;
       }
@@ -205,7 +210,10 @@ export class CellOutputHoverToolbar implements IDisposable {
     const toolbar = document.createElement('div');
     toolbar.className = TOOLBAR_CLASS;
     toolbar.setAttribute('role', 'toolbar');
-    toolbar.setAttribute('aria-label', 'Notebook Intelligence cell actions');
+    toolbar.setAttribute(
+      'aria-label',
+      trans.__('Notebook Intelligence cell actions')
+    );
 
     for (const action of visible) {
       const button = document.createElement('button');

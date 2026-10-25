@@ -1,5 +1,7 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
+import { getTrans } from './i18n';
+
 /**
  * Saving the MCP config editor reads the open document and then posts it, so a
  * save can fail on either half. Reading the document is a `JSON.parse` of the
@@ -38,12 +40,17 @@ export async function saveMCPConfig(
  * rather than by the error itself.
  */
 export function describeMCPConfigSaveError(reason: unknown): string {
+  const trans = getTrans();
   if (reason instanceof SyntaxError) {
     // Kept short on purpose: JupyterLab truncates a notification at 140
     // characters, and the parser's trailing "(line 64 column 10)" is the part
     // worth reading. With the caller's prefix a real config lands within a few
     // characters of the limit.
-    return `not valid JSON. ${reason.message}`;
+    return trans._p(
+      'why an MCP config save failed, after "Failed to save MCP config: "',
+      'not valid JSON. %1',
+      reason.message
+    );
   }
   const message = (reason as { message?: unknown })?.message;
   // An empty message is treated as absent so the notification never ends at
@@ -55,6 +62,9 @@ export function describeMCPConfigSaveError(reason: unknown): string {
   // `String()` on a plain object is `[object Object]`, which tells the user
   // nothing and reads like a bug in the notification itself.
   return text === '[object Object]'
-    ? 'the save failed for an unknown reason'
+    ? trans._p(
+        'why an MCP config save failed, after "Failed to save MCP config: "',
+        'the save failed for an unknown reason'
+      )
     : text;
 }

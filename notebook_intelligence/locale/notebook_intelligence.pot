@@ -290,7 +290,7 @@ msgstr ""
 msgid "Ask about cell outputs"
 msgstr ""
 
-#: src/index.ts
+#: src/cell-output-toolbar.ts src/index.ts
 msgid "Ask about this output"
 msgstr ""
 
@@ -372,6 +372,10 @@ msgstr ""
 msgid "Bypass permissions"
 msgstr ""
 
+#: src/chatbook-toolbar.ts
+msgid "Can't convert this notebook yet"
+msgstr ""
+
 #: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
 msgid "Cancel"
 msgstr ""
@@ -382,6 +386,14 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Canceled"
+msgstr ""
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for %1"
+msgstr ""
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for the selected language"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -452,6 +464,18 @@ msgstr ""
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr ""
 
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm every natural-language run."
+msgstr ""
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm only when the scan flags a risk."
+msgstr ""
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to run generated code immediately."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr ""
@@ -492,7 +516,7 @@ msgstr ""
 msgid "Click to learn more about security implications"
 msgstr ""
 
-#: src/chat-sidebar.tsx src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Close"
 msgstr ""
 
@@ -506,6 +530,14 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Close tools picker"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Code cell (%1): switch to natural language"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Code cell: switch to natural language"
 msgstr ""
 
 #: src/components/claude-mcp-panel.tsx
@@ -548,8 +580,16 @@ msgstr ""
 msgid "Conversation History"
 msgstr ""
 
+#: src/chatbook-toolbar.ts
+msgid "Convert"
+msgstr ""
+
 #: src/index.ts
 msgid "Convert notebook to Chatbook"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Convert to Chatbook"
 msgstr ""
 
 #: src/markdown-renderer.tsx
@@ -572,8 +612,20 @@ msgstr ""
 msgid "Could not attach: %1"
 msgstr ""
 
+#: src/chatbook-toolbar.ts
+msgid "Could not convert to Chatbook: %1"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Could not generate English representation: %1"
+msgstr ""
+
 #: src/index.ts
 msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments."
 msgstr ""
 
 #: src/index.ts
@@ -590,6 +642,22 @@ msgstr ""
 
 #: src/markdown-renderer.tsx
 msgid "Create new notebook from code"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Created Chatbook copy: %1"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description."
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description."
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description."
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -676,6 +744,14 @@ msgstr ""
 msgid "Drop files to attach as context"
 msgstr ""
 
+#: src/terminal-drag.ts
+msgid "Drop mode: @-mention"
+msgstr ""
+
+#: src/terminal-drag.ts
+msgid "Drop mode: raw path"
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Duplicate"
 msgstr ""
@@ -724,7 +800,7 @@ msgstr ""
 msgid "Environment (KEY=value, one per line)"
 msgstr ""
 
-#: src/components/settings-panel.tsx
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
 msgid "Execution kernel"
 msgstr ""
 
@@ -752,8 +828,32 @@ msgstr ""
 msgid "Explain output"
 msgstr ""
 
+#: src/cell-output-toolbar.ts
+msgid "Explain this cell's output"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Export"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Export as %1 notebook"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Export as a notebook for the Chatbook backend kernel"
+msgstr ""
+
 #: src/index.ts
 msgid "Export as code notebook"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Export failed: %1"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Exported %1"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -1136,7 +1236,7 @@ msgstr ""
 msgid "Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars."
 msgstr ""
 
-#: src/index.ts
+#: src/chatbook-toolbar.ts src/chatbook.ts src/index.ts
 msgid "NBI Settings"
 msgstr ""
 
@@ -1146,6 +1246,14 @@ msgstr ""
 
 #: src/components/skills-panel.tsx
 msgid "Name (optional override)"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to %1 code"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to code"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -1199,6 +1307,14 @@ msgid "No files added: the limit of %1 file is reached."
 msgid_plural "No files added: the limit of %1 files is reached."
 msgstr[0] ""
 msgstr[1] ""
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches kernel \"%1\"."
+msgstr ""
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches language \"%1\"."
+msgstr ""
 
 #: src/components/plugins-panel.tsx
 msgid "No marketplaces configured. Add one to discover plugins."
@@ -1256,6 +1372,10 @@ msgstr ""
 msgid "Notebook Intelligence Settings"
 msgstr ""
 
+#: src/cell-output-toolbar.ts
+msgid "Notebook Intelligence cell actions"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
 msgstr ""
@@ -1266,6 +1386,10 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Notice"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Open Chatbook settings"
 msgstr ""
 
 #: src/index.ts
@@ -1286,6 +1410,10 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Open slash commands"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Open the Chatbook tab of Notebook Intelligence Settings"
 msgstr ""
 
 #: src/index.ts
@@ -1528,6 +1656,10 @@ msgstr ""
 msgid "Resumed session %1: %2."
 msgstr ""
 
+#: src/chatbook.ts
+msgid "Review generated code before running it in this kernel."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Right-click a cell output to attach it to the chat"
 msgstr ""
@@ -1610,10 +1742,6 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Show output toolbar"
-msgstr ""
-
-#: src/components/settings-panel.tsx
-msgid "Show the generated code and wait for Run or Don't run on every natural-language Run."
 msgstr ""
 
 #: src/index.ts
@@ -1730,7 +1858,7 @@ msgstr ""
 msgid "Switch cell to natural language"
 msgstr ""
 
-#: src/index.ts
+#: src/chatbook-toolbar.ts src/index.ts
 msgid "Switch every cell of this Chatbook between its prompt and its code"
 msgstr ""
 
@@ -1774,6 +1902,24 @@ msgstr ""
 msgid "Target scope"
 msgstr ""
 
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop."
+msgstr ""
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop."
+msgstr ""
+
+#: src/terminal-drag.ts
+msgid "Terminal drop skipped %1 path containing control or invisible formatting characters. Rename them before dropping."
+msgid_plural "Terminal drop skipped %1 paths containing control or invisible formatting characters. Rename them before dropping."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/terminal-drag.ts
+msgid "Terminal drop upload failed for %1"
+msgstr ""
+
 #: src/components/readiness-card.tsx
 msgid "Test the endpoint"
 msgstr ""
@@ -1788,6 +1934,14 @@ msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "Thinking (%1 s)"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3."
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too."
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -1850,6 +2004,10 @@ msgstr ""
 
 #: src/index.ts
 msgid "Troubleshoot errors in output"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgid "Troubleshoot the error in this cell"
 msgstr ""
 
 #: src/components/claude-mcp-panel.tsx
@@ -2026,6 +2184,31 @@ msgctxt "ACP settings section"
 msgid "Agent"
 msgstr ""
 
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a code cell; at most 3 characters"
+msgid "Cd"
+msgstr ""
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a natural-language cell; at most 3 characters"
+msgid "NL"
+msgstr ""
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Don't run"
+msgstr ""
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Run"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "Chatbook mode description; %1 and %2 are the confirm bar buttons"
+msgid "Show the generated code and wait for %1 or %2 on every natural-language run."
+msgstr ""
+
 #: src/components/claude-scope.ts
 msgctxt "Claude config scope heading"
 msgid "LOCAL"
@@ -2091,6 +2274,26 @@ msgctxt "Ollama hint: the button that retries listing models"
 msgid "Try again"
 msgstr ""
 
+#: src/chatbook-toolbar.ts
+msgctxt "a settings path: %1 the settings window, %2 its tab, %3 the field"
+msgid "%1 > %2 > %3"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Ask"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Explain"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Troubleshoot"
+msgstr ""
+
 #: src/chat-sidebar.tsx src/components/settings-panel.tsx
 msgctxt "chat mode"
 msgid "Agent"
@@ -2099,6 +2302,11 @@ msgstr ""
 #: src/chat-sidebar.tsx src/components/settings-panel.tsx
 msgctxt "chat mode"
 msgid "Ask"
+msgstr ""
+
+#: src/chatbook.ts
+msgctxt "confirm bar link that opens settings; %1 is the settings window name"
+msgid "Change in %1"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -2292,7 +2500,7 @@ msgctxt "setting source"
 msgid "User"
 msgstr ""
 
-#: src/components/settings-panel.tsx
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
 msgctxt "settings tab"
 msgid "Chatbook"
 msgstr ""
@@ -2352,6 +2560,13 @@ msgctxt "stands in for the project folder name"
 msgid "<project>"
 msgstr ""
 
+#: src/terminal-drag.ts
+msgctxt "terminal upload failure; %2 lists files, %1 counts the rest"
+msgid "Terminal drop upload failed for %2 (+%1 more)"
+msgid_plural "Terminal drop upload failed for %2 (+%1 more)"
+msgstr[0] ""
+msgstr[1] ""
+
 #: src/components/tool-call-card.tsx
 msgctxt "tool call status"
 msgid "cancelled"
@@ -2410,4 +2625,14 @@ msgstr ""
 #: src/builtin-toolset-labels.ts
 msgctxt "toolset"
 msgid "Python file edit"
+msgstr ""
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "not valid JSON. %1"
+msgstr ""
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "the save failed for an unknown reason"
 msgstr ""

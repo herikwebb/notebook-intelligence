@@ -1419,8 +1419,11 @@ function chatbookModeLabel(
     case 'always-confirm':
       return {
         title: trans.__('Always confirm'),
-        description: trans.__(
-          "Show the generated code and wait for Run or Don't run on every natural-language Run."
+        description: trans._p(
+          'Chatbook mode description; %1 and %2 are the confirm bar buttons',
+          'Show the generated code and wait for %1 or %2 on every natural-language run.',
+          trans._p('Chatbook confirm bar', 'Run'),
+          trans._p('Chatbook confirm bar', "Don't run")
         )
       };
     case 'confirm-if-risky':

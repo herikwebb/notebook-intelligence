@@ -49,6 +49,7 @@ import {
 import { NBIAPI } from './api';
 import { setChatbookMentionsEnabled } from './chatbook-mentions';
 import { cellOutputAsText } from './utils';
+import { getTrans } from './i18n';
 
 export {
   CHATBOOK_KERNEL_NAME,
@@ -429,8 +430,9 @@ export async function summarizeCodeCell(
     const message = error instanceof Error ? error.message : String(error);
     writeChatbookCellMeta(cell, { codeHash, summaryError: message });
     if (options.notifyOnError) {
+      const trans = getTrans();
       Notification.warning(
-        `Could not generate English representation: ${message}`
+        trans.__('Could not generate English representation: %1', message)
       );
     }
     return undefined;
@@ -519,6 +521,43 @@ function debounceAnimationFrame(fn: () => void): () => void {
   };
 }
 
+/**
+ * The badge text and tooltip for each cell mode, worked out once per sync
+ * rather than per cell. The badge is a fixed-width pill, hence the length
+ * note for translators.
+ */
+function chatbookBadgeLabels(
+  backendDisplayName: string
+): Record<'code' | 'prompt', { text: string; title: string }> {
+  const trans = getTrans();
+  return {
+    code: {
+      text: trans._p(
+        'Chatbook cell badge for a code cell; at most 3 characters',
+        'Cd'
+      ),
+      title: backendDisplayName
+        ? trans.__(
+            'Code cell (%1): switch to natural language',
+            backendDisplayName
+          )
+        : trans.__('Code cell: switch to natural language')
+    },
+    prompt: {
+      text: trans._p(
+        'Chatbook cell badge for a natural-language cell; at most 3 characters',
+        'NL'
+      ),
+      title: backendDisplayName
+        ? trans.__(
+            'Natural-language cell: switch to %1 code',
+            backendDisplayName
+          )
+        : trans.__('Natural-language cell: switch to code')
+    }
+  };
+}
+
 export function attachChatbookNotebooks(
   tracker: INotebookTracker,
   options: {
@@ -551,6 +590,9 @@ export function attachChatbookNotebooks(
         return;
       }
       const isChatbook = isChatbookSession(panel.sessionContext);
+      const badgeLabels = isChatbook
+        ? chatbookBadgeLabels(chatbookBackendDisplayName)
+        : null;
       for (const widget of panel.content.widgets) {
         const editorView = (
           widget.editor as unknown as { editor?: EditorView } | null
@@ -598,13 +640,10 @@ export function attachChatbookNotebooks(
         const button = existing || document.createElement('button');
         button.className = 'nbi-chatbook-cell-mode';
         button.type = 'button';
-        const languageLabel = chatbookBackendDisplayName || 'code';
-        button.textContent = mode === 'code' ? 'Cd' : 'NL';
-        button.title =
-          mode === 'code'
-            ? `Code cell (${languageLabel}) — switch to natural language`
-            : `Natural-language cell — switch to ${languageLabel} code`;
-        button.setAttribute('aria-label', button.title);
+        const label = badgeLabels![mode === 'code' ? 'code' : 'prompt'];
+        button.textContent = label.text;
+        button.title = label.title;
+        button.setAttribute('aria-label', label.title);
         if (!existing) {
           button.addEventListener('click', event => {
             event.preventDefault();
@@ -951,16 +990,17 @@ function renderChatbookConfirmBar(
         .map(reason => `<li>${escapeChatbookHtml(reason)}</li>`)
         .join('')}</ul>`
     : '';
+  const trans = getTrans();
   bar.innerHTML = `
     <div class="nbi-chatbook-confirm-header">${escapeChatbookHtml(
-      'Review generated code before running it in this kernel.'
+      trans.__('Review generated code before running it in this kernel.')
     )}</div>
     <pre class="nbi-chatbook-confirm-code">${escapeChatbookHtml(pending.code)}</pre>
     ${reasons}
     <div class="nbi-chatbook-confirm-footer">
       <div class="nbi-chatbook-confirm-actions"></div>
       <div class="nbi-chatbook-confirm-hint">
-        <span>${escapeChatbookHtml(chatbookExecutionModeSummary(pending.mode))}</span>
+        <span>${escapeChatbookHtml(chatbookExecutionModeSummary(trans, pending.mode))}</span>
       </div>
     </div>
   `;
@@ -970,7 +1010,7 @@ function renderChatbookConfirmBar(
   const run = document.createElement('button');
   run.type = 'button';
   run.className = 'jp-mod-styled jp-mod-accept nbi-chatbook-confirm-run';
-  run.textContent = 'Run';
+  run.textContent = trans._p('Chatbook confirm bar', 'Run');
   run.addEventListener('click', event => {
     event.preventDefault();
     event.stopPropagation();
@@ -991,7 +1031,7 @@ function renderChatbookConfirmBar(
   const discard = document.createElement('button');
   discard.type = 'button';
   discard.className = 'jp-mod-styled nbi-chatbook-confirm-discard';
-  discard.textContent = "Don't run";
+  discard.textContent = trans._p('Chatbook confirm bar', "Don't run");
   discard.addEventListener('click', event => {
     event.preventDefault();
     event.stopPropagation();
@@ -1011,9 +1051,14 @@ function renderChatbookConfirmBar(
   const settingsLink = document.createElement('button');
   settingsLink.type = 'button';
   settingsLink.className = 'nbi-chatbook-confirm-settings-link';
-  settingsLink.textContent = 'Change in NBI Settings';
-  settingsLink.title =
-    'Open the Chatbook tab of Notebook Intelligence Settings';
+  settingsLink.textContent = trans._p(
+    'confirm bar link that opens settings; %1 is the settings window name',
+    'Change in %1',
+    trans.__('NBI Settings')
+  );
+  settingsLink.title = trans.__(
+    'Open the Chatbook tab of Notebook Intelligence Settings'
+  );
   settingsLink.addEventListener('click', event => {
     event.preventDefault();
     event.stopPropagation();

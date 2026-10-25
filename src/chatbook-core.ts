@@ -1,5 +1,7 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
+import { nullTranslator, TranslationBundle } from '@jupyterlab/translation';
+
 export const CHATBOOK_KERNEL_NAME = 'chatbook';
 export const CHATBOOK_MSG_TYPE = 'nbi_chatbook_code';
 export const CHATBOOK_LANGUAGE = 'chatbook';
@@ -96,22 +98,28 @@ export function chatbookNeedsConfirm(
   return false;
 }
 
-const CHATBOOK_EXECUTION_MODE_SUMMARIES: Record<ChatbookExecutionMode, string> =
-  {
-    'always-confirm': 'Chatbook is set to confirm every natural-language run.',
-    'confirm-if-risky':
-      'Chatbook is set to confirm only when the scan flags a risk.',
-    'auto-run': 'Chatbook is set to run generated code immediately.'
-  };
-
 /**
  * One-line reminder of the mode that produced a confirmation, so the bar can
  * point at the setting behind it.
  */
 export function chatbookExecutionModeSummary(
+  trans: TranslationBundle,
   mode: ChatbookExecutionMode
 ): string {
-  return CHATBOOK_EXECUTION_MODE_SUMMARIES[mode];
+  switch (mode) {
+    case 'always-confirm':
+      return trans.__('Chatbook is set to confirm every natural-language run.');
+    case 'confirm-if-risky':
+      return trans.__(
+        'Chatbook is set to confirm only when the scan flags a risk.'
+      );
+    case 'auto-run':
+      return trans.__('Chatbook is set to run generated code immediately.');
+    default: {
+      const unknownMode: never = mode;
+      return String(unknownMode);
+    }
+  }
 }
 
 export const CHATBOOK_CONTEXT_MAX_FIELD_CHARS = 8000;
@@ -307,6 +315,47 @@ const LINE_COMMENT_PREFIX: Record<string, string> = {
   fortran: '!'
 };
 
+/**
+ * Export cannot comment out unrun cells in this language. The message stays
+ * English; chatbookExportLanguageMessage() is the text a user reads.
+ */
+export class ChatbookExportLanguageError extends Error {
+  readonly language: string;
+
+  constructor(language: string) {
+    // English, from the same formatter the user's message uses.
+    super(
+      formatExportLanguage(
+        nullTranslator.load('notebook_intelligence'),
+        language
+      )
+    );
+    this.name = 'ChatbookExportLanguageError';
+    this.language = language;
+  }
+}
+
+export function chatbookExportLanguageMessage(
+  trans: TranslationBundle,
+  error: ChatbookExportLanguageError
+): string {
+  return formatExportLanguage(trans, error.language);
+}
+
+function formatExportLanguage(
+  trans: TranslationBundle,
+  language: string
+): string {
+  return language
+    ? trans.__(
+        'Cannot export unrun Chatbook cells: no safe line comment for %1',
+        language
+      )
+    : trans.__(
+        'Cannot export unrun Chatbook cells: no safe line comment for the selected language'
+      );
+}
+
 export function lineCommentPrefix(language: string): string {
   const key = (language || '').trim().toLowerCase();
   if (/^(?:c|gnu)?\+\+(?:\d+)?$/u.test(key) || /^c\+\+\d+$/u.test(key)) {
@@ -314,9 +363,7 @@ export function lineCommentPrefix(language: string): string {
   }
   const prefix = LINE_COMMENT_PREFIX[key];
   if (!prefix) {
-    throw new Error(
-      `Cannot export unrun Chatbook cells: no safe line comment for ${language || 'the selected language'}`
-    );
+    throw new ChatbookExportLanguageError(language);
   }
   return prefix;
 }
