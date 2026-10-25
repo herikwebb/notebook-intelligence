@@ -64,7 +64,7 @@ export function SettingsPanelComponentClaudeMCP(_props: any): JSX.Element {
         title: trans.__('Remove MCP server?'),
         body: removedFromScopeConfig(trans, 'mcp-server', srv.name, srv.scope),
         buttons: [
-          Dialog.cancelButton(),
+          Dialog.cancelButton({ label: trans.__('Cancel') }),
           Dialog.warnButton({ label: trans.__('Remove') })
         ]
       })

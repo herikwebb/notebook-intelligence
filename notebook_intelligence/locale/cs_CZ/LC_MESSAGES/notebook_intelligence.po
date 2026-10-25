@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"POT-Creation-Date: 2026-10-25 02:01-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: cs_CZ\n"
@@ -364,12 +364,16 @@ msgstr "Režim ACP"
 msgid "ACP mode is not enabled"
 msgstr "Režim ACP není povolen"
 
-#: src/chat-sidebar.tsx
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
 msgid "AI Assistant"
 msgstr "Asistent AI"
 
 #: src/components/settings-panel.tsx
 msgid "API Key"
+msgstr "Klíč API"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
 msgstr "Klíč API"
 
 #: notebook_intelligence/readiness.py
@@ -568,7 +572,7 @@ msgstr "Jádro backendu"
 msgid "Bad response"
 msgstr "Špatná odpověď"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Base URL"
 msgstr "Základní URL"
 
@@ -623,7 +627,7 @@ msgstr "Volání nástroje '%1'..."
 msgid "Can't convert this notebook yet"
 msgstr "Tento sešit zatím nelze převést"
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Cancel"
 msgstr "Zrušit"
 
@@ -902,6 +906,14 @@ msgstr "Připojení selhalo. Opakujte pokus opětovným načtením serverů MCP.
 #: src/components/perf-panel.tsx
 msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
 msgstr "Samotné navázání spojení stojí tolik ještě před začátkem jakékoli práce modelu a platí to každé studené připojení k bráně."
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "Kontextové okno"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "Délka kontextového okna"
 
 #: src/components/settings-panel.tsx
 msgid "Conversation History"
@@ -1719,9 +1731,13 @@ msgstr "Výběr marketplace"
 msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
 msgstr "Měří tento počítač, nikoli kolo: latenci a propustnost souborového systému pro konfigurační adresář a adresář %1, náklady na studený start interpretu a CLI a soupeření o prostředky hostitele. V měřených adresářích zapisuje a maže malé dočasné soubory."
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Model"
 msgstr "Model"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "Model (musí podporovat streamování)"
 
 #: src/components/perf-panel.tsx
 msgid "Model name, hashed when attribute detail is set to redacted."
@@ -1955,6 +1971,10 @@ msgstr "Nastavení Notebook Intelligence"
 #: src/cell-output-toolbar.ts
 msgid "Notebook Intelligence cell actions"
 msgstr "Akce buňky Notebook Intelligence"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence není připojen k serveru, takže požadavek nebyl odeslán. Zkuste to za chvíli znovu."
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

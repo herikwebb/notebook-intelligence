@@ -321,3 +321,105 @@ def test_session_previews_leave_out_the_instruction():
     assert i18n.without_reply_instruction("Please reply in kind.") == (
         "Please reply in kind."
     )
+
+
+def _model_entries(provider):
+    """Model entries as AIServiceManager lists them for capabilities."""
+    entries = []
+    for models in (provider.chat_models, provider.inline_completion_models):
+        entries += [
+            {
+                "provider": provider.id,
+                "id": model.id,
+                "properties": [prop.to_dict() for prop in model.properties],
+            }
+            for model in models
+        ]
+    return entries
+
+
+@pytest.mark.parametrize("provider_module, provider_class", [
+    ("openai_compatible_llm_provider", "OpenAICompatibleLLMProvider"),
+    ("litellm_compatible_llm_provider", "LiteLLMCompatibleLLMProvider"),
+])
+def test_built_in_model_settings_are_labelled_as_the_providers_say(
+    provider_module, provider_class
+):
+    """In English the translated labels equal the providers' own, so the two
+    cannot drift apart unnoticed."""
+    import importlib
+
+    from notebook_intelligence.llm_providers.property_labels import (
+        translate_model_properties,
+    )
+
+    module = importlib.import_module(f"notebook_intelligence.llm_providers.{provider_module}")
+    entries = _model_entries(getattr(module, provider_class)())
+    assert entries
+    assert translate_model_properties(i18n.english(), entries) == entries
+
+
+def test_model_settings_are_translated_by_id(german):
+    from notebook_intelligence.llm_providers.property_labels import (
+        translate_model_properties,
+    )
+
+    trans = i18n.load("de_DE")
+    trans._translations._catalog["API key"] = "API-Schlüssel"
+    entries = [
+        {
+            "provider": "openai-compatible",
+            "id": "openai-compatible-chat-model",
+            "properties": [
+                {"id": "api_key", "name": "API Key", "description": "Key", "value": "sk-1"}
+            ],
+        },
+        {
+            # An extension's provider reusing a built-in model id.
+            "provider": "acme-gateway",
+            "id": "openai-compatible-chat-model",
+            "properties": [
+                {"id": "api_key", "name": "Token", "description": "Access token", "value": ""}
+            ],
+        },
+    ]
+    built_in, extension = translate_model_properties(trans, entries)
+    # By id, whatever the English wording; the value is left alone.
+    assert built_in["properties"][0] == {
+        "id": "api_key",
+        "name": "API-Schlüssel",
+        "description": "API-Schlüssel",
+        "value": "sk-1",
+    }
+    # A model an extension adds is shown as it describes itself.
+    assert extension == entries[1]
+
+
+def test_only_the_built_in_assistant_name_is_translated():
+    from notebook_intelligence import extension
+    from notebook_intelligence.base_chat_participant import BaseChatParticipant
+    from notebook_intelligence.github_copilot_chat_participant import (
+        GithubCopilotChatParticipant,
+    )
+
+    class Translating:
+        def __(self, text):
+            return f"<{text}>"
+
+    trans = Translating()
+    assert extension._participant_name(trans, BaseChatParticipant()) == "<AI Assistant>"
+    # In English it is the built-in name itself.
+    assert (
+        extension._participant_name(i18n.english(), BaseChatParticipant())
+        == BaseChatParticipant().name
+    )
+    # Copilot shares the "default" id but names itself.
+    copilot = GithubCopilotChatParticipant()
+    assert extension._participant_name(trans, copilot) == copilot.name
+
+    class Inheriting(BaseChatParticipant):
+        @property
+        def name(self):
+            return super().name
+
+    assert extension._participant_name(trans, Inheriting()) == "<AI Assistant>"

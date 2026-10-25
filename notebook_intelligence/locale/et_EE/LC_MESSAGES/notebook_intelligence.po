@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"POT-Creation-Date: 2026-10-25 02:01-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: et_EE\n"
@@ -343,12 +343,16 @@ msgstr "ACP režiim"
 msgid "ACP mode is not enabled"
 msgstr "ACP režiim pole lubatud"
 
-#: src/chat-sidebar.tsx
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
 msgid "AI Assistant"
 msgstr "AI-assistent"
 
 #: src/components/settings-panel.tsx
 msgid "API Key"
+msgstr "API-võti"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
 msgstr "API-võti"
 
 #: notebook_intelligence/readiness.py
@@ -547,7 +551,7 @@ msgstr "Taustakernel"
 msgid "Bad response"
 msgstr "Halb vastus"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Base URL"
 msgstr "Baas-URL"
 
@@ -601,7 +605,7 @@ msgstr "Tööriista „%1“ väljakutsumine..."
 msgid "Can't convert this notebook yet"
 msgstr "Seda märkmikku ei saa veel teisendada"
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Cancel"
 msgstr "Tühista"
 
@@ -880,6 +884,14 @@ msgstr "Ühendus nurjus. Uuesti proovimiseks laadige MCP serverid uuesti."
 #: src/components/perf-panel.tsx
 msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
 msgstr "Ainuüksi ühenduse loomine maksab nii palju enne, kui mudeli töö algab, ja iga külm ühendus lüüsiga maksab selle."
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "Kontekstiaken"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "Kontekstiakna pikkus"
 
 #: src/components/settings-panel.tsx
 msgid "Conversation History"
@@ -1697,9 +1709,13 @@ msgstr "Turu valija"
 msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
 msgstr "Mõõdab vooru asemel seda masinat: konfiguratsiooni- ja %1 kataloogi failisüsteemi latentsust ja läbilaskevõimet, interpretaatori ja CLI külmkäivituse kulu ning hosti ressursikonkurentsi. See kirjutab ja kustutab mõõdetavates kataloogides väikesi ajutisi faile."
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Model"
 msgstr "Mudel"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "Mudel (peab toetama voogedastust)"
 
 #: src/components/perf-panel.tsx
 msgid "Model name, hashed when attribute detail is set to redacted."
@@ -1930,6 +1946,10 @@ msgstr "Notebook Intelligence'i seaded"
 #: src/cell-output-toolbar.ts
 msgid "Notebook Intelligence cell actions"
 msgstr "Notebook Intelligence'i lahtritoimingud"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence pole serveriga ühendatud, seega päringut ei saadetud. Proovige hetke pärast uuesti."
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

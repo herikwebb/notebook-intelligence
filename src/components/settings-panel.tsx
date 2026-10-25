@@ -169,6 +169,17 @@ export function ModelPropertyList(props: {
   );
 }
 
+/**
+ * What config.json keeps of a model's settings: the server reads back only
+ * id and value, and the labels arrive in the user's language, which a saved
+ * file should not record.
+ */
+function savedProperties(
+  properties: { id: string; value: string }[]
+): { id: string; value: string }[] {
+  return properties.map(({ id, value }) => ({ id, value }));
+}
+
 export function ModelPropertyField(props: {
   property: {
     id: string;
@@ -517,12 +528,12 @@ function SettingsPanelComponentGeneral(props: any) {
       chat_model: {
         provider: chatModelProvider,
         model: chatModel,
-        properties: chatModelProperties
+        properties: savedProperties(chatModelProperties)
       },
       inline_completion_model: {
         provider: inlineCompletionModelProvider,
         model: inlineCompletionModel,
-        properties: inlineCompletionModelProperties
+        properties: savedProperties(inlineCompletionModelProperties)
       },
       inline_completion_debouncer_delay: inlineCompletionDebouncerDelay
     };

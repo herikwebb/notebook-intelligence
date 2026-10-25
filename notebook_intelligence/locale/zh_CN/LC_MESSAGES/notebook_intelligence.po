@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"POT-Creation-Date: 2026-10-25 02:01-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: zh_CN\n"
@@ -322,12 +322,16 @@ msgstr "ACP 模式"
 msgid "ACP mode is not enabled"
 msgstr "未启用 ACP 模式"
 
-#: src/chat-sidebar.tsx
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
 msgid "AI Assistant"
 msgstr "AI 助手"
 
 #: src/components/settings-panel.tsx
 msgid "API Key"
+msgstr "API 密钥"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
 msgstr "API 密钥"
 
 #: notebook_intelligence/readiness.py
@@ -526,7 +530,7 @@ msgstr "后端内核"
 msgid "Bad response"
 msgstr "回答不佳"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Base URL"
 msgstr "基础 URL"
 
@@ -579,7 +583,7 @@ msgstr "正在调用工具“%1”..."
 msgid "Can't convert this notebook yet"
 msgstr "暂时无法转换此笔记本"
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Cancel"
 msgstr "取消"
 
@@ -858,6 +862,14 @@ msgstr "连接失败。请重新加载 MCP 服务器以重试。"
 #: src/components/perf-panel.tsx
 msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
 msgstr "在任何模型工作开始之前，仅建立连接就要花费这么多时间，并且每个到网关的冷连接都要付出这一开销。"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "上下文窗口"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "上下文窗口长度"
 
 #: src/components/settings-panel.tsx
 msgid "Conversation History"
@@ -1675,9 +1687,13 @@ msgstr "市场选择器"
 msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
 msgstr "测量的是这台机器而不是某一轮：配置目录和 %1 目录的文件系统延迟与吞吐量、解释器和 CLI 的冷启动开销，以及主机资源争用情况。它会在所测量的目录中写入并删除小型临时文件。"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Model"
 msgstr "模型"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "模型（需支持流式传输）"
 
 #: src/components/perf-panel.tsx
 msgid "Model name, hashed when attribute detail is set to redacted."
@@ -1905,6 +1921,10 @@ msgstr "Notebook Intelligence 设置"
 #: src/cell-output-toolbar.ts
 msgid "Notebook Intelligence cell actions"
 msgstr "Notebook Intelligence 单元格操作"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence 未连接到服务器，因此请求未发送。请稍后重试。"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
