@@ -10,7 +10,7 @@ import {
   VscWarning
 } from '../icons';
 import { TranslationBundle } from '@jupyterlab/translation';
-import { useTrans } from '../i18n';
+import { getTextDirection, useTrans } from '../i18n';
 
 export const BYPASS_PERMISSIONS_MODE = 'bypassPermissions';
 
@@ -208,6 +208,8 @@ export function PermissionModeSelect(
         createPortal(
           <div
             className="permission-mode-confirm"
+            // Portaled outside the sidebar, so it does not inherit its dir.
+            dir={getTextDirection()}
             style={confirmStyle}
             ref={confirmRef}
             role="alertdialog"

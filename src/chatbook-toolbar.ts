@@ -24,7 +24,7 @@ import {
 } from './chatbook-core';
 import { NBIAPI } from './api';
 import { CommandIDs } from './command-ids';
-import { getTrans } from './i18n';
+import { getTrans, withTextDirection } from './i18n';
 import {
   NotebookKernelNotFoundError,
   findKernelProfile,
@@ -137,28 +137,30 @@ async function runConvertToChatbook(
       trans._p('settings tab', 'Chatbook'),
       trans.__('Execution kernel')
     );
-    const result = await showDialog({
-      title: trans.__("Can't convert this notebook yet"),
-      body: installed
-        ? trans.__(
-            'This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too.',
-            language,
-            backend.displayName,
-            settingPath
-          )
-        : trans.__(
-            'This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3.',
-            language,
-            backend.displayName,
-            settingPath
-          ),
-      buttons: installed
-        ? [
-            Dialog.cancelButton(),
-            Dialog.okButton({ label: trans.__('Open Chatbook settings') })
-          ]
-        : [Dialog.cancelButton({ label: trans.__('Close') })]
-    });
+    const result = await showDialog(
+      withTextDirection({
+        title: trans.__("Can't convert this notebook yet"),
+        body: installed
+          ? trans.__(
+              'This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too.',
+              language,
+              backend.displayName,
+              settingPath
+            )
+          : trans.__(
+              'This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3.',
+              language,
+              backend.displayName,
+              settingPath
+            ),
+        buttons: installed
+          ? [
+              Dialog.cancelButton(),
+              Dialog.okButton({ label: trans.__('Open Chatbook settings') })
+            ]
+          : [Dialog.cancelButton({ label: trans.__('Close') })]
+      })
+    );
     if (installed && result.button.accept) {
       void app.commands.execute(CommandIDs.openConfigurationDialog, {
         tab: 'chatbook'
@@ -189,14 +191,16 @@ async function runConvertToChatbook(
       'Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description.'
     );
   }
-  const result = await showDialog({
-    title: trans.__('Convert to Chatbook'),
-    body,
-    buttons: [
-      Dialog.cancelButton(),
-      Dialog.okButton({ label: trans.__('Convert') })
-    ]
-  });
+  const result = await showDialog(
+    withTextDirection({
+      title: trans.__('Convert to Chatbook'),
+      body,
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.okButton({ label: trans.__('Convert') })
+      ]
+    })
+  );
   if (!result.button.accept) {
     return;
   }
@@ -241,17 +245,19 @@ export async function confirmConvertChatbookNotebook(
     kernels.specs?.kernelspecs,
     NBIAPI.config.chatbookBackendKernel
   );
-  const result = await showDialog({
-    title: trans.__('Export as %1 notebook', profile.language),
-    body: trans.__(
-      'Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments.',
-      profile.displayName
-    ),
-    buttons: [
-      Dialog.cancelButton(),
-      Dialog.okButton({ label: trans.__('Export') })
-    ]
-  });
+  const result = await showDialog(
+    withTextDirection({
+      title: trans.__('Export as %1 notebook', profile.language),
+      body: trans.__(
+        'Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments.',
+        profile.displayName
+      ),
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.okButton({ label: trans.__('Export') })
+      ]
+    })
+  );
   if (!result.button.accept) {
     return;
   }

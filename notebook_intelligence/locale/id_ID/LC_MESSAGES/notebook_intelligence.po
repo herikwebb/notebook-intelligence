@@ -1,0 +1,4227 @@
+# Notebook Intelligence translation catalog.
+# AI-drafted (Claude) from the English source; not yet reviewed by a
+# native speaker. A reviewer: replace this note and Last-Translator.
+# See docs/translating.md.
+msgid ""
+msgstr ""
+"Project-Id-Version: notebook_intelligence\n"
+"Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
+"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"PO-Revision-Date: 2026-10-24 22:00-0400\n"
+"Last-Translator: AI draft, not yet reviewed\n"
+"Language-Team: id_ID\n"
+"Language: id_ID\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already exists in this bundle."
+msgstr "\"%1\" sudah ada di bundel ini."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already up to date at %2."
+msgstr "\"%1\" sudah mutakhir di %2."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be deleted."
+msgstr "\"%1\" akan dihapus."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be permanently deleted."
+msgstr "\"%1\" akan dihapus secara permanen."
+
+#: src/components/plugins-panel.tsx
+msgid "\"%1\" will be removed from Claude's plugin marketplaces."
+msgstr "\"%1\" akan dihapus dari marketplace plugin Claude."
+
+#: src/components/settings-panel.tsx
+msgid "%1 (not installed)"
+msgstr "%1 (tidak terinstal)"
+
+#: src/components/setting-lock.ts
+msgid "%1 (optional)"
+msgstr "%1 (opsional)"
+
+#: src/chat-sidebar.tsx
+msgid "%1 (required)"
+msgstr "%1 (wajib)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 (scan truncated)"
+msgstr "%1 (pemindaian terpotong)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 MB peak since server start"
+msgstr "Puncak %1 MB sejak server dimulai"
+
+#: src/components/perf-panel.tsx
+msgid "%1 active with no phase dominating."
+msgstr "%1 aktif tanpa fase yang dominan."
+
+#: src/components/skills-panel.tsx
+msgid "%1 added"
+msgid_plural "%1 added"
+msgstr[0] "%1 ditambahkan"
+msgstr[1] "%1 ditambahkan"
+
+#: src/components/perf-panel.tsx
+msgid "%1 and %2 were dropped by the per-turn caps, so this timeline is incomplete."
+msgstr "%1 dan %2 dibuang oleh batas per giliran, sehingga linimasa ini tidak lengkap."
+
+#: src/components/perf-panel.tsx
+msgid "%1 attribute"
+msgid_plural "%1 attributes"
+msgstr[0] "%1 atribut"
+msgstr[1] "%1 atribut"
+
+#: src/open-file-refresh-watcher.ts
+msgid "%1 changed on disk and was reloaded"
+msgstr "%1 berubah di disk dan telah dimuat ulang"
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 character"
+msgid_plural "%1 characters"
+msgstr[0] "%1 karakter"
+msgstr[1] "%1 karakter"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at %2 ms, %3 ms total."
+msgid_plural "%1 chunks, first at %2 ms, %3 ms total."
+msgstr[0] "%1 potongan, yang pertama pada %2 ms, total %3 ms."
+msgstr[1] "%1 potongan, yang pertama pada %2 ms, total %3 ms."
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at n/a ms, %2 ms total."
+msgid_plural "%1 chunks, first at n/a ms, %2 ms total."
+msgstr[0] "%1 potongan, yang pertama pada n/a ms, total %2 ms."
+msgstr[1] "%1 potongan, yang pertama pada n/a ms, total %2 ms."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 decides which tools to ask about, so some actions may run without a prompt."
+msgstr "%1 menentukan alat mana yang perlu ditanyakan, sehingga beberapa tindakan dapat berjalan tanpa konfirmasi."
+
+#: src/chat-sidebar.tsx
+msgid "%1 duplicate skipped."
+msgid_plural "%1 duplicates skipped."
+msgstr[0] "%1 duplikat dilewati."
+msgstr[1] "%1 duplikat dilewati."
+
+#: src/components/skills-panel.tsx
+msgid "%1 error"
+msgid_plural "%1 errors"
+msgstr[0] "%1 kesalahan"
+msgstr[1] "%1 kesalahan"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 failed"
+msgid_plural "%1 failed"
+msgstr[0] "%1 gagal"
+msgstr[1] "%1 gagal"
+
+#: src/chat-sidebar.tsx
+msgid "%1 file skipped (limit of %2)."
+msgid_plural "%1 files skipped (limit of %2)."
+msgstr[0] "%1 berkas dilewati (batas %2)."
+msgstr[1] "%1 berkas dilewati (batas %2)."
+
+#: src/components/perf-panel.tsx
+msgid "%1 gap during streaming. Each stall event below is tagged with what preceded it."
+msgid_plural "%1 gaps during streaming. Each stall event below is tagged with what preceded it."
+msgstr[0] "%1 jeda selama streaming. Setiap peristiwa macet di bawah ditandai dengan apa yang mendahuluinya."
+msgstr[1] "%1 jeda selama streaming. Setiap peristiwa macet di bawah ditandai dengan apa yang mendahuluinya."
+
+#: src/components/settings-panel.tsx
+msgid "%1 is required."
+msgstr "%1 wajib diisi."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 line"
+msgid_plural "%1 lines"
+msgstr[0] "%1 baris"
+msgstr[1] "%1 baris"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 model available."
+msgid_plural "%1 models available."
+msgstr[0] "%1 model tersedia."
+msgstr[1] "%1 model tersedia."
+
+#: src/components/plugins-panel.tsx
+msgid "%1 plugin"
+msgid_plural "%1 plugins"
+msgstr[0] "%1 plugin"
+msgstr[1] "%1 plugin"
+
+#: src/components/skills-panel.tsx
+msgid "%1 removed"
+msgid_plural "%1 removed"
+msgstr[0] "%1 dihapus"
+msgstr[1] "%1 dihapus"
+
+#: src/chat-sidebar.tsx
+msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
+msgstr "%1 memerlukan langganan dan memiliki paket gratis. GitHub Copilot tunduk pada %2."
+
+#: src/components/perf-panel.tsx
+msgid "%1 span"
+msgid_plural "%1 spans"
+msgstr[0] "%1 span"
+msgstr[1] "%1 span"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 tool call"
+msgid_plural "%1 tool calls"
+msgstr[0] "%1 panggilan alat"
+msgstr[1] "%1 panggilan alat"
+
+#: src/components/skills-panel.tsx
+msgid "%1 unchanged"
+msgid_plural "%1 unchanged"
+msgstr[0] "%1 tidak berubah"
+msgstr[1] "%1 tidak berubah"
+
+#: src/components/skills-panel.tsx
+msgid "%1 updated"
+msgid_plural "%1 updated"
+msgstr[0] "%1 diperbarui"
+msgstr[1] "%1 diperbarui"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, launched as: %2"
+msgstr "%1, dijalankan sebagai: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, model '%2'"
+msgstr "%1, model '%2'"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, no model selected"
+msgstr "%1, tidak ada model yang dipilih"
+
+#: src/components/perf-panel.tsx
+msgid "%1; TLS handshake failed (%2)"
+msgstr "%1; handshake TLS gagal (%2)"
+
+#: src/components/perf-panel.tsx
+msgid "%1; clock skew %2"
+msgstr "%1; selisih jam %2"
+
+#: src/components/perf-panel.tsx
+msgid "%1; issuer %2"
+msgstr "%1; penerbit %2"
+
+#: src/components/perf-panel.tsx
+msgid "%2 %1 file, %3"
+msgid_plural "%2 %1 files, %3"
+msgstr[0] "%2: %1 berkas, %3"
+msgstr[1] "%2: %1 berkas, %3"
+
+#: src/components/skills-panel.tsx
+msgid "%2 + %1 other"
+msgid_plural "%2 + %1 others"
+msgstr[0] "%2 + %1 lainnya"
+msgstr[1] "%2 + %1 lainnya"
+
+#: src/components/plugins-panel.tsx
+msgid "%2, +%1 more"
+msgid_plural "%2, +%1 more"
+msgstr[0] "%2, +%1 lainnya"
+msgstr[1] "%2, +%1 lainnya"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' and its declared interpreter are available."
+msgstr "'%1' dan interpreter yang dideklarasikannya tersedia."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' has no content to attach."
+msgstr "'%1' tidak memiliki konten untuk dilampirkan."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' is empty"
+msgstr "'%1' kosong"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' is not in the list this endpoint serves."
+msgstr "'%1' tidak ada dalam daftar yang dilayani endpoint ini."
+
+#: src/components/plugins-panel.tsx
+msgid "(disabled)"
+msgstr "(nonaktif)"
+
+#: src/components/safe-anchor.tsx
+msgid "(link blocked)"
+msgstr "(tautan diblokir)"
+
+#: src/components/safe-anchor.tsx
+msgid "(opens in new tab)"
+msgstr "(terbuka di tab baru)"
+
+#: src/components/plugins-panel.tsx
+msgid "(unnamed)"
+msgstr "(tanpa nama)"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 agent error:** %2"
+msgstr "**Kesalahan agen %1:** %2"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: it is too large to show in full for approval.**"
+msgstr "**Panggilan alat %1 ditolak: terlalu besar untuk ditampilkan secara lengkap untuk persetujuan.**"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: its command contains hidden Unicode bidirectional controls (%2).**"
+msgstr "**Panggilan alat %1 ditolak: perintahnya berisi karakter kontrol dua arah Unicode tersembunyi (%2).**"
+
+#: notebook_intelligence/mcp_manager.py
+msgid "**%1** server tools:"
+msgstr "Alat server **%1**:"
+
+#: notebook_intelligence/claude.py
+msgid "**Bash command blocked: hidden Unicode bidirectional controls detected (%1).**"
+msgstr "**Perintah Bash diblokir: terdeteksi karakter kontrol dua arah Unicode tersembunyi (%1).**"
+
+#: notebook_intelligence/claude.py
+msgid "**Claude agent error:** %1"
+msgstr "**Kesalahan agen Claude:** %1"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/claude.py
+msgid "**Error:** %1"
+msgstr "**Kesalahan:** %1"
+
+#: src/components/skills-panel.tsx
+msgid "+ New project skill"
+msgstr "+ Skill proyek baru"
+
+#: src/components/skills-panel.tsx
+msgid "+ New user skill"
+msgstr "+ Skill pengguna baru"
+
+#: src/components/perf-panel.tsx
+msgid "1m %1, 5m %2, 15m %3"
+msgstr "1 mnt %1, 5 mnt %2, 15 mnt %3"
+
+#: notebook_intelligence/extension.py
+msgid "A duplicate submission with this message ID was ignored; the original request is still running."
+msgstr "Kiriman duplikat dengan ID pesan ini diabaikan; permintaan aslinya masih berjalan."
+
+#: src/components/perf-panel.tsx
+msgid "A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost."
+msgstr "Pohon ~/.claude yang besar membuat setiap agen yang dimulai harus menanggung biaya menelusurinya. Pada sistem berkas jaringan, ini sering kali menjadi sebagian besar biaya peluncuran."
+
+#: notebook_intelligence/extension.py
+msgid "A live endpoint test is already running."
+msgstr "Uji langsung endpoint sedang berjalan."
+
+#: src/components/perf-panel.tsx
+msgid "A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local."
+msgstr "Sistem berkas jaringan. Baca setiap angka latensi di grup ini dengan mempertimbangkan hal tersebut, dan arahkan NBI_PERF_LOG_DIR ke lokasi lokal."
+
+#: src/components/perf-panel.tsx
+msgid "A one-line reading of where this turn's time went, derived from the columns to the left."
+msgstr "Ringkasan satu baris tentang ke mana waktu giliran ini terpakai, diturunkan dari kolom di sebelah kiri."
+
+#: src/components/skills-panel.tsx
+msgid "A project skill named \"%1\" already exists."
+msgstr "Skill proyek bernama \"%1\" sudah ada."
+
+#: src/components/skills-panel.tsx
+msgid "A user skill named \"%1\" already exists."
+msgstr "Skill pengguna bernama \"%1\" sudah ada."
+
+#: src/components/readiness-card.tsx
+msgid "ACP agent"
+msgstr "Agen ACP"
+
+#: src/chat-sidebar.tsx
+msgid "ACP mode"
+msgstr "Mode ACP"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode is not enabled"
+msgstr "Mode ACP tidak diaktifkan"
+
+#: src/chat-sidebar.tsx
+msgid "AI Assistant"
+msgstr "Asisten AI"
+
+#: src/components/settings-panel.tsx
+msgid "API Key"
+msgstr "Kunci API"
+
+#: notebook_intelligence/readiness.py
+msgid "API key present from %1."
+msgstr "Kunci API tersedia dari %1."
+
+#: src/chat-sidebar.tsx
+msgid "Accept"
+msgstr "Terima"
+
+#: src/components/skills-panel.tsx
+msgid "Actions for %1"
+msgstr "Tindakan untuk %1"
+
+#: src/chat-sidebar.tsx
+msgid "Activating device..."
+msgstr "Mengaktifkan perangkat..."
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Add"
+msgstr "Tambah"
+
+#: src/components/settings-panel.tsx
+msgid "Add / Edit"
+msgstr "Tambah / Edit"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add MCP server"
+msgstr "Tambah server MCP"
+
+#: src/components/plugins-panel.tsx
+msgid "Add a marketplace to discover plugins, then install one to extend Claude Code with new commands, agents, and tool integrations."
+msgstr "Tambahkan marketplace untuk menemukan plugin, lalu instal salah satunya untuk memperluas Claude Code dengan perintah, agen, dan integrasi alat baru."
+
+#: src/markdown-renderer.tsx
+msgid "Add as new cell"
+msgstr "Tambahkan sebagai sel baru"
+
+#: src/markdown-renderer.tsx
+msgid "Add code as new cell"
+msgstr "Tambahkan kode sebagai sel baru"
+
+#: src/components/skills-panel.tsx
+msgid "Add file"
+msgstr "Tambah berkas"
+
+#: src/chat-sidebar.tsx
+msgid "Add files as context"
+msgstr "Tambahkan berkas sebagai konteks"
+
+#: src/components/plugins-panel.tsx
+msgid "Add marketplace"
+msgstr "Tambah marketplace"
+
+#: src/components/plugins-panel.tsx
+msgid "Add plugin marketplace"
+msgstr "Tambah marketplace plugin"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add server"
+msgstr "Tambah server"
+
+#: src/chat-sidebar.tsx
+msgid "Add workspace file as context"
+msgstr "Tambahkan berkas ruang kerja sebagai konteks"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Adding…"
+msgstr "Menambahkan…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Additional permissions"
+msgstr "Izin tambahan"
+
+#: src/components/settings-panel.tsx
+msgid "Adds a small footer under each reply."
+msgstr "Menambahkan footer kecil di bawah setiap balasan."
+
+#: src/components/perf-panel.tsx
+msgid "Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate."
+msgstr "Membuka koneksi ke endpoint yang Anda konfigurasi untuk mengukur waktu DNS, TCP, dan TLS serta menangkap sertifikat yang disajikan."
+
+#: src/components/settings-panel.tsx
+msgid "Agent account"
+msgstr "Akun agen"
+
+#: src/components/settings-panel.tsx
+msgid "Agent default (e.g. '%1')"
+msgstr "Bawaan agen (mis. '%1')"
+
+#: notebook_intelligence/readiness.py
+msgid "Agent mode and every built-in tool need tool calling. The model may not support it, or a proxy in front of the endpoint may be stripping the tools field."
+msgstr "Mode agen dan setiap alat bawaan memerlukan pemanggilan alat. Model mungkin tidak mendukungnya, atau proxy di depan endpoint mungkin menghapus kolom tools."
+
+#: src/components/settings-panel.tsx
+msgid "Agent type"
+msgstr "Jenis agen"
+
+#: src/components/skills-panel.tsx
+msgid "Allowed tools"
+msgstr "Alat yang diizinkan"
+
+#: src/components/perf-panel.tsx
+msgid "Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines."
+msgstr "Juga tambahkan setiap giliran sebagai JSON Lines di direktori log performa, untuk dikumpulkan lintas sesi atau mesin."
+
+#: src/components/settings-panel.tsx
+msgid "Also classify with the chat model"
+msgstr "Juga klasifikasikan dengan model chat"
+
+#: src/components/settings-panel.tsx
+msgid "Always confirm"
+msgstr "Selalu konfirmasi"
+
+#: notebook_intelligence/claude.py
+msgid "Approve Bash tool to execute the command above?"
+msgstr "Setujui alat Bash untuk menjalankan perintah di atas?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve running this command?"
+msgstr "Setujui menjalankan perintah ini?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve this %1 tool call?"
+msgstr "Setujui panggilan alat %1 ini?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approving grants a lasting permission, not only this request."
+msgstr "Menyetujui memberikan izin permanen, bukan hanya untuk permintaan ini."
+
+#: notebook_intelligence/claude.py
+msgid "Are you sure you want to call this tool?"
+msgstr "Apakah Anda yakin ingin memanggil alat ini?"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Args (one per line)"
+msgstr "Argumen (satu per baris)"
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence to generate Python code..."
+msgstr "Minta Notebook Intelligence membuat kode Python..."
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence..."
+msgstr "Tanya Notebook Intelligence..."
+
+#: src/components/settings-panel.tsx
+msgid "Ask about cell outputs"
+msgstr "Tanyakan tentang output sel"
+
+#: src/cell-output-toolbar.ts src/index.ts
+msgid "Ask about this output"
+msgstr "Tanyakan tentang output ini"
+
+#: src/components/settings-panel.tsx
+msgid "Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English."
+msgstr "Minta AI menulis balasan chat dan deskripsi sel Chatbook dalam bahasa yang diatur di JupyterLab. Kode, pengenal, dan isi berkas dibiarkan apa adanya. Tidak berpengaruh selama JupyterLab menggunakan bahasa Inggris."
+
+#: src/components/perf-panel.tsx
+msgid "Attribute detail"
+msgstr "Detail atribut"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (milliseconds)"
+msgstr "Penundaan debouncer pelengkapan otomatis (milidetik)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (ms)"
+msgstr "Penundaan debouncer pelengkapan otomatis (ms)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete model"
+msgstr "Model pelengkapan otomatis"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run"
+msgstr "Jalankan otomatis"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run when a static scan looks clean. Confirm when it flags a risk or cannot parse the cell. The scan is a speed bump, not a security boundary; false negatives are inevitable."
+msgstr "Jalankan otomatis jika pemindaian statis terlihat bersih. Minta konfirmasi jika pemindaian menandai risiko atau tidak dapat mengurai sel. Pemindaian ini hanya polisi tidur, bukan batas keamanan; negatif palsu tidak dapat dihindari."
+
+#: src/components/settings-panel.tsx
+msgid "Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
+msgstr "Muat ulang tab notebook dan editor berkas secara otomatis saat proses eksternal (perintah terminal, klien sinkronisasi, atau agen AI) mengedit berkas. Dilewati jika tab memiliki perubahan lokal yang belum disimpan."
+
+#: src/components/skills-panel.tsx
+msgid "Back"
+msgstr "Kembali"
+
+#: src/components/settings-panel.tsx
+msgid "Backend kernel"
+msgstr "Kernel backend"
+
+#: src/chat-sidebar.tsx
+msgid "Bad response"
+msgstr "Respons buruk"
+
+#: src/components/settings-panel.tsx
+msgid "Base URL"
+msgstr "URL Dasar"
+
+#: src/components/perf-panel.tsx
+msgid "Below what local storage delivers. Worth comparing against a known-good node."
+msgstr "Di bawah kemampuan penyimpanan lokal. Layak dibandingkan dengan node yang diketahui berfungsi baik."
+
+#: src/chat-sidebar.tsx
+msgid "Binary files cannot be attached as chat context."
+msgstr "Berkas biner tidak dapat dilampirkan sebagai konteks chat."
+
+#: src/components/skills-panel.tsx
+msgid "Breadcrumb"
+msgstr "Breadcrumb"
+
+#: src/chat-sidebar.tsx
+msgid "Built-in"
+msgstr "Bawaan"
+
+#: src/components/skills-panel.tsx
+msgid "Bundle contains %1 file; showing %2 only. Edit supporting files directly on disk."
+msgid_plural "Bundle contains %1 files; showing %2 only. Edit supporting files directly on disk."
+msgstr[0] "Bundel berisi %1 berkas; hanya menampilkan %2. Edit berkas pendukung langsung di disk."
+msgstr[1] "Bundel berisi %1 berkas; hanya menampilkan %2. Edit berkas pendukung langsung di disk."
+
+#: src/components/settings-panel.tsx
+msgid "By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs."
+msgstr "Secara bawaan, agen bertanya sebelum melakukan apa pun selain perintah baca-saja yang tepercaya. Akses penuh memungkinkannya mengedit berkas ruang kerja dan menjalankan perintah shell tanpa bertanya, di dalam sandbox dengan akses jaringan nonaktif secara bawaan. Apa pun yang diblokir sandbox akan gagal alih-alih meminta konfirmasi. Konten yang dibaca agen dapat memengaruhi apa yang dijalankannya."
+
+#: src/chat-sidebar.tsx
+msgid "By using Notebook Intelligence with GitHub Copilot subscription you agree to %1. Review the terms to understand about usage, limitations and ways to improve GitHub Copilot. Please review %2."
+msgstr "Dengan menggunakan Notebook Intelligence dengan langganan GitHub Copilot, Anda menyetujui %1. Tinjau ketentuan tersebut untuk memahami penggunaan, batasan, dan cara meningkatkan GitHub Copilot. Silakan tinjau %2."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions is active: tool calls run without confirmation"
+msgstr "Lewati Izin aktif: panggilan alat berjalan tanpa konfirmasi"
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions runs every tool call without asking for confirmation, with your full user account access. Content the agent reads can steer what it runs. Stays on until you switch modes or start a new session."
+msgstr "Lewati Izin menjalankan setiap panggilan alat tanpa meminta konfirmasi, dengan akses penuh akun pengguna Anda. Konten yang dibaca agen dapat memengaruhi apa yang dijalankannya. Tetap aktif sampai Anda beralih mode atau memulai sesi baru."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass permissions"
+msgstr "Lewati izin"
+
+#: notebook_intelligence/claude.py
+msgid "Calling tool '%1'..."
+msgstr "Memanggil alat '%1'..."
+
+#: src/chatbook-toolbar.ts
+msgid "Can't convert this notebook yet"
+msgstr "Notebook ini belum dapat dikonversi"
+
+#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+msgid "Cancel"
+msgstr "Batalkan"
+
+#: src/chat-sidebar.tsx
+msgid "Cancel activation"
+msgstr "Batalkan aktivasi"
+
+#: src/chat-sidebar.tsx
+msgid "Canceled"
+msgstr "Dibatalkan"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for %1"
+msgstr "Tidak dapat mengekspor sel Chatbook yang belum dijalankan: tidak ada komentar baris yang aman untuk %1"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for the selected language"
+msgstr "Tidak dapat mengekspor sel Chatbook yang belum dijalankan: tidak ada komentar baris yang aman untuk bahasa yang dipilih"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1"
+msgstr "Sel %1"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output"
+msgstr "Output sel %1"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output (%2)"
+msgstr "Output sel %1 (%2)"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output"
+msgstr "Output sel"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output (%1)"
+msgstr "Output sel (%1)"
+
+#: src/components/settings-panel.tsx
+msgid "Cell output features"
+msgstr "Fitur output sel"
+
+#: src/chat-sidebar.tsx
+msgid "Change provider"
+msgstr "Ganti penyedia"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Characters that would not display are shown as \\u{XXXX}."
+msgstr "Karakter yang tidak dapat ditampilkan ditunjukkan sebagai \\u{XXXX}."
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent setting sources"
+msgstr "Sumber pengaturan agen chat"
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent tools"
+msgstr "Alat agen chat"
+
+#: src/chat-sidebar.tsx
+msgid "Chat is disabled as you don't have a model configured."
+msgstr "Chat dinonaktifkan karena Anda belum mengonfigurasi model."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by ACP agent mode."
+msgstr "Chat dilayani oleh mode agen ACP."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by Claude mode."
+msgstr "Chat dilayani oleh mode Claude."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by the configured chat model provider."
+msgstr "Chat dilayani oleh penyedia model chat yang dikonfigurasi."
+
+#: src/chat-sidebar.tsx
+msgid "Chat mode"
+msgstr "Mode chat"
+
+#: src/components/settings-panel.tsx
+msgid "Chat model"
+msgstr "Model chat"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Chat model is not set!"
+msgstr "Model chat belum diatur!"
+
+#: src/components/readiness-card.tsx
+msgid "Chat path"
+msgstr "Jalur chat"
+
+#: src/chat-sidebar.tsx
+msgid "Chat response image"
+msgstr "Gambar respons chat"
+
+#: src/chat-sidebar.tsx
+msgid "Chat transcript"
+msgstr "Transkrip chat"
+
+#: src/index.ts
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
+msgstr "Chatbook membuat kode %1 dan menjalankannya di %2. Proses tersebut memiliki hak akses yang sama dengan kernel Jupyter mana pun: berkas, jaringan, variabel lingkungan, dan instalasi paket."
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook is disabled by your administrator"
+msgstr "Chatbook dinonaktifkan oleh administrator Anda"
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm every natural-language run."
+msgstr "Chatbook diatur untuk meminta konfirmasi pada setiap eksekusi bahasa alami."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm only when the scan flags a risk."
+msgstr "Chatbook diatur untuk meminta konfirmasi hanya jika pemindaian menandai risiko."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to run generated code immediately."
+msgstr "Chatbook diatur untuk langsung menjalankan kode yang dihasilkan."
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
+msgstr "Chatbook tetap menjadi kernel notebook, tetapi kode yang dihasilkan berjalan di kernelspec Jupyter ini. Bahasa, penyorotan sintaksis, dan ekspor mengikuti kernel tersebut. Mulai ulang notebook Chatbook yang terbuka setelah mengubahnya."
+
+#: src/components/perf-panel.tsx
+msgid "Check status: %1"
+msgstr "Status pemeriksaan: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key and Base URL for this provider in NBI Settings, and that the endpoint is reachable from the Jupyter server process."
+msgstr "Periksa kunci API dan URL Dasar untuk penyedia ini di Pengaturan NBI, serta pastikan endpoint dapat dijangkau dari proses server Jupyter."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key, the Base URL, and that the selected model id is one this endpoint serves. The server log carries the provider's own error text."
+msgstr "Periksa kunci API, URL Dasar, dan pastikan id model yang dipilih termasuk yang dilayani endpoint ini. Log server memuat teks kesalahan dari penyedia itu sendiri."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the Jupyter server log for the underlying error."
+msgstr "Periksa log server Jupyter untuk melihat kesalahan yang mendasarinya."
+
+#: src/components/readiness-card.tsx
+msgid "Checking configuration…"
+msgstr "Memeriksa konfigurasi…"
+
+#: src/components/readiness-card.tsx
+msgid "Checking…"
+msgstr "Memeriksa…"
+
+#: src/index.ts
+msgid "Choose start directory for %1"
+msgstr "Pilih direktori awal untuk %1"
+
+#: notebook_intelligence/extension.py
+msgid "Claude Code mode is not enabled"
+msgstr "Mode Claude Code tidak diaktifkan"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Claude Code mode is still starting. Please try again in a moment."
+msgstr "Mode Claude Code masih dimulai. Silakan coba lagi sebentar lagi."
+
+#: src/index.ts
+msgid "Claude Code terminal session"
+msgstr "Sesi terminal Claude Code"
+
+#: src/components/settings-panel.tsx
+msgid "Claude Code tools"
+msgstr "Alat Claude Code"
+
+#: notebook_intelligence/extension.py
+msgid "Claude MCP management is disabled by your administrator"
+msgstr "Pengelolaan MCP Claude dinonaktifkan oleh administrator Anda"
+
+#: src/components/settings-panel.tsx
+msgid "Claude account"
+msgstr "Akun Claude"
+
+#: src/chat-sidebar.tsx src/components/readiness-card.tsx
+msgid "Claude mode"
+msgstr "Mode Claude"
+
+#: src/components/permission-mode-select.tsx
+msgid "Claude permission mode"
+msgstr "Mode izin Claude"
+
+#: notebook_intelligence/claude.py
+msgid "Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan."
+msgstr "Claude ingin masuk ke mode rencana untuk menjelajahi dan merancang pendekatan implementasi. Dalam mode rencana, Claude akan menjelajahi basis kode secara menyeluruh, mengidentifikasi pola yang ada, merancang strategi implementasi, dan menyajikan rencana untuk Anda setujui. Tidak ada perubahan kode yang akan dibuat sampai Anda menyetujui rencana tersebut."
+
+#: src/components/settings-panel.tsx
+msgid "Click to learn more about security implications"
+msgstr "Klik untuk mempelajari implikasi keamanannya"
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Close"
+msgstr "Tutup"
+
+#: src/chat-sidebar.tsx
+msgid "Close file picker"
+msgstr "Tutup pemilih berkas"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Close notebook generation popover"
+msgstr "Tutup popover pembuatan notebook"
+
+#: src/chat-sidebar.tsx
+msgid "Close tools picker"
+msgstr "Tutup pemilih alat"
+
+#: src/chatbook.ts
+msgid "Code cell (%1): switch to natural language"
+msgstr "Sel kode (%1): beralih ke bahasa alami"
+
+#: src/chatbook.ts
+msgid "Code cell: switch to natural language"
+msgstr "Sel kode: beralih ke bahasa alami"
+
+#: src/components/perf-panel.tsx
+msgid "Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn."
+msgstr "Di sini, cold start didominasi oleh pembacaan pohon instalasi. Angka inilah yang menjadi kolom Peluncuran pada setiap giliran."
+
+#: notebook_intelligence/acp_agent.py src/components/claude-mcp-panel.tsx
+msgid "Command"
+msgstr "Perintah"
+
+#: src/components/perf-panel.tsx
+msgid "Compare %1 against %2: close together means the time is in the model or the gateway, far apart means it is local. Expand a row for that turn's phase breakdown."
+msgstr "Bandingkan %1 dengan %2: jika berdekatan, waktunya ada di model atau gateway; jika berjauhan, waktunya ada di sisi lokal. Bentangkan sebuah baris untuk melihat rincian fase giliran tersebut."
+
+#: src/components/settings-panel.tsx
+msgid "Config file path"
+msgstr "Jalur berkas konfigurasi"
+
+#: src/chat-sidebar.tsx
+msgid "Configure models"
+msgstr "Konfigurasikan model"
+
+#: src/chat-sidebar.tsx
+msgid "Configure providers, API keys, MCP servers, and skills"
+msgstr "Konfigurasikan penyedia, kunci API, server MCP, dan skill"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools"
+msgstr "Konfigurasikan alat"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools (warning: irreversible tools selected)"
+msgstr "Konfigurasikan alat (peringatan: alat yang tidak dapat dibatalkan dipilih)"
+
+#: src/components/perf-panel.tsx
+msgid "Configured endpoint"
+msgstr "Endpoint yang dikonfigurasi"
+
+#: src/components/permission-mode-select.tsx
+msgid "Confirm Bypass Permissions"
+msgstr "Konfirmasi Lewati Izin"
+
+#: src/components/perf-panel.tsx
+msgid "Confirm and run"
+msgstr "Konfirmasi dan jalankan"
+
+#: src/components/settings-panel.tsx
+msgid "Confirm if risky"
+msgstr "Konfirmasi jika berisiko"
+
+#: src/components/perf-panel.tsx
+msgid "Connect and spawn took %1. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up."
+msgstr "Koneksi dan peluncuran memakan waktu %1. Itu adalah waktu mulai subproses dan CLI, biasanya node ditambah pembacaan bundel, dan di situlah penyimpanan yang lambat terlihat."
+
+#: src/components/mcp-util.ts
+msgid "Connection failed. Reload MCP servers to retry."
+msgstr "Koneksi gagal. Muat ulang server MCP untuk mencoba lagi."
+
+#: src/components/perf-panel.tsx
+msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
+msgstr "Penyiapan koneksi saja sudah memakan sebanyak ini sebelum pekerjaan model dimulai, dan setiap koneksi dingin ke gateway menanggungnya."
+
+#: src/components/settings-panel.tsx
+msgid "Conversation History"
+msgstr "Riwayat Percakapan"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert"
+msgstr "Konversi"
+
+#: src/index.ts
+msgid "Convert notebook to Chatbook"
+msgstr "Konversi notebook ke Chatbook"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert to Chatbook"
+msgstr "Konversi ke Chatbook"
+
+#: src/components/perf-panel.tsx
+msgid "Copied"
+msgstr "Disalin"
+
+#: src/markdown-renderer.tsx
+msgid "Copy"
+msgstr "Salin"
+
+#: src/components/perf-panel.tsx
+msgid "Copy as JSON"
+msgstr "Salin sebagai JSON"
+
+#: src/chat-sidebar.tsx
+msgid "Copy code %1 and enter at %2 to allow access to GitHub Copilot from this app. Activation could take up to a minute after you enter the code."
+msgstr "Salin kode %1 dan masukkan di %2 untuk mengizinkan akses ke GitHub Copilot dari aplikasi ini. Aktivasi dapat memakan waktu hingga satu menit setelah Anda memasukkan kode."
+
+#: src/markdown-renderer.tsx
+msgid "Copy code to clipboard"
+msgstr "Salin kode ke papan klip"
+
+#: src/components/claude-session-picker.tsx
+msgid "Copy resume command"
+msgstr "Salin perintah lanjutkan"
+
+#: src/chat-sidebar.tsx
+msgid "Could not attach: %1"
+msgstr "Tidak dapat melampirkan: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Could not convert to Chatbook: %1"
+msgstr "Tidak dapat mengonversi ke Chatbook: %1"
+
+#: src/chatbook.ts
+msgid "Could not generate a description: %1"
+msgstr "Tidak dapat membuat deskripsi: %1"
+
+#: notebook_intelligence/extension.py
+msgid "Could not list workspace mentions"
+msgstr "Tidak dapat menampilkan daftar sebutan ruang kerja"
+
+#: src/index.ts
+msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
+msgstr "Buat salinan Chatbook dari notebook ini, tanpa mengubah aslinya"
+
+#: src/chatbook-toolbar.ts
+msgid "Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments."
+msgstr "Buat notebook %1 baru dari Chatbook ini. Chatbook asli tidak diubah. Sel yang belum dijalankan menjadi komentar."
+
+#: src/index.ts
+msgid "Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged"
+msgstr "Buat notebook baru dari Chatbook ini menggunakan kernel backend yang dikonfigurasi, tanpa mengubah aslinya"
+
+#: src/index.ts
+msgid "Create a notebook whose cells are natural-language prompts"
+msgstr "Buat notebook yang selnya berupa prompt bahasa alami"
+
+#: src/markdown-renderer.tsx
+msgid "Create new file from code"
+msgstr "Buat berkas baru dari kode"
+
+#: src/markdown-renderer.tsx
+msgid "Create new notebook from code"
+msgstr "Buat notebook baru dari kode"
+
+#: src/chatbook-toolbar.ts
+msgid "Created Chatbook copy: %1"
+msgstr "Salinan Chatbook dibuat: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Membuat salinan Chatbook dari notebook ini di sebelahnya dan membukanya, termasuk perubahan yang belum disimpan. Sel kode menjadi sel kode Chatbook dan berjalan persis seperti yang ditulis; output dan markdown dipertahankan. Aslinya tidak diubah. Kodenya akan berjalan di %1, kernel eksekusi Chatbook, alih-alih di %2. Tidak ada yang dikirim ke model sekarang. Saat setiap sel kode pertama kali berhasil dijalankan, kodenya dikirim ke model untuk dibuatkan deskripsi satu baris."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Membuat salinan Chatbook dari notebook ini di sebelahnya dan membukanya, termasuk perubahan yang belum disimpan. Sel kode menjadi sel kode Chatbook dan berjalan persis seperti yang ditulis; output dan markdown dipertahankan. Aslinya tidak diubah. Kodenya akan berjalan di %1, kernel eksekusi Chatbook. Tidak ada yang dikirim ke model sekarang. Saat setiap sel kode pertama kali berhasil dijalankan, kodenya dikirim ke model untuk dibuatkan deskripsi satu baris."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Membuat salinan Chatbook dari notebook ini di sebelahnya dan membukanya, termasuk perubahan yang belum disimpan. Sel kode menjadi sel kode Chatbook dan berjalan persis seperti yang ditulis; output dan markdown dipertahankan. Aslinya tidak diubah. Tidak ada yang dikirim ke model sekarang. Saat setiap sel kode pertama kali berhasil dijalankan, kodenya dikirim ke model untuk dibuatkan deskripsi satu baris."
+
+#: notebook_intelligence/readiness.py
+msgid "Credential present from %1."
+msgstr "Kredensial tersedia dari %1."
+
+#: src/components/settings-panel.tsx
+msgid "Default (recommended)"
+msgstr "Bawaan (disarankan)"
+
+#: src/components/settings-panel.tsx
+msgid "Default chat mode"
+msgstr "Mode chat bawaan"
+
+#: src/components/skills-panel.tsx
+msgid "Delete"
+msgstr "Hapus"
+
+#: src/components/skills-panel.tsx
+msgid "Delete file?"
+msgstr "Hapus berkas?"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill"
+msgstr "Hapus skill"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill?"
+msgstr "Hapus skill?"
+
+#: src/components/skills-panel.tsx
+msgid "Deleted \"%1\""
+msgstr "\"%1\" dihapus"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Denial recorded"
+msgstr "Penolakan dicatat"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Describe how to update the active notebook..."
+msgstr "Jelaskan cara memperbarui notebook aktif..."
+
+#: src/components/skills-panel.tsx
+msgid "Description"
+msgstr "Deskripsi"
+
+#: src/components/skills-panel.tsx
+msgid "Description is required."
+msgstr "Deskripsi wajib diisi."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Details from %1"
+msgstr "Detail dari %1"
+
+#: src/components/perf-panel.tsx
+msgid "Diagnostics"
+msgstr "Diagnostik"
+
+#: src/chat-sidebar.tsx
+msgid "Directories cannot be attached as chat context."
+msgstr "Direktori tidak dapat dilampirkan sebagai konteks chat."
+
+#: src/components/plugins-panel.tsx
+msgid "Disable"
+msgstr "Nonaktifkan"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disable for workspace"
+msgstr "Nonaktifkan untuk ruang kerja"
+
+#: src/components/perf-panel.tsx
+msgid "Disabled by your administrator (%1)"
+msgstr "Dinonaktifkan oleh administrator Anda (%1)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabled for workspace"
+msgstr "Dinonaktifkan untuk ruang kerja"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabling…"
+msgstr "Menonaktifkan…"
+
+#: src/components/skills-panel.tsx
+msgid "Discard"
+msgstr "Buang"
+
+#: src/components/skills-panel.tsx
+msgid "Discard unsaved changes?"
+msgstr "Buang perubahan yang belum disimpan?"
+
+#: src/components/skills-panel.tsx
+msgid "Dismiss"
+msgstr "Hilangkan"
+
+#: notebook_intelligence/claude.py
+msgid "Do you want to confirm the plan above?"
+msgstr "Apakah Anda ingin mengonfirmasi rencana di atas?"
+
+#: src/chat-sidebar.tsx
+msgid "Don't use as context"
+msgstr "Jangan gunakan sebagai konteks"
+
+#: src/chat-sidebar.tsx
+msgid "Done"
+msgstr "Selesai"
+
+#: src/chat-sidebar.tsx
+msgid "Drop files to attach as context"
+msgstr "Letakkan berkas untuk dilampirkan sebagai konteks"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: @-mention"
+msgstr "Mode letakkan: @-sebutan"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: raw path"
+msgstr "Mode letakkan: jalur mentah"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate"
+msgstr "Duplikasi"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate skill"
+msgstr "Duplikasi skill"
+
+#: src/components/perf-panel.tsx
+msgid "Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local."
+msgstr "Durasi yang diatribusikan SDK ke API model. Bandingkan dengan Aktif: jika berdekatan, waktunya ada di gateway atau model; jika berjauhan, waktunya ada di sisi lokal."
+
+#: src/components/skills-panel.tsx
+msgid "Edit"
+msgstr "Edit"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit Python files using the JupyterLab file editor"
+msgstr "Edit berkas Python menggunakan editor berkas JupyterLab"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit notebook using the JupyterLab notebook editor"
+msgstr "Edit notebook menggunakan editor notebook JupyterLab"
+
+#: src/components/skills-panel.tsx
+msgid "Edit skill"
+msgstr "Edit skill"
+
+#: src/chat-sidebar.tsx
+msgid "Empty files do not provide useful context."
+msgstr "Berkas kosong tidak memberikan konteks yang berguna."
+
+#: src/components/plugins-panel.tsx
+msgid "Enable"
+msgstr "Aktifkan"
+
+#: src/components/settings-panel.tsx
+msgid "Enable ACP mode"
+msgstr "Aktifkan mode ACP"
+
+#: src/components/settings-panel.tsx
+msgid "Enable Claude mode"
+msgstr "Aktifkan mode Claude"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enable for workspace"
+msgstr "Aktifkan untuk ruang kerja"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enabling…"
+msgstr "Mengaktifkan…"
+
+#: notebook_intelligence/claude.py
+msgid "Enter Plan Mode"
+msgstr "Masuk ke Mode Rencana"
+
+#: src/components/plugins-panel.tsx
+msgid "Enter a plugin name or the plugin@marketplace shorthand."
+msgstr "Masukkan nama plugin atau singkatan plugin@marketplace."
+
+#: notebook_intelligence/claude.py
+msgid "Entered plan mode"
+msgstr "Masuk ke mode rencana"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Environment (KEY=value, one per line)"
+msgstr "Lingkungan (KEY=value, satu per baris)"
+
+#: notebook_intelligence/claude.py
+msgid "Error communicating with Claude agent: %1"
+msgstr "Kesalahan saat berkomunikasi dengan agen Claude: %1"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Execute shell commands using embedded terminal in Agent UI or JupyterLab terminal"
+msgstr "Jalankan perintah shell menggunakan terminal tertanam di UI Agen atau terminal JupyterLab"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgid "Execution kernel"
+msgstr "Kernel eksekusi"
+
+#: src/components/settings-panel.tsx
+msgid "Execution mode"
+msgstr "Mode eksekusi"
+
+#: notebook_intelligence/claude.py
+msgid "Exit plan mode"
+msgstr "Keluar dari mode rencana"
+
+#: src/components/perf-panel.tsx
+msgid "Expand"
+msgstr "Bentangkan"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Expected at least one server entry."
+msgstr "Diharapkan setidaknya satu entri server."
+
+#: src/components/settings-panel.tsx
+msgid "Experimental. Routes chat through an external coding agent over the %1. Requires a preinstalled %2 adapter (%3). See the %4. ACP mode and Claude mode are mutually exclusive: enabling one turns the other off."
+msgstr "Eksperimental. Merutekan chat melalui agen pengodean eksternal menggunakan %1. Memerlukan adaptor %2 yang sudah diinstal sebelumnya (%3). Lihat %4. Mode ACP dan mode Claude saling eksklusif: mengaktifkan salah satunya akan menonaktifkan yang lain."
+
+#: src/components/settings-panel.tsx
+msgid "Explain cell errors"
+msgstr "Jelaskan kesalahan sel"
+
+#: src/index.ts
+msgid "Explain code"
+msgstr "Jelaskan kode"
+
+#: src/index.ts
+msgid "Explain output"
+msgstr "Jelaskan output"
+
+#: src/cell-output-toolbar.ts
+msgid "Explain this cell's output"
+msgstr "Jelaskan output sel ini"
+
+#: src/chatbook-toolbar.ts
+msgid "Export"
+msgstr "Ekspor"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as %1 notebook"
+msgstr "Ekspor sebagai notebook %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as a notebook for the Chatbook backend kernel"
+msgstr "Ekspor sebagai notebook untuk kernel backend Chatbook"
+
+#: src/index.ts
+msgid "Export as code notebook"
+msgstr "Ekspor sebagai notebook kode"
+
+#: src/chatbook-toolbar.ts
+msgid "Export failed: %1"
+msgstr "Ekspor gagal: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Exported %1"
+msgstr "%1 diekspor"
+
+#: src/chat-sidebar.tsx
+msgid "Extension tools"
+msgstr "Alat ekstensi"
+
+#: src/components/settings-panel.tsx
+msgid "External changes"
+msgstr "Perubahan eksternal"
+
+#: src/index.ts
+msgid "Failed to access the notebook: %1"
+msgstr "Gagal mengakses notebook: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach '%1'."
+msgstr "Gagal melampirkan '%1'."
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach workspace file '%1'."
+msgstr "Gagal melampirkan berkas ruang kerja '%1'."
+
+#: src/components/claude-session-picker.tsx
+msgid "Failed to copy resume command"
+msgstr "Gagal menyalin perintah lanjutkan"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to delete skill: %1"
+msgstr "Gagal menghapus skill: %1"
+
+#: src/index.ts
+msgid "Failed to find active file"
+msgstr "Gagal menemukan berkas aktif"
+
+#: src/index.ts
+msgid "Failed to find active notebook"
+msgstr "Gagal menemukan notebook aktif"
+
+#: src/index.ts
+msgid "Failed to find notebook: %1"
+msgstr "Gagal menemukan notebook: %1"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get completions from GitHub Copilot: [%1]: %2"
+msgstr "Gagal mendapatkan pelengkapan dari GitHub Copilot: [%1]: %2"
+
+#: notebook_intelligence/extension.py
+msgid "Failed to get device verification info from GitHub Copilot"
+msgstr "Gagal mendapatkan info verifikasi perangkat dari GitHub Copilot"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get responses from GitHub Copilot: [%1]: %2"
+msgstr "Gagal mendapatkan respons dari GitHub Copilot: [%1]: %2"
+
+#: src/index.ts
+msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
+msgstr "Gagal menyisipkan di kursor. Buka notebook atau berkas untuk menyisipkan kode."
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to load plugins: %1"
+msgstr "Gagal memuat plugin: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Failed to load report: %1"
+msgstr "Gagal memuat laporan: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to load workspace files."
+msgstr "Gagal memuat berkas ruang kerja."
+
+#: src/components/skills-panel.tsx
+msgid "Failed to read skill: %1"
+msgstr "Gagal membaca skill: %1"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Failed to remove: %1"
+msgstr "Gagal menghapus: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to restore skill: %1"
+msgstr "Gagal memulihkan skill: %1"
+
+#: src/index.ts
+msgid "Failed to save MCP config: %1"
+msgstr "Gagal menyimpan konfigurasi MCP: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to uninstall: %1"
+msgstr "Gagal menghapus instalan: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update marketplace: %1"
+msgstr "Gagal memperbarui marketplace: %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Failed to update workspace state: %1"
+msgstr "Gagal memperbarui status ruang kerja: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update: %1"
+msgstr "Gagal memperbarui: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Fetching…"
+msgstr "Mengambil…"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "File '%1' created successfully"
+msgstr "Berkas '%1' berhasil dibuat"
+
+#: notebook_intelligence/extension.py
+msgid "File exceeds %1 MB upload limit"
+msgstr "Berkas melebihi batas unggah %1 MB"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system read operations within Jupyter root directory"
+msgstr "Operasi baca sistem berkas di dalam direktori root Jupyter"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system write operations within Jupyter root directory"
+msgstr "Operasi tulis sistem berkas di dalam direktori root Jupyter"
+
+#: notebook_intelligence/acp_agent.py src/components/skills-panel.tsx
+msgid "Files"
+msgstr "Berkas"
+
+#: src/components/launcher-picker.tsx
+msgid "Filter sessions..."
+msgstr "Filter sesi..."
+
+#: src/components/perf-panel.tsx
+msgid "First content chunk to last. Excludes connect."
+msgstr "Dari potongan konten pertama hingga terakhir. Tidak termasuk koneksi."
+
+#: src/index.ts
+msgid "Fix code"
+msgstr "Perbaiki kode"
+
+#: src/index.ts
+msgid "Focus Notebook Intelligence chat input"
+msgstr "Fokus ke input chat Notebook Intelligence"
+
+#: src/components/settings-panel.tsx
+msgid "Full access (run without asking)"
+msgstr "Akses penuh (jalankan tanpa bertanya)"
+
+#: src/components/perf-panel.tsx
+msgid "Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket."
+msgstr "Lengkap: nama dasar berkas serta nama model, alat, dan server dicatat apa adanya. Lebih mudah dibaca secara lokal; periksa dulu sebelum menempelkannya ke tiket."
+
+#: src/components/perf-panel.tsx
+msgid "Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text."
+msgstr "Jeda antar-potongan stream yang lebih lama dari ambang macet. Masing-masing ditandai apakah terjadi setelah penggunaan alat atau teks."
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate"
+msgstr "Buat"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate (Enter)"
+msgstr "Buat (Enter)"
+
+#: src/components/settings-panel.tsx
+msgid "Generate and execute immediately, same as a normal notebook cell. Inspect generated code afterward if you need to."
+msgstr "Buat dan jalankan segera, sama seperti sel notebook biasa. Periksa kode yang dihasilkan setelahnya jika perlu."
+
+#: src/index.ts
+msgid "Generate code"
+msgstr "Buat kode"
+
+#: src/index.ts
+msgid "Generated code"
+msgstr "Kode yang dihasilkan"
+
+#: src/chat-sidebar.tsx
+msgid "Generating"
+msgstr "Membuat"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generating notebook…"
+msgstr "Membuat notebook…"
+
+#: src/chat-sidebar.tsx
+msgid "Generating response."
+msgstr "Membuat respons."
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generation failed: %1"
+msgstr "Pembuatan gagal: %1"
+
+#: src/index.ts
+msgid "GitHub Copilot Status"
+msgstr "Status GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot chat terms"
+msgstr "ketentuan chat GitHub Copilot"
+
+#: src/components/settings-panel.tsx
+msgid "GitHub Copilot login"
+msgstr "Login GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Logged in"
+msgstr "GitHub Copilot: Sudah login"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Not logged in"
+msgstr "GitHub Copilot: Belum login"
+
+#: notebook_intelligence/extension.py
+msgid "GitHub Skill import is disabled by configuration"
+msgstr "Impor Skill dari GitHub dinonaktifkan oleh konfigurasi"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Terms for Additional Products and Features"
+msgstr "Ketentuan GitHub untuk Produk dan Fitur Tambahan"
+
+#: src/components/skills-panel.tsx
+msgid "GitHub repo URL"
+msgstr "URL repo GitHub"
+
+#: src/components/plugins-panel.tsx
+msgid "GitHub-sourced marketplaces are disabled by your administrator. Use a non-GitHub URL or a local filesystem path."
+msgstr "Marketplace yang bersumber dari GitHub dinonaktifkan oleh administrator Anda. Gunakan URL non-GitHub atau jalur sistem berkas lokal."
+
+#: src/chat-sidebar.tsx
+msgid "Good response"
+msgstr "Respons bagus"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Headers (Name: value, one per line)"
+msgstr "Header (Name: value, satu per baris)"
+
+#: src/components/tool-call-card.tsx
+msgid "Hide diff"
+msgstr "Sembunyikan diff"
+
+#: src/components/perf-panel.tsx
+msgid "Hide raw output"
+msgstr "Sembunyikan output mentah"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)"
+msgstr "Sembunyikan server ini dari Claude di ruang kerja Jupyter saat ini (ruang kerja lain tidak terpengaruh)"
+
+#: src/components/perf-panel.tsx
+msgid "Hide timeline for the turn at %1"
+msgstr "Sembunyikan linimasa untuk giliran pada %1"
+
+#: src/components/perf-panel.tsx
+msgid "Host load average"
+msgstr "Rata-rata beban host"
+
+#: notebook_intelligence/readiness.py
+msgid "If turns fail with a 401, sign in again from NBI Settings under GitHub Copilot."
+msgstr "Jika giliran gagal dengan 401, login lagi dari Pengaturan NBI di bagian GitHub Copilot."
+
+#: src/components/skills-panel.tsx
+msgid "Import"
+msgstr "Impor"
+
+#: src/components/skills-panel.tsx
+msgid "Import from GitHub"
+msgstr "Impor dari GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Import skill from GitHub"
+msgstr "Impor skill dari GitHub"
+
+#: src/components/perf-panel.tsx
+msgid "Include network check"
+msgstr "Sertakan pemeriksaan jaringan"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from chat model"
+msgstr "Warisi dari model chat"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from general settings"
+msgstr "Warisi dari pengaturan umum"
+
+#: src/index.ts
+msgid "Inline chat failed: %1"
+msgstr "Chat sebaris gagal: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Inline chat model"
+msgstr "Model chat sebaris"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Input"
+msgstr "Input"
+
+#: src/chat-sidebar.tsx
+msgid "Input Parameters"
+msgstr "Parameter Input"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Input mode"
+msgstr "Mode input"
+
+#: src/components/perf-panel.tsx
+msgid "Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them."
+msgstr "Token input termasuk pembacaan dan penulisan cache, dijumlahkan dengan cara yang sama seperti footer penggunaan chat menjumlahkannya."
+
+#: src/markdown-renderer.tsx
+msgid "Insert at cursor"
+msgstr "Sisipkan di kursor"
+
+#: src/markdown-renderer.tsx
+msgid "Insert code at cursor"
+msgstr "Sisipkan kode di kursor"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Install"
+msgstr "Instal"
+
+#: src/components/plugins-panel.tsx
+msgid "Install from"
+msgstr "Instal dari"
+
+#: src/components/skills-panel.tsx
+msgid "Install into"
+msgstr "Instal ke"
+
+#: src/components/plugins-panel.tsx
+msgid "Install plugin"
+msgstr "Instal plugin"
+
+#: notebook_intelligence/readiness.py
+msgid "Install the Claude Code CLI and make sure it is on the PATH of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH to its absolute path and restart."
+msgstr "Instal CLI Claude Code dan pastikan berada di PATH proses yang menjalankan JupyterLab, atau atur NBI_CLAUDE_CLI_PATH ke jalur absolutnya lalu mulai ulang."
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Installing…"
+msgstr "Menginstal…"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Invalid JSON: %1"
+msgstr "JSON tidak valid: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Invalid name. %1"
+msgstr "Nama tidak valid. %1"
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON is empty."
+msgstr "JSON kosong."
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON must describe a server entry."
+msgstr "JSON harus mendeskripsikan sebuah entri server."
+
+#: src/components/settings-panel.tsx
+msgid "Jupyter UI tools"
+msgstr "Alat UI Jupyter"
+
+#: src/components/perf-panel.tsx
+msgid "Jupyter root directory"
+msgstr "Direktori root Jupyter"
+
+#: src/components/skills-panel.tsx
+msgid "Keep editing"
+msgstr "Lanjutkan mengedit"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Lasting rule"
+msgstr "Aturan permanen"
+
+#: src/components/skills-panel.tsx
+msgid "Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server."
+msgstr "Tautan ke root repo, branch, atau subdirektori yang berisi %1. Repo privat dapat digunakan jika %2 diatur atau %3 dikonfigurasi di server Jupyter."
+
+#: notebook_intelligence/readiness.py
+msgid "Listing models failed (%1)."
+msgstr "Gagal menampilkan daftar model (%1)."
+
+#: src/components/readiness-card.tsx
+msgid "Live endpoint check"
+msgstr "Pemeriksaan langsung endpoint"
+
+#: src/components/plugins-panel.tsx
+msgid "Loading marketplace plugins..."
+msgstr "Memuat plugin marketplace..."
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Loading sessions…"
+msgstr "Memuat sesi…"
+
+#: src/components/skills-panel.tsx
+msgid "Loading skill…"
+msgstr "Memuat skill…"
+
+#: src/chat-sidebar.tsx
+msgid "Loading workspace files..."
+msgstr "Memuat berkas ruang kerja..."
+
+#: src/components/settings-panel.tsx
+msgid "Loading..."
+msgstr "Memuat..."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Loading…"
+msgstr "Memuat…"
+
+#: src/components/setting-lock.ts
+msgid "Locked by your administrator"
+msgstr "Dikunci oleh administrator Anda"
+
+#: src/components/perf-panel.tsx
+msgid "Log to file"
+msgstr "Catat ke berkas"
+
+#: src/chat-sidebar.tsx
+msgid "Logged in"
+msgstr "Sudah login"
+
+#: src/chat-sidebar.tsx
+msgid "Logging in..."
+msgstr "Sedang login..."
+
+#: src/chat-sidebar.tsx
+msgid "Login status: %1"
+msgstr "Status login: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Login to GitHub Copilot"
+msgstr "Login ke GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "Login using your GitHub account"
+msgstr "Login menggunakan akun GitHub Anda"
+
+#: src/chat-sidebar.tsx
+msgid "Logout"
+msgstr "Logout"
+
+#: src/chat-sidebar.tsx
+msgid "MCP Server Tools"
+msgstr "Alat Server MCP"
+
+#: src/components/settings-panel.tsx
+msgid "MCP Servers"
+msgstr "Server MCP"
+
+#: notebook_intelligence/extension.py
+msgid "MCP server '%1' not found in %2 scope"
+msgstr "Server MCP '%1' tidak ditemukan dalam cakupan %2"
+
+#: src/components/skills-panel.tsx
+msgid "Managed by org manifest (%1)"
+msgstr "Dikelola oleh manifes organisasi (%1)"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace"
+msgstr "Marketplace"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace picker"
+msgstr "Pemilih marketplace"
+
+#: src/components/perf-panel.tsx
+msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
+msgstr "Mengukur mesin ini, bukan sebuah giliran: latensi dan throughput sistem berkas untuk direktori konfigurasi dan %1, biaya cold start interpreter dan CLI, serta perebutan sumber daya host. Pengukuran ini menulis dan menghapus berkas sementara berukuran kecil di direktori yang diukurnya."
+
+#: src/components/settings-panel.tsx
+msgid "Model"
+msgstr "Model"
+
+#: src/components/perf-panel.tsx
+msgid "Model name, hashed when attribute detail is set to redacted."
+msgstr "Nama model, di-hash jika detail atribut diatur ke disamarkan."
+
+#: src/components/readiness-card.tsx
+msgid "Model provider"
+msgstr "Penyedia model"
+
+#: src/components/settings-panel.tsx
+msgid "Models"
+msgstr "Model"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Multiple servers found; paste one entry at a time."
+msgstr "Ditemukan beberapa server; tempelkan satu entri setiap kali."
+
+#: src/components/skills-panel.tsx
+msgid "Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars."
+msgstr "Harus berupa huruf kecil, angka, atau tanda hubung (diawali huruf atau angka), maksimal 64 karakter."
+
+#: src/chatbook-toolbar.ts src/chatbook.ts src/index.ts
+msgid "NBI Settings"
+msgstr "Pengaturan NBI"
+
+#: src/components/perf-panel.tsx
+msgid "NBI config directory"
+msgstr "Direktori konfigurasi NBI"
+
+#: src/components/claude-mcp-panel.tsx src/components/skills-panel.tsx
+msgid "Name"
+msgstr "Nama"
+
+#: src/components/skills-panel.tsx
+msgid "Name (optional override)"
+msgstr "Nama (penggantian opsional)"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to %1 code"
+msgstr "Sel bahasa alami: beralih ke kode %1"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to code"
+msgstr "Sel bahasa alami: beralih ke kode"
+
+#: src/components/settings-panel.tsx
+msgid "Natural-language execution"
+msgstr "Eksekusi bahasa alami"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Network access"
+msgstr "Akses jaringan"
+
+#: src/components/skills-panel.tsx
+msgid "New Skill"
+msgstr "Skill Baru"
+
+#: src/chat-sidebar.tsx
+msgid "New chat session started."
+msgstr "Sesi chat baru dimulai."
+
+#: src/markdown-renderer.tsx
+msgid "New file"
+msgstr "Berkas baru"
+
+#: src/components/skills-panel.tsx
+msgid "New name"
+msgstr "Nama baru"
+
+#: src/markdown-renderer.tsx
+msgid "New notebook"
+msgstr "Notebook baru"
+
+#: src/components/skills-panel.tsx
+msgid "New skill"
+msgstr "Skill baru"
+
+#: src/components/skills-panel.tsx
+msgid "Next"
+msgstr "Berikutnya"
+
+#: notebook_intelligence/readiness.py
+msgid "No API key is configured (%1 is unset)."
+msgstr "Tidak ada kunci API yang dikonfigurasi (%1 tidak diatur)."
+
+#: notebook_intelligence/readiness.py
+msgid "No Anthropic API key or auth token is visible to NBI."
+msgstr "Tidak ada kunci API atau token autentikasi Anthropic yang terlihat oleh NBI."
+
+#: src/components/settings-panel.tsx
+msgid "No MCP servers found. Add MCP servers in the configuration file."
+msgstr "Tidak ada server MCP yang ditemukan. Tambahkan server MCP di berkas konfigurasi."
+
+#: src/components/settings-panel.tsx
+msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
+msgstr "Tidak ada model Ollama yang ditemukan! Pastikan %1 berjalan dan model sudah diunduh ke komputer Anda. %2 setelah siap."
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model is resolved, so there is nothing to call."
+msgstr "Tidak ada model chat yang ditentukan, jadi tidak ada yang bisa dipanggil."
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model provider is selected."
+msgstr "Tidak ada penyedia model chat yang dipilih."
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "No chat participant is available."
+msgstr "Tidak ada peserta chat yang tersedia."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached."
+msgid_plural "No files added: %1 files are already attached."
+msgstr[0] "Tidak ada berkas yang ditambahkan: %1 berkas sudah terlampir."
+msgstr[1] "Tidak ada berkas yang ditambahkan: %1 berkas sudah terlampir."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: the limit of %1 file is reached."
+msgid_plural "No files added: the limit of %1 files is reached."
+msgstr[0] "Tidak ada berkas yang ditambahkan: batas %1 berkas telah tercapai."
+msgstr[1] "Tidak ada berkas yang ditambahkan: batas %1 berkas telah tercapai."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches kernel \"%1\"."
+msgstr "Tidak ada kernel Jupyter terinstal yang cocok dengan kernel \"%1\"."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches language \"%1\"."
+msgstr "Tidak ada kernel Jupyter terinstal yang cocok dengan bahasa \"%1\"."
+
+#: notebook_intelligence/extension.py
+msgid "No managed-skills manifest configured (set %1, comma-separated for multiple manifests)."
+msgstr "Tidak ada manifes skill terkelola yang dikonfigurasi (atur %1, pisahkan dengan koma untuk beberapa manifes)."
+
+#: src/components/plugins-panel.tsx
+msgid "No marketplaces configured. Add one to discover plugins."
+msgstr "Tidak ada marketplace yang dikonfigurasi. Tambahkan satu untuk menemukan plugin."
+
+#: src/chat-sidebar.tsx
+msgid "No matching files found."
+msgstr "Tidak ada berkas yang cocok."
+
+#: notebook_intelligence/readiness.py
+msgid "No model name is set for this provider, so requests carry none."
+msgstr "Tidak ada nama model yang diatur untuk penyedia ini, sehingga permintaan tidak menyertakan model apa pun."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins in this scope."
+msgstr "Tidak ada plugin dalam cakupan ini."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins were found in this marketplace."
+msgstr "Tidak ada plugin yang ditemukan di marketplace ini."
+
+#: src/components/claude-session-picker.tsx
+msgid "No previous Claude sessions found for this working directory."
+msgstr "Tidak ada sesi Claude sebelumnya untuk direktori kerja ini."
+
+#: src/chat-sidebar.tsx
+msgid "No previous sessions found for this working directory."
+msgstr "Tidak ada sesi sebelumnya untuk direktori kerja ini."
+
+#: src/components/launcher-picker.tsx
+msgid "No previous sessions found."
+msgstr "Tidak ada sesi sebelumnya."
+
+#: src/components/skills-panel.tsx
+msgid "No project skills. They live in %1."
+msgstr "Tidak ada skill proyek. Skill proyek disimpan di %1."
+
+#: notebook_intelligence/readiness.py
+msgid "No response within %1s."
+msgstr "Tidak ada respons dalam %1 dtk."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "No servers in this scope."
+msgstr "Tidak ada server dalam cakupan ini."
+
+#: src/components/launcher-picker.tsx
+msgid "No sessions match your filter."
+msgstr "Tidak ada sesi yang cocok dengan filter Anda."
+
+#: src/components/perf-panel.tsx
+msgid "No spans recorded for this turn."
+msgstr "Tidak ada span yang dicatat untuk giliran ini."
+
+#: src/components/skills-panel.tsx
+msgid "No user skills. They live in %1."
+msgstr "Tidak ada skill pengguna. Skill pengguna disimpan di %1."
+
+#: src/chat-sidebar.tsx
+msgid "No workspace files available."
+msgstr "Tidak ada berkas ruang kerja yang tersedia."
+
+#: notebook_intelligence/readiness.py
+msgid "Not applicable: the agent owns the model call in %1 mode."
+msgstr "Tidak berlaku: dalam mode %1, agen yang melakukan panggilan ke model."
+
+#: notebook_intelligence/readiness.py
+msgid "Not determined: the request failed (%1) for a reason unrelated to tools."
+msgstr "Tidak dapat ditentukan: permintaan gagal (%1) karena alasan yang tidak terkait dengan alat."
+
+#: src/chat-sidebar.tsx
+msgid "Not logged in"
+msgstr "Belum login"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %1: %2"
+msgstr "Belum siap. %1: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %2: %3 (%1 more issue.)"
+msgid_plural "Not ready. %2: %3 (%1 more issues.)"
+msgstr[0] "Belum siap. %2: %3 (%1 masalah lainnya.)"
+msgstr[1] "Belum siap. %2: %3 (%1 masalah lainnya.)"
+
+#: notebook_intelligence/readiness.py
+msgid "Not signed in. The model list shown in Settings is a built-in fallback, not the models this account can use."
+msgstr "Belum login. Daftar model yang ditampilkan di Pengaturan adalah cadangan bawaan, bukan model yang dapat digunakan akun ini."
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Notebook '%1' created and opened successfully"
+msgstr "Notebook '%1' berhasil dibuat dan dibuka"
+
+#: src/index.ts
+msgid "Notebook Intelligence Settings"
+msgstr "Pengaturan Notebook Intelligence"
+
+#: src/cell-output-toolbar.ts
+msgid "Notebook Intelligence cell actions"
+msgstr "Tindakan sel Notebook Intelligence"
+
+#: src/chat-sidebar.tsx
+msgid "Notebook file"
+msgstr "Berkas notebook"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Notebook generation complete"
+msgstr "Pembuatan notebook selesai"
+
+#: src/chat-sidebar.tsx
+msgid "Notice"
+msgstr "Pemberitahuan"
+
+#: src/components/perf-panel.tsx
+msgid "Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it."
+msgstr "Selisih waktu dari awal giliran hingga potongan pertama yang berisi konten. Dicatat sebagai peristiwa, sehingga indikator progres lokal tidak ikut dihitung."
+
+#: notebook_intelligence/api.py
+msgid "Oops! Failed to find requested tool. Please try again with a different prompt."
+msgstr "Ups! Alat yang diminta tidak ditemukan. Silakan coba lagi dengan prompt yang berbeda."
+
+#: notebook_intelligence/api.py
+msgid "Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."
+msgstr "Ups! Maaf, terjadi masalah saat membuat respons dengan alat. Silakan coba lagi. Anda dapat memeriksa log server untuk detail lebih lanjut."
+
+#: notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py
+msgid "Oops! There was a problem handling chat request. Please try again with a different prompt."
+msgstr "Ups! Terjadi masalah saat menangani permintaan chat. Silakan coba lagi dengan prompt yang berbeda."
+
+#: notebook_intelligence/extension.py
+msgid "Oops! There was a problem handling this request. Please try again. Check the server logs for details."
+msgstr "Ups! Terjadi masalah saat menangani permintaan ini. Silakan coba lagi. Periksa log server untuk detailnya."
+
+#: src/chatbook-toolbar.ts
+msgid "Open Chatbook settings"
+msgstr "Buka pengaturan Chatbook"
+
+#: src/index.ts
+msgid "Open MCP Config Editor"
+msgstr "Buka Editor Konfigurasi MCP"
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and pick a provider and model under General, or enable Claude mode."
+msgstr "Buka Pengaturan NBI lalu pilih penyedia dan model di bagian Umum, atau aktifkan mode Claude."
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and set a model for this provider under General. The endpoint rejects a request with no model, so every turn fails until it is set."
+msgstr "Buka Pengaturan NBI lalu atur model untuk penyedia ini di bagian Umum. Endpoint menolak permintaan tanpa model, sehingga setiap giliran akan gagal sampai model diatur."
+
+#: src/chat-sidebar.tsx
+msgid "Open Notebook Intelligence settings"
+msgstr "Buka pengaturan Notebook Intelligence"
+
+#: src/index.ts
+msgid "Open a notebook to insert the code as new cell"
+msgstr "Buka notebook untuk menyisipkan kode sebagai sel baru"
+
+#: src/chat-sidebar.tsx
+msgid "Open notebook %1"
+msgstr "Buka notebook %1"
+
+#: src/chat-sidebar.tsx
+msgid "Open slash commands"
+msgstr "Buka perintah garis miring"
+
+#: src/chatbook.ts
+msgid "Open the Chatbook tab of Notebook Intelligence Settings"
+msgstr "Buka tab Chatbook di Pengaturan Notebook Intelligence"
+
+#: src/index.ts
+msgid "Open the NBI sidebar and move focus to the prompt textarea"
+msgstr "Buka bilah sisi NBI dan pindahkan fokus ke area teks prompt"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Opened the settings dialog"
+msgstr "Dialog pengaturan telah dibuka"
+
+#: src/components/settings-panel.tsx
+msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
+msgstr "Pemeriksaan tambahan opsional. Temuan pemindaian statis selalu diutamakan; model hanya dapat menaikkan tingkat risiko. Jika pengklasifikasi gagal, konfirmasi akan diminta alih-alih menjalankan otomatis."
+
+#: src/components/perf-panel.tsx
+msgid "Output tokens."
+msgstr "Token output."
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing project skill \"%1\""
+msgstr "Timpa skill proyek \"%1\" yang sudah ada"
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing user skill \"%1\""
+msgstr "Timpa skill pengguna \"%1\" yang sudah ada"
+
+#: notebook_intelligence/claude.py
+msgid "Parameters"
+msgstr "Parameter"
+
+#: src/components/skills-panel.tsx
+msgid "Path: %1"
+msgstr "Jalur: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Performance diagnostics are disabled. Enable them above to start collecting turn data."
+msgstr "Diagnostik performa dinonaktifkan. Aktifkan di atas untuk mulai mengumpulkan data giliran."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Permission granted"
+msgstr "Izin diberikan"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: %1"
+msgstr "Mode izin: %1"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: Bypass Permissions is active"
+msgstr "Mode izin: Lewati Izin aktif"
+
+#: notebook_intelligence/readiness.py
+msgid "Pick a model from the dropdown in NBI Settings. A pinned NBI_CHAT_MODEL_ID that the endpoint no longer serves will fail on every turn."
+msgstr "Pilih model dari menu tarik-turun di Pengaturan NBI. NBI_CHAT_MODEL_ID yang dipatok tetapi tidak lagi dilayani endpoint akan gagal pada setiap giliran."
+
+#: src/components/plugins-panel.tsx
+msgid "Plugin"
+msgstr "Plugin"
+
+#: src/components/plugins-panel.tsx
+msgid "Plugins"
+msgstr "Plugin"
+
+#: notebook_intelligence/extension.py
+msgid "Plugins management is disabled by your administrator"
+msgstr "Pengelolaan plugin dinonaktifkan oleh administrator Anda"
+
+#: notebook_intelligence/readiness.py
+msgid "Preinstall the pinned adapter package %1 in a trusted location outside the workspace and put its absolute executable directory on PATH, or set NBI_ACP_AGENT_COMMAND to the absolute path of an installed adapter executable. Install its required interpreter on the adapter PATH; default discovery excludes workspace directories. Do not use a package runner such as npx. Relative commands are not supported."
+msgstr "Instal terlebih dahulu paket adaptor yang dipatok %1 di lokasi tepercaya di luar ruang kerja dan masukkan direktori absolut berkas eksekusinya ke PATH, atau atur NBI_ACP_AGENT_COMMAND ke jalur absolut berkas eksekusi adaptor yang terinstal. Instal interpreter yang dibutuhkannya di PATH adaptor; penemuan bawaan mengecualikan direktori ruang kerja. Jangan gunakan pelari paket seperti npx. Perintah relatif tidak didukung."
+
+#: notebook_intelligence/readiness.py
+msgid "Present."
+msgstr "Tersedia."
+
+#: src/chat-sidebar.tsx
+msgid "Privacy Statement"
+msgstr "Pernyataan Privasi"
+
+#: src/chat-sidebar.tsx
+msgid "Privacy and terms"
+msgstr "Privasi dan ketentuan"
+
+#: src/components/plugins-panel.tsx
+msgid "Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server."
+msgstr "Sumber GitHub privat dapat digunakan jika %1 diatur atau %2 dikonfigurasi di server Jupyter."
+
+#: src/components/perf-panel.tsx
+msgid "Probe failed: %1"
+msgstr "Probe gagal: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Project (Jupyter root directory)"
+msgstr "Proyek (direktori root Jupyter)"
+
+#: src/components/skills-panel.tsx
+msgid "Project (this project only)"
+msgstr "Proyek (hanya proyek ini)"
+
+#: src/components/mcp-util.ts
+msgid "Prompt refresh failed. Reload MCP servers to retry."
+msgstr "Gagal menyegarkan prompt. Muat ulang server MCP untuk mencoba lagi."
+
+#: src/components/settings-panel.tsx
+msgid "Prompts"
+msgstr "Prompt"
+
+#: src/components/settings-panel.tsx
+msgid "Provider"
+msgstr "Penyedia"
+
+#: notebook_intelligence/readiness.py
+msgid "Provider '%1' is selected but not registered."
+msgstr "Penyedia '%1' dipilih tetapi tidak terdaftar."
+
+#: src/components/perf-panel.tsx
+msgid "Python interpreter"
+msgstr "Interpreter Python"
+
+#: src/components/skills-panel.tsx
+msgid "Quick-add pills cover common tools. Type patterns like %1 or %2 for finer-grained permissions."
+msgstr "Tombol tambah cepat mencakup alat yang umum. Ketik pola seperti %1 atau %2 untuk izin yang lebih terperinci."
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as bad"
+msgstr "Nilai respons sebagai buruk"
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as good"
+msgstr "Nilai respons sebagai bagus"
+
+#: src/components/readiness-card.tsx
+msgid "Re-check"
+msgstr "Periksa ulang"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-enable this server for the current Jupyter workspace"
+msgstr "Aktifkan kembali server ini untuk ruang kerja Jupyter saat ini"
+
+#: src/components/skills-panel.tsx
+msgid "Re-fetch every skill set to track upstream from GitHub"
+msgstr "Ambil ulang dari GitHub setiap skill yang diatur untuk mengikuti upstream"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-read Claude's MCP config from disk"
+msgstr "Baca ulang konfigurasi MCP Claude dari disk"
+
+#: notebook_intelligence/readiness.py
+msgid "Re-run the endpoint test once the endpoint is answering again. A transient failure cannot tell us whether tool calling works."
+msgstr "Jalankan ulang uji endpoint setelah endpoint kembali merespons. Kegagalan sementara tidak dapat memberi tahu apakah pemanggilan alat berfungsi."
+
+#: src/components/readiness-card.tsx
+msgid "Readiness check failed: %1"
+msgstr "Pemeriksaan kesiapan gagal: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Reading the configuration failed (%1)."
+msgstr "Gagal membaca konfigurasi (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "Ready, with %1 warning. %2: %3"
+msgid_plural "Ready, with %1 warnings. %2: %3"
+msgstr[0] "Siap, dengan %1 peringatan. %2: %3"
+msgstr[1] "Siap, dengan %1 peringatan. %2: %3"
+
+#: notebook_intelligence/readiness.py
+msgid "Ready. Nothing needs configuring."
+msgstr "Siap. Tidak ada yang perlu dikonfigurasi."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Reason"
+msgstr "Alasan"
+
+#: src/components/perf-panel.tsx
+msgid "Recent turns"
+msgstr "Giliran terbaru"
+
+#: src/components/skills-panel.tsx
+msgid "Reconcile managed skills against the org manifest"
+msgstr "Selaraskan skill terkelola dengan manifes organisasi"
+
+#: src/components/perf-panel.tsx
+msgid "Recording is on, but no turns have been captured yet. Run a chat turn, then press Refresh."
+msgstr "Perekaman aktif, tetapi belum ada giliran yang tertangkap. Jalankan satu giliran chat, lalu tekan Segarkan."
+
+#: src/components/perf-panel.tsx
+msgid "Records where each chat turn spends its time, so a slow deployment can be told apart from a slow model. Off by default, and when off it costs one boolean check per instrumentation site. Prompts, responses, file contents, and hostnames are never recorded."
+msgstr "Mencatat ke mana waktu setiap giliran chat terpakai, sehingga deployment yang lambat dapat dibedakan dari model yang lambat. Nonaktif secara bawaan, dan saat nonaktif hanya memakan satu pemeriksaan boolean per titik instrumentasi. Prompt, respons, isi berkas, dan nama host tidak pernah dicatat."
+
+#: src/components/perf-panel.tsx
+msgid "Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine."
+msgstr "Disamarkan: nama dasar berkas serta nama model, alat, dan server di-hash. Waktu dan jumlah tidak terpengaruh. Pertahankan opsi ini jika laporan akan dibagikan ke luar mesin Anda."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
+msgid "Refresh"
+msgstr "Segarkan"
+
+#: src/index.ts
+msgid "Refresh description"
+msgstr "Segarkan deskripsi"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh file list"
+msgstr "Segarkan daftar berkas"
+
+#: src/components/settings-panel.tsx
+msgid "Refresh open files when changed on disk"
+msgstr "Segarkan berkas yang terbuka saat berubah di disk"
+
+#: src/components/plugins-panel.tsx
+msgid "Refresh this marketplace from its source"
+msgstr "Segarkan marketplace ini dari sumbernya"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh workspace file list"
+msgstr "Segarkan daftar berkas ruang kerja"
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx
+msgid "Refreshing…"
+msgstr "Menyegarkan…"
+
+#: src/index.ts
+msgid "Regenerate the description of this code cell"
+msgstr "Buat ulang deskripsi sel kode ini"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Rejecting records a lasting denial, not only for this request."
+msgstr "Menolak mencatat penolakan permanen, bukan hanya untuk permintaan ini."
+
+#: src/components/settings-panel.tsx
+msgid "Reload"
+msgstr "Muat ulang"
+
+#: src/components/settings-panel.tsx
+msgid "Remember conversation history"
+msgstr "Ingat riwayat percakapan"
+
+#: src/components/settings-panel.tsx
+msgid "Remember my GitHub Copilot access token"
+msgstr "Ingat token akses GitHub Copilot saya"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Remove"
+msgstr "Hapus"
+
+#: src/components/skills-panel.tsx
+msgid "Remove %1"
+msgstr "Hapus %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Remove MCP server?"
+msgstr "Hapus server MCP?"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file"
+msgstr "Hapus berkas terlampir"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file %1"
+msgstr "Hapus berkas terlampir %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Remove marketplace?"
+msgstr "Hapus marketplace?"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Removing…"
+msgstr "Menghapus…"
+
+#: src/components/skills-panel.tsx
+msgid "Rename"
+msgstr "Ganti nama"
+
+#: src/components/skills-panel.tsx
+msgid "Rename skill"
+msgstr "Ganti nama skill"
+
+#: src/index.ts
+msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr "Putar ulang tur pertama kali yang menyoroti fitur bilah sisi chat"
+
+#: src/components/settings-panel.tsx
+msgid "Reply in my JupyterLab language"
+msgstr "Balas dalam bahasa JupyterLab saya"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Request"
+msgstr "Permintaan"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Requested permissions"
+msgstr "Izin yang diminta"
+
+#: src/components/skills-panel.tsx
+msgid "Required. Claude uses this to decide when to apply the skill."
+msgstr "Wajib. Claude menggunakan ini untuk memutuskan kapan menerapkan skill tersebut."
+
+#: src/chat-sidebar.tsx
+msgid "Response complete."
+msgstr "Respons selesai."
+
+#: src/components/settings-panel.tsx
+msgid "Restart the Chatbook kernel in open notebooks so they pick up %1."
+msgstr "Mulai ulang kernel Chatbook di notebook yang terbuka agar menggunakan %1."
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume Claude session"
+msgstr "Lanjutkan sesi Claude"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a previous session"
+msgstr "Lanjutkan sesi sebelumnya"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a session you started earlier in this workspace"
+msgstr "Lanjutkan sesi yang Anda mulai sebelumnya di ruang kerja ini"
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume command copied"
+msgstr "Perintah lanjutkan disalin"
+
+#: src/index.ts
+msgid "Resume or start a Claude Code session"
+msgstr "Lanjutkan atau mulai sesi Claude Code"
+
+#: src/chat-sidebar.tsx
+msgid "Resume session"
+msgstr "Lanjutkan sesi"
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1."
+msgstr "Sesi Claude %1 dilanjutkan."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1: %2."
+msgstr "Sesi Claude %1 dilanjutkan: %2."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1."
+msgstr "Sesi %1 dilanjutkan."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1: %2."
+msgstr "Sesi %1 dilanjutkan: %2."
+
+#: src/components/perf-panel.tsx
+msgid "Retry"
+msgstr "Coba lagi"
+
+#: src/chatbook.ts
+msgid "Review generated code before running it in this kernel."
+msgstr "Tinjau kode yang dihasilkan sebelum menjalankannya di kernel ini."
+
+#: src/components/settings-panel.tsx
+msgid "Right-click a cell output to attach it to the chat"
+msgstr "Klik kanan output sel untuk melampirkannya ke chat"
+
+#: src/components/perf-panel.tsx
+msgid "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory."
+msgstr "Penemuan aturan dan skill memakan waktu %1. Pekerjaan itu bergantung pada sistem berkas di direktori home server."
+
+#: notebook_intelligence/extension.py
+msgid "Rule not found"
+msgstr "Aturan tidak ditemukan"
+
+#: notebook_intelligence/extension.py
+msgid "Rule system not enabled"
+msgstr "Sistem aturan tidak diaktifkan"
+
+#: notebook_intelligence/readiness.py
+msgid "Run 'claude --version' in a terminal as the Jupyter user to see the underlying error."
+msgstr "Jalankan 'claude --version' di terminal sebagai pengguna Jupyter untuk melihat kesalahan yang mendasarinya."
+
+#: src/components/readiness-card.tsx
+msgid "Run it"
+msgstr "Jalankan"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Run notebooks in JupyterLab UI"
+msgstr "Jalankan notebook di UI JupyterLab"
+
+#: src/components/perf-panel.tsx
+msgid "Run probe"
+msgstr "Jalankan probe"
+
+#: src/chat-sidebar.tsx
+msgid "Running (%1 s)"
+msgstr "Berjalan (%1 dtk)"
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other, plus the network check. This takes a few seconds, longer on a slow filesystem."
+msgstr "Menjalankan pemeriksaan sistem berkas, subproses, dan perebutan sumber daya satu per satu agar tidak saling memengaruhi pengukuran, ditambah pemeriksaan jaringan. Ini memakan waktu beberapa detik, lebih lama pada sistem berkas yang lambat."
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other. This takes a few seconds, longer on a slow filesystem."
+msgstr "Menjalankan pemeriksaan sistem berkas, subproses, dan perebutan sumber daya satu per satu agar tidak saling memengaruhi pengukuran. Ini memakan waktu beberapa detik, lebih lama pada sistem berkas yang lambat."
+
+#: src/components/perf-panel.tsx src/components/readiness-card.tsx
+msgid "Running…"
+msgstr "Menjalankan…"
+
+#: src/components/skills-panel.tsx
+msgid "Save"
+msgstr "Simpan"
+
+#: src/components/skills-panel.tsx
+msgid "Saving…"
+msgstr "Menyimpan…"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Scope"
+msgstr "Cakupan"
+
+#: src/components/skills-panel.tsx
+msgid "Scope and name are set at creation and can't be changed. Delete and recreate to change them."
+msgstr "Cakupan dan nama ditetapkan saat pembuatan dan tidak dapat diubah. Hapus lalu buat ulang untuk mengubahnya."
+
+#: src/components/confirmation-details.tsx
+msgid "Scroll to see all of this value."
+msgstr "Gulir untuk melihat seluruh nilai ini."
+
+#: src/chat-sidebar.tsx
+msgid "Search files by path"
+msgstr "Cari berkas berdasarkan jalur"
+
+#: src/chat-sidebar.tsx
+msgid "Send message"
+msgstr "Kirim pesan"
+
+#: src/components/readiness-card.tsx
+msgid "Sends one short request to your configured model to verify streaming and tool support."
+msgstr "Mengirim satu permintaan singkat ke model yang Anda konfigurasi untuk memverifikasi dukungan streaming dan alat."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server \"%1\" config must be an object."
+msgstr "Konfigurasi server \"%1\" harus berupa objek."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server config must include \"command\" or \"url\"."
+msgstr "Konfigurasi server harus menyertakan \"command\" atau \"url\"."
+
+#: src/components/perf-panel.tsx
+msgid "Server process peak memory"
+msgstr "Puncak memori proses server"
+
+#: src/components/settings-panel.tsx
+msgid "Settings sections"
+msgstr "Bagian pengaturan"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Shell"
+msgstr "Shell"
+
+#: src/components/settings-panel.tsx
+msgid "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+msgstr "Tampilkan item menu konteks 'Atasi kesalahan di output' pada sel yang gagal"
+
+#: src/components/settings-panel.tsx
+msgid "Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons"
+msgstr "Tampilkan bilah alat saat kursor berada di atas output sel, dengan tombol Jelaskan / Tanya / Atasi Masalah"
+
+#: src/components/tool-call-card.tsx
+msgid "Show diff"
+msgstr "Tampilkan diff"
+
+#: src/index.ts
+msgid "Show generated code"
+msgstr "Tampilkan kode yang dihasilkan"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Show in chat"
+msgstr "Tampilkan di chat"
+
+#: src/components/settings-panel.tsx
+msgid "Show output toolbar"
+msgstr "Tampilkan bilah alat output"
+
+#: src/components/perf-panel.tsx
+msgid "Show raw output"
+msgstr "Tampilkan output mentah"
+
+#: src/index.ts
+msgid "Show the hidden code generated for this Chatbook cell"
+msgstr "Tampilkan kode tersembunyi yang dihasilkan untuk sel Chatbook ini"
+
+#: src/components/perf-panel.tsx
+msgid "Show timeline for the turn at %1"
+msgstr "Tampilkan linimasa untuk giliran pada %1"
+
+#: src/components/settings-panel.tsx
+msgid "Show usage after each turn (time / tokens / cost)"
+msgstr "Tampilkan penggunaan setelah setiap giliran (waktu / token / biaya)"
+
+#: src/chat-sidebar.tsx
+msgid "Showing the first %1 file found in the workspace."
+msgid_plural "Showing the first %1 files found in the workspace."
+msgstr[0] "Menampilkan %1 berkas pertama yang ditemukan di ruang kerja."
+msgstr[1] "Menampilkan %1 berkas pertama yang ditemukan di ruang kerja."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign in from NBI Settings under GitHub Copilot. Until then every chat turn will fail with a 401."
+msgstr "Login dari Pengaturan NBI di bagian GitHub Copilot. Sampai saat itu, setiap giliran chat akan gagal dengan 401."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign-in state could not be determined."
+msgstr "Status login tidak dapat ditentukan."
+
+#: src/components/perf-panel.tsx
+msgid "Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod."
+msgstr "MB/s satu digit disertai latensi fsync yang tinggi adalah ciri khas habisnya burst credit EFS. Pastikan melalui BurstCreditBalance di CloudWatch, bukan dari dalam pod."
+
+#: notebook_intelligence/extension.py
+msgid "Skill '%1' not found in %2 scope"
+msgstr "Skill '%1' tidak ditemukan dalam cakupan %2"
+
+#: src/components/skills-panel.tsx
+msgid "Skills"
+msgstr "Skill"
+
+#: src/components/skills-panel.tsx
+msgid "Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here."
+msgstr "Skill digunakan oleh Claude Code. Aktifkan mode Claude di tab pengaturan Claude untuk menggunakan skill yang Anda buat di sini."
+
+#: notebook_intelligence/extension.py
+msgid "Skills management is disabled by your administrator"
+msgstr "Pengelolaan skill dinonaktifkan oleh administrator Anda"
+
+#: src/chat-sidebar.tsx
+msgid "Skills reloaded and applied to the current session."
+msgstr "Skill dimuat ulang dan diterapkan ke sesi saat ini."
+
+#: src/chat-sidebar.tsx
+msgid "Skip to message input"
+msgstr "Lompat ke input pesan"
+
+#: src/chat-sidebar.tsx
+msgid "Slash commands"
+msgstr "Perintah garis miring"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Source"
+msgstr "Sumber"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1"
+msgstr "Sumber: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1 · last sync: %2"
+msgstr "Sumber: %1 · sinkronisasi terakhir: %2"
+
+#: src/components/plugins-panel.tsx
+msgid "Specify manually"
+msgstr "Tentukan secara manual"
+
+#: src/index.ts
+msgid "Start a GitHub Copilot CLI session in a Jupyter terminal"
+msgstr "Mulai sesi CLI GitHub Copilot di terminal Jupyter"
+
+#: src/index.ts
+msgid "Start a Pi session in a Jupyter terminal"
+msgstr "Mulai sesi Pi di terminal Jupyter"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session"
+msgstr "Mulai sesi chat baru"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (restarts the Claude client)"
+msgstr "Mulai sesi chat baru (memulai ulang klien Claude)"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (starts a fresh agent session)"
+msgstr "Mulai sesi chat baru (memulai sesi agen yang baru)"
+
+#: src/index.ts
+msgid "Start an OpenAI Codex CLI session in a Jupyter terminal"
+msgstr "Mulai sesi CLI OpenAI Codex di terminal Jupyter"
+
+#: src/index.ts
+msgid "Start an opencode session in a Jupyter terminal"
+msgstr "Mulai sesi opencode di terminal Jupyter"
+
+#: src/components/settings-panel.tsx
+msgid "Status"
+msgstr "Status"
+
+#: src/chat-sidebar.tsx
+msgid "Still working, server may be slow"
+msgstr "Masih bekerja, server mungkin lambat"
+
+#: src/chat-sidebar.tsx
+msgid "Stop generating"
+msgstr "Hentikan pembuatan"
+
+#: src/chat-sidebar.tsx
+msgid "Stop using current file as context"
+msgstr "Berhenti menggunakan berkas saat ini sebagai konteks"
+
+#: src/components/perf-panel.tsx
+msgid "Stopped before completing, so these timings are partial."
+msgstr "Dihentikan sebelum selesai, sehingga waktu ini bersifat parsial."
+
+#: src/chat-sidebar.tsx
+msgid "Stopped by you"
+msgstr "Dihentikan oleh Anda"
+
+#: src/components/perf-panel.tsx
+msgid "Sum of every tool span in the turn. Expand the row to see them individually."
+msgstr "Jumlah semua span alat dalam giliran. Bentangkan baris untuk melihatnya satu per satu."
+
+#: src/index.ts
+msgid "Switch all cells to code"
+msgstr "Ubah semua sel menjadi kode"
+
+#: src/index.ts
+msgid "Switch all cells to natural language"
+msgstr "Ubah semua sel menjadi bahasa alami"
+
+#: src/index.ts
+msgid "Switch cell to code"
+msgstr "Ubah sel menjadi kode"
+
+#: src/index.ts
+msgid "Switch cell to natural language"
+msgstr "Ubah sel menjadi bahasa alami"
+
+#: src/chatbook-toolbar.ts src/index.ts
+msgid "Switch every cell of this Chatbook between its prompt and its code"
+msgstr "Alihkan setiap sel Chatbook ini antara prompt dan kodenya"
+
+#: src/index.ts
+msgid "Switch the active Chatbook cell between natural language and code"
+msgstr "Alihkan sel Chatbook aktif antara bahasa alami dan kode"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed for \"%1\": %2"
+msgstr "Sinkronisasi gagal untuk \"%1\": %2"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed: %1"
+msgstr "Sinkronisasi gagal: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Sync from GitHub"
+msgstr "Sinkronkan dari GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Sync managed skills"
+msgstr "Sinkronkan skill terkelola"
+
+#: src/components/skills-panel.tsx
+msgid "Sync skill from GitHub"
+msgstr "Sinkronkan skill dari GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Sync tracking skills"
+msgstr "Sinkronkan skill yang mengikuti upstream"
+
+#: src/components/skills-panel.tsx
+msgid "Synced \"%1\" to %2."
+msgstr "\"%1\" disinkronkan ke %2."
+
+#: src/components/skills-panel.tsx
+msgid "Syncing…"
+msgstr "Menyinkronkan…"
+
+#: src/components/skills-panel.tsx
+msgid "Target scope"
+msgstr "Cakupan tujuan"
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop."
+msgstr "Meletakkan ke terminal menyisipkan jalur @-sebutan. Klik untuk beralih ke mode jalur mentah. Tahan Shift saat meletakkan untuk membalik mode untuk satu kali peletakan."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop."
+msgstr "Meletakkan ke terminal menyisipkan jalur absolut mentah yang di-escape untuk shell. Klik untuk beralih ke mode @-sebutan. Tahan Shift saat meletakkan untuk membalik mode untuk satu kali peletakan."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop skipped %1 path containing control or invisible formatting characters. Rename them before dropping."
+msgid_plural "Terminal drop skipped %1 paths containing control or invisible formatting characters. Rename them before dropping."
+msgstr[0] "Peletakan ke terminal melewati %1 jalur yang berisi karakter kontrol atau karakter pemformatan tak terlihat. Ganti namanya sebelum meletakkan."
+msgstr[1] "Peletakan ke terminal melewati %1 jalur yang berisi karakter kontrol atau karakter pemformatan tak terlihat. Ganti namanya sebelum meletakkan."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop upload failed for %1"
+msgstr "Unggahan dari peletakan ke terminal gagal untuk %1"
+
+#: src/components/readiness-card.tsx
+msgid "Test the endpoint"
+msgstr "Uji endpoint"
+
+#: src/chat-sidebar.tsx
+msgid "Text file"
+msgstr "Berkas teks"
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI did not respond to --version within its budget."
+msgstr "CLI tidak merespons --version dalam batas waktunya."
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI resolved but --version failed."
+msgstr "CLI ditemukan, tetapi --version gagal."
+
+#: src/components/perf-panel.tsx
+msgid "The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI."
+msgstr "SDK mengatribusikan %1 ke API dibandingkan %2 waktu aktif, jadi waktunya berada di sisi lain jaringan, bukan di NBI."
+
+#: notebook_intelligence/readiness.py
+msgid "The binary resolves but does not start. On a network filesystem this is often the install tree being slow to read; otherwise check it runs from a terminal."
+msgstr "Biner ditemukan tetapi tidak dapat dimulai. Pada sistem berkas jaringan, ini sering kali karena pohon instalasi lambat dibaca; jika tidak, periksa apakah biner berjalan dari terminal."
+
+#: src/components/perf-panel.tsx
+msgid "The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding."
+msgstr "Pemeriksaan tidak kembali dalam batas waktunya. Stat yang macet pada sistem berkas jaringan terlihat persis seperti ini, dan itu sendiri sudah merupakan temuannya."
+
+#: notebook_intelligence/readiness.py
+msgid "The claude CLI was not found."
+msgstr "CLI claude tidak ditemukan."
+
+#: notebook_intelligence/acp_agent.py
+msgid "The command contains non-ASCII characters, which can look like quotes or letters they are not."
+msgstr "Perintah ini berisi karakter non-ASCII, yang dapat terlihat seperti tanda kutip atau huruf padahal bukan."
+
+#: src/components/perf-panel.tsx
+msgid "The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage."
+msgstr "Span koneksi: subproses agen dan waktu mulai CLI. Nilai besar biasanya berarti waktu mulai node ditambah pembacaan bundel pada penyimpanan yang lambat."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted a request carrying a tool schema."
+msgstr "Endpoint menerima permintaan yang membawa skema alat."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the connection but did not answer. Check the Base URL and whether it is reachable from the Jupyter server process."
+msgstr "Endpoint menerima koneksi tetapi tidak menjawab. Periksa URL Dasar dan apakah URL tersebut dapat dijangkau dari proses server Jupyter."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the request but did not answer. Check the gateway and whether it is queueing behind a cold model."
+msgstr "Endpoint menerima permintaan tetapi tidak menjawab. Periksa gateway dan apakah permintaan sedang mengantre di belakang model yang masih cold start."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint answered in one piece. Replies will appear only when the turn finishes rather than as they are generated; a proxy that buffers responses is the usual cause."
+msgstr "Endpoint menjawab sekaligus dalam satu bagian. Balasan hanya akan muncul setelah giliran selesai, bukan saat sedang dihasilkan; penyebab umumnya adalah proxy yang menyangga respons."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint rejected a request carrying a tool schema, but accepted the same request without one."
+msgstr "Endpoint menolak permintaan yang membawa skema alat, tetapi menerima permintaan yang sama tanpa skema tersebut."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint test could not run (%1)."
+msgstr "Uji endpoint tidak dapat dijalankan (%1)."
+
+#: src/components/perf-panel.tsx
+msgid "The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses."
+msgstr "Handshake tidak selesai. Di belakang proxy yang mencegat, ini biasanya berarti sertifikat pencegatan tidak ada di trust store yang digunakan proses ini."
+
+#: src/components/perf-panel.tsx
+msgid "The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor."
+msgstr "Sertifikat yang disajikan tidak dapat diverifikasi dengan trust store bawaan, yang berarti TLS sedang dicegat. CN penerbit menyebutkan nama pencegatnya."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider did not return a model list within %1s."
+msgstr "Penyedia tidak mengembalikan daftar model dalam %1 dtk."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider may be disabled by an administrator (see disabled_providers) or supplied by an extension that is not installed. Pick a different provider in NBI Settings."
+msgstr "Penyedia ini mungkin dinonaktifkan oleh administrator (lihat disabled_providers) atau disediakan oleh ekstensi yang tidak terinstal. Pilih penyedia lain di Pengaturan NBI."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider returned no models."
+msgstr "Penyedia tidak mengembalikan model apa pun."
+
+#: notebook_intelligence/readiness.py
+msgid "The request failed (%1)."
+msgstr "Permintaan gagal (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "The request succeeded but nothing streamed."
+msgstr "Permintaan berhasil tetapi tidak ada yang di-stream."
+
+#: notebook_intelligence/readiness.py
+msgid "The stored configuration could not be read. Check %1 for invalid JSON, and the Jupyter server log for the underlying error."
+msgstr "Konfigurasi yang tersimpan tidak dapat dibaca. Periksa %1 untuk JSON yang tidak valid, dan log server Jupyter untuk kesalahan yang mendasarinya."
+
+#: src/components/perf-panel.tsx
+msgid "The turn ended in an error."
+msgstr "Giliran berakhir dengan kesalahan."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab."
+msgstr "Ini adalah server MCP milik Claude Code sendiri (dibaca dari %1, proyek %2, dan blok per pengguna per proyek). Tidak bergantung pada tab Server MCP NBI."
+
+#: src/chat-sidebar.tsx
+msgid "Thinking (%1 s)"
+msgstr "Berpikir (%1 dtk)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py notebook_intelligence/mcp_manager.py
+msgid "Thinking…"
+msgstr "Berpikir…"
+
+#: src/components/perf-panel.tsx
+msgid "This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network."
+msgstr "CPU kontainer ini telah dibatasi oleh kuota cgroup-nya, sehingga fase lokal (persiapan konteks, peluncuran) dapat terlihat lambat karena alasan yang tidak terkait dengan penyimpanan atau jaringan."
+
+#: notebook_intelligence/extension.py
+msgid "This feature is disabled by your administrator"
+msgstr "Fitur ini dinonaktifkan oleh administrator Anda"
+
+#: src/components/perf-panel.tsx
+msgid "This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows."
+msgstr "Waktu di host ini berbeda lebih dari satu menit dengan endpoint, yang merusak masa berlaku token dan rentang validitas sertifikat."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the Claude CLI is signed in with a subscription login, or if the SDK resolves a credential of its own from a profile or custom headers. If chat turns fail with a 401, or Claude auto-complete produces nothing, add a key in NBI Settings under Claude or set ANTHROPIC_API_KEY before starting JupyterLab."
+msgstr "Ini tidak masalah jika CLI Claude sudah login dengan login langganan, atau jika SDK mendapatkan kredensialnya sendiri dari profil atau header kustom. Jika giliran chat gagal dengan 401, atau pelengkapan otomatis Claude tidak menghasilkan apa pun, tambahkan kunci di Pengaturan NBI di bagian Claude atau atur ANTHROPIC_API_KEY sebelum memulai JupyterLab."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the agent is signed in with its own OAuth login. Otherwise set the key in NBI Settings under ACP."
+msgstr "Ini tidak masalah jika agen sudah login dengan login OAuth-nya sendiri. Jika tidak, atur kunci di Pengaturan NBI di bagian ACP."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3."
+msgstr "Notebook ini ditulis dalam %1, tetapi Chatbook menjalankan semua kode di %2, sehingga sel kodenya akan gagal. Tidak ada kernel %1 yang terinstal untuk digunakan Chatbook. Instal satu, lalu pilih di %3."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too."
+msgstr "Notebook ini ditulis dalam %1, tetapi Chatbook menjalankan semua kode di %2, sehingga sel kodenya akan gagal. Untuk mengonversinya, atur %3 ke kernel untuk %1, lalu konversi lagi. Pengaturan tersebut berlaku untuk setiap Chatbook, sehingga Chatbook Anda yang sudah ada juga akan menjalankan %1."
+
+#: src/components/perf-panel.tsx
+msgid "This opens connections to %1 from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request."
+msgstr "Ini membuka koneksi ke %1 dari mesin ini: dua koneksi TLS tanpa autentikasi untuk mengukur waktu handshake dan memeriksa sertifikat, serta satu permintaan HTTP tanpa autentikasi."
+
+#: src/components/perf-panel.tsx
+msgid "This opens unauthenticated connections to your configured endpoint from this machine."
+msgstr "Ini membuka koneksi tanpa autentikasi ke endpoint yang Anda konfigurasi dari mesin ini."
+
+#: src/components/settings-panel.tsx
+msgid "This requires a %1 account and %2 installed in your system."
+msgstr "Ini memerlukan akun %1 dan %2 yang terinstal di sistem Anda."
+
+#: src/components/readiness-card.tsx
+msgid "This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls."
+msgstr "Ini mengirim satu permintaan singkat ke model yang Anda konfigurasi. Biayanya beberapa token dan ini satu-satunya cara untuk memastikan endpoint benar-benar melakukan streaming dan benar-benar menerima panggilan alat."
+
+#: src/components/skills-panel.tsx
+msgid "This skill has unsaved changes. Discard them?"
+msgstr "Skill ini memiliki perubahan yang belum disimpan. Buang perubahan tersebut?"
+
+#: src/components/skills-panel.tsx
+msgid "This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync."
+msgstr "Skill ini dikelola oleh manifes organisasi dan bersifat baca-saja. Perubahan akan ditimpa pada sinkronisasi berikutnya."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Tool call"
+msgstr "Panggilan alat"
+
+#: src/components/mcp-util.ts
+msgid "Tool refresh failed. Reload MCP servers to retry."
+msgstr "Gagal menyegarkan alat. Muat ulang server MCP untuk mencoba lagi."
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection"
+msgstr "Pilihan alat"
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection (%1)"
+msgstr "Pilihan alat (%1)"
+
+#: src/chat-sidebar.tsx
+msgid ""
+"Tool selection can cause irreversible changes! Review each tool execution carefully.\n"
+"%1"
+msgstr ""
+"Pilihan alat dapat menyebabkan perubahan yang tidak dapat dibatalkan! Tinjau setiap eksekusi alat dengan cermat.\n"
+"%1"
+
+#: src/components/settings-panel.tsx
+msgid "Tools"
+msgstr "Alat"
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active."
+msgstr "Alat menyumbang %1 dari %2 waktu aktif."
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active. Slowest: %3 at %4."
+msgstr "Alat menyumbang %1 dari %2 waktu aktif. Paling lambat: %3 dengan %4."
+
+#: src/components/perf-panel.tsx
+msgid "Total minus time the turn spent blocked on your input. This is the number to judge performance by."
+msgstr "Total dikurangi waktu giliran tertahan menunggu input Anda. Angka inilah yang digunakan untuk menilai performa."
+
+#: src/tour/tour-overlay.tsx
+msgid "Tour progress: step %1 of %2"
+msgstr "Progres tur: langkah %1 dari %2"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream"
+msgstr "Ikuti upstream"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream. Show a Sync button so I can re-pull this skill from GitHub later"
+msgstr "Ikuti upstream. Tampilkan tombol Sinkronkan agar saya dapat menarik ulang skill ini dari GitHub nanti"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1"
+msgstr "Mengikuti upstream dari %1"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1 (last sync: %2)"
+msgstr "Mengikuti upstream dari %1 (sinkronisasi terakhir: %2)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Transport"
+msgstr "Transport"
+
+#: src/index.ts
+msgid "Troubleshoot errors in output"
+msgstr "Atasi kesalahan di output"
+
+#: src/cell-output-toolbar.ts
+msgid "Troubleshoot the error in this cell"
+msgstr "Atasi kesalahan di sel ini"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "URL"
+msgstr "URL"
+
+#: src/components/skills-panel.tsx
+msgid "Undo"
+msgstr "Urungkan"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall"
+msgstr "Hapus instalan"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall plugin?"
+msgstr "Hapus instalan plugin?"
+
+#: src/chat-sidebar.tsx
+msgid "Unknown"
+msgstr "Tidak diketahui"
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Unknown error"
+msgstr "Kesalahan tidak diketahui"
+
+#: src/components/skills-panel.tsx
+msgid "Unsaved changes"
+msgstr "Perubahan belum disimpan"
+
+#: src/components/plugins-panel.tsx
+msgid "Update"
+msgstr "Perbarui"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Update active notebook"
+msgstr "Perbarui notebook aktif"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Update active notebook with AI"
+msgstr "Perbarui notebook aktif dengan AI"
+
+#: src/components/plugins-panel.tsx
+msgid "Updating…"
+msgstr "Memperbarui…"
+
+#: src/chat-sidebar.tsx
+msgid "Upload file from computer"
+msgstr "Unggah berkas dari komputer"
+
+#: src/chat-sidebar.tsx
+msgid "Uploaded: %1"
+msgstr "Diunggah: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Uploading"
+msgstr "Mengunggah"
+
+#: src/components/settings-panel.tsx
+msgid "Usage footer"
+msgstr "Footer penggunaan"
+
+#: src/chat-sidebar.tsx
+msgid "Use as context"
+msgstr "Gunakan sebagai konteks"
+
+#: src/chat-sidebar.tsx
+msgid "Use current file as context"
+msgstr "Gunakan berkas saat ini sebagai konteks"
+
+#: src/chat-sidebar.tsx
+msgid "User"
+msgstr "Pengguna"
+
+#: src/components/skills-panel.tsx
+msgid "User (available in all projects)"
+msgstr "Pengguna (tersedia di semua proyek)"
+
+#: notebook_intelligence/readiness.py
+msgid "Usually an expired or missing API key, or a Base URL that does not point at the provider's API root. For GitHub Copilot, sign in again from NBI Settings."
+msgstr "Biasanya karena kunci API kedaluwarsa atau tidak ada, atau URL Dasar yang tidak mengarah ke root API penyedia. Untuk GitHub Copilot, login lagi dari Pengaturan NBI."
+
+#: src/components/skills-panel.tsx
+msgid "View (managed, read-only)"
+msgstr "Lihat (terkelola, baca-saja)"
+
+#: src/components/skills-panel.tsx
+msgid "View skill"
+msgstr "Lihat skill"
+
+#: src/components/perf-panel.tsx
+msgid "Wall time from the request arriving to the response finishing, including any time spent waiting on you."
+msgstr "Waktu nyata sejak permintaan tiba hingga respons selesai, termasuk waktu yang dihabiskan untuk menunggu Anda."
+
+#: src/chat-sidebar.tsx
+msgid "Welcome! How can I assist you today?"
+msgstr "Selamat datang! Apa yang bisa saya bantu hari ini?"
+
+#: src/components/skills-panel.tsx
+msgid "What this skill does, shown to Claude when deciding whether to use it"
+msgstr "Apa yang dilakukan skill ini, ditampilkan kepada Claude saat memutuskan apakah akan menggunakannya"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr "Jika diaktifkan, prompt akan membuka bilah sisi chat Notebook Intelligence. Nonaktifkan untuk tetap menyembunyikan chat dan hanya menampilkan progres di bilah alat notebook."
+
+#: src/components/perf-panel.tsx
+msgid "When the turn started, in local time."
+msgstr "Waktu giliran dimulai, dalam waktu setempat."
+
+#: src/components/perf-panel.tsx
+msgid "Which backend served the turn, and the surface it came from."
+msgstr "Backend mana yang melayani giliran, dan dari antarmuka mana giliran tersebut berasal."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Working directory"
+msgstr "Direktori kerja"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Working…"
+msgstr "Memproses…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Write access under"
+msgstr "Akses tulis di bawah"
+
+#: src/chat-sidebar.tsx
+msgid "You are not logged in to GitHub Copilot. Please login now to activate chat."
+msgstr "Anda belum login ke GitHub Copilot. Silakan login sekarang untuk mengaktifkan chat."
+
+#: src/chat-sidebar.tsx
+msgid "Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory."
+msgstr "Kode dan data Anda ditransfer langsung ke GitHub Copilot sesuai kebutuhan tanpa menyimpan salinan apa pun selain yang disimpan di memori proses."
+
+#: src/components/claude-scope.ts
+msgid "available in all your projects"
+msgstr "tersedia di semua proyek Anda"
+
+#: src/components/perf-panel.tsx
+msgid "cgroup CPU throttling"
+msgstr "Pembatasan CPU cgroup"
+
+#: src/components/tool-call-card.tsx
+msgid "diff truncated"
+msgstr "diff terpotong"
+
+#: src/components/skills-panel.tsx
+msgid "e.g. %1"
+msgstr "mis. %1"
+
+#: src/components/perf-panel.tsx
+msgid "failed (%1)"
+msgstr "gagal (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it."
+msgstr "Latensi fsync dalam rentang ini adalah ciri khas sistem berkas jaringan. Jika ini adalah ~/.claude atau home Jupyter, setiap agen yang dimulai dan setiap pemindaian aturan akan menanggungnya."
+
+#: src/components/skills-panel.tsx
+msgid "https://github.com/owner/repo or .../tree/main/path/to/skill"
+msgstr "https://github.com/owner/repo atau .../tree/main/path/to/skill"
+
+#: src/components/plugins-panel.tsx
+msgid "https://… or local path"
+msgstr "https://… atau jalur lokal"
+
+#: src/components/plugins-panel.tsx
+msgid "no plugins"
+msgstr "tidak ada plugin"
+
+#: src/components/perf-panel.tsx
+msgid "no projects/ or sessions/ directory"
+msgstr "tidak ada direktori projects/ atau sessions/"
+
+#: src/components/perf-panel.tsx
+msgid "ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success."
+msgstr "ok, kesalahan, atau dibatalkan. Giliran yang dibatalkan dicatat sebagai dibatalkan, bukan sebagai keberhasilan yang cepat."
+
+#: src/chat-sidebar.tsx
+msgid "open notebook"
+msgstr "buka notebook"
+
+#: src/components/plugins-panel.tsx
+msgid "owner/repo, https://github.com/owner/repo, or local path"
+msgstr "owner/repo, https://github.com/owner/repo, atau jalur lokal"
+
+#: notebook_intelligence/acp_agent.py
+msgid "run by %1"
+msgstr "dijalankan oleh %1"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo"
+msgstr "dibagikan melalui repo proyek"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo (%1)"
+msgstr "dibagikan melalui repo proyek (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "skipped: %1"
+msgstr "dilewati: %1"
+
+#: src/components/perf-panel.tsx
+msgid "stat %1, write+fsync %2 (median of %3)"
+msgstr "stat %1, write+fsync %2 (median dari %3)"
+
+#: src/components/claude-scope.ts
+msgid "this project, this user only"
+msgstr "proyek ini, hanya pengguna ini"
+
+#: src/components/perf-panel.tsx
+msgid "timed out after %1s"
+msgstr "habis waktu setelah %1 dtk"
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"%1\" requires a \"url\" field."
+msgstr "transport: \"%1\" memerlukan kolom \"url\"."
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"stdio\" requires a \"command\" field."
+msgstr "transport: \"stdio\" memerlukan kolom \"command\"."
+
+#: src/components/perf-panel.tsx
+msgid "via proxy"
+msgstr "melalui proxy"
+
+#: src/components/perf-panel.tsx
+msgid "write %1, read %2"
+msgstr "tulis %1, baca %2"
+
+#: src/index.ts
+msgid "＋ New Session"
+msgstr "＋ Sesi Baru"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP description: the link to the admin guide"
+msgid "administrator installation guide"
+msgstr "panduan instalasi administrator"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP settings section"
+msgid "Agent"
+msgstr "Agen"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a code cell; at most 3 characters"
+msgid "Cd"
+msgstr "Kd"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a natural-language cell; at most 3 characters"
+msgid "NL"
+msgstr "BA"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Don't run"
+msgstr "Jangan jalankan"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Run"
+msgstr "Jalankan"
+
+#: src/components/settings-panel.tsx
+msgctxt "Chatbook mode description; %1 and %2 are the confirm bar buttons"
+msgid "Show the generated code and wait for %1 or %2 on every natural-language run."
+msgstr "Tampilkan kode yang dihasilkan dan tunggu %1 atau %2 pada setiap eksekusi bahasa alami."
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "LOCAL"
+msgstr "LOKAL"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "PROJECT"
+msgstr "PROYEK"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "USER"
+msgstr "PENGGUNA"
+
+#: src/components/claude-mcp-panel.tsx
+msgctxt "MCP server input mode"
+msgid "Form"
+msgstr "Formulir"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connected"
+msgstr "terhubung"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connecting"
+msgstr "menghubungkan"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "disconnecting"
+msgstr "memutuskan koneksi"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "not connected"
+msgstr "tidak terhubung"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated prompt list"
+msgstr "daftar prompt diperbarui"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated tool list"
+msgstr "daftar alat diperbarui"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating prompt list"
+msgstr "memperbarui daftar prompt"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating tool list"
+msgstr "memperbarui daftar alat"
+
+#: src/components/settings-panel.tsx
+msgctxt "Ollama hint: the button that retries listing models"
+msgid "Try again"
+msgstr "Coba lagi"
+
+#: src/components/perf-panel.tsx
+msgctxt "Python version on an operating system"
+msgid "%1 on %2"
+msgstr "%1 di %2"
+
+#: src/chatbook-toolbar.ts
+msgctxt "a settings path: %1 the settings window, %2 its tab, %3 the field"
+msgid "%1 > %2 > %3"
+msgstr "%1 > %2 > %3"
+
+#: src/components/perf-panel.tsx
+msgctxt "a value that was not recorded"
+msgid "n/a"
+msgstr "n/a"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "an approval card detail: its label, then notes such as its size"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve"
+msgstr "Setujui"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve for this request"
+msgstr "Setujui untuk permintaan ini"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Cancel"
+msgstr "Batalkan"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, continue planning"
+msgstr "Tidak, lanjutkan merencanakan"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, start implementing now"
+msgstr "Tidak, mulai implementasi sekarang"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval button"
+msgid "Reject"
+msgstr "Tolak"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, approve plan"
+msgstr "Ya, setujui rencana"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, enter plan mode"
+msgstr "Ya, masuk ke mode rencana"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval card title"
+msgid "%1 tool call"
+msgstr "Panggilan alat %1"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "full"
+msgstr "lengkap"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "redacted"
+msgstr "disamarkan"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "between notes on an approval card detail"
+msgid ", "
+msgstr ", "
+
+#: src/components/perf-panel.tsx
+msgctxt "bytes"
+msgid "%1 B"
+msgstr "%1 B"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Ask"
+msgstr "Tanya"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Explain"
+msgstr "Jelaskan"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Troubleshoot"
+msgstr "Atasi Masalah"
+
+#: src/components/perf-panel.tsx
+msgctxt "certificate issuer"
+msgid "unknown"
+msgstr "tidak diketahui"
+
+#: notebook_intelligence/ai_service_manager.py
+msgctxt "chat button"
+msgid "Configure"
+msgstr "Konfigurasikan"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Agent"
+msgstr "Agen"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Ask"
+msgstr "Tanya"
+
+#: src/chatbook.ts
+msgctxt "confirm bar link that opens settings; %1 is the settings window name"
+msgid "Change in %1"
+msgstr "Ubah di %1"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected MCP server tools"
+msgid "%1 mcp"
+msgid_plural "%1 mcp"
+msgstr[0] "%1 mcp"
+msgstr[1] "%1 mcp"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected extension tools"
+msgid "%1 ext"
+msgid_plural "%1 ext"
+msgstr[0] "%1 ekst"
+msgstr[1] "%1 ekst"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected tools"
+msgid "%1 built-in"
+msgid_plural "%1 built-in"
+msgstr[0] "%1 bawaan"
+msgstr[1] "%1 bawaan"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "environment (%1)"
+msgstr "lingkungan (%1)"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "settings"
+msgstr "pengaturan"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "added"
+msgstr "ditambahkan"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "removed"
+msgstr "dihapus"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "mount"
+msgstr "mount"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "session tree size"
+msgstr "ukuran pohon sesi"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "small-file latency"
+msgstr "latensi berkas kecil"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "sustained throughput"
+msgstr "throughput berkelanjutan"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem type"
+msgid "not determined"
+msgstr "tidak dapat ditentukan"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Add files from outside the workspace. They're saved to the workspace and attached to this chat."
+msgstr "Tambahkan berkas dari luar ruang kerja. Berkas tersebut disimpan ke ruang kerja dan dilampirkan ke chat ini."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Ask is read-only and only answers questions. Agent can also run tools, such as file edits and shell commands."
+msgstr "Tanya bersifat baca-saja dan hanya menjawab pertanyaan. Agen juga dapat menjalankan alat, seperti mengedit berkas dan menjalankan perintah shell."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Attach files as context"
+msgstr "Lampirkan berkas sebagai konteks"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Back"
+msgstr "Kembali"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Begin a fresh session when context gets crowded or you want to switch tasks."
+msgstr "Mulai sesi baru saat konteks sudah penuh atau Anda ingin beralih tugas."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Configure providers, API keys, and extensions (MCP servers, skills, admin policies)."
+msgstr "Konfigurasikan penyedia, kunci API, dan ekstensi (server MCP, skill, kebijakan admin)."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Done"
+msgstr "Selesai"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag and drop"
+msgstr "Seret dan letakkan"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag files from the JupyterLab file browser or your desktop onto the prompt. Keyboard users can attach the same files with the 'Attach files as context' and 'Upload from your computer' buttons."
+msgstr "Seret berkas dari peramban berkas JupyterLab atau desktop Anda ke prompt. Pengguna keyboard dapat melampirkan berkas yang sama dengan tombol 'Lampirkan berkas sebagai konteks' dan 'Unggah dari komputer Anda'."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Next"
+msgstr "Berikutnya"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Open the menu for built-in commands and installed skills. Typing / at the start of the prompt does the same thing."
+msgstr "Buka menu untuk perintah bawaan dan skill yang terinstal. Mengetik / di awal prompt melakukan hal yang sama."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick a chat mode"
+msgstr "Pilih mode chat"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick up where you left off"
+msgstr "Lanjutkan dari bagian terakhir"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pin workspace files so the assistant can reference them. Typing @ in the prompt opens the same picker."
+msgstr "Sematkan berkas ruang kerja agar asisten dapat merujuknya. Mengetik @ di prompt membuka pemilih yang sama."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Reopen an earlier Claude session from this workspace."
+msgstr "Buka kembali sesi Claude sebelumnya dari ruang kerja ini."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a coding agent in a terminal"
+msgstr "Jalankan agen pengodean di terminal"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a slash command"
+msgstr "Jalankan perintah garis miring"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Settings"
+msgstr "Pengaturan"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Show NBI tour"
+msgstr "Tampilkan tur NBI"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Skip tour"
+msgstr "Lewati tur"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Start a new chat"
+msgstr "Mulai chat baru"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Try this: open a notebook and ask, 'Explain what this notebook does and suggest one improvement.' You can replay this tour anytime from the command palette."
+msgstr "Coba ini: buka notebook dan tanyakan, 'Jelaskan apa yang dilakukan notebook ini dan sarankan satu perbaikan.' Anda dapat memutar ulang tur ini kapan saja dari Daftar Perintah."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Upload from your computer"
+msgstr "Unggah dari komputer Anda"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Welcome to Notebook Intelligence"
+msgstr "Selamat datang di Notebook Intelligence"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "You're ready"
+msgstr "Anda siap"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Your AI assistant lives in this sidebar. Take a quick tour of the settings, attachments, and chat modes so you can use it confidently."
+msgstr "Asisten AI Anda ada di bilah sisi ini. Ikuti tur singkat tentang pengaturan, lampiran, dan mode chat agar Anda dapat menggunakannya dengan percaya diri."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a 'Coding Agent' section with tiles for {launchers}. Each tile opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "Peluncur JupyterLab memiliki bagian 'Coding Agent' dengan ubin untuk {launchers}. Setiap ubin membuka sesi CLI di terminal Jupyter di sebelah notebook Anda."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a {launchers} tile in the 'Coding Agent' section. It opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "Peluncur JupyterLab memiliki ubin {launchers} di bagian 'Coding Agent'. Ubin ini membuka sesi CLI di terminal Jupyter di sebelah notebook Anda."
+
+#: src/components/perf-panel.tsx
+msgctxt "gigabytes"
+msgid "%1 GB"
+msgstr "%1 GB"
+
+#: src/components/perf-panel.tsx
+msgctxt "kilobytes"
+msgid "%1 KB"
+msgstr "%1 KB"
+
+#: src/components/setting-lock.ts
+msgctxt "lock reason: %1 is an environment variable name"
+msgid "Locked by %1"
+msgstr "Dikunci oleh %1"
+
+#: src/components/perf-panel.tsx
+msgctxt "machine measurement"
+msgid "Probe"
+msgstr "Probe"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes"
+msgid "%1 MB"
+msgstr "%1 MB"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes per second"
+msgid "%1 MB/s"
+msgstr "%1 MB/s"
+
+#: src/components/perf-panel.tsx
+msgctxt "milliseconds"
+msgid "%1 ms"
+msgstr "%1 ms"
+
+#: src/components/settings-panel.tsx
+msgctxt "model"
+msgid "None"
+msgstr "Tidak ada"
+
+#: src/components/perf-panel.tsx
+msgctxt "model name"
+msgid "unknown"
+msgstr "tidak diketahui"
+
+#: src/components/settings-panel.tsx
+msgctxt "model provider"
+msgid "None"
+msgstr "Tidak ada"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance diagnostics setting"
+msgid "Enabled"
+msgstr "Diaktifkan"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "API ms"
+msgstr "API ms"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Active"
+msgstr "Aktif"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "First token"
+msgstr "Token pertama"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Mode"
+msgstr "Mode"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Model"
+msgstr "Model"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Spawn"
+msgstr "Peluncuran"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stalls"
+msgstr "Macet"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Status"
+msgstr "Status"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stream"
+msgstr "Stream"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Time"
+msgstr "Waktu"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens in"
+msgstr "Token masuk"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens out"
+msgstr "Token keluar"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tools"
+msgstr "Alat"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Total"
+msgstr "Total"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Verdict"
+msgstr "Kesimpulan"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Accept Edits"
+msgstr "Terima Edit"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Bypass Permissions"
+msgstr "Lewati Izin"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Default"
+msgstr "Bawaan"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Plan"
+msgstr "Rencana"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugin count, then the plugin names"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugins section heading"
+msgid "MARKETPLACES"
+msgstr "MARKETPLACE"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "bad"
+msgstr "buruk"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "error"
+msgstr "kesalahan"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "info"
+msgstr "info"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "skipped"
+msgstr "dilewati"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "timed out"
+msgstr "habis waktu"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "warn"
+msgstr "peringatan"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check: %1 is a directory, %2 what was measured"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Filesystem"
+msgstr "Sistem berkas"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Network"
+msgstr "Jaringan"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Process and host"
+msgstr "Proses dan host"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Subprocess startup"
+msgstr "Waktu mulai subproses"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Cancel"
+msgstr "Batalkan"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Submit"
+msgstr "Kirim"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "ACP agent"
+msgstr "Agen ACP"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Active chat path"
+msgstr "Jalur chat aktif"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Adapter runtime"
+msgstr "Runtime adaptor"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Agent credentials"
+msgstr "Kredensial agen"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Anthropic credentials"
+msgstr "Kredensial Anthropic"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model"
+msgstr "Model chat"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model provider"
+msgstr "Penyedia model chat"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Claude Code CLI"
+msgstr "CLI Claude Code"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Configuration"
+msgstr "Konfigurasi"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "GitHub Copilot sign-in"
+msgstr "Login GitHub Copilot"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Live completion"
+msgstr "Respons langsung"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model list"
+msgstr "Daftar model"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model name"
+msgstr "Nama model"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Selected model"
+msgstr "Model yang dipilih"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Tool schema"
+msgstr "Skema alat"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "blocked"
+msgstr "terblokir"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "skipped"
+msgstr "dilewati"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "warn"
+msgstr "peringatan"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Checking…"
+msgstr "Memeriksa…"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Not ready"
+msgstr "Belum siap"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready"
+msgstr "Siap"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready, with warnings"
+msgstr "Siap, dengan peringatan"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Unknown"
+msgstr "Tidak diketahui"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Output"
+msgstr "Output"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Thought"
+msgstr "Pemikiran"
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "\"%1\" akan dihapus dari konfigurasi cakupan lokal Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "\"%1\" akan dihapus dari konfigurasi cakupan proyek Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "\"%1\" akan dihapus dari konfigurasi cakupan pengguna Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "\"%1\" akan dihapus dari konfigurasi cakupan %2 Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "\"%1\" akan dihapus dari konfigurasi cakupan lokal Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "\"%1\" akan dihapus dari konfigurasi cakupan proyek Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "\"%1\" akan dihapus dari konfigurasi cakupan pengguna Claude."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "\"%1\" akan dihapus dari konfigurasi cakupan %2 Claude."
+
+#: src/components/skills-panel.tsx
+msgctxt "scope heading, then the project name"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: src/components/claude-scope.ts
+msgctxt "scope picker option: %1 is the scope id, %2 what it means"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "seconds"
+msgid "%1s"
+msgstr "%1 dtk"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgctxt "separator between list items"
+msgid ", "
+msgstr ", "
+
+#: src/components/settings-panel.tsx
+msgctxt "setting source"
+msgid "User"
+msgstr "Pengguna"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings section"
+msgid "Language"
+msgstr "Bahasa"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "General"
+msgstr "Umum"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "MCP Servers"
+msgstr "Server MCP"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Performance"
+msgstr "Performa"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Plugins"
+msgstr "Plugin"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Skills"
+msgstr "Skill"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Managed"
+msgstr "Terkelola"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Tracking"
+msgstr "Mengikuti"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "Project"
+msgstr "Proyek"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "User"
+msgstr "Pengguna"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill sync result; %1 is a list of counts"
+msgid "Sync complete. %1."
+msgstr "Sinkronisasi selesai. %1."
+
+#: src/components/perf-panel.tsx
+msgctxt "skip reason"
+msgid "not applicable"
+msgstr "tidak berlaku"
+
+#: src/components/skills-panel.tsx
+msgctxt "stands in for the project folder name"
+msgid "<project>"
+msgstr "<proyek>"
+
+#: src/terminal-drag.ts
+msgctxt "terminal upload failure; %2 lists files, %1 counts the rest"
+msgid "Terminal drop upload failed for %2 (+%1 more)"
+msgid_plural "Terminal drop upload failed for %2 (+%1 more)"
+msgstr[0] "Unggahan dari peletakan ke terminal gagal untuk %2 (+%1 lainnya)"
+msgstr[1] "Unggahan dari peletakan ke terminal gagal untuk %2 (+%1 lainnya)"
+
+#: src/i18n.ts
+msgctxt "text direction: translate as 'rtl' for a right-to-left language, otherwise 'ltr'"
+msgid "ltr"
+msgstr "ltr"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "cancelled"
+msgstr "dibatalkan"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "completed"
+msgstr "selesai"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "failed"
+msgstr "gagal"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "in progress"
+msgstr "sedang berlangsung"
+
+#: src/components/tool-call-group.tsx
+msgctxt "tool call summary: %1 is the call count, %2 the failed count"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: src/chat-sidebar.tsx
+msgctxt "tool selection"
+msgid "clear"
+msgstr "hapus pilihan"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Command execute"
+msgstr "Eksekusi perintah"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File edit"
+msgstr "Edit berkas"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File read"
+msgstr "Baca berkas"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook edit"
+msgstr "Edit notebook"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook execute"
+msgstr "Eksekusi notebook"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Python file edit"
+msgstr "Edit berkas Python"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "cancelled"
+msgstr "dibatalkan"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "error"
+msgstr "kesalahan"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn timeline section"
+msgid "Events"
+msgstr "Peristiwa"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Agent cold start"
+msgstr "Cold start agen"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Cancelled"
+msgstr "Dibatalkan"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Context preparation"
+msgstr "Persiapan konteks"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Failed"
+msgstr "Gagal"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Mid-stream stalls"
+msgstr "Macet di tengah stream"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Model or gateway"
+msgstr "Model atau gateway"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No single hotspot"
+msgstr "Tidak ada titik panas tunggal"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No timing recorded"
+msgstr "Tidak ada waktu yang dicatat"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Tool execution"
+msgstr "Eksekusi alat"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "not valid JSON. %1"
+msgstr "bukan JSON yang valid. %1"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "the save failed for an unknown reason"
+msgstr "penyimpanan gagal karena alasan yang tidak diketahui"

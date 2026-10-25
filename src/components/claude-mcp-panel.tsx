@@ -10,7 +10,7 @@ import {
   NBIAPI
 } from '../api';
 import { FormDialog } from './form-dialog';
-import { interpolate, useTrans } from '../i18n';
+import { interpolate, useTrans, withTextDirection } from '../i18n';
 import {
   CLAUDE_CONFIG_SCOPES as SCOPES,
   removedFromScopeConfig,
@@ -59,14 +59,16 @@ export function SettingsPanelComponentClaudeMCP(_props: any): JSX.Element {
   }, []);
 
   const handleRemove = async (srv: IClaudeMCPServer) => {
-    const ok = await showDialog({
-      title: trans.__('Remove MCP server?'),
-      body: removedFromScopeConfig(trans, 'mcp-server', srv.name, srv.scope),
-      buttons: [
-        Dialog.cancelButton(),
-        Dialog.warnButton({ label: trans.__('Remove') })
-      ]
-    });
+    const ok = await showDialog(
+      withTextDirection({
+        title: trans.__('Remove MCP server?'),
+        body: removedFromScopeConfig(trans, 'mcp-server', srv.name, srv.scope),
+        buttons: [
+          Dialog.cancelButton(),
+          Dialog.warnButton({ label: trans.__('Remove') })
+        ]
+      })
+    );
     if (!ok.button.accept) {
       return;
     }

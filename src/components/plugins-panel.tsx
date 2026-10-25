@@ -11,7 +11,7 @@ import {
 } from '../api';
 import { TranslationBundle } from '@jupyterlab/translation';
 import { FormDialog } from './form-dialog';
-import { interpolate, useTrans } from '../i18n';
+import { interpolate, useTrans, withTextDirection } from '../i18n';
 import {
   CLAUDE_CONFIG_SCOPES as SCOPES,
   removedFromScopeConfig,
@@ -111,14 +111,16 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
     if (!name) {
       return;
     }
-    const ok = await showDialog({
-      title: trans.__('Uninstall plugin?'),
-      body: removedFromScopeConfig(trans, 'plugin', name, scope),
-      buttons: [
-        Dialog.cancelButton(),
-        Dialog.warnButton({ label: trans.__('Uninstall') })
-      ]
-    });
+    const ok = await showDialog(
+      withTextDirection({
+        title: trans.__('Uninstall plugin?'),
+        body: removedFromScopeConfig(trans, 'plugin', name, scope),
+        buttons: [
+          Dialog.cancelButton(),
+          Dialog.warnButton({ label: trans.__('Uninstall') })
+        ]
+      })
+    );
     if (!ok.button.accept) {
       return;
     }
@@ -157,17 +159,19 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
     if (!name) {
       return;
     }
-    const ok = await showDialog({
-      title: trans.__('Remove marketplace?'),
-      body: trans.__(
-        '"%1" will be removed from Claude\'s plugin marketplaces.',
-        name
-      ),
-      buttons: [
-        Dialog.cancelButton(),
-        Dialog.warnButton({ label: trans.__('Remove') })
-      ]
-    });
+    const ok = await showDialog(
+      withTextDirection({
+        title: trans.__('Remove marketplace?'),
+        body: trans.__(
+          '"%1" will be removed from Claude\'s plugin marketplaces.',
+          name
+        ),
+        buttons: [
+          Dialog.cancelButton(),
+          Dialog.warnButton({ label: trans.__('Remove') })
+        ]
+      })
+    );
     if (!ok.button.accept) {
       return;
     }

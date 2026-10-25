@@ -5,6 +5,38 @@
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
 
+/*
+ * One-line fields and the chat prompt take their direction from what is
+ * typed in them, so a URL, key or path stays left to right in a
+ * right-to-left panel, and Arabic typed into the same field reads right to
+ * left. Multi-line editors in settings hold code (skill files, MCP JSON)
+ * and keep their normal per-line layout.
+ */
+.sidebar input,
+.sidebar textarea,
+.nbi-settings-panel input {
+  unicode-bidi: plaintext;
+}
+
+/*
+ * Code, paths and diffs read left to right in a right-to-left panel, and
+ * keep their characters in order ("~/.claude.json", not "claude.json./~").
+ */
+.sidebar code,
+.nbi-settings-panel code,
+.nbi-tool-call-diff-path,
+.nbi-tool-call-diff-body {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Labels that hold a file name, an agent's title or translated text take
+   their direction from their own text. */
+.nbi-tool-call-title,
+.user-input-context > div:first-child {
+  unicode-bidi: plaintext;
+}
+
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -109,14 +141,14 @@
   max-width: 54px;
   object-fit: contain;
   border-radius: 2px;
-  margin-right: 4px;
+  margin-inline-end: 4px;
 }
 
 .context-pill-thumbnail-preview {
   display: none;
   position: absolute;
   bottom: calc(100% + 6px);
-  left: 0;
+  inset-inline-start: 0;
   max-width: 320px;
   max-height: 320px;
   object-fit: contain;
@@ -148,7 +180,7 @@
   content: '\2026';
   display: inline-block;
   width: 1.5em;
-  text-align: left;
+  text-align: start;
   animation: nbi-loading-ellipsis-cycle 1.2s steps(4, end) infinite;
 }
 
@@ -359,7 +391,7 @@
   flex-direction: row;
   align-items: center;
   gap: 5px;
-  margin-right: 5px;
+  margin-inline-end: 5px;
 }
 
 .chat-mode-select {
@@ -416,7 +448,7 @@
 .permission-mode-menu {
   position: absolute;
   bottom: 32px;
-  right: 0;
+  inset-inline-end: 0;
   z-index: 100;
   min-width: 160px;
   padding: 4px;
@@ -435,7 +467,7 @@
   padding: 4px 8px;
   border: none;
   background: none;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   color: var(--jp-ui-font-color1);
   font-size: var(--jp-ui-font-size1);
@@ -558,7 +590,7 @@ button.user-input-footer-button {
   display: flex;
   align-items: center;
   gap: 2px;
-  padding-right: 3px;
+  padding-inline-end: 3px;
 }
 
 .user-input-footer-button.tools-button-warning {
@@ -604,7 +636,7 @@ pre:has(.code-block-header) {
 }
 
 .chat-message-from-icon {
-  margin-right: 6px;
+  margin-inline-end: 6px;
 }
 
 .chat-message-from-icon img {
@@ -630,7 +662,7 @@ pre:has(.code-block-header) {
 }
 
 .chat-message-from-progress {
-  padding-left: 10px;
+  padding-inline-start: 10px;
   flex-grow: 1;
   font-size: 12px;
   display: flex;
@@ -642,7 +674,7 @@ pre:has(.code-block-header) {
    user did this deliberately, and whatever streamed before the stop is still
    worth reading. */
 .chat-message-stopped {
-  margin-left: 8px;
+  margin-inline-start: 8px;
   padding: 0 6px;
   border-radius: 3px;
   font-size: 11px;
@@ -700,7 +732,7 @@ pre:has(.code-block-header) {
 }
 
 .chat-message-timestamp {
-  padding-left: 10px;
+  padding-inline-start: 10px;
   font-size: 11px;
 }
 
@@ -731,7 +763,7 @@ pre:has(.code-block-header) {
 .chat-message-content td {
   border: 1px solid var(--jp-border-color1);
   padding: 4px 8px;
-  text-align: left;
+  text-align: start;
   vertical-align: top;
 }
 
@@ -747,7 +779,7 @@ pre:has(.code-block-header) {
 .chat-message-content ul,
 .chat-message-content ol {
   margin-block: 5px;
-  padding-left: 24px;
+  padding-inline-start: 24px;
 }
 
 .chat-message-content li {
@@ -758,7 +790,7 @@ pre:has(.code-block-header) {
 .chat-message-content blockquote {
   margin: 8px 0;
   padding: 2px 10px;
-  border-left: 3px solid var(--jp-border-color1);
+  border-inline-start: 3px solid var(--jp-border-color1);
   color: var(--jp-ui-font-color2);
 }
 
@@ -898,8 +930,22 @@ pre:has(.code-block-header) {
   gap: 10px;
 }
 
+/* Cancels JupyterLab's physical margin-right on dialog buttons, so it stays
+   physical. */
 .sidebar-login-buttons .jp-Dialog-button.jp-mod-styled {
   margin-right: 0;
+}
+
+/* JupyterLab spaces dialog buttons with a physical margin-right; in an NBI
+   panel, popover or dialog laid out right to left (dir set from the UI
+   language) the gap belongs on the other side. */
+[dir='rtl'] .jp-Dialog-button.jp-mod-styled:not(:last-child) {
+  margin-right: 0;
+  margin-left: 12px;
+}
+
+.sidebar[dir='rtl'] .sidebar-login-buttons .jp-Dialog-button.jp-mod-styled {
+  margin-left: 0;
 }
 
 .sidebar-greeting {
@@ -962,6 +1008,22 @@ pre:has(.code-block-header) {
 
 .chat-confirmation-details dd {
   margin: 2px 0 0;
+}
+
+/*
+ * Code in a chat message stays left to right, whatever the direction of the
+ * text around it (markdown-renderer.tsx gives each block dir="auto"). This
+ * comes before .chat-confirmation-details pre, whose bidi-override must win
+ * for approval-card values.
+ */
+.chat-message-content pre,
+.chat-message-content code {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.chat-message-content pre {
+  text-align: left;
 }
 
 /* Every value is shown whole but scrolls inside a bounded block, so a long or
@@ -1071,9 +1133,10 @@ pre:has(.code-block-header) {
 }
 
 .nbi-tool-call-diffs {
-  margin: 2px 0 2px 18px;
-  padding-left: 6px;
-  border-left: 2px solid var(--jp-border-color2);
+  margin-block: 2px;
+  margin-inline: 18px 0;
+  padding-inline-start: 6px;
+  border-inline-start: 2px solid var(--jp-border-color2);
 }
 
 .nbi-tool-call-diff + .nbi-tool-call-diff {
@@ -1148,7 +1211,7 @@ pre:has(.code-block-header) {
   background: none;
   color: var(--jp-ui-font-color2);
   font-size: var(--jp-ui-font-size0);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 
@@ -1159,7 +1222,7 @@ pre:has(.code-block-header) {
 }
 
 .nbi-tool-call-group-body {
-  margin-left: 6px;
+  margin-inline-start: 6px;
 }
 
 .user-input-autocomplete,
@@ -1279,7 +1342,8 @@ pre:has(.code-block-header) {
   height: 24px;
   color: white;
   background-color: var(--jp-brand-color0);
-  padding: 0 6px 0 0;
+  padding-block: 0;
+  padding-inline: 0 6px;
   border: none;
   font: inherit;
   line-height: 1;
@@ -1311,7 +1375,7 @@ pre:has(.code-block-header) {
 .mode-tools-popover-refresh-button {
   width: 24px;
   padding: 0;
-  margin-right: 4px;
+  margin-inline-end: 4px;
 }
 
 .mode-tools-popover-refresh-button.is-loading {
@@ -1473,7 +1537,7 @@ pre:has(.code-block-header) {
 }
 
 .nbi-claude-code-picker-time {
-  margin-left: auto;
+  margin-inline-start: auto;
   font-size: 11px;
   color: var(--jp-ui-font-color3);
 }
@@ -1484,7 +1548,7 @@ pre:has(.code-block-header) {
    (Named `-session-project` not `-project` to avoid colliding with the
    project-grouping header class higher up in this stylesheet.) */
 .nbi-claude-code-picker-session-project {
-  margin-left: auto;
+  margin-inline-start: auto;
   font-size: 11px;
   color: var(--jp-ui-font-color3);
   max-width: 50%;
@@ -1504,7 +1568,7 @@ pre:has(.code-block-header) {
 .mode-tools-group {
   display: flex;
   flex-direction: column;
-  padding-left: 5px;
+  padding-inline-start: 5px;
   margin-bottom: 5px;
 }
 
@@ -1657,8 +1721,8 @@ button.send-button:disabled:active:not(.send-button-stop) {
   width: 100%;
   flex-grow: 1;
   border: 1px solid var(--jp-border-color2);
-  border-left: none;
-  border-right: none;
+  border-inline-start: none;
+  border-inline-end: none;
 }
 
 .inline-popover-footer {
@@ -1668,7 +1732,7 @@ button.send-button:disabled:active:not(.send-button-stop) {
   flex-direction: row;
   gap: 5px;
   align-items: center;
-  padding-left: 5px;
+  padding-inline-start: 5px;
   background-color: var(--jp-layout-color2);
 }
 
@@ -1763,7 +1827,7 @@ button.send-button:disabled:active:not(.send-button-stop) {
 }
 
 .form-field-row {
-  padding-left: 15px;
+  padding-inline-start: 15px;
 }
 
 .form-field-description {
@@ -1781,7 +1845,7 @@ button.send-button:disabled:active:not(.send-button-stop) {
 }
 
 .model-config-section-body {
-  padding-left: 10px;
+  padding-inline-start: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1884,7 +1948,7 @@ button.send-button:disabled:active:not(.send-button-stop) {
   border: none;
   padding: 0;
   font: inherit;
-  text-align: left;
+  text-align: start;
   width: 100%;
 }
 
@@ -1940,7 +2004,7 @@ button.send-button:disabled:active:not(.send-button-stop) {
 
 .expandable-content.nbi-sub-setting.expanded .nbi-sub-setting-body {
   display: block;
-  padding-left: 14px;
+  padding-inline-start: 14px;
 }
 
 .access-token-config-header {
@@ -1972,19 +2036,19 @@ svg.access-token-warning {
 }
 
 .checkbox-item-indent-0 {
-  padding-left: 0;
+  padding-inline-start: 0;
 }
 
 .checkbox-item-indent-1 {
-  padding-left: 12px;
+  padding-inline-start: 12px;
 }
 
 .checkbox-item-indent-2 {
-  padding-left: 24px;
+  padding-inline-start: 24px;
 }
 
 .checkbox-item-indent-3 {
-  padding-left: 36px;
+  padding-inline-start: 36px;
 }
 
 .checkbox-icon {
@@ -2029,7 +2093,7 @@ svg.access-token-warning {
 }
 
 .checkbox-item-description {
-  padding-left: 25px;
+  padding-inline-start: 25px;
   color: var(--jp-ui-font-color2);
   padding-bottom: 4px;
   overflow: hidden;
@@ -2076,7 +2140,7 @@ svg.access-token-warning {
   border: none;
   color: inherit;
   font: inherit;
-  text-align: left;
+  text-align: start;
   width: 100%;
 }
 
@@ -2118,8 +2182,8 @@ svg.access-token-warning {
   padding: 8px 16px;
   border-bottom: 2px solid transparent;
   border-top: none;
-  border-left: none;
-  border-right: none;
+  border-inline-start: none;
+  border-inline-end: none;
   color: var(--jp-ui-font-color2);
   margin-bottom: -1px;
   background: none;
@@ -2225,7 +2289,7 @@ svg.access-token-warning {
   margin: 4px 8px;
   border-radius: 4px;
   background-color: var(--jp-layout-color2);
-  border-left: 3px solid var(--jp-info-color1);
+  border-inline-start: 3px solid var(--jp-info-color1);
   color: var(--jp-ui-font-color1);
   font-size: var(--jp-ui-font-size0);
 }
@@ -2272,7 +2336,7 @@ svg.access-token-warning {
   border-radius: 4px;
   background-color: var(--jp-layout-color2);
   color: var(--jp-ui-font-color1);
-  border-left: 3px solid var(--jp-error-color1, #d32f2f);
+  border-inline-start: 3px solid var(--jp-error-color1, #d32f2f);
   font-size: var(--jp-ui-font-size1);
 }
 
@@ -2337,7 +2401,7 @@ svg.access-token-warning {
   border-radius: 4px;
   background-color: var(--jp-layout-color2);
   color: var(--jp-ui-font-color1);
-  border-left: 3px solid var(--jp-error-color1, #d32f2f);
+  border-inline-start: 3px solid var(--jp-error-color1, #d32f2f);
   font-size: var(--jp-ui-font-size1);
 }
 
@@ -2357,7 +2421,7 @@ svg.access-token-warning {
 .nbi-perf-table thead th,
 .nbi-perf-table td {
   padding: 6px 10px;
-  text-align: left;
+  text-align: start;
   white-space: nowrap;
   border-bottom: 1px solid var(--jp-border-color1);
 }
@@ -2394,7 +2458,7 @@ svg.access-token-warning {
   border-radius: 4px;
   background-color: var(--jp-layout-color2);
   color: var(--jp-ui-font-color1);
-  border-left: 3px solid var(--jp-warn-color1, #f57c00);
+  border-inline-start: 3px solid var(--jp-warn-color1, #f57c00);
   font-size: var(--jp-ui-font-size1);
 }
 
@@ -2454,7 +2518,7 @@ svg.access-token-warning {
 
 .nbi-perf-expander {
   width: 24px;
-  padding-right: 0;
+  padding-inline-end: 0;
 }
 
 .nbi-perf-expand-button {
@@ -2538,7 +2602,7 @@ svg.access-token-warning {
 }
 
 .nbi-perf-span-value {
-  text-align: right;
+  text-align: end;
   font-variant-numeric: tabular-nums;
   color: var(--jp-ui-font-color1);
 }
@@ -2566,7 +2630,7 @@ svg.access-token-warning {
 
 .nbi-perf-event-offset {
   min-width: 70px;
-  text-align: right;
+  text-align: end;
   font-variant-numeric: tabular-nums;
   color: var(--jp-ui-font-color2);
 }
@@ -2619,8 +2683,8 @@ svg.access-token-warning {
   color: var(--jp-ui-font-color2);
   line-height: 1.5;
   max-width: 90ch;
-  padding-left: 4px;
-  border-left: 2px solid var(--jp-border-color1);
+  padding-inline-start: 4px;
+  border-inline-start: 2px solid var(--jp-border-color1);
 }
 
 .nbi-perf-badge {
@@ -2732,7 +2796,7 @@ svg.access-token-warning {
   padding: 8px 12px;
   border-radius: 4px;
   background-color: var(--jp-layout-color2);
-  border-left: 3px solid var(--jp-warn-color1, #f57c00);
+  border-inline-start: 3px solid var(--jp-warn-color1, #f57c00);
   line-height: 1.5;
 }
 
@@ -2805,8 +2869,8 @@ svg.access-token-warning {
   color: var(--jp-ui-font-color2);
   line-height: 1.5;
   max-width: 90ch;
-  padding-left: 6px;
-  border-left: 2px solid var(--jp-border-color1);
+  padding-inline-start: 6px;
+  border-inline-start: 2px solid var(--jp-border-color1);
 }
 
 .nbi-skills-sync-message,
@@ -2845,7 +2909,7 @@ svg.access-token-warning {
 .nbi-skill-managed-badge,
 .nbi-skill-tracking-badge {
   display: inline-block;
-  margin-left: 8px;
+  margin-inline-start: 8px;
   padding: 1px 6px;
   border-radius: 10px;
   color: var(--jp-ui-font-color0);
@@ -3215,7 +3279,7 @@ svg.access-token-warning {
   display: inline-block;
   width: 6px;
   height: 6px;
-  margin-left: 6px;
+  margin-inline-start: 6px;
   border-radius: 50%;
   background-color: var(--jp-warn-color1, #f57c00);
   vertical-align: middle;
@@ -3333,7 +3397,7 @@ svg.access-token-warning {
 }
 
 .nbi-segmented-control-option + .nbi-segmented-control-option {
-  border-left: 1px solid var(--jp-border-color1);
+  border-inline-start: 1px solid var(--jp-border-color1);
 }
 
 .nbi-segmented-control-option:hover {
@@ -3403,7 +3467,7 @@ svg.access-token-warning {
   background: transparent;
   border: none;
   cursor: pointer;
-  margin-left: 4px;
+  margin-inline-start: 4px;
   padding: 0 2px;
   color: inherit;
   font-size: 1em;
@@ -3491,7 +3555,7 @@ svg.access-token-warning {
 .nbi-skill-editor-tab-menu {
   position: absolute;
   top: 100%;
-  right: 0;
+  inset-inline-end: 0;
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -3507,7 +3571,7 @@ svg.access-token-warning {
   background: transparent;
   border: none;
   padding: 6px 12px;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   color: var(--jp-ui-font-color1);
   font-size: var(--jp-ui-font-size1);
@@ -3699,7 +3763,7 @@ svg.access-token-warning {
 
 .ask-user-question-option-label-container {
   width: calc(100% - 15px);
-  margin-left: 2px;
+  margin-inline-start: 2px;
   display: flex;
   flex-direction: column;
 }
@@ -3717,7 +3781,8 @@ svg.access-token-warning {
 }
 
 .ask-user-question-footer {
-  padding: 0 0 5px 10px;
+  padding-block: 0 5px;
+  padding-inline: 10px 0;
 }
 
 .claude-mode-config-dialog .form-field-description {
@@ -3768,7 +3833,7 @@ svg.access-token-warning {
 
 .claude-session-picker-item-id {
   flex-grow: 1;
-  text-align: right;
+  text-align: end;
   font-family: var(--jp-code-font-family);
 }
 
@@ -3782,7 +3847,7 @@ svg.access-token-warning {
   color: var(--jp-ui-font-color2);
   cursor: pointer;
   padding: 2px 4px;
-  margin-left: 2px;
+  margin-inline-start: 2px;
   line-height: 1;
 }
 
@@ -3985,7 +4050,7 @@ svg.access-token-warning {
 .nbi-notebook-generation-status {
   display: inline-flex;
   align-items: center;
-  margin-left: 8px;
+  margin-inline-start: 8px;
   padding: 2px 8px;
   border-radius: 10px;
   background-color: var(--jp-brand-color3);
@@ -4167,7 +4232,8 @@ svg.access-token-warning {
 
 .nbi-tour-progress-bar {
   position: absolute;
-  inset: 0 auto 0 0;
+  inset-block: 0;
+  inset-inline: 0 auto;
   background: var(--jp-brand-color1, #2196f3);
   border-radius: 2px;
   transition: width 200ms ease-out;
@@ -4243,7 +4309,7 @@ svg.access-token-warning {
 
 .nbi-chatbook-confirm-reasons {
   margin: 0 0 8px;
-  padding-left: 1.2em;
+  padding-inline-start: 1.2em;
   color: var(--jp-warn-color1, var(--jp-ui-font-color1));
   font: 12px/1.4 var(--jp-ui-font-family);
 }
@@ -4412,7 +4478,7 @@ svg.access-token-warning {
   background: transparent;
   color: var(--jp-ui-font-color1);
   font: var(--jp-ui-font-size1) var(--jp-ui-font-family);
-  text-align: left;
+  text-align: start;
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;

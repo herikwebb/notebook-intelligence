@@ -17,7 +17,7 @@ import {
   NBIAPI
 } from '../api';
 import { TranslationBundle } from '@jupyterlab/translation';
-import { interpolate, useTrans } from '../i18n';
+import { getTextDirection, interpolate, useTrans } from '../i18n';
 import {
   lockedByEnvironmentTip,
   lockedTip,
@@ -433,7 +433,7 @@ function SettingsPanelComponent(props: any) {
   }, [activeTabSpec]);
 
   return (
-    <div className="nbi-settings-panel">
+    <div className="nbi-settings-panel" dir={getTextDirection()}>
       <SettingsPanelTabsComponent
         tabs={visibleTabs}
         activeTab={activeTab}
@@ -984,7 +984,10 @@ function SettingsPanelComponentGeneral(props: any) {
 
         <div className="model-config-section-row" style={{ width: '50%' }}>
           <div className="model-config-section-column">
-            <div className="form-field-row" style={{ paddingLeft: '10px' }}>
+            <div
+              className="form-field-row"
+              style={{ paddingInlineStart: '10px' }}
+            >
               <div className="form-field-description">
                 {trans.__('Auto-complete debouncer delay (ms)')}
               </div>

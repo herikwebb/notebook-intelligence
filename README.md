@@ -516,6 +516,7 @@ Full guide, including the span and event reference, the probe thresholds, worked
 - [`docs/chatbook-extensions.md`](docs/chatbook-extensions.md) — dynamic Chatbook context and mention providers.
 - [`docs/troubleshooting.md`](docs/troubleshooting.md) — common problems with copy-pasteable fixes.
 - [`docs/performance-diagnostics.md`](docs/performance-diagnostics.md): turn timelines, the environment probe, and how to read both.
+- [`docs/translating.md`](docs/translating.md): using NBI in your language, and fixing or adding a translation.
 - [`PRIVACY.md`](PRIVACY.md) — what NBI sends to which provider, and the egress allowlist.
 - [`SECURITY.md`](SECURITY.md) — how to report a vulnerability.
 - [`CHANGELOG.md`](CHANGELOG.md) — release history.

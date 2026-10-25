@@ -16,6 +16,7 @@ export const TRANSLATION_DOMAIN = 'notebook_intelligence';
 let bundle: TranslationBundle = nullTranslator.load(TRANSLATION_DOMAIN);
 let languageCode: string | undefined;
 let catalogLocale: string | undefined;
+let textDirection: 'rtl' | 'ltr' = 'ltr';
 
 /**
  * JupyterLab's language as a BCP 47 tag for Intl, or undefined to use the
@@ -56,6 +57,17 @@ export function initTranslations(
     bundle = (translator ?? nullTranslator).load(TRANSLATION_DOMAIN);
     languageCode = toLanguageTag(translator?.languageCode);
     catalogLocale = serverLocale(translator?.languageCode);
+    // Each catalog declares its direction by translating this token, the
+    // usual gettext way, so a language NBI has no catalog for (whose text
+    // is English) stays left to right.
+    const trans = bundle;
+    textDirection =
+      trans._p(
+        "text direction: translate as 'rtl' for a right-to-left language, otherwise 'ltr'",
+        'ltr'
+      ) === 'rtl'
+        ? 'rtl'
+        : 'ltr';
   } catch (error) {
     // A catalog JupyterLab cannot load must not stop NBI from activating.
     console.warn(
@@ -64,6 +76,7 @@ export function initTranslations(
     bundle = nullTranslator.load(TRANSLATION_DOMAIN);
     languageCode = undefined;
     catalogLocale = undefined;
+    textDirection = 'ltr';
   }
 }
 
@@ -88,6 +101,53 @@ function serverLocale(code: string | undefined): string | undefined {
  */
 export function getCatalogLocale(): string | undefined {
   return catalogLocale;
+}
+
+/**
+ * The direction NBI's own panels are laid out in. JupyterLab leaves the page
+ * left to right in every language, so an Arabic or Hebrew sentence with a
+ * Latin name in it would display out of order; NBI's panels and dialogs set
+ * this on their root instead, and their styles use logical properties, which
+ * follow it. Chat text takes its own direction per block (dir="auto" in
+ * markdown-renderer.tsx).
+ */
+export function getTextDirection(): 'rtl' | 'ltr' {
+  return textDirection;
+}
+
+/**
+ * Dialog options that lay the dialog out in NBI's text direction. JupyterLab's
+ * dialogs are left to right, so in Arabic or Hebrew a sentence with a Latin
+ * name in it would display out of order. Only the renderer changes: its
+ * header, body and footer carry dir, while the title and body stay as given,
+ * so JupyterLab still treats a string title and body as strings (close
+ * button, compact width, accessible name). Left to right, the options come
+ * back unchanged.
+ */
+export function withTextDirection<T extends object>(options: T): T {
+  const dir = getTextDirection();
+  if (dir === 'ltr') {
+    return options;
+  }
+  // Created on first use: tests mock @jupyterlab/apputils without it.
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { Dialog } = require('@jupyterlab/apputils');
+  class DirectedRenderer extends Dialog.Renderer {
+    createHeader(...args: any[]) {
+      return directed(super.createHeader(...args));
+    }
+    createBody(...args: any[]) {
+      return directed(super.createBody(...args));
+    }
+    createFooter(...args: any[]) {
+      return directed(super.createFooter(...args));
+    }
+  }
+  const directed = (widget: { node: HTMLElement }) => {
+    widget.node.dir = dir;
+    return widget;
+  };
+  return { ...options, renderer: new DirectedRenderer() };
 }
 
 /**
