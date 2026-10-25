@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"POT-Creation-Date: 2026-10-25 02:01-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: lt_LT\n"
@@ -364,12 +364,16 @@ msgstr "ACP režimas"
 msgid "ACP mode is not enabled"
 msgstr "ACP režimas neįjungtas"
 
-#: src/chat-sidebar.tsx
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
 msgid "AI Assistant"
 msgstr "DI asistentas"
 
 #: src/components/settings-panel.tsx
 msgid "API Key"
+msgstr "API raktas"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
 msgstr "API raktas"
 
 #: notebook_intelligence/readiness.py
@@ -568,7 +572,7 @@ msgstr "Vidinis branduolys"
 msgid "Bad response"
 msgstr "Blogas atsakymas"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Base URL"
 msgstr "Bazinis URL"
 
@@ -623,7 +627,7 @@ msgstr "Iškviečiamas įrankis „%1“..."
 msgid "Can't convert this notebook yet"
 msgstr "Šio bloknoto kol kas negalima konvertuoti"
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Cancel"
 msgstr "Atšaukti"
 
@@ -902,6 +906,14 @@ msgstr "Prisijungti nepavyko. Norėdami bandyti dar kartą, įkelkite MCP server
 #: src/components/perf-panel.tsx
 msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
 msgstr "Vien ryšio užmezgimas kainuoja tiek prieš prasidedant bet kokiam modelio darbui, ir kiekvienas šaltas prisijungimas prie šliuzo už tai moka."
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "Konteksto langas"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "Konteksto lango ilgis"
 
 #: src/components/settings-panel.tsx
 msgid "Conversation History"
@@ -1719,9 +1731,13 @@ msgstr "Prekyvietės parinkiklis"
 msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
 msgstr "Matuoja šį kompiuterį, o ne ciklą: konfigūracijos ir %1 katalogų failų sistemos delsą ir pralaidumą, interpretatoriaus ir CLI šaltojo paleidimo sąnaudas bei pagrindinio kompiuterio išteklių konkurenciją. Matuojamuose kataloguose jis rašo ir trina mažus laikinus failus."
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Model"
 msgstr "Modelis"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "Modelis (turi palaikyti srautinį perdavimą)"
 
 #: src/components/perf-panel.tsx
 msgid "Model name, hashed when attribute detail is set to redacted."
@@ -1955,6 +1971,10 @@ msgstr "Notebook Intelligence nustatymai"
 #: src/cell-output-toolbar.ts
 msgid "Notebook Intelligence cell actions"
 msgstr "Notebook Intelligence langelio veiksmai"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence neprisijungęs prie serverio, todėl užklausa neišsiųsta. Bandykite dar kartą po akimirkos."
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

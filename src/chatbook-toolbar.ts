@@ -155,7 +155,7 @@ async function runConvertToChatbook(
             ),
         buttons: installed
           ? [
-              Dialog.cancelButton(),
+              Dialog.cancelButton({ label: trans.__('Cancel') }),
               Dialog.okButton({ label: trans.__('Open Chatbook settings') })
             ]
           : [Dialog.cancelButton({ label: trans.__('Close') })]
@@ -196,7 +196,7 @@ async function runConvertToChatbook(
       title: trans.__('Convert to Chatbook'),
       body,
       buttons: [
-        Dialog.cancelButton(),
+        Dialog.cancelButton({ label: trans.__('Cancel') }),
         Dialog.okButton({ label: trans.__('Convert') })
       ]
     })
@@ -253,7 +253,7 @@ export async function confirmConvertChatbookNotebook(
         profile.displayName
       ),
       buttons: [
-        Dialog.cancelButton(),
+        Dialog.cancelButton({ label: trans.__('Cancel') }),
         Dialog.okButton({ label: trans.__('Export') })
       ]
     })

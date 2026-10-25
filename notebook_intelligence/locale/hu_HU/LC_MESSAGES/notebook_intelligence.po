@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"POT-Creation-Date: 2026-10-25 02:01-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: hu_HU\n"
@@ -322,12 +322,16 @@ msgstr "ACP mód"
 msgid "ACP mode is not enabled"
 msgstr "Az ACP mód nincs engedélyezve"
 
-#: src/chat-sidebar.tsx
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
 msgid "AI Assistant"
 msgstr "AI-asszisztens"
 
 #: src/components/settings-panel.tsx
 msgid "API Key"
+msgstr "API-kulcs"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
 msgstr "API-kulcs"
 
 #: notebook_intelligence/readiness.py
@@ -526,7 +530,7 @@ msgstr "Háttérkernel"
 msgid "Bad response"
 msgstr "Rossz válasz"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Base URL"
 msgstr "Alap URL"
 
@@ -579,7 +583,7 @@ msgstr "„%1” eszköz hívása..."
 msgid "Can't convert this notebook yet"
 msgstr "Ez a notebook még nem konvertálható"
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Cancel"
 msgstr "Mégse"
 
@@ -858,6 +862,14 @@ msgstr "A kapcsolódás sikertelen. Az újrapróbáláshoz töltse újra az MCP-
 #: src/components/perf-panel.tsx
 msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
 msgstr "Már a kapcsolat kiépítése ennyibe kerül, mielőtt bármilyen modellmunka elkezdődne, és ezt minden hideg kapcsolat megfizeti az átjáró felé."
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "Kontextusablak"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "Kontextusablak hossza"
 
 #: src/components/settings-panel.tsx
 msgid "Conversation History"
@@ -1675,9 +1687,13 @@ msgstr "Piactérválasztó"
 msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
 msgstr "Ez a gépet méri, nem egy kört: a fájlrendszer késleltetését és átviteli sebességét a konfigurációs és a(z) %1 könyvtárban, az értelmező és a CLI hidegindítási költségét, valamint a gazdagép terheltségét. Kis ideiglenes fájlokat ír és töröl a mért könyvtárakban."
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Model"
 msgstr "Modell"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "Modell (támogatnia kell a streamelést)"
 
 #: src/components/perf-panel.tsx
 msgid "Model name, hashed when attribute detail is set to redacted."
@@ -1905,6 +1921,10 @@ msgstr "Notebook Intelligence beállításai"
 #: src/cell-output-toolbar.ts
 msgid "Notebook Intelligence cell actions"
 msgstr "Notebook Intelligence cellaműveletek"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "A Notebook Intelligence nem csatlakozik a kiszolgálóhoz, ezért a kérés nem lett elküldve. Próbálja újra egy pillanat múlva."
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

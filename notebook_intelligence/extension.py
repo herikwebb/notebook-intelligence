@@ -96,6 +96,8 @@ from notebook_intelligence.claude_sessions import (
 )
 import notebook_intelligence.github_copilot as github_copilot
 from notebook_intelligence.built_in_toolsets import built_in_toolsets, toolset_description
+from notebook_intelligence.base_chat_participant import BaseChatParticipant
+from notebook_intelligence.llm_providers.property_labels import translate_model_properties
 from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_claude_config_dir, get_jupyter_root_dir, set_jupyter_root_dir, is_builtin_tool_enabled_in_env, is_provider_enabled_in_env, filter_models_by_enabled_providers, VALID_CODING_AGENT_LAUNCHERS, compute_effective_disabled_launchers, validate_coding_agent_launcher_ids, resolve_claude_cli_path, resolve_opencode_cli_path, resolve_pi_cli_path, resolve_copilot_cli_path, resolve_codex_cli_path, safe_anchor_uri, has_dangerous_text_codepoints, split_csv
 from notebook_intelligence.context_factory import RuleContextFactory
 from notebook_intelligence.skillset import SKILL_NAME_REGEX
@@ -866,11 +868,17 @@ class GetCapabilitiesHandler(APIHandler):
             # Filtered by the same predicate as `llm_providers` above: the
             # model lists walk every registered provider, so without this a
             # disabled provider kept shipping its models (#431).
-            "chat_models": filter_models_by_enabled_providers(
-                ai_service_manager.chat_model_ids, is_provider_enabled
+            "chat_models": translate_model_properties(
+                trans,
+                filter_models_by_enabled_providers(
+                    ai_service_manager.chat_model_ids, is_provider_enabled
+                ),
             ),
-            "inline_completion_models": filter_models_by_enabled_providers(
-                ai_service_manager.inline_completion_model_ids, is_provider_enabled
+            "inline_completion_models": translate_model_properties(
+                trans,
+                filter_models_by_enabled_providers(
+                    ai_service_manager.inline_completion_model_ids, is_provider_enabled
+                ),
             ),
             "embedding_models": filter_models_by_enabled_providers(
                 ai_service_manager.embedding_model_ids, is_provider_enabled
@@ -981,7 +989,7 @@ class GetCapabilitiesHandler(APIHandler):
                 continue
             response["chat_participants"].append({
                 "id": participant.id,
-                "name": participant.name,
+                "name": _participant_name(trans, participant),
                 "description": participant.description,
                 "iconPath": participant.icon_path,
                 "commands": [command.name for command in participant.commands]
@@ -1609,6 +1617,15 @@ def _policy_messages(trans: i18n.TranslationBundle) -> dict:
             "Skills management is disabled by your administrator"
         ),
     }
+
+
+def _participant_name(trans: i18n.TranslationBundle, participant) -> str:
+    """The built-in assistant's name ("AI Assistant") in the user's language.
+    A participant that names itself (GitHub Copilot, Claude Code, an
+    extension's) keeps its own name."""
+    if participant.name == BaseChatParticipant.name.fget(participant):
+        return trans.__("AI Assistant")
+    return participant.name
 
 
 def _translated_policy_message(trans: i18n.TranslationBundle, message: str) -> str:

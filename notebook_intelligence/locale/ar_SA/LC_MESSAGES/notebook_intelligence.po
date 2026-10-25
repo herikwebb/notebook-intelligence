@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"POT-Creation-Date: 2026-10-25 02:01-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: ar_SA\n"
@@ -427,12 +427,16 @@ msgstr "وضع ACP"
 msgid "ACP mode is not enabled"
 msgstr "وضع ACP غير مفعَّل"
 
-#: src/chat-sidebar.tsx
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
 msgid "AI Assistant"
 msgstr "مساعد الذكاء الاصطناعي"
 
 #: src/components/settings-panel.tsx
 msgid "API Key"
+msgstr "مفتاح API"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
 msgstr "مفتاح API"
 
 #: notebook_intelligence/readiness.py
@@ -631,7 +635,7 @@ msgstr "النواة الخلفية"
 msgid "Bad response"
 msgstr "استجابة غير صالحة"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Base URL"
 msgstr "عنوان URL الأساسي"
 
@@ -689,7 +693,7 @@ msgstr "جارٍ استدعاء الأداة '%1'..."
 msgid "Can't convert this notebook yet"
 msgstr "لا يمكن تحويل دفتر الملاحظات هذا بعد"
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Cancel"
 msgstr "إلغاء"
 
@@ -968,6 +972,14 @@ msgstr "فشل الاتصال. أعد تحميل خوادم MCP لإعادة ا�
 #: src/components/perf-panel.tsx
 msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
 msgstr "يكلّف إعداد الاتصال وحده هذا القدر قبل بدء أي عمل للنموذج، وكل اتصال بارد بالبوابة يدفع هذه الكلفة."
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "نافذة السياق"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "طول نافذة السياق"
 
 #: src/components/settings-panel.tsx
 msgid "Conversation History"
@@ -1785,9 +1797,13 @@ msgstr "منتقي السوق"
 msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
 msgstr "يقيس هذا الجهاز بدلًا من جولة: زمن استجابة نظام الملفات وإنتاجيته لدليلي التكوين و%1، وكلفة البدء البارد للمفسِّر وواجهة CLI، والتنافس على موارد المضيف. ويكتب ملفات مؤقتة صغيرة ويحذفها في الأدلة التي يقيسها."
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Model"
 msgstr "النموذج"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "النموذج (يجب أن يدعم البث)"
 
 #: src/components/perf-panel.tsx
 msgid "Model name, hashed when attribute detail is set to redacted."
@@ -2030,6 +2046,10 @@ msgstr "إعدادات Notebook Intelligence"
 #: src/cell-output-toolbar.ts
 msgid "Notebook Intelligence cell actions"
 msgstr "إجراءات خلايا Notebook Intelligence"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence غير متصل بالخادم، لذا لم يتم إرسال الطلب. حاول مرة أخرى بعد قليل."
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

@@ -116,7 +116,7 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
         title: trans.__('Uninstall plugin?'),
         body: removedFromScopeConfig(trans, 'plugin', name, scope),
         buttons: [
-          Dialog.cancelButton(),
+          Dialog.cancelButton({ label: trans.__('Cancel') }),
           Dialog.warnButton({ label: trans.__('Uninstall') })
         ]
       })
@@ -167,7 +167,7 @@ export function SettingsPanelComponentPlugins(_props: any): JSX.Element {
           name
         ),
         buttons: [
-          Dialog.cancelButton(),
+          Dialog.cancelButton({ label: trans.__('Cancel') }),
           Dialog.warnButton({ label: trans.__('Remove') })
         ]
       })

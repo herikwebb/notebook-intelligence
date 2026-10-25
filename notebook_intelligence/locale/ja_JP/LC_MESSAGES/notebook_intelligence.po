@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"POT-Creation-Date: 2026-10-25 02:01-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: ja_JP\n"
@@ -322,12 +322,16 @@ msgstr "ACP モード"
 msgid "ACP mode is not enabled"
 msgstr "ACP モードが有効になっていません"
 
-#: src/chat-sidebar.tsx
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
 msgid "AI Assistant"
 msgstr "AI アシスタント"
 
 #: src/components/settings-panel.tsx
 msgid "API Key"
+msgstr "API キー"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
 msgstr "API キー"
 
 #: notebook_intelligence/readiness.py
@@ -526,7 +530,7 @@ msgstr "バックエンドカーネル"
 msgid "Bad response"
 msgstr "不適切な応答"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Base URL"
 msgstr "ベース URL"
 
@@ -579,7 +583,7 @@ msgstr "ツール「%1」を呼び出しています..."
 msgid "Can't convert this notebook yet"
 msgstr "この Notebook はまだ変換できません"
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -858,6 +862,14 @@ msgstr "接続に失敗しました。再試行するには MCP サーバーを�
 #: src/components/perf-panel.tsx
 msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
 msgstr "モデルの処理が始まる前に、接続の確立だけでこれだけの時間がかかります。ゲートウェイへのコールド接続のたびに発生します。"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "コンテキストウィンドウ"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "コンテキストウィンドウの長さ"
 
 #: src/components/settings-panel.tsx
 msgid "Conversation History"
@@ -1675,9 +1687,13 @@ msgstr "マーケットプレイスの選択"
 msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
 msgstr "ターンではなくこのマシンを計測します: 設定ディレクトリと %1 ディレクトリのファイルシステムのレイテンシとスループット、インタープリターと CLI のコールドスタートのコスト、ホストのリソース競合。計測対象のディレクトリに小さな一時ファイルを書き込み、削除します。"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Model"
 msgstr "モデル"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "モデル (ストリーミング対応が必要)"
 
 #: src/components/perf-panel.tsx
 msgid "Model name, hashed when attribute detail is set to redacted."
@@ -1905,6 +1921,10 @@ msgstr "Notebook Intelligence の設定"
 #: src/cell-output-toolbar.ts
 msgid "Notebook Intelligence cell actions"
 msgstr "Notebook Intelligence のセル操作"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence がサーバーに接続されていないため、リクエストは送信されませんでした。しばらくしてからもう一度お試しください。"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

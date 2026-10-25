@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 00:30-0400\n"
+"POT-Creation-Date: 2026-10-25 02:01-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: id_ID\n"
@@ -343,12 +343,16 @@ msgstr "Mode ACP"
 msgid "ACP mode is not enabled"
 msgstr "Mode ACP tidak diaktifkan"
 
-#: src/chat-sidebar.tsx
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
 msgid "AI Assistant"
 msgstr "Asisten AI"
 
 #: src/components/settings-panel.tsx
 msgid "API Key"
+msgstr "Kunci API"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
 msgstr "Kunci API"
 
 #: notebook_intelligence/readiness.py
@@ -547,7 +551,7 @@ msgstr "Kernel backend"
 msgid "Bad response"
 msgstr "Respons buruk"
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Base URL"
 msgstr "URL Dasar"
 
@@ -601,7 +605,7 @@ msgstr "Memanggil alat '%1'..."
 msgid "Can't convert this notebook yet"
 msgstr "Notebook ini belum dapat dikonversi"
 
-#: src/chat-sidebar.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
 msgid "Cancel"
 msgstr "Batalkan"
 
@@ -880,6 +884,14 @@ msgstr "Koneksi gagal. Muat ulang server MCP untuk mencoba lagi."
 #: src/components/perf-panel.tsx
 msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
 msgstr "Penyiapan koneksi saja sudah memakan sebanyak ini sebelum pekerjaan model dimulai, dan setiap koneksi dingin ke gateway menanggungnya."
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "Jendela konteks"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "Panjang jendela konteks"
 
 #: src/components/settings-panel.tsx
 msgid "Conversation History"
@@ -1697,9 +1709,13 @@ msgstr "Pemilih marketplace"
 msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
 msgstr "Mengukur mesin ini, bukan sebuah giliran: latensi dan throughput sistem berkas untuk direktori konfigurasi dan %1, biaya cold start interpreter dan CLI, serta perebutan sumber daya host. Pengukuran ini menulis dan menghapus berkas sementara berukuran kecil di direktori yang diukurnya."
 
-#: src/components/settings-panel.tsx
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
 msgid "Model"
 msgstr "Model"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "Model (harus mendukung streaming)"
 
 #: src/components/perf-panel.tsx
 msgid "Model name, hashed when attribute detail is set to redacted."
@@ -1930,6 +1946,10 @@ msgstr "Pengaturan Notebook Intelligence"
 #: src/cell-output-toolbar.ts
 msgid "Notebook Intelligence cell actions"
 msgstr "Tindakan sel Notebook Intelligence"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence tidak terhubung ke server, sehingga permintaan tidak dikirim. Coba lagi sebentar lagi."
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

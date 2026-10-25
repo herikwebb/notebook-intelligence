@@ -1831,7 +1831,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
             title: trans.__('Claude Code terminal session'),
             body: picker,
             buttons: [
-              Dialog.cancelButton(),
+              Dialog.cancelButton({ label: trans.__('Cancel') }),
               Dialog.okButton({ label: trans.__('＋ New Session') })
             ],
             hasClose: true

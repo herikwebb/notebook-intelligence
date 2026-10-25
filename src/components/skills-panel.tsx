@@ -312,7 +312,7 @@ export function SettingsPanelComponentSkills(_props: any): JSX.Element {
         title: trans.__('Delete skill?'),
         body: trans.__('"%1" will be deleted.', skill.name),
         buttons: [
-          Dialog.cancelButton(),
+          Dialog.cancelButton({ label: trans.__('Cancel') }),
           Dialog.warnButton({ label: trans.__('Delete') })
         ]
       })
@@ -1641,7 +1641,7 @@ function SkillEditor(props: {
         title: trans.__('Delete file?'),
         body: trans.__('"%1" will be permanently deleted.', path),
         buttons: [
-          Dialog.cancelButton(),
+          Dialog.cancelButton({ label: trans.__('Cancel') }),
           Dialog.warnButton({ label: trans.__('Delete') })
         ]
       })
