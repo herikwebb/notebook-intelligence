@@ -11,7 +11,7 @@ import { VscCheck, VscClose, VscCopy, VscHistory } from '../icons';
 
 import { IClaudeSessionInfo, IClaudeSessionList, NBIAPI } from '../api';
 import { buildResumeCommand, writeTextToClipboard } from '../utils';
-import { useTrans } from '../i18n';
+import { getLanguageCode, useTrans } from '../i18n';
 
 export interface IClaudeSessionPickerProps {
   onResume: (session: IClaudeSessionInfo) => void;
@@ -35,7 +35,7 @@ function formatTimestamp(epochSeconds: number): string {
   if (Number.isNaN(date.getTime())) {
     return '';
   }
-  return date.toLocaleString();
+  return date.toLocaleString(getLanguageCode());
 }
 
 export function ClaudeSessionPicker(

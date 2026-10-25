@@ -22,12 +22,17 @@ _PLURAL_FORMS = re.compile(
 )
 
 
-_PLACEHOLDER = re.compile(r"%(\d+)")
+# %1, %2 ... for trans.__ arguments, and {name} for the template tokens the
+# tour's launcher step fills in ({launchers}).
+_PLACEHOLDER = re.compile(r"%(\d+)|(\{[a-z_]+\})")
 
 
 def _placeholders(text: str) -> set:
     # Gettext.strfmt reads %% as a literal percent sign, not a placeholder.
-    return set(_PLACEHOLDER.findall(text.replace("%%", "")))
+    return {
+        number or token
+        for number, token in _PLACEHOLDER.findall(text.replace("%%", ""))
+    }
 
 
 def _check_placeholders(entry: polib.POEntry, po_path: Path) -> None:

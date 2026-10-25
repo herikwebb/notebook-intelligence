@@ -17,7 +17,8 @@ import {
 } from '@jupyterlab/apputils';
 import { dispatchShowTour } from './tour/tour-events';
 import { resetTour } from './tour/tour-state';
-import { TOUR_DEFAULTS } from './tour/tour-steps';
+import { TOUR_DEFAULTS, withoutDefaultCopies } from './tour/tour-steps';
+import { tourText } from './tour/tour-text';
 import { commandLabel } from './tour/tour-config';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 
@@ -1334,8 +1335,8 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     app.commands.addCommand(CommandIDs.showTour, {
       label: () =>
         commandLabel(
-          NBIAPI.config.tourOverrides,
-          TOUR_DEFAULTS.command?.label ?? 'Show NBI tour'
+          withoutDefaultCopies(NBIAPI.config.tourOverrides),
+          tourText(trans, TOUR_DEFAULTS.command?.label ?? 'Show NBI tour')
         ),
       caption: trans.__(
         'Replay the first-run tour highlighting the chat sidebar affordances'

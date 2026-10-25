@@ -35,6 +35,15 @@ import polib
 ROOT = Path(__file__).resolve().parent.parent
 DOMAIN = "notebook_intelligence"
 SRC_DIR = ROOT / "src"
+# The first-run tour's English copy. It doubles as the admin override
+# template, so it stays JSON; src/tour/tour-text.ts translates its strings
+# under this context when the tour is shown.
+TOUR_DEFAULTS_PATH = SRC_DIR / "tour" / "tour-defaults.json"
+TOUR_CONTEXT = "first-run tour"
+TOUR_TEMPLATE_CONTEXT = (
+    "first-run tour; keep {launchers} as written, and 'Coding Agent' as "
+    "JupyterLab's Launcher names it"
+)
 LOCALE_DIR = ROOT / DOMAIN / "locale"
 POT_PATH = LOCALE_DIR / f"{DOMAIN}.pot"
 WRAP = 100000
@@ -116,6 +125,19 @@ def build_template() -> polib.POFile:
 
     with _captured_output():
         tsx_items = extract_tsx_strings(SRC_DIR)
+
+    def tour_strings(node):
+        if isinstance(node, str):
+            yield node
+        elif isinstance(node, dict):
+            for value in node.values():
+                yield from tour_strings(value)
+
+    tour_ref = TOUR_DEFAULTS_PATH.relative_to(ROOT).as_posix()
+    tour_defaults = json.loads(TOUR_DEFAULTS_PATH.read_text(encoding="utf-8"))
+    for text in tour_strings(tour_defaults):
+        context = TOUR_TEMPLATE_CONTEXT if "{launchers}" in text else TOUR_CONTEXT
+        add(text, tour_ref, context)
 
     for item in tsx_items:
         for path, _line in item["occurrences"]:

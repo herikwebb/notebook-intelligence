@@ -14,6 +14,35 @@ import {
 export const TRANSLATION_DOMAIN = 'notebook_intelligence';
 
 let bundle: TranslationBundle = nullTranslator.load(TRANSLATION_DOMAIN);
+let languageCode: string | undefined;
+
+/**
+ * JupyterLab's language as a BCP 47 tag for Intl, or undefined to use the
+ * browser's own locale. JupyterLab reports a locale setting (`de_DE`);
+ * Intl wants `de-DE`. Plain English, JupyterLab's default, maps to
+ * undefined so an en-GB or de-DE browser keeps its date and number style,
+ * and so does a language Intl does not support here (rather than whatever
+ * locale Intl would silently substitute).
+ */
+export function toLanguageTag(
+  code: string | null | undefined
+): string | undefined {
+  const tag = (code ?? '').trim().replace(/_/g, '-');
+  if (!tag || tag === 'default' || tag.toLowerCase() === 'en') {
+    return undefined;
+  }
+  try {
+    // Canonical first, so a legacy code (tl, iw, in) is compared with what
+    // Intl turns it into (fil, he, id). getCanonicalLocales is newer than
+    // this project's TypeScript lib target.
+    const canonical: string = (Intl as any).getCanonicalLocales(tag)[0];
+    const resolved = new Intl.NumberFormat(canonical).resolvedOptions().locale;
+    const language = (part: string) => part.split('-')[0].toLowerCase();
+    return language(resolved) === language(canonical) ? resolved : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 /**
  * Bind NBI's strings to JupyterLab's translator. Called once when the plugin
@@ -24,13 +53,23 @@ export function initTranslations(
 ): void {
   try {
     bundle = (translator ?? nullTranslator).load(TRANSLATION_DOMAIN);
+    languageCode = toLanguageTag(translator?.languageCode);
   } catch (error) {
     // A catalog JupyterLab cannot load must not stop NBI from activating.
     console.warn(
       `Notebook Intelligence translations failed to load; using English: ${error}`
     );
     bundle = nullTranslator.load(TRANSLATION_DOMAIN);
+    languageCode = undefined;
   }
+}
+
+/**
+ * JupyterLab's language as a BCP 47 tag for Intl formatting, or undefined
+ * when the browser's locale should be used (see toLanguageTag).
+ */
+export function getLanguageCode(): string | undefined {
+  return languageCode;
 }
 
 /**
@@ -109,4 +148,29 @@ export function interpolate(
     }
   });
   return nodes.filter(part => part !== '');
+}
+
+const numberFormats = new Map<string, Intl.NumberFormat>();
+
+/**
+ * A number in JupyterLab's language (its digits and decimal separator), or
+ * in English when JupyterLab is in English: the text around it is English
+ * then, whatever the browser's locale. No digit grouping, so English output
+ * matches plain toFixed. Rounded with toFixed first (Intl rounds halfway
+ * cases from the decimal string), and adding 0 turns a rounded -0 into 0.
+ * Formatters are cached; tables format hundreds of values per render.
+ */
+export function formatNumber(value: number, fractionDigits: number): string {
+  const locale = getLanguageCode() ?? 'en';
+  const key = `${locale}|${fractionDigits}`;
+  let format = numberFormats.get(key);
+  if (!format) {
+    format = new Intl.NumberFormat(locale, {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+      useGrouping: false
+    });
+    numberFormats.set(key, format);
+  }
+  return format.format(Number(value.toFixed(fractionDigits)) + 0);
 }
