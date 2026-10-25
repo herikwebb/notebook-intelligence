@@ -8,6 +8,7 @@ import React, {
   useState
 } from 'react';
 import { IClaudeSessionInfo, NBIAPI } from '../api';
+import { useTrans } from '../i18n';
 
 export interface ILauncherPickerProps {
   onSessionSelected: (session: IClaudeSessionInfo) => void;
@@ -28,6 +29,7 @@ function projectLabel(cwd: string | undefined | null): string {
 export function LauncherPicker({
   onSessionSelected
 }: ILauncherPickerProps): JSX.Element {
+  const trans = useTrans();
   const [sessions, setSessions] = useState<IClaudeSessionInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -43,7 +45,9 @@ export function LauncherPicker({
         setLoading(false);
       })
       .catch((reason: any) => {
-        setError(String(reason?.message ?? reason ?? 'Unknown error'));
+        setError(
+          String(reason?.message ?? reason ?? trans.__('Unknown error'))
+        );
         setLoading(false);
       });
   }, []);
@@ -131,7 +135,7 @@ export function LauncherPicker({
   if (loading) {
     return (
       <div className="nbi-claude-code-picker-status">
-        Loading sessions&#8230;
+        {trans.__('Loading sessions…')}
       </div>
     );
   }
@@ -155,7 +159,7 @@ export function LauncherPicker({
       <input
         className="nbi-claude-code-picker-search"
         type="text"
-        placeholder="Filter sessions..."
+        placeholder={trans.__('Filter sessions...')}
         value={filter}
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           setFilter(e.target.value)
@@ -175,8 +179,8 @@ export function LauncherPicker({
         {filtered.length === 0 ? (
           <div className="nbi-claude-code-picker-empty">
             {filter
-              ? 'No sessions match your filter.'
-              : 'No previous sessions found.'}
+              ? trans.__('No sessions match your filter.')
+              : trans.__('No previous sessions found.')}
           </div>
         ) : (
           filtered.map((session, index) => {
