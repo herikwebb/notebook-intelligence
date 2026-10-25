@@ -14,7 +14,13 @@ import re
 from pathlib import Path
 
 import polib
-from hatchling.builders.hooks.plugin.interface import BuildHookInterface
+
+try:
+    from hatchling.builders.hooks.plugin.interface import BuildHookInterface
+except ImportError:
+    # Only build environments have hatchling. `jlpm i18n:compile` imports
+    # this module for compile_catalogs alone and never touches the hook.
+    BuildHookInterface = object
 
 DOMAIN = "notebook_intelligence"
 # The check @jupyterlab/translation's Gettext applies when it first resolves a
@@ -69,6 +75,15 @@ def _jed_bundle(po: polib.POFile, po_path: Path, version: str) -> dict:
         )
     if not _PLURAL_FORMS.match(plural_forms):
         raise ValueError(f"{po_path} has an invalid Plural-Forms: {plural_forms!r}")
+    # The frontend looks the bundle up by JupyterLab's locale id, which is the
+    # folder name; a header that differs (Babel writes zh_Hans_CN for zh_CN)
+    # would make it skip the catalog without a word.
+    folder = po_path.parts[-3]
+    if language != folder:
+        raise ValueError(
+            f"{po_path} declares Language {language!r}, but JupyterLab loads it "
+            f"as {folder!r}; make the header match the folder."
+        )
     nplurals = int(re.search(r"nplurals\s*=\s*(\d+)", plural_forms).group(1))
     bundle = {
         "": {

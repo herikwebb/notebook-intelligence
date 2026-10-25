@@ -5,7 +5,6 @@ import importlib.util
 import json
 import re
 import sys
-import types
 from pathlib import Path
 
 import polib
@@ -14,28 +13,27 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 
 
-@pytest.fixture
-def hatch_build(monkeypatch):
-    # The hook subclasses hatchling's interface, which only build
-    # environments have; compiling catalogs does not touch it.
-    try:
-        import hatchling.builders.hooks.plugin.interface  # noqa: F401
-    except ImportError:
-        interface = types.ModuleType("hatchling.builders.hooks.plugin.interface")
-        interface.BuildHookInterface = object
-        for name in (
-            "hatchling",
-            "hatchling.builders",
-            "hatchling.builders.hooks",
-            "hatchling.builders.hooks.plugin",
-        ):
-            if name not in sys.modules:
-                monkeypatch.setitem(sys.modules, name, types.ModuleType(name))
-        monkeypatch.setitem(sys.modules, interface.__name__, interface)
+def _load_hatch_build():
     spec = importlib.util.spec_from_file_location("hatch_build", ROOT / "hatch_build.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+@pytest.fixture
+def hatch_build():
+    return _load_hatch_build()
+
+
+def test_catalogs_compile_without_hatchling(monkeypatch):
+    """`jlpm i18n:compile` imports hatch_build.py in a dev environment, which
+    has no hatchling: only the build backend's isolated environment does."""
+    for name in list(sys.modules):
+        if name == "hatchling" or name.startswith("hatchling."):
+            monkeypatch.delitem(sys.modules, name)
+    monkeypatch.setitem(sys.modules, "hatchling", None)
+    module = _load_hatch_build()
+    assert callable(module.compile_catalogs)
 
 
 HEADERS = {
@@ -279,10 +277,30 @@ def test_every_committed_catalog_builds(tmp_path, hatch_build):
         shutil.copy(po_path, target)
     compiled = hatch_build.compile_catalogs(tmp_path, "0.0.0")
     assert len(compiled) == len(catalogs)
-    for po_path in catalogs:
-        # Each folder's Language header names it, as JupyterLab's packs do.
-        language = polib.pofile(str(po_path)).metadata.get("Language")
-        assert language == po_path.parts[-3], po_path
+
+
+def test_language_header_must_name_the_folder(tmp_path, hatch_build):
+    """The frontend keys the bundle by JupyterLab's locale id, the folder
+    name; Babel's `init` writes zh_Hans_CN for zh_CN, which it never matches."""
+    _write_catalog(tmp_path, dict(HEADERS, Language="de_Latn_DE"))
+    with pytest.raises(ValueError, match="loads it as 'de_DE'"):
+        hatch_build.compile_catalogs(tmp_path, "6.3.0")
+
+
+def test_update_names_the_folder_in_the_language_header(tmp_path):
+    """`jlpm i18n:update -l zh_CN` must leave a catalog the build accepts."""
+    po_path = _write_catalog(tmp_path, dict(HEADERS, Language="de_Latn_DE"))
+    script = _script()
+    script._fix_headers(po_path, "de_DE", {})
+    assert polib.pofile(str(po_path)).metadata["Language"] == "de_DE"
+
+
+def test_update_restores_plural_forms_babel_dropped(tmp_path):
+    headers = {k: v for k, v in HEADERS.items() if k != "Plural-Forms"}
+    po_path = _write_catalog(tmp_path, headers)
+    script = _script()
+    script._fix_headers(po_path, "de_DE", {"Plural-Forms": HEADERS["Plural-Forms"]})
+    assert polib.pofile(str(po_path)).metadata["Plural-Forms"] == HEADERS["Plural-Forms"]
 
 
 def test_a_plural_entry_needs_every_form(tmp_path, hatch_build):

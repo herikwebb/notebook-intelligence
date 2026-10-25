@@ -1815,6 +1815,12 @@ msgid "No chat participant is available."
 msgstr ""
 
 #: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
 msgid_plural "No files added: %1 files are already attached."
 msgstr[0] ""
