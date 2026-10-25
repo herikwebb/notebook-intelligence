@@ -1,12 +1,14 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useTrans } from '../i18n';
 
 // One agent-supplied value in its own bounded, scrollable block. When the
 // block clips its content, a note outside the block says so: rendered text
 // can be taller than its label's line and character counts suggest (wide
 // glyphs, tabs), and overlay scrollbars stay hidden until scrolled.
 function ConfirmationDetailValue(props: { value: string }): JSX.Element {
+  const trans = useTrans();
   const ref = useRef<HTMLPreElement>(null);
   const [clipped, setClipped] = useState(false);
 
@@ -37,7 +39,7 @@ function ConfirmationDetailValue(props: { value: string }): JSX.Element {
       </pre>
       {clipped ? (
         <div className="chat-confirmation-detail-clipped">
-          Scroll to see all of this value.
+          {trans.__('Scroll to see all of this value.')}
         </div>
       ) : null}
     </dd>

@@ -10,6 +10,7 @@ import React, {
 import { VscClose, VscSend, VscSparkle } from '../icons';
 
 import { CheckBoxItem } from './checkbox';
+import { useTrans } from '../i18n';
 
 export interface INotebookGenerationPopoverProps {
   initialShowInChat?: boolean;
@@ -20,6 +21,7 @@ export interface INotebookGenerationPopoverProps {
 export function NotebookGenerationPopover(
   props: INotebookGenerationPopoverProps
 ): JSX.Element {
+  const trans = useTrans();
   const [prompt, setPrompt] = useState('');
   const [showInChat, setShowInChat] = useState<boolean>(
     props.initialShowInChat ?? true
@@ -74,14 +76,14 @@ export function NotebookGenerationPopover(
           <VscSparkle />
         </div>
         <div className="notebook-generation-popover-title">
-          Update active notebook
+          {trans.__('Update active notebook')}
         </div>
         <div style={{ flexGrow: 1 }}></div>
         <button
           type="button"
           className="notebook-generation-popover-close-button"
-          aria-label="Close notebook generation popover"
-          title="Close"
+          aria-label={trans.__('Close notebook generation popover')}
+          title={trans.__('Close')}
           onClick={props.onClose}
         >
           <VscClose aria-hidden="true" />
@@ -92,7 +94,9 @@ export function NotebookGenerationPopover(
           ref={textareaRef}
           className="notebook-generation-popover-input"
           rows={4}
-          placeholder="Describe how to update the active notebook..."
+          placeholder={trans.__(
+            'Describe how to update the active notebook...'
+          )}
           value={prompt}
           onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
             setPrompt(event.target.value)
@@ -101,12 +105,10 @@ export function NotebookGenerationPopover(
         />
         <CheckBoxItem
           checked={showInChat}
-          label="Show in chat"
-          tooltip={
-            'When enabled, the prompt opens the Notebook Intelligence ' +
-            'chat sidebar. Disable to keep the chat hidden and only ' +
-            'show progress on the notebook toolbar.'
-          }
+          label={trans.__('Show in chat')}
+          tooltip={trans.__(
+            'When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar.'
+          )}
           onClick={() => setShowInChat(value => !value)}
         />
         <div className="notebook-generation-popover-actions">
@@ -115,10 +117,10 @@ export function NotebookGenerationPopover(
             className="notebook-generation-popover-submit"
             disabled={!canSubmit}
             onClick={handleSubmit}
-            title="Generate (Enter)"
+            title={trans.__('Generate (Enter)')}
           >
             <VscSend />
-            <span>Generate</span>
+            <span>{trans.__('Generate')}</span>
           </button>
         </div>
       </div>

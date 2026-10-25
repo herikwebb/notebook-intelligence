@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { hasDangerousTextCodepoints, safeAnchorUri } from '../utils';
+import { useTrans } from '../i18n';
 
 type SafeAnchorProps = {
   href: string | undefined | null;
@@ -32,12 +33,13 @@ export function SafeAnchor({
   title,
   className
 }: SafeAnchorProps): React.ReactElement {
+  const trans = useTrans();
   const safeUri = safeAnchorUri(href ?? '');
   if (!safeUri) {
     return (
       <span className={className}>
         {children}
-        <span className="nbi-sr-only"> (link blocked)</span>
+        <span className="nbi-sr-only"> {trans.__('(link blocked)')}</span>
       </span>
     );
   }
@@ -54,7 +56,7 @@ export function SafeAnchor({
       className={className}
     >
       {children}
-      <span className="nbi-sr-only"> (opens in new tab)</span>
+      <span className="nbi-sr-only"> {trans.__('(opens in new tab)')}</span>
     </a>
   );
 }

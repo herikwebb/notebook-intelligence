@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { VscChevronDown, VscChevronRight } from '../icons';
 import { IToolCall, ToolCallCard } from './tool-call-card';
+import { useTrans } from '../i18n';
 
 // Groups with more calls than this start collapsed so a tool-heavy turn (or a
 // reloaded transcript) doesn't flood the chat. A live turn mounts the group at
@@ -14,6 +15,7 @@ const GROUP_COLLAPSE_THRESHOLD = 3;
  * of rows.
  */
 export function ToolCallGroup(props: { toolCalls: IToolCall[] }): JSX.Element {
+  const trans = useTrans();
   const { toolCalls } = props;
   // Hooks must run unconditionally and in a stable order: the group's length
   // grows as calls stream in, so call useState before any length branch.
@@ -35,8 +37,17 @@ export function ToolCallGroup(props: { toolCalls: IToolCall[] }): JSX.Element {
   }
 
   const failed = toolCalls.filter(t => t.status === 'failed').length;
-  const summary =
-    `${toolCalls.length} tool calls` + (failed ? ` (${failed} failed)` : '');
+  // Two counts, each pluralized on its own number, then placed by a pattern
+  // the translator can reorder.
+  const callCount = trans._n('%1 tool call', '%1 tool calls', toolCalls.length);
+  const summary = failed
+    ? trans._p(
+        'tool call summary: %1 is the call count, %2 the failed count',
+        '%1 (%2)',
+        callCount,
+        trans._n('%1 failed', '%1 failed', failed)
+      )
+    : callCount;
 
   return (
     <div className="nbi-tool-call-group">

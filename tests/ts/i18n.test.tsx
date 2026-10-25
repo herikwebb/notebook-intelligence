@@ -6,6 +6,7 @@ import { render, screen } from '@testing-library/react';
 import {
   getTrans,
   initTranslations,
+  interpolate,
   TranslationContext,
   TRANSLATION_DOMAIN,
   useTrans
@@ -39,7 +40,8 @@ describe('i18n', () => {
         throw new Error('Wrong jsonData');
       }
     });
-    expect(getTrans().__('Failed to find notebook: %1', 'a.ipynb')).toBe(
+    const trans = getTrans();
+    expect(trans.__('Failed to find notebook: %1', 'a.ipynb')).toBe(
       'Failed to find notebook: a.ipynb'
     );
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('using English'));
@@ -49,7 +51,8 @@ describe('i18n', () => {
   it('falls back to English when the translator goes away', () => {
     initTranslations(pseudoTranslator);
     initTranslations(null);
-    expect(getTrans().__('Close')).toBe('Close');
+    const trans = getTrans();
+    expect(trans.__('Close')).toBe('Close');
   });
 
   it('translates strings built outside React through the bound bundle', () => {
@@ -74,5 +77,49 @@ describe('i18n', () => {
       </TranslationContext.Provider>
     );
     expect(screen.getByText(pseudo('Close'))).toBeInTheDocument();
+  });
+});
+
+describe('interpolate', () => {
+  it('places elements where the translated sentence puts them', () => {
+    initTranslations(pseudoTranslator);
+    const trans = getTrans();
+    render(
+      <p data-testid="sentence">
+        {interpolate(
+          (first, second) => trans.__('Read %2 before %1.', first, second),
+          <a href="#a">A</a>,
+          <b>B</b>
+        )}
+      </p>
+    );
+    const sentence = screen.getByTestId('sentence');
+    expect(sentence.textContent).toBe(pseudo('Read B before A.'));
+    expect(sentence.querySelector('b')?.textContent).toBe('B');
+    expect(sentence.querySelector('a')?.textContent).toBe('A');
+  });
+
+  it('keeps an element whose placeholder the translation leaves out', () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      const { rerender } = render(
+        <p data-testid="sentence">
+          {interpolate(() => 'Enter the code.', <b>ABCD-1234</b>)}
+        </p>
+      );
+      const sentence = screen.getByTestId('sentence');
+      expect(sentence.textContent).toBe('Enter the code. ABCD-1234');
+      rerender(
+        <p data-testid="sentence">
+          {interpolate(() => 'Enter the code.', <b>ABCD-1234</b>)}
+        </p>
+      );
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining('"Enter the code." leaves out placeholder %1')
+      );
+    } finally {
+      warn.mockRestore();
+    }
   });
 });

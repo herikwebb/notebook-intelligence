@@ -18,6 +18,7 @@ import { MarkdownLink } from './components/markdown-link';
 import { isDarkTheme, writeTextToClipboard } from './utils';
 import { IActiveDocumentInfo } from './tokens';
 import { resolveCodeClassName } from './markdown-code-class';
+import { useTrans } from './i18n';
 
 type MarkdownRendererProps = {
   children: string;
@@ -30,6 +31,7 @@ export function MarkdownRenderer({
   getApp,
   getActiveDocumentInfo
 }: MarkdownRendererProps) {
+  const trans = useTrans();
   const app = getApp();
   const activeDocumentInfo = getActiveDocumentInfo();
   const isNotebook = activeDocumentInfo.filename.endsWith('.ipynb');
@@ -128,17 +130,17 @@ export function MarkdownRenderer({
                       type="button"
                       className="code-block-header-button"
                       onClick={() => handleCopyClick()}
-                      aria-label="Copy code to clipboard"
+                      aria-label={trans.__('Copy code to clipboard')}
                     >
                       <VscCopy size={16} aria-hidden="true" />
-                      <span>Copy</span>
+                      <span>{trans.__('Copy')}</span>
                     </button>
                     <button
                       type="button"
                       className="code-block-header-button"
                       onClick={() => handleInsertAtCursorClick()}
-                      aria-label="Insert code at cursor"
-                      title="Insert at cursor"
+                      aria-label={trans.__('Insert code at cursor')}
+                      title={trans.__('Insert at cursor')}
                     >
                       <VscInsert size={16} aria-hidden="true" />
                     </button>
@@ -147,8 +149,8 @@ export function MarkdownRenderer({
                         type="button"
                         className="code-block-header-button"
                         onClick={() => handleAddCodeAsNewCell()}
-                        aria-label="Add code as new cell"
-                        title="Add as new cell"
+                        aria-label={trans.__('Add code as new cell')}
+                        title={trans.__('Add as new cell')}
                       >
                         <VscAdd size={16} aria-hidden="true" />
                       </button>
@@ -157,8 +159,8 @@ export function MarkdownRenderer({
                       type="button"
                       className="code-block-header-button"
                       onClick={() => handleCreateNewFileClick()}
-                      aria-label="Create new file from code"
-                      title="New file"
+                      aria-label={trans.__('Create new file from code')}
+                      title={trans.__('New file')}
                     >
                       <VscNewFile size={16} aria-hidden="true" />
                     </button>
@@ -167,8 +169,8 @@ export function MarkdownRenderer({
                         type="button"
                         className="code-block-header-button"
                         onClick={() => handleCreateNewNotebookClick()}
-                        aria-label="Create new notebook from code"
-                        title="New notebook"
+                        aria-label={trans.__('Create new notebook from code')}
+                        title={trans.__('New notebook')}
                       >
                         <VscNotebook size={16} aria-hidden="true" />
                       </button>

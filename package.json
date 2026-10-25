@@ -272,6 +272,30 @@
                     "message": "Pass a string literal: the catalog extractor skips any other argument, so the string would never be translated."
                 },
                 {
+                    "selector": "VariableDeclarator[init.callee.name=/^(getTrans|useTrans)$/][id.name!='trans']",
+                    "message": "Name the bundle `trans`: the catalog extractor only finds calls on `trans`."
+                },
+                {
+                    "selector": "AssignmentPattern[right.callee.name=/^(getTrans|useTrans)$/][left.name!='trans']",
+                    "message": "Name the bundle `trans`: the catalog extractor only finds calls on `trans`."
+                },
+                {
+                    "selector": "AssignmentExpression[right.callee.name=/^(getTrans|useTrans)$/][left.name!='trans']",
+                    "message": "Name the bundle `trans`: the catalog extractor only finds calls on `trans`."
+                },
+                {
+                    "selector": "VariableDeclarator[init.name='trans'][id.name!='trans']",
+                    "message": "Name the bundle `trans`: the catalog extractor only finds calls on `trans`."
+                },
+                {
+                    "selector": ":function > Identifier[typeAnnotation.typeAnnotation.typeName.name='TranslationBundle'][name!='trans']",
+                    "message": "Name the bundle `trans`: the catalog extractor only finds calls on `trans`."
+                },
+                {
+                    "selector": "CallExpression[callee.object.type='CallExpression'][callee.object.callee.name=/^(getTrans|useTrans)$/]",
+                    "message": "Assign the bundle to a local named `trans` first: the catalog extractor only finds calls on `trans`."
+                },
+                {
                     "selector": "CallExpression[callee.object.name='trans'][callee.property.name=/^(_np|npgettext)$/][arguments.2.type!='Literal']",
                     "message": "Pass a string literal: the catalog extractor skips any other argument, so the string would never be translated."
                 }

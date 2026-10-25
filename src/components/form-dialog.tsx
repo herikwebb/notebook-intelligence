@@ -1,6 +1,7 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import React, { ReactNode } from 'react';
+import { useTrans } from '../i18n';
 
 /**
  * Modal-form shell shared by the simple add/install dialogs across the
@@ -18,7 +19,7 @@ import React, { ReactNode } from 'react';
 export function FormDialog(props: {
   title: string;
   submitLabel: string;
-  submitInProgressLabel?: string;
+  submitInProgressLabel: string;
   canSubmit: boolean;
   submitting: boolean;
   error?: string | null;
@@ -26,6 +27,7 @@ export function FormDialog(props: {
   onSubmit: () => void;
   children: ReactNode;
 }): JSX.Element {
+  const trans = useTrans();
   return (
     <div className="nbi-modal-backdrop" onClick={props.onCancel}>
       <div
@@ -55,7 +57,7 @@ export function FormDialog(props: {
             onClick={props.onCancel}
             disabled={props.submitting}
           >
-            <div className="jp-Dialog-buttonLabel">Cancel</div>
+            <div className="jp-Dialog-buttonLabel">{trans.__('Cancel')}</div>
           </button>
           <button
             className="jp-Dialog-button jp-mod-accept jp-mod-styled"
@@ -64,7 +66,7 @@ export function FormDialog(props: {
           >
             <div className="jp-Dialog-buttonLabel">
               {props.submitting
-                ? (props.submitInProgressLabel ?? `${props.submitLabel}…`)
+                ? props.submitInProgressLabel
                 : props.submitLabel}
             </div>
           </button>

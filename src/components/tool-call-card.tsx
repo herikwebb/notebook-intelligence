@@ -11,6 +11,8 @@ import {
   VscTerminal,
   VscTools
 } from '../icons';
+import { TranslationBundle } from '@jupyterlab/translation';
+import { useTrans } from '../i18n';
 
 export interface IToolCallDiffLine {
   type: 'add' | 'remove' | 'context' | string;
@@ -45,16 +47,25 @@ const KIND_ICONS: Record<string, React.FC<any>> = {
   other: VscTools
 };
 
-const STATUS_LABELS: Record<string, string> = {
-  in_progress: 'in progress',
-  completed: 'completed',
-  failed: 'failed',
-  cancelled: 'cancelled'
-};
+function statusLabelFor(trans: TranslationBundle, status: string): string {
+  switch (status) {
+    case 'in_progress':
+      return trans._p('tool call status', 'in progress');
+    case 'completed':
+      return trans._p('tool call status', 'completed');
+    case 'failed':
+      return trans._p('tool call status', 'failed');
+    case 'cancelled':
+      return trans._p('tool call status', 'cancelled');
+    default:
+      return status;
+  }
+}
 
 const GUTTER: Record<string, string> = { add: '+', remove: '-' };
 
 function ToolCallDiffView(props: { diffs: IToolCallDiff[] }): JSX.Element {
+  const trans = useTrans();
   return (
     <div className="nbi-tool-call-diffs">
       {props.diffs.map((diff, i) => (
@@ -77,7 +88,9 @@ function ToolCallDiffView(props: { diffs: IToolCallDiff[] }): JSX.Element {
                     add/remove distinction as text instead. */}
                 {line.type === 'add' || line.type === 'remove' ? (
                   <span className="nbi-sr-only">
-                    {line.type === 'add' ? 'added ' : 'removed '}
+                    {line.type === 'add'
+                      ? trans._p('diff line', 'added') + ' '
+                      : trans._p('diff line', 'removed') + ' '}
                   </span>
                 ) : null}
                 <span className="nbi-diff-text">{line.content}</span>
@@ -85,7 +98,9 @@ function ToolCallDiffView(props: { diffs: IToolCallDiff[] }): JSX.Element {
             ))}
           </div>
           {diff.truncated ? (
-            <div className="nbi-tool-call-diff-truncated">diff truncated</div>
+            <div className="nbi-tool-call-diff-truncated">
+              {trans.__('diff truncated')}
+            </div>
           ) : null}
         </div>
       ))}
@@ -94,6 +109,7 @@ function ToolCallDiffView(props: { diffs: IToolCallDiff[] }): JSX.Element {
 }
 
 export function ToolCallCard(props: { toolCall: IToolCall }): JSX.Element {
+  const trans = useTrans();
   const { title, kind, status, diffs } = props.toolCall;
   const [expanded, setExpanded] = useState(true);
 
@@ -108,7 +124,7 @@ export function ToolCallCard(props: { toolCall: IToolCall }): JSX.Element {
     StatusIcon = VscClose;
   }
 
-  const statusLabel = STATUS_LABELS[status] ?? status;
+  const statusLabel = statusLabelFor(trans, status);
   const statusModifier = status.replace(/_/g, '-');
   const hasDiffs = Array.isArray(diffs) && diffs.length > 0;
 
@@ -125,7 +141,9 @@ export function ToolCallCard(props: { toolCall: IToolCall }): JSX.Element {
             className="nbi-tool-call-diff-toggle"
             onClick={() => setExpanded(e => !e)}
             aria-expanded={expanded}
-            aria-label={expanded ? 'Hide diff' : 'Show diff'}
+            aria-label={
+              expanded ? trans.__('Hide diff') : trans.__('Show diff')
+            }
           >
             {expanded ? (
               <VscChevronDown aria-hidden="true" />
