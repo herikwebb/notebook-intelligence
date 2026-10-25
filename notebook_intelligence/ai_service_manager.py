@@ -8,6 +8,7 @@ import sys
 import threading
 from typing import Dict, Optional
 import logging
+from notebook_intelligence import i18n
 from notebook_intelligence import github_copilot
 from notebook_intelligence import perf
 from notebook_intelligence.api import ButtonData, ChatModel, ChatbookContextProvider, ChatbookMentionProvider, EmbeddingModel, InlineCompletionModel, LLMProvider, ChatParticipant, ChatRequest, ChatResponse, CompletionContext, ContextRequest, Host, CompletionContextProvider, MCPPrompt, MCPServer, MarkdownData, NotebookIntelligenceExtension, RegistrationError, TelemetryEvent, TelemetryListener, Tool, Toolset
@@ -689,9 +690,10 @@ class AIServiceManager(Host):
         # a settings save landing mid-request has a much smaller window to
         # label the span with a backend this dispatch is not using.
         dispatch_label = self.perf_backend_label
+        trans = i18n.response_bundle(response)
         if not is_claude_code_mode and not is_acp_mode and self.chat_model is None:
-            response.stream(MarkdownData("Chat model is not set!"))
-            response.stream(ButtonData("Configure", "notebook-intelligence:open-configuration-dialog"))
+            response.stream(MarkdownData(trans.__("Chat model is not set!")))
+            response.stream(ButtonData(trans._p("chat button", "Configure"), "notebook-intelligence:open-configuration-dialog"))
             response.finish()
             return
         request.host = self
@@ -709,7 +711,7 @@ class AIServiceManager(Host):
                 "Claude Code mode is enabled but its chat participant is not available"
             )
             response.stream(MarkdownData(
-                "Claude Code mode is still starting. Please try again in a moment."
+                trans.__("Claude Code mode is still starting. Please try again in a moment.")
             ))
             response.finish()
             return
@@ -743,7 +745,7 @@ class AIServiceManager(Host):
                 "No chat participant is available for request participant '%s'",
                 prompt_parts.participant,
             )
-            response.stream(MarkdownData("No chat participant is available."))
+            response.stream(MarkdownData(trans.__("No chat participant is available.")))
             response.finish()
             return
         response.participant_id = prompt_parts.participant

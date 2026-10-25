@@ -4,8 +4,9 @@ import { TranslationBundle } from '@jupyterlab/translation';
 
 import { BuiltinToolsetType } from './tokens';
 
-// The server sends built-in toolset names in English; label the ones NBI ships
-// by id so the tools picker reads in the user's language.
+// The server sends built-in toolset names in English (and translates their
+// descriptions); label the ones NBI ships by id so the tools picker reads in
+// the user's language.
 export function builtinToolsetLabel(
   trans: TranslationBundle,
   toolset: { id: string; name: string }

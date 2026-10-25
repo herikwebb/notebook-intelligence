@@ -70,6 +70,28 @@ msgstr[1] ""
 msgid "%1 changed on disk and was reloaded"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "%1 character"
+msgid_plural "%1 characters"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at %2 ms, %3 ms total."
+msgid_plural "%1 chunks, first at %2 ms, %3 ms total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at n/a ms, %2 ms total."
+msgid_plural "%1 chunks, first at n/a ms, %2 ms total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 decides which tools to ask about, so some actions may run without a prompt."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "%1 duplicate skipped."
 msgid_plural "%1 duplicates skipped."
@@ -103,6 +125,18 @@ msgstr[1] ""
 #: src/components/settings-panel.tsx
 msgid "%1 is required."
 msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 line"
+msgid_plural "%1 lines"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1 model available."
+msgid_plural "%1 models available."
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/components/plugins-panel.tsx
 msgid "%1 plugin"
@@ -144,6 +178,18 @@ msgid_plural "%1 updated"
 msgstr[0] ""
 msgstr[1] ""
 
+#: notebook_intelligence/readiness.py
+msgid "%1, launched as: %2"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1, model '%2'"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1, no model selected"
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "%1; TLS handshake failed (%2)"
 msgstr ""
@@ -174,12 +220,20 @@ msgid_plural "%2, +%1 more"
 msgstr[0] ""
 msgstr[1] ""
 
+#: notebook_intelligence/readiness.py
+msgid "'%1' and its declared interpreter are available."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "'%1' has no content to attach."
 msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "'%1' is empty"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' is not in the list this endpoint serves."
 msgstr ""
 
 #: src/components/plugins-panel.tsx
@@ -198,6 +252,34 @@ msgstr ""
 msgid "(unnamed)"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 agent error:** %2"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: it is too large to show in full for approval.**"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: its command contains hidden Unicode bidirectional controls (%2).**"
+msgstr ""
+
+#: notebook_intelligence/mcp_manager.py
+msgid "**%1** server tools:"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "**Bash command blocked: hidden Unicode bidirectional controls detected (%1).**"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "**Claude agent error:** %1"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/claude.py
+msgid "**Error:** %1"
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "+ New project skill"
 msgstr ""
@@ -210,8 +292,16 @@ msgstr ""
 msgid "1m %1, 5m %2, 15m %3"
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "A duplicate submission with this message ID was ignored; the original request is still running."
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "A live endpoint test is already running."
 msgstr ""
 
 #: src/components/perf-panel.tsx
@@ -238,12 +328,20 @@ msgstr ""
 msgid "ACP mode"
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "ACP mode is not enabled"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "AI Assistant"
 msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "API Key"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "API key present from %1."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -310,6 +408,10 @@ msgstr ""
 msgid "Adding…"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "Additional permissions"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Adds a small footer under each reply."
 msgstr ""
@@ -324,6 +426,10 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Agent default (e.g. '%1')"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Agent mode and every built-in tool need tool calling. The model may not support it, or a proxy in front of the endpoint may be stripping the tools field."
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -344,6 +450,26 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Always confirm"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Approve Bash tool to execute the command above?"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve running this command?"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve this %1 tool call?"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approving grants a lasting permission, not only this request."
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Are you sure you want to call this tool?"
 msgstr ""
 
 #: src/components/claude-mcp-panel.tsx
@@ -452,6 +578,10 @@ msgstr ""
 msgid "Bypass permissions"
 msgstr ""
 
+#: notebook_intelligence/claude.py
+msgid "Calling tool '%1'..."
+msgstr ""
+
 #: src/chatbook-toolbar.ts
 msgid "Can't convert this notebook yet"
 msgstr ""
@@ -504,6 +634,10 @@ msgstr ""
 msgid "Change provider"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "Characters that would not display are shown as \\u{XXXX}."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Chat Agent setting sources"
 msgstr ""
@@ -516,12 +650,28 @@ msgstr ""
 msgid "Chat is disabled as you don't have a model configured."
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by ACP agent mode."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by Claude mode."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by the configured chat model provider."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Chat mode"
 msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Chat model"
+msgstr ""
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Chat model is not set!"
 msgstr ""
 
 #: src/components/readiness-card.tsx
@@ -544,6 +694,10 @@ msgstr ""
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook is disabled by your administrator"
+msgstr ""
+
 #: src/chatbook-core.ts
 msgid "Chatbook is set to confirm every natural-language run."
 msgstr ""
@@ -564,6 +718,18 @@ msgstr ""
 msgid "Check status: %1"
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "Check the API key and Base URL for this provider in NBI Settings, and that the endpoint is reachable from the Jupyter server process."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key, the Base URL, and that the selected model id is one this endpoint serves. The server log carries the provider's own error text."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Check the Jupyter server log for the underlying error."
+msgstr ""
+
 #: src/components/readiness-card.tsx
 msgid "Checking configuration…"
 msgstr ""
@@ -576,12 +742,24 @@ msgstr ""
 msgid "Choose start directory for %1"
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "Claude Code mode is not enabled"
+msgstr ""
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Claude Code mode is still starting. Please try again in a moment."
+msgstr ""
+
 #: src/index.ts
 msgid "Claude Code terminal session"
 msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Claude Code tools"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Claude MCP management is disabled by your administrator"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -594,6 +772,10 @@ msgstr ""
 
 #: src/components/permission-mode-select.tsx
 msgid "Claude permission mode"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan."
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -628,7 +810,7 @@ msgstr ""
 msgid "Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn."
 msgstr ""
 
-#: src/components/claude-mcp-panel.tsx
+#: notebook_intelligence/acp_agent.py src/components/claude-mcp-panel.tsx
 msgid "Command"
 msgstr ""
 
@@ -736,6 +918,10 @@ msgstr ""
 msgid "Could not generate English representation: %1"
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "Could not list workspace mentions"
+msgstr ""
+
 #: src/index.ts
 msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
 msgstr ""
@@ -776,6 +962,10 @@ msgstr ""
 msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line English description."
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "Credential present from %1."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Default (recommended)"
 msgstr ""
@@ -804,6 +994,10 @@ msgstr ""
 msgid "Deleted \"%1\""
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "Denial recorded"
+msgstr ""
+
 #: src/components/notebook-generation-popover.tsx
 msgid "Describe how to update the active notebook..."
 msgstr ""
@@ -814,6 +1008,10 @@ msgstr ""
 
 #: src/components/skills-panel.tsx
 msgid "Description is required."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Details from %1"
 msgstr ""
 
 #: src/components/perf-panel.tsx
@@ -856,6 +1054,10 @@ msgstr ""
 msgid "Dismiss"
 msgstr ""
 
+#: notebook_intelligence/claude.py
+msgid "Do you want to confirm the plan above?"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Don't use as context"
 msgstr ""
@@ -892,6 +1094,14 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit Python files using the JupyterLab file editor"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit notebook using the JupyterLab notebook editor"
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Edit skill"
 msgstr ""
@@ -920,12 +1130,28 @@ msgstr ""
 msgid "Enabling…"
 msgstr ""
 
+#: notebook_intelligence/claude.py
+msgid "Enter Plan Mode"
+msgstr ""
+
 #: src/components/plugins-panel.tsx
 msgid "Enter a plugin name or the plugin@marketplace shorthand."
 msgstr ""
 
+#: notebook_intelligence/claude.py
+msgid "Entered plan mode"
+msgstr ""
+
 #: src/components/claude-mcp-panel.tsx
 msgid "Environment (KEY=value, one per line)"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Error communicating with Claude agent: %1"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Execute shell commands using embedded terminal in Agent UI or JupyterLab terminal"
 msgstr ""
 
 #: src/chatbook-toolbar.ts src/components/settings-panel.tsx
@@ -934,6 +1160,10 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Execution mode"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Exit plan mode"
 msgstr ""
 
 #: src/components/perf-panel.tsx
@@ -1028,6 +1258,18 @@ msgstr ""
 msgid "Failed to find notebook: %1"
 msgstr ""
 
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get completions from GitHub Copilot: [%1]: %2"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Failed to get device verification info from GitHub Copilot"
+msgstr ""
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get responses from GitHub Copilot: [%1]: %2"
+msgstr ""
+
 #: src/index.ts
 msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
 msgstr ""
@@ -1080,7 +1322,23 @@ msgstr ""
 msgid "Fetching…"
 msgstr ""
 
-#: src/components/skills-panel.tsx
+#: notebook_intelligence/base_chat_participant.py
+msgid "File '%1' created successfully"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "File exceeds %1 MB upload limit"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system read operations within Jupyter root directory"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system write operations within Jupyter root directory"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py src/components/skills-panel.tsx
 msgid "Files"
 msgstr ""
 
@@ -1168,6 +1426,10 @@ msgstr ""
 msgid "GitHub Copilot: Not logged in"
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "GitHub Skill import is disabled by configuration"
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "GitHub Terms for Additional Products and Features"
 msgstr ""
@@ -1208,6 +1470,10 @@ msgstr ""
 msgid "Host load average"
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "If turns fail with a 401, sign in again from NBI Settings under GitHub Copilot."
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Import"
 msgstr ""
@@ -1238,6 +1504,10 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Inline chat model"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Input"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -1276,6 +1546,10 @@ msgstr ""
 msgid "Install plugin"
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "Install the Claude Code CLI and make sure it is on the PATH of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH to its absolute path and restart."
+msgstr ""
+
 #: src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgid "Installing…"
 msgstr ""
@@ -1308,8 +1582,16 @@ msgstr ""
 msgid "Keep editing"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "Lasting rule"
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Listing models failed (%1)."
 msgstr ""
 
 #: src/components/readiness-card.tsx
@@ -1380,6 +1662,10 @@ msgstr ""
 msgid "MCP Servers"
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "MCP server '%1' not found in %2 scope"
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Managed by org manifest (%1)"
 msgstr ""
@@ -1448,6 +1734,10 @@ msgstr ""
 msgid "Natural-language execution"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "Network access"
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "New Skill"
 msgstr ""
@@ -1476,12 +1766,32 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "No API key is configured (%1 is unset)."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No Anthropic API key or auth token is visible to NBI."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "No MCP servers found. Add MCP servers in the configuration file."
 msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model is resolved, so there is nothing to call."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model provider is selected."
+msgstr ""
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "No chat participant is available."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -1504,12 +1814,20 @@ msgstr ""
 msgid "No installed Jupyter kernel matches language \"%1\"."
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "No managed-skills manifest configured (set %1, comma-separated for multiple manifests)."
+msgstr ""
+
 #: src/components/plugins-panel.tsx
 msgid "No marketplaces configured. Add one to discover plugins."
 msgstr ""
 
 #: src/chat-sidebar.tsx
 msgid "No matching files found."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No model name is set for this provider, so requests carry none."
 msgstr ""
 
 #: src/components/plugins-panel.tsx
@@ -1536,6 +1854,10 @@ msgstr ""
 msgid "No project skills. They live in %1."
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "No response within %1s."
+msgstr ""
+
 #: src/components/claude-mcp-panel.tsx
 msgid "No servers in this scope."
 msgstr ""
@@ -1556,8 +1878,34 @@ msgstr ""
 msgid "No workspace files available."
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "Not applicable: the agent owns the model call in %1 mode."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Not determined: the request failed (%1) for a reason unrelated to tools."
+msgstr ""
+
 #: src/chat-sidebar.tsx
 msgid "Not logged in"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %1: %2"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %2: %3 (%1 more issue.)"
+msgid_plural "Not ready. %2: %3 (%1 more issues.)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "Not signed in. The model list shown in Settings is a built-in fallback, not the models this account can use."
+msgstr ""
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Notebook '%1' created and opened successfully"
 msgstr ""
 
 #: src/index.ts
@@ -1584,12 +1932,36 @@ msgstr ""
 msgid "Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it."
 msgstr ""
 
+#: notebook_intelligence/api.py
+msgid "Oops! Failed to find requested tool. Please try again with a different prompt."
+msgstr ""
+
+#: notebook_intelligence/api.py
+msgid "Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."
+msgstr ""
+
+#: notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py
+msgid "Oops! There was a problem handling chat request. Please try again with a different prompt."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Oops! There was a problem handling this request. Please try again. Check the server logs for details."
+msgstr ""
+
 #: src/chatbook-toolbar.ts
 msgid "Open Chatbook settings"
 msgstr ""
 
 #: src/index.ts
 msgid "Open MCP Config Editor"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and pick a provider and model under General, or enable Claude mode."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and set a model for this provider under General. The endpoint rejects a request with no model, so every turn fails until it is set."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -1616,6 +1988,10 @@ msgstr ""
 msgid "Open the NBI sidebar and move focus to the prompt textarea"
 msgstr ""
 
+#: notebook_intelligence/base_chat_participant.py
+msgid "Opened the settings dialog"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
 msgstr ""
@@ -1632,12 +2008,20 @@ msgstr ""
 msgid "Overwrite existing user skill \"%1\""
 msgstr ""
 
+#: notebook_intelligence/claude.py
+msgid "Parameters"
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "Path: %1"
 msgstr ""
 
 #: src/components/perf-panel.tsx
 msgid "Performance diagnostics are disabled. Enable them above to start collecting turn data."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Permission granted"
 msgstr ""
 
 #: src/components/permission-mode-select.tsx
@@ -1648,12 +2032,28 @@ msgstr ""
 msgid "Permission mode: Bypass Permissions is active"
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "Pick a model from the dropdown in NBI Settings. A pinned NBI_CHAT_MODEL_ID that the endpoint no longer serves will fail on every turn."
+msgstr ""
+
 #: src/components/plugins-panel.tsx
 msgid "Plugin"
 msgstr ""
 
 #: src/components/plugins-panel.tsx
 msgid "Plugins"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Plugins management is disabled by your administrator"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Preinstall the pinned adapter package %1 in a trusted location outside the workspace and put its absolute executable directory on PATH, or set NBI_ACP_AGENT_COMMAND to the absolute path of an installed adapter executable. Install its required interpreter on the adapter PATH; default discovery excludes workspace directories. Do not use a package runner such as npx. Relative commands are not supported."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Present."
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -1692,6 +2092,10 @@ msgstr ""
 msgid "Provider"
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "Provider '%1' is selected but not registered."
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "Python interpreter"
 msgstr ""
@@ -1724,8 +2128,30 @@ msgstr ""
 msgid "Re-read Claude's MCP config from disk"
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "Re-run the endpoint test once the endpoint is answering again. A transient failure cannot tell us whether tool calling works."
+msgstr ""
+
 #: src/components/readiness-card.tsx
 msgid "Readiness check failed: %1"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Reading the configuration failed (%1)."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Ready, with %1 warning. %2: %3"
+msgid_plural "Ready, with %1 warnings. %2: %3"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "Ready. Nothing needs configuring."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Reason"
 msgstr ""
 
 #: src/components/perf-panel.tsx
@@ -1780,6 +2206,10 @@ msgstr ""
 msgid "Regenerate the English representation of this code cell"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "Rejecting records a lasting denial, not only for this request."
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Reload"
 msgstr ""
@@ -1830,6 +2260,14 @@ msgstr ""
 
 #: src/index.ts
 msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Request"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Requested permissions"
 msgstr ""
 
 #: src/components/skills-panel.tsx
@@ -1900,8 +2338,24 @@ msgstr ""
 msgid "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory."
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "Rule not found"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Rule system not enabled"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Run 'claude --version' in a terminal as the Jupyter user to see the underlying error."
+msgstr ""
+
 #: src/components/readiness-card.tsx
 msgid "Run it"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Run notebooks in JupyterLab UI"
 msgstr ""
 
 #: src/components/perf-panel.tsx
@@ -1972,6 +2426,10 @@ msgstr ""
 msgid "Settings sections"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "Shell"
+msgstr ""
+
 #: src/components/settings-panel.tsx
 msgid "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
 msgstr ""
@@ -2018,8 +2476,20 @@ msgid_plural "Showing the first %1 files found in the workspace."
 msgstr[0] ""
 msgstr[1] ""
 
+#: notebook_intelligence/readiness.py
+msgid "Sign in from NBI Settings under GitHub Copilot. Until then every chat turn will fail with a 401."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Sign-in state could not be determined."
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Skill '%1' not found in %2 scope"
 msgstr ""
 
 #: src/components/skills-panel.tsx
@@ -2028,6 +2498,10 @@ msgstr ""
 
 #: src/components/skills-panel.tsx
 msgid "Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Skills management is disabled by your administrator"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -2200,16 +2674,60 @@ msgstr ""
 msgid "Text file"
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "The CLI did not respond to --version within its budget."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI resolved but --version failed."
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The binary resolves but does not start. On a network filesystem this is often the install tree being slow to read; otherwise check it runs from a terminal."
 msgstr ""
 
 #: src/components/perf-panel.tsx
 msgid "The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding."
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "The claude CLI was not found."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "The command contains non-ASCII characters, which can look like quotes or letters they are not."
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted a request carrying a tool schema."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the connection but did not answer. Check the Base URL and whether it is reachable from the Jupyter server process."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the request but did not answer. Check the gateway and whether it is queueing behind a cold model."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint answered in one piece. Replies will appear only when the turn finishes rather than as they are generated; a proxy that buffers responses is the usual cause."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint rejected a request carrying a tool schema, but accepted the same request without one."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint test could not run (%1)."
 msgstr ""
 
 #: src/components/perf-panel.tsx
@@ -2218,6 +2736,30 @@ msgstr ""
 
 #: src/components/perf-panel.tsx
 msgid "The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The provider did not return a model list within %1s."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The provider may be disabled by an administrator (see disabled_providers) or supplied by an extension that is not installed. Pick a different provider in NBI Settings."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The provider returned no models."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The request failed (%1)."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The request succeeded but nothing streamed."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The stored configuration could not be read. Check %1 for invalid JSON, and the Jupyter server log for the underlying error."
 msgstr ""
 
 #: src/components/perf-panel.tsx
@@ -2232,12 +2774,28 @@ msgstr ""
 msgid "Thinking (%1 s)"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py notebook_intelligence/mcp_manager.py
+msgid "Thinking…"
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network."
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "This feature is disabled by your administrator"
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgid "This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the Claude CLI is signed in with a subscription login, or if the SDK resolves a credential of its own from a profile or custom headers. If chat turns fail with a 401, or Claude auto-complete produces nothing, add a key in NBI Settings under Claude or set ANTHROPIC_API_KEY before starting JupyterLab."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the agent is signed in with its own OAuth login. Otherwise set the key in NBI Settings under ACP."
 msgstr ""
 
 #: src/chatbook-toolbar.ts
@@ -2270,6 +2828,10 @@ msgstr ""
 
 #: src/components/skills-panel.tsx
 msgid "This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Tool call"
 msgstr ""
 
 #: src/components/mcp-util.ts
@@ -2414,6 +2976,10 @@ msgstr ""
 msgid "User (available in all projects)"
 msgstr ""
 
+#: notebook_intelligence/readiness.py
+msgid "Usually an expired or missing API key, or a Base URL that does not point at the provider's API root. For GitHub Copilot, sign in again from NBI Settings."
+msgstr ""
+
 #: src/components/skills-panel.tsx
 msgid "View (managed, read-only)"
 msgstr ""
@@ -2446,8 +3012,16 @@ msgstr ""
 msgid "Which backend served the turn, and the surface it came from."
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgid "Working directory"
+msgstr ""
+
 #: src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgid "Working…"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Write access under"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -2508,6 +3082,10 @@ msgstr ""
 
 #: src/components/plugins-panel.tsx
 msgid "owner/repo, https://github.com/owner/repo, or local path"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "run by %1"
 msgstr ""
 
 #: src/components/claude-scope.ts
@@ -2669,6 +3247,56 @@ msgctxt "a value that was not recorded"
 msgid "n/a"
 msgstr ""
 
+#: notebook_intelligence/acp_agent.py
+msgctxt "an approval card detail: its label, then notes such as its size"
+msgid "%1 (%2)"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve for this request"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Cancel"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, continue planning"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, start implementing now"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval button"
+msgid "Reject"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, approve plan"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, enter plan mode"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval card title"
+msgid "%1 tool call"
+msgstr ""
+
 #: src/components/perf-panel.tsx
 msgctxt "attribute detail"
 msgid "full"
@@ -2677,6 +3305,11 @@ msgstr ""
 #: src/components/perf-panel.tsx
 msgctxt "attribute detail"
 msgid "redacted"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "between notes on an approval card detail"
+msgid ", "
 msgstr ""
 
 #: src/components/perf-panel.tsx
@@ -2702,6 +3335,11 @@ msgstr ""
 #: src/components/perf-panel.tsx
 msgctxt "certificate issuer"
 msgid "unknown"
+msgstr ""
+
+#: notebook_intelligence/ai_service_manager.py
+msgctxt "chat button"
+msgid "Configure"
 msgstr ""
 
 #: src/chat-sidebar.tsx src/components/settings-panel.tsx
@@ -2739,6 +3377,16 @@ msgid "%1 built-in"
 msgid_plural "%1 built-in"
 msgstr[0] ""
 msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "environment (%1)"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "settings"
+msgstr ""
 
 #: src/components/tool-call-card.tsx
 msgctxt "diff line"
@@ -3133,6 +3781,91 @@ msgstr ""
 #: src/components/perf-panel.tsx
 msgctxt "probe group"
 msgid "Subprocess startup"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Cancel"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Submit"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "ACP agent"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Active chat path"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Adapter runtime"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Agent credentials"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Anthropic credentials"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model provider"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Claude Code CLI"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Configuration"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "GitHub Copilot sign-in"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Live completion"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model list"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model name"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Selected model"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Tool schema"
 msgstr ""
 
 #: src/components/readiness-card.tsx

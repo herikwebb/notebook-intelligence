@@ -1,7 +1,7 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import { ServerConnection } from '@jupyterlab/services';
-import { requestAPI } from './handler';
+import { requestAPI, withLocale } from './handler';
 import { URLExt } from '@jupyterlab/coreutils';
 import { Signal } from '@lumino/signaling';
 import {
@@ -729,10 +729,8 @@ export class NBIAPI {
 
   static async initializeWebsocket() {
     const serverSettings = ServerConnection.makeSettings();
-    const wsUrl = URLExt.join(
-      serverSettings.wsUrl,
-      'notebook-intelligence',
-      'copilot'
+    const wsUrl = withLocale(
+      URLExt.join(serverSettings.wsUrl, 'notebook-intelligence', 'copilot')
     );
 
     this._webSocket = new serverSettings.WebSocket(wsUrl);

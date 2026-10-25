@@ -18,8 +18,9 @@ try:
 except ImportError:  # mcp < 2.0
     from mcp.server.fastmcp.tools import Tool as MCPToolClass
 
-from notebook_intelligence import perf
+from notebook_intelligence import i18n, perf
 from notebook_intelligence.config import NBIConfig
+from notebook_intelligence.i18n import TranslationBundle
 from notebook_intelligence.ruleset import RuleContext
 from notebook_intelligence.util import ThreadSafeWebSocketConnector
 
@@ -319,8 +320,9 @@ class AskUserQuestionData(ResponseStreamData):
     title: str = ''
     message: str = ''
     questions: list[dict]= None
-    submitLabel: str = 'Submit'
-    cancelLabel: str = 'Cancel'
+    # None lets the chat emitter supply its translated default.
+    submitLabel: str = None
+    cancelLabel: str = None
 
     @property
     def data_type(self) -> ResponseStreamDataType:
@@ -476,6 +478,14 @@ class ChatResponse:
         self._user_input_wait_total = 0.0
         self._user_input_wait_started = None
         self._user_input_wait_count = 0
+
+    @property
+    def trans(self) -> TranslationBundle:
+        """Translations for text this response shows the user (approval
+        cards, status lines), in the language of the chat that asked. English
+        unless the transport knows better; text sent to a model stays
+        English."""
+        return i18n.english()
 
     @property
     def user_input_wait_seconds(self) -> float:
@@ -1015,7 +1025,8 @@ class ChatParticipant:
                     tool_to_call = self._get_tool_by_name(tool_name)
                     if tool_to_call is None:
                         log.error(f"Tool not found: {tool_name}, args: {tool_call['function']['arguments']}")
-                        response.stream(MarkdownData("Oops! Failed to find requested tool. Please try again with a different prompt."))
+                        trans = i18n.response_bundle(response)
+                        response.stream(MarkdownData(trans.__("Oops! Failed to find requested tool. Please try again with a different prompt.")))
                         response.finish()
                         return
 
@@ -1093,7 +1104,8 @@ class ChatParticipant:
                 return
             except Exception as e:
                 log.error(f"Error in tool call loop: {str(e)}")
-                response.stream(MarkdownData(f"Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."))
+                trans = i18n.response_bundle(response)
+                response.stream(MarkdownData(trans.__("Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details.")))
                 response.finish()
                 return
 

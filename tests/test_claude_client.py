@@ -18,6 +18,7 @@ from queue import Queue
 from unittest.mock import AsyncMock, MagicMock, Mock
 
 import notebook_intelligence.claude as claude_module
+from notebook_intelligence import i18n
 from notebook_intelligence.api import ChatResponse, MarkdownData
 from notebook_intelligence.claude import (
     ClaudeAgentClientStatus,
@@ -858,7 +859,7 @@ class TestHandleChatRequestErrorHandling:
         participant = _make_participant()
         participant._client.query.side_effect = RuntimeError("boom")
 
-        response = Mock(spec=ChatResponse)
+        response = Mock(spec=ChatResponse, trans=i18n.english())
         asyncio.run(participant.handle_chat_request(_make_chat_request(), response))
 
         response.finish.assert_called_once()
@@ -873,7 +874,7 @@ class TestHandleChatRequestErrorHandling:
         participant = _make_participant()
         participant._client.query.return_value = "Claude agent is not connected"
 
-        response = Mock(spec=ChatResponse)
+        response = Mock(spec=ChatResponse, trans=i18n.english())
         asyncio.run(participant.handle_chat_request(_make_chat_request(), response))
 
         response.finish.assert_called_once()

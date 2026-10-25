@@ -3,6 +3,7 @@
 import asyncio
 import atexit
 import base64
+import functools
 import hmac
 from dataclasses import asdict, dataclass
 import json
@@ -29,7 +30,7 @@ from tornado import websocket
 from traitlets import Bool, Enum as TraitletEnum, Int, List, Unicode
 from notebook_intelligence.api import CancelToken, ChatMode, ChatResponse, ChatRequest, ContextRequest, ContextRequestType, RequestDataType, RequestToolSelection, ResponseStreamData, ResponseStreamDataType, BackendMessageType, SignalImpl, UICommandCancelledError, UserInputCancelledError
 from notebook_intelligence.ai_service_manager import AIServiceManager
-from notebook_intelligence import perf
+from notebook_intelligence import i18n, perf
 from notebook_intelligence import perf_probe
 from notebook_intelligence import readiness
 from notebook_intelligence.cell_output import coerce_payload as _coerce_output_context, format_output_context as _format_output_context
@@ -94,7 +95,7 @@ from notebook_intelligence.claude_sessions import (
     list_all_sessions as list_all_claude_sessions,
 )
 import notebook_intelligence.github_copilot as github_copilot
-from notebook_intelligence.built_in_toolsets import built_in_toolsets
+from notebook_intelligence.built_in_toolsets import built_in_toolsets, toolset_description
 from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_claude_config_dir, get_jupyter_root_dir, set_jupyter_root_dir, is_builtin_tool_enabled_in_env, is_provider_enabled_in_env, filter_models_by_enabled_providers, VALID_CODING_AGENT_LAUNCHERS, compute_effective_disabled_launchers, validate_coding_agent_launcher_ids, resolve_claude_cli_path, resolve_opencode_cli_path, resolve_pi_cli_path, resolve_copilot_cli_path, resolve_codex_cli_path, safe_anchor_uri, has_dangerous_text_codepoints, split_csv
 from notebook_intelligence.context_factory import RuleContextFactory
 from notebook_intelligence.skillset import SKILL_NAME_REGEX
@@ -231,7 +232,8 @@ def _finish_if_chatbook_disabled(handler) -> bool:
     if getattr(handler, "chatbook_enabled", True):
         return False
     handler.set_status(403)
-    handler.finish(json.dumps({"error": CHATBOOK_DISABLED_MESSAGE}))
+    trans = i18n.request_bundle(handler)
+    handler.finish(json.dumps({"error": _translated_policy_message(trans, CHATBOOK_DISABLED_MESSAGE)}))
     return True
 
 
@@ -809,7 +811,16 @@ class GetCapabilitiesHandler(APIHandler):
             self.disabled_coding_agent_launchers,
             self.allow_enabling_coding_agent_launchers_with_env,
         )
-        allowed_builtin_toolsets = [{"id": toolset.id, "name": toolset.name, "description": toolset.description} for toolset in built_in_toolsets.values() if is_tool_enabled(toolset.id)]
+        trans = i18n.request_bundle(self)
+        allowed_builtin_toolsets = [
+            {
+                "id": toolset.id,
+                "name": toolset.name,
+                "description": toolset_description(trans, toolset),
+            }
+            for toolset in built_in_toolsets.values()
+            if is_tool_enabled(toolset.id)
+        ]
         llm_providers = [p for p in ai_service_manager.llm_providers.values() if is_provider_enabled(p.id)]
         mcp_servers = ai_service_manager.get_mcp_servers()
         mcp_server_tools = [{
@@ -1127,7 +1138,8 @@ class ChatbookMentionsHandler(APIHandler):
         except Exception as exc:
             log.error("Chatbook mention listing failed: %s", exc)
             self.set_status(500)
-            self.finish(json.dumps({"error": "Could not list workspace mentions"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("Could not list workspace mentions")}))
             return
         self.finish(json.dumps(response))
 
@@ -1482,8 +1494,9 @@ class PostGitHubLoginHandler(APIHandler):
         device_verification_info = github_copilot.login()
         if device_verification_info is None:
             self.set_status(500)
+            trans = i18n.request_bundle(self)
             self.finish(json.dumps({
-                "error": "Failed to get device verification info from GitHub Copilot"
+                "error": trans.__("Failed to get device verification info from GitHub Copilot")
             }))
             return
         self.finish(json.dumps(device_verification_info))
@@ -1534,7 +1547,8 @@ class RulesToggleHandler(APIHandler):
         rule_manager = ai_service_manager.get_rule_manager()
         if not rule_manager:
             self.set_status(404)
-            self.finish(json.dumps({"error": "Rule system not enabled"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("Rule system not enabled")}))
             return
         
         success = rule_manager.toggle_rule(rule_filename, active)
@@ -1544,7 +1558,8 @@ class RulesToggleHandler(APIHandler):
             self.finish(json.dumps({"success": True}))
         else:
             self.set_status(404)
-            self.finish(json.dumps({"error": "Rule not found"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("Rule not found")}))
 
 class RulesReloadHandler(APIHandler):
     @tornado.web.authenticated
@@ -1553,7 +1568,8 @@ class RulesReloadHandler(APIHandler):
         rule_manager = ai_service_manager.get_rule_manager()
         if not rule_manager:
             self.set_status(404)
-            self.finish(json.dumps({"error": "Rule system not enabled"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("Rule system not enabled")}))
             return
 
         try:
@@ -1563,6 +1579,35 @@ class RulesReloadHandler(APIHandler):
         except Exception as e:
             self.set_status(500)
             self.finish(json.dumps({"error": str(e)}))
+
+
+def _policy_messages(trans: i18n.TranslationBundle) -> dict:
+    """Each admin-gate message (the English the handlers declare) mapped to
+    its translation. tests/test_i18n_server.py checks every gate is listed."""
+    return {
+        CHATBOOK_DISABLED_MESSAGE: trans.__(
+            "Chatbook is disabled by your administrator"
+        ),
+        "This feature is disabled by your administrator": trans.__(
+            "This feature is disabled by your administrator"
+        ),
+        "Claude MCP management is disabled by your administrator": trans.__(
+            "Claude MCP management is disabled by your administrator"
+        ),
+        "Plugins management is disabled by your administrator": trans.__(
+            "Plugins management is disabled by your administrator"
+        ),
+        "Skills management is disabled by your administrator": trans.__(
+            "Skills management is disabled by your administrator"
+        ),
+    }
+
+
+def _translated_policy_message(trans: i18n.TranslationBundle, message: str) -> str:
+    """An admin-gate message in the user's language, or as is if unlisted."""
+    if trans.locale == "en":
+        return message
+    return _policy_messages(trans).get(message, message)
 
 
 class PolicyGatedHandler(APIHandler):
@@ -1617,7 +1662,11 @@ class PolicyGatedHandler(APIHandler):
         attr = self.policy_enabled_attr
         if attr and not getattr(self, attr, True):
             self.set_status(403)
-            self.finish(json.dumps({"error": self.policy_disabled_message}))
+            self.finish(json.dumps({
+                "error": _translated_policy_message(
+                    i18n.request_bundle(self), self.policy_disabled_message
+                )
+            }))
 
     # Subclasses extend this to map domain-specific exception types to HTTP
     # statuses. Most-specific class wins (we sort by MRO depth at lookup
@@ -1707,8 +1756,9 @@ class ClaudeMCPDetailHandler(ClaudeMCPBaseHandler):
         srv = self.manager.get_server(name, scope)
         if srv is None:
             self.set_status(404)
+            trans = i18n.request_bundle(self)
             self.finish(json.dumps({
-                "error": f"MCP server {name!r} not found in {scope} scope"
+                "error": trans.__("MCP server '%1' not found in %2 scope", name, scope)
             }))
             return
         self.finish(json.dumps({"server": srv.to_dict()}))
@@ -1913,7 +1963,8 @@ class SkillsBaseHandler(PolicyGatedHandler):
         if self.allow_github_skill_import:
             return False
         self.set_status(403)
-        self.finish(json.dumps({"error": "GitHub Skill import is disabled by configuration"}))
+        trans = i18n.request_bundle(self)
+        self.finish(json.dumps({"error": trans.__("GitHub Skill import is disabled by configuration")}))
         return True
 
 
@@ -1974,7 +2025,8 @@ class SkillDetailHandler(SkillsBaseHandler):
             return
         if skill is None:
             self.set_status(404)
-            self.finish(json.dumps({"error": f"Skill '{name}' not found in {scope} scope"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("Skill '%1' not found in %2 scope", name, scope)}))
             return
         self.finish(json.dumps({"skill": skill.to_dict(include_body=True)}))
 
@@ -2155,8 +2207,12 @@ class SkillsReconcileHandler(SkillsBaseHandler):
         reconciler = ai_service_manager.get_skill_reconciler()
         if reconciler is None:
             self.set_status(409)
+            trans = i18n.request_bundle(self)
             self.finish(json.dumps({
-                "error": "No managed-skills manifest configured (set NBI_SKILLS_MANIFEST, comma-separated for multiple manifests)."
+                "error": trans.__(
+                    "No managed-skills manifest configured (set %1, comma-separated for multiple manifests).",
+                    "NBI_SKILLS_MANIFEST",
+                )
             }))
             return
         # reconcile() does blocking HTTP + tarball extraction; run off the event loop.
@@ -2360,8 +2416,9 @@ class FileUploadHandler(APIHandler):
             max_bytes = self.upload_max_mb * 1024 * 1024
             if len(body) > max_bytes:
                 self.set_status(413)
+                trans = i18n.request_bundle(self)
                 self.finish(json.dumps({
-                    "error": f"File exceeds {self.upload_max_mb} MB upload limit"
+                    "error": trans.__("File exceeds %1 MB upload limit", self.upload_max_mb)
                 }))
                 return
 
@@ -2409,7 +2466,8 @@ class ClaudeSessionsListHandler(APIHandler):
     def get(self):
         if not ai_service_manager.is_claude_code_mode:
             self.set_status(404)
-            self.finish(json.dumps({"error": "Claude Code mode is not enabled"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("Claude Code mode is not enabled")}))
             return
 
         scope = self.get_query_argument("scope", "all")
@@ -2465,7 +2523,8 @@ class ClaudeSessionsResumeHandler(APIHandler):
     def post(self):
         if not ai_service_manager.is_claude_code_mode:
             self.set_status(404)
-            self.finish(json.dumps({"error": "Claude Code mode is not enabled"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("Claude Code mode is not enabled")}))
             return
 
         try:
@@ -2484,7 +2543,8 @@ class ClaudeSessionsResumeHandler(APIHandler):
         default_chat_participant = ai_service_manager.default_chat_participant
         if not isinstance(default_chat_participant, ClaudeCodeChatParticipant):
             self.set_status(404)
-            self.finish(json.dumps({"error": "Claude Code mode is not enabled"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("Claude Code mode is not enabled")}))
             return
 
         try:
@@ -2522,7 +2582,8 @@ class AcpSessionsListHandler(APIHandler):
         participant = _acp_participant_or_none()
         if participant is None:
             self.set_status(404)
-            self.finish(json.dumps({"error": "ACP mode is not enabled"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("ACP mode is not enabled")}))
             return
         try:
             # list_sessions may cold-start the agent subprocess (up to a
@@ -2555,7 +2616,8 @@ class AcpSessionsResumeHandler(APIHandler):
         participant = _acp_participant_or_none()
         if participant is None:
             self.set_status(404)
-            self.finish(json.dumps({"error": "ACP mode is not enabled"}))
+            trans = i18n.request_bundle(self)
+            self.finish(json.dumps({"error": trans.__("ACP mode is not enabled")}))
             return
 
         try:
@@ -2631,11 +2693,18 @@ class ChatHistory:
         return self.messages.get(chatId, [])
 
 class WebsocketCopilotResponseEmitter(ChatResponse):
+    @property
+    def trans(self) -> i18n.TranslationBundle:
+        # The language the chat sidebar asked for when it opened the socket.
+        # Emitters built without __init__ (tests, subclasses) write English.
+        return getattr(self, "_trans", None) or i18n.english()
+
     def __init__(self, chatId, messageId, websocket_handler, chat_history):
         super().__init__()
         self.chatId = chatId
         self.messageId = messageId
         self.websocket_handler = websocket_handler
+        self._trans = i18n.request_bundle(websocket_handler)
         self.chat_history = chat_history
         self.streamed_contents = []
         self.streamed_reasoning_contents = []
@@ -2904,6 +2973,7 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
                 ]
             }
         elif data_type == ResponseStreamDataType.Confirmation:
+            trans = self.trans
             data = {
                 "choices": [
                     {
@@ -2916,9 +2986,9 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
                                     "confirmArgs": data.confirmArgs if data.confirmArgs is not None else {},
                                     "confirmSessionArgs": data.confirmSessionArgs,
                                     "cancelArgs": data.cancelArgs if data.cancelArgs is not None else {},
-                                    "confirmLabel": data.confirmLabel if data.confirmLabel is not None else "Approve",
-                                    "confirmSessionLabel": data.confirmSessionLabel if data.confirmSessionLabel is not None else "Approve for this request",
-                                    "cancelLabel": data.cancelLabel if data.cancelLabel is not None else "Cancel",
+                                    "confirmLabel": data.confirmLabel if data.confirmLabel is not None else trans._p("approval button", "Approve"),
+                                    "confirmSessionLabel": data.confirmSessionLabel if data.confirmSessionLabel is not None else trans._p("approval button", "Approve for this request"),
+                                    "cancelLabel": data.cancelLabel if data.cancelLabel is not None else trans._p("approval button", "Cancel"),
                                     "details": data.details
                                 }
                             },
@@ -2929,6 +2999,7 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
                 ]
             }
         elif data_type == ResponseStreamDataType.AskUserQuestion:
+            trans = self.trans
             data = {
                 "choices": [
                     {
@@ -2940,8 +3011,8 @@ class WebsocketCopilotResponseEmitter(ChatResponse):
                                     "title": data.title,
                                     "message": data.message,
                                     "questions": data.questions if data.questions is not None else [],
-                                    "submitLabel": data.submitLabel if data.submitLabel is not None else "Submit",
-                                    "cancelLabel": data.cancelLabel if data.cancelLabel is not None else "Cancel"
+                                    "submitLabel": data.submitLabel if data.submitLabel is not None else trans._p("question card button", "Submit"),
+                                    "cancelLabel": data.cancelLabel if data.cancelLabel is not None else trans._p("question card button", "Cancel")
                                 }
                             },
                             "content": "",
@@ -3300,8 +3371,9 @@ class ReadinessHandler(APIHandler):
 
         if not ReadinessHandler._live_lock.acquire(blocking=False):
             self.set_status(429)
+            trans = i18n.request_bundle(self)
             self.finish(
-                json.dumps({"error": "A live endpoint test is already running."})
+                json.dumps({"error": trans.__("A live endpoint test is already running.")})
             )
             return
         try:
@@ -3313,7 +3385,7 @@ class ReadinessHandler(APIHandler):
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(
             None,
-            readiness.run_readiness,
+            functools.partial(readiness.run_readiness, trans=i18n.request_bundle(self)),
             ai_service_manager.nbi_config,
             ai_service_manager,
             include_live,
@@ -3394,9 +3466,13 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
             status = "error"
             log.exception("Unhandled error while processing request %s", message_id)
             try:
+                trans = i18n.response_bundle(response_emitter)
                 response_emitter.stream_transient_markdown(
-                    "\n\nOops! There was a problem handling this request. "
-                    "Please try again. Check the server logs for details."
+                    "\n\n"
+                    + trans.__(
+                        "Oops! There was a problem handling this request. "
+                        "Please try again. Check the server logs for details."
+                    )
                 )
             except Exception:
                 log.exception(
@@ -3514,9 +3590,13 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
                 messageType != RequestDataType.InlineCompletionRequest
                 and handlers.response_emitter is not None
             ):
+                trans = i18n.response_bundle(handlers.response_emitter)
                 handlers.response_emitter.stream_transient_markdown(
-                    "\n\nA duplicate submission with this message ID was ignored; "
-                    "the original request is still running."
+                    "\n\n"
+                    + trans.__(
+                        "A duplicate submission with this message ID was ignored; "
+                        "the original request is still running."
+                    )
                 )
             return
         if messageType == RequestDataType.ChatRequest:

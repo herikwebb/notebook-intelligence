@@ -29,6 +29,8 @@ import mistune
 import pytest
 from claude_agent_sdk import PermissionResultDeny
 
+from notebook_intelligence import i18n
+
 import notebook_intelligence.claude as claude_module
 from notebook_intelligence.api import MarkdownData
 from notebook_intelligence.claude import (
@@ -133,7 +135,7 @@ class TestApprovalPromptIsUnforgeable:
     def test_trojan_source_command_is_denied_before_confirmation(
         self, monkeypatch
     ):
-        response = MagicMock(message_id="response-1")
+        response = MagicMock(message_id="response-1", trans=i18n.english())
         monkeypatch.setattr(
             claude_module,
             "get_current_response",

@@ -3,6 +3,7 @@
 import os
 from typing import Union
 import json
+from notebook_intelligence import i18n
 from notebook_intelligence.api import ChatCommand, ChatParticipant, ChatRequest, ChatResponse, MarkdownData, ProgressData, Tool, ToolPreInvokeResponse
 from notebook_intelligence.prompts import Prompts
 import base64
@@ -544,6 +545,7 @@ class BaseChatParticipant(ChatParticipant):
 
     async def handle_ask_mode_chat_request(self, request: ChatRequest, response: ChatResponse, options: dict = {}) -> None:
         chat_model = request.host.chat_model
+        trans = i18n.response_bundle(response)
         if request.command == 'newNotebook':
             language = request.language or 'python'
             kernel_name = request.kernel_name or ''
@@ -564,7 +566,7 @@ class BaseChatParticipant(ChatParticipant):
             ui_cmd_response = await response.run_ui_command('notebook-intelligence:add-markdown-cell-to-notebook', {'markdown': markdown, 'path': file_path})
             ui_cmd_response = await response.run_ui_command('notebook-intelligence:add-code-cell-to-notebook', {'code': code, 'path': file_path})
 
-            response.stream(MarkdownData(f"Notebook '{file_path}' created and opened successfully"))
+            response.stream(MarkdownData(trans.__("Notebook '%1' created and opened successfully", file_path)))
             response.finish()
             return
         elif request.command == 'newPythonFile':
@@ -584,12 +586,12 @@ class BaseChatParticipant(ChatParticipant):
             code = extract_llm_generated_code(code)
             ui_cmd_response = await response.run_ui_command('notebook-intelligence:create-new-file', {'code': code })
             file_path = ui_cmd_response['path']
-            response.stream(MarkdownData(f"File '{file_path}' created successfully"))
+            response.stream(MarkdownData(trans.__("File '%1' created successfully", file_path)))
             response.finish()
             return
         elif request.command == 'settings':
             ui_cmd_response = await response.run_ui_command('notebook-intelligence:open-configuration-dialog')
-            response.stream(MarkdownData(f"Opened the settings dialog"))
+            response.stream(MarkdownData(trans.__("Opened the settings dialog")))
             response.finish()
             return
 
@@ -609,11 +611,11 @@ class BaseChatParticipant(ChatParticipant):
 
         try:
             if chat_model.provider.id != "github-copilot":
-                response.stream(ProgressData("Thinking…"))
+                response.stream(ProgressData(trans.__("Thinking…")))
             chat_model.completions(messages, response=response, cancel_token=request.cancel_token)
         except Exception as e:
             log.error(f"Error while handling chat request!\n{e}")
-            response.stream(MarkdownData(f"Oops! There was a problem handling chat request. Please try again with a different prompt."))
+            response.stream(MarkdownData(trans.__("Oops! There was a problem handling chat request. Please try again with a different prompt.")))
             response.finish()
 
     @staticmethod
