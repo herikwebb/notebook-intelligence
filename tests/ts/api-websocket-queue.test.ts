@@ -1,6 +1,5 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
-import { Notification } from '@jupyterlab/apputils';
 import { ServerConnection } from '@jupyterlab/services';
 import { NBIAPI } from '../../src/api';
 import { BackendMessageType, RequestDataType } from '../../src/tokens';
@@ -32,17 +31,32 @@ class FakeSocket {
 const sentIds = (socket: FakeSocket) =>
   socket.sent.map(m => `${m.type}:${m.id}`);
 
-// What reaches the frontend's listeners (StreamEnd for unsent requests).
+// What reaches the frontend's listeners (the reply unsent requests get).
 let received: any[] = [];
 const listen = (_: unknown, msg: string) => received.push(JSON.parse(msg));
-const warning = jest.fn();
+const NOT_SENT =
+  'Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment.';
+// The failed reply: the reason as the reply text, marked as a failure the
+// way the server marks an interrupted stream.
+const notSent = (id: string) =>
+  expect.objectContaining({
+    id,
+    type: BackendMessageType.StreamMessage,
+    data: {
+      choices: [{ delta: { role: 'assistant', content: NOT_SENT } }],
+      nbi_stream_error: NOT_SENT
+    }
+  });
+const ended = (id: string) => ({
+  id,
+  type: BackendMessageType.StreamEnd,
+  data: {}
+});
 
 beforeEach(() => {
   jest.useFakeTimers();
   FakeSocket.created = [];
   received = [];
-  warning.mockClear();
-  jest.spyOn(Notification, 'warning').mockImplementation(warning);
   jest.spyOn(ServerConnection, 'makeSettings').mockReturnValue({
     wsUrl: 'ws://localhost/',
     WebSocket: FakeSocket
@@ -93,10 +107,7 @@ describe('chat WebSocket sends', () => {
     first.close();
     // The request's caller is released, and told why; the reply is not a
     // request and just goes.
-    expect(received).toEqual([
-      { id: 'chat', type: BackendMessageType.StreamEnd, data: {} }
-    ]);
-    expect(warning).toHaveBeenCalledTimes(1);
+    expect(received).toEqual([notSent('chat'), ended('chat')]);
 
     jest.advanceTimersByTime(1000);
     const second = FakeSocket.created[1];
@@ -114,11 +125,16 @@ describe('chat WebSocket sends', () => {
       RequestDataType.InlineCompletionRequest,
       {}
     );
-    expect(received).toEqual([
-      { id: 'inline', type: BackendMessageType.StreamEnd, data: {} }
-    ]);
-    // A background inline completion is not worth a notice.
-    expect(warning).not.toHaveBeenCalled();
+    // A completion reads a message as completion text, so it only ends.
+    expect(received).toEqual([ended('inline')]);
+  });
+
+  it('marks an unsent generation request as failed, so nothing is inserted', () => {
+    const socket = FakeSocket.created[0];
+    socket.open();
+    socket.readyState = WebSocket.CLOSED;
+    NBIAPI.sendWebSocketMessage('gen', RequestDataType.GenerateCode, {});
+    expect(received).toEqual([notSent('gen'), ended('gen')]);
   });
 
   it('closes a socket it replaces and ignores what that socket still says', () => {

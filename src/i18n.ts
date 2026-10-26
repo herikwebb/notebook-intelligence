@@ -1,6 +1,7 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import React from 'react';
+import { Dialog } from '@jupyterlab/apputils';
 import {
   ITranslator,
   nullTranslator,
@@ -131,25 +132,46 @@ export function withTextDirection<T extends object>(options: T): T {
   if (dir === 'ltr') {
     return options;
   }
-  // Created on first use: tests mock @jupyterlab/apputils without it.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { Dialog } = require('@jupyterlab/apputils');
-  class DirectedRenderer extends Dialog.Renderer {
-    createHeader(...args: any[]) {
-      return directed(super.createHeader(...args));
+  return { ...options, renderer: directedRenderer(dir) };
+}
+
+type Rendered = ReturnType<Dialog.Renderer['createBody']>;
+const directedRenderers = new Map<string, Dialog.IRenderer>();
+
+/**
+ * JupyterLab's dialog renderer with `dir` on what it renders. Built on first
+ * use, since a test's partial mock of @jupyterlab/apputils may not have
+ * Dialog.Renderer, and kept, as every dialog in a session shares it.
+ */
+function directedRenderer(dir: 'rtl' | 'ltr'): Dialog.IRenderer {
+  let renderer = directedRenderers.get(dir);
+  if (!renderer) {
+    const directed = (widget: Rendered): Rendered => {
+      widget.node.dir = dir;
+      return widget;
+    };
+    class DirectedRenderer extends Dialog.Renderer {
+      createHeader<U>(
+        title: Dialog.Header,
+        reject?: () => void,
+        options?: Partial<Dialog.IOptions<U>>
+      ): Rendered {
+        return directed(super.createHeader(title, reject, options));
+      }
+      createBody(value: Dialog.Body<any>): Rendered {
+        return directed(super.createBody(value));
+      }
+      createFooter(
+        buttons: ReadonlyArray<HTMLElement>,
+        checkbox: HTMLElement | null
+      ): Rendered {
+        return directed(super.createFooter(buttons, checkbox));
+      }
     }
-    createBody(...args: any[]) {
-      return directed(super.createBody(...args));
-    }
-    createFooter(...args: any[]) {
-      return directed(super.createFooter(...args));
-    }
+    renderer = new DirectedRenderer();
+    directedRenderers.set(dir, renderer);
   }
-  const directed = (widget: { node: HTMLElement }) => {
-    widget.node.dir = dir;
-    return widget;
-  };
-  return { ...options, renderer: new DirectedRenderer() };
+  return renderer;
 }
 
 /**

@@ -4,7 +4,8 @@ import { withLocale } from '../../src/handler';
 import {
   getCatalogLocale,
   getTextDirection,
-  initTranslations
+  initTranslations,
+  withTextDirection
 } from '../../src/i18n';
 import { pseudoBundle } from './pseudo-translator';
 
@@ -56,5 +57,24 @@ describe('panel direction', () => {
     const english = { ...pseudoBundle, _p: (_c: string, text: string) => text };
     initTranslations({ languageCode: 'fa-IR', load: () => english });
     expect(getTextDirection()).toBe('ltr');
+  });
+
+  it('gives a right-to-left dialog a renderer that sets dir on each part', () => {
+    const options = { title: 'Delete?', body: 'Gone for good.' };
+    expect(withTextDirection(options)).toBe(options);
+
+    initTranslations({ languageCode: 'he_IL', load: () => declaring('rtl') });
+    const directed = withTextDirection(options) as typeof options & {
+      renderer: any;
+    };
+    // Title and body are left as given, so JupyterLab still treats them as
+    // strings; only the renderer changes.
+    expect(directed.title).toBe('Delete?');
+    expect(directed.body).toBe('Gone for good.');
+    expect(directed.renderer.createHeader('Delete?').node.dir).toBe('rtl');
+    expect(directed.renderer.createBody('Gone for good.').node.dir).toBe('rtl');
+    expect(directed.renderer.createFooter([], null).node.dir).toBe('rtl');
+    // One renderer serves every dialog.
+    expect(withTextDirection(options).renderer).toBe(directed.renderer);
   });
 });

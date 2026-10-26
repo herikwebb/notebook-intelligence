@@ -330,6 +330,23 @@ def test_a_plural_entry_needs_every_form(tmp_path, hatch_build):
         hatch_build.compile_catalogs(tmp_path, "6.3.0")
 
 
+def test_a_fuzzy_plural_with_one_form_is_left_out_not_refused(tmp_path, hatch_build):
+    """Babel's update matches a new plural msgid to an old singular and writes
+    a fuzzy entry with only msgstr[0]; it never ships, so it must not block
+    the build."""
+    po_path = _write_catalog(tmp_path)
+    po = polib.pofile(str(po_path))
+    entry = polib.POEntry(
+        msgid="%1 plugin", msgid_plural="%1 plugins", msgstr_plural={0: "%1 Plugin"}
+    )
+    entry.flags.append("fuzzy")
+    po.append(entry)
+    po.save(str(po_path))
+    hatch_build.compile_catalogs(tmp_path, "6.3.0")
+    bundle = json.loads(po_path.with_suffix(".json").read_text(encoding="utf-8"))
+    assert "%1 plugin" not in bundle
+
+
 def test_a_partly_translated_plural_is_refused(tmp_path, hatch_build):
     """Editors write every msgstr[n] slot; one left empty must fail the build
     rather than drop the entry silently."""

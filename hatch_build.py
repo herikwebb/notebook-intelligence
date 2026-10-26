@@ -97,9 +97,11 @@ def _jed_bundle(po: polib.POFile, po_path: Path, version: str) -> dict:
     }
     # A plural entry with only some forms filled is not "translated" to
     # polib, so it would be dropped silently, and the frontend and server
-    # would each fall back differently; refuse it instead.
+    # would each fall back differently; refuse it instead. A fuzzy entry is
+    # never shipped, and Babel's update writes one with a single form when
+    # it matches a new plural to an old singular, so it is left alone.
     for entry in po:
-        if entry.msgid_plural and not entry.obsolete:
+        if entry.msgid_plural and not entry.obsolete and "fuzzy" not in entry.flags:
             filled = sum(1 for text in entry.msgstr_plural.values() if text)
             if filled and (filled != nplurals or len(entry.msgstr_plural) != nplurals):
                 raise ValueError(
