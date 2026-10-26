@@ -26,8 +26,9 @@ def hatch_build():
 
 
 def test_catalogs_compile_without_hatchling(monkeypatch):
-    """`jlpm i18n:compile` imports hatch_build.py in a dev environment, which
-    has no hatchling: only the build backend's isolated environment does."""
+    """`jlpm i18n:compile` imports hatch_build.py for compile_catalogs, which
+    needs only polib (the test extra); hatchling comes with the i18n extra or
+    the build backend's isolated environment, so it must stay optional."""
     for name in list(sys.modules):
         if name == "hatchling" or name.startswith("hatchling."):
             monkeypatch.delitem(sys.modules, name)

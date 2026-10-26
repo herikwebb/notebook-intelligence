@@ -318,9 +318,33 @@ def test_session_previews_leave_out_the_instruction():
     assert i18n.without_reply_instruction("Hallo\n\n" + instruction) == "Hallo"
     # A title the agent cut short inside the instruction's second sentence.
     assert i18n.without_reply_instruction("Hallo " + instruction[:75] + "...") == "Hallo"
+    # Or inside the first: codex-acp keeps 117 characters, so a prompt of 60
+    # to 120 characters ends the title there.
+    assert i18n.without_reply_instruction("Hallo " + instruction[:30] + "...") == "Hallo"
+    assert i18n.without_reply_instruction("Hallo " + instruction[:30] + "…") == "Hallo"
     assert i18n.without_reply_instruction("Please reply in kind.") == (
         "Please reply in kind."
     )
+    assert i18n.without_reply_instruction("Reply in English") == "Reply in English"
+
+
+def test_chatbook_generator_errors_are_translated():
+    """The generator raises English messages; the handler translates the ones
+    it knows and passes a model's own error text through."""
+    from notebook_intelligence import chatbook_generate, extension
+    from notebook_intelligence.chatbook_kernel.codegen import ChatbookCodegenError
+
+    marked = types.SimpleNamespace(__=lambda text, *args: f"[{text}]")
+    for message in (
+        chatbook_generate.NO_ACP_SUPPORT,
+        chatbook_generate.NO_EXECUTABLE_CELL,
+        chatbook_generate.NO_DESCRIPTION,
+        chatbook_generate.NO_CHAT_MODEL,
+    ):
+        error = ChatbookCodegenError(message)
+        assert extension.chatbook_error_text(marked, error) == f"[{message}]"
+    error = ChatbookCodegenError("The model is rate limited")
+    assert extension.chatbook_error_text(marked, error) == "The model is rate limited"
 
 
 def _model_entries(provider):

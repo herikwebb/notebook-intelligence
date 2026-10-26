@@ -1496,8 +1496,9 @@ export class NBIAPI {
     );
     const code = (data?.generatedCode || '').trim();
     if (!code) {
+      const trans = getTrans();
       throw new Error(
-        data?.error || 'Chatbook code generation produced no cell'
+        data?.error || trans.__('Chatbook code generation produced no cell')
       );
     }
     return code;
@@ -1513,8 +1514,9 @@ export class NBIAPI {
     );
     const prompt = (data?.prompt || '').trim();
     if (!prompt) {
+      const trans = getTrans();
       throw new Error(
-        data?.error || 'Chatbook summary produced no description'
+        data?.error || trans.__('Chatbook summary produced no description')
       );
     }
     return prompt;

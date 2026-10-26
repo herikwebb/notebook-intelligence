@@ -90,7 +90,9 @@ export function getLanguageCode(): string | undefined {
 
 function serverLocale(code: string | undefined): string | undefined {
   const value = (code ?? '').trim();
-  return !value || value === 'default' || value === 'en' ? undefined : value;
+  return !value || value === 'default' || value.toLowerCase() === 'en'
+    ? undefined
+    : value;
 }
 
 /**

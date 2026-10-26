@@ -121,8 +121,9 @@ def _installed_language_packs() -> Optional[dict]:
     """Each locale with a JupyterLab language pack, mapped to its English
     display name ("German (Germany)"), or None if they cannot be listed
     (a pack that fails to load makes jupyterlab_server report none at all).
-    Cached: jupyterlab_server asks a subprocess, and installing a pack needs
-    a server restart to take effect anyway."""
+    Cached: jupyterlab_server scans the installed packages and parses each
+    pack, and installing a pack needs a server restart to take effect
+    anyway."""
     try:
         from jupyterlab_server.translation_utils import get_language_packs
 
@@ -249,9 +250,13 @@ def with_reply_language(prompt: Optional[str], language: Optional[str]) -> Optio
 
 
 # From the instruction's first sentence to the end, so a title the agent
-# truncated inside the second sentence is matched too.
+# truncated inside the second sentence is matched too; or the first sentence
+# itself cut short at the agent's truncation marker (codex-acp keeps 117
+# characters, claude-code-acp 127), which a prompt of 60 to 120 characters
+# lands in.
 _REPLY_INSTRUCTION = re.compile(
     r"\s*Reply in [^\n]*?, the user's JupyterLab language\.[\s\S]*$"
+    r"|\s*Reply in [^\n.]*(?:\.\.\.|…)$"
 )
 
 

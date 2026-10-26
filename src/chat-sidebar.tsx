@@ -2599,7 +2599,10 @@ function SidebarComponent(props: any) {
     setToolSelectionTitle(
       typeCounts.length === 0
         ? trans.__('Tool selection')
-        : trans.__('Tool selection (%1)', typeCounts.join(', '))
+        : trans.__(
+            'Tool selection (%1)',
+            typeCounts.join(trans._p('separator between list items', ', '))
+          )
     );
   }, [toolSelections]);
 
