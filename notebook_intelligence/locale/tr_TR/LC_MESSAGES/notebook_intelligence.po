@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: tr_TR\n"
@@ -692,14 +692,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Chatbook kod oluşturma başarısız oldu"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Chatbook kod oluşturma hiçbir hücre üretmedi"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Chatbook açıklaması başarısız oldu"
 
@@ -726,10 +718,6 @@ msgstr "Chatbook, üretilen kodu hemen çalıştıracak şekilde ayarlı."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook not defterinin çekirdeği olarak kalır, ancak üretilen kod bu Jupyter çekirdek belirtiminde (kernelspec) çalışır. Dil, sözdizimi vurgulama ve dışa aktarma bu çekirdeği izler. Değiştirdikten sonra açık Chatbook not defterlerini yeniden başlatın."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Chatbook özeti hiçbir açıklama üretmedi"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1958,10 +1946,6 @@ msgstr "Notebook Intelligence sunucuya bağlı değil, bu nedenle istek gönderi
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence hiçbir açıklama üretmedi"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence çalıştırılabilir bir hücre üretmedi"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

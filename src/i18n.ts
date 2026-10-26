@@ -132,22 +132,21 @@ export function withTextDirection<T extends object>(options: T): T {
   if (dir === 'ltr') {
     return options;
   }
-  return { ...options, renderer: directedRenderer(dir) };
+  return { ...options, renderer: rtlDialogRenderer() };
 }
 
 type Rendered = ReturnType<Dialog.Renderer['createBody']>;
-const directedRenderers = new Map<string, Dialog.IRenderer>();
+let rtlRenderer: Dialog.IRenderer | undefined;
 
 /**
- * JupyterLab's dialog renderer with `dir` on what it renders. Built on first
- * use, since a test's partial mock of @jupyterlab/apputils may not have
- * Dialog.Renderer, and kept, as every dialog in a session shares it.
+ * JupyterLab's dialog renderer with dir="rtl" on what it renders. Built on
+ * first use, since a test's partial mock of @jupyterlab/apputils may not
+ * have Dialog.Renderer, and kept, as every dialog in a session shares it.
  */
-function directedRenderer(dir: 'rtl' | 'ltr'): Dialog.IRenderer {
-  let renderer = directedRenderers.get(dir);
-  if (!renderer) {
+function rtlDialogRenderer(): Dialog.IRenderer {
+  if (!rtlRenderer) {
     const directed = (widget: Rendered): Rendered => {
-      widget.node.dir = dir;
+      widget.node.dir = 'rtl';
       return widget;
     };
     class DirectedRenderer extends Dialog.Renderer {
@@ -168,10 +167,9 @@ function directedRenderer(dir: 'rtl' | 'ltr'): Dialog.IRenderer {
         return directed(super.createFooter(buttons, checkbox));
       }
     }
-    renderer = new DirectedRenderer();
-    directedRenderers.set(dir, renderer);
+    rtlRenderer = new DirectedRenderer();
   }
-  return renderer;
+  return rtlRenderer;
 }
 
 /**

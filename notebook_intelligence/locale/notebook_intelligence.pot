@@ -703,14 +703,6 @@ msgid "Chatbook"
 msgstr ""
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr ""
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr ""
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr ""
 
@@ -736,10 +728,6 @@ msgstr ""
 
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
-msgstr ""
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
 msgstr ""
 
 #: src/components/perf-panel.tsx
@@ -1972,10 +1960,6 @@ msgstr ""
 
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
-msgstr ""
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
 msgstr ""
 
 #: src/chat-sidebar.tsx

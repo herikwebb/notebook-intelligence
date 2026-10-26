@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: ja_JP\n"
@@ -692,14 +692,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Chatbook のコード生成に失敗しました"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Chatbook のコード生成でセルが生成されませんでした"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Chatbook の説明の生成に失敗しました"
 
@@ -726,10 +718,6 @@ msgstr "Chatbook は、生成されたコードを即座に実行するよう設
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Notebook のカーネルは Chatbook のままですが、生成されたコードはこの Jupyter カーネルスペックで実行されます。言語、構文ハイライト、エクスポートはそのカーネルに従います。変更後は、開いている Chatbook の Notebook を再起動してください。"
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Chatbook の要約で説明が生成されませんでした"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1958,10 +1946,6 @@ msgstr "Notebook Intelligence がサーバーに接続されていないため�
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence は説明を生成しませんでした"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence は実行可能なセルを生成しませんでした"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

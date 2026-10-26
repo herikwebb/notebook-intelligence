@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: fr_FR\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "La génération du code Chatbook a échoué"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "La génération du code Chatbook n'a produit aucune cellule"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "La description Chatbook a échoué"
 
@@ -748,10 +740,6 @@ msgstr "Chatbook est configuré pour exécuter immédiatement le code généré.
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook reste le noyau du notebook, mais le code généré s'exécute dans ce kernelspec Jupyter. Le langage, la coloration syntaxique et l'export suivent ce noyau. Redémarrez les notebooks Chatbook ouverts après l'avoir modifié."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Le résumé Chatbook n'a produit aucune description"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "Notebook Intelligence n'est pas connecté au serveur, la requête n'a do
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence n'a produit aucune description"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence n'a produit aucune cellule exécutable"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

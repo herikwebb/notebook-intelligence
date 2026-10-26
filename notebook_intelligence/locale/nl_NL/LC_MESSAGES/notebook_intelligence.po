@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: nl_NL\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Chatbook-codegeneratie is mislukt"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Chatbook-codegeneratie heeft geen cel opgeleverd"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Chatbook-beschrijving is mislukt"
 
@@ -748,10 +740,6 @@ msgstr "Chatbook is ingesteld om gegenereerde code direct uit te voeren."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook blijft de kernel van het notitieboek, maar gegenereerde code wordt uitgevoerd in deze Jupyter-kernelspec. Taal, syntaxismarkering en export volgen die kernel. Start geopende Chatbook-notitieboeken opnieuw nadat u dit hebt gewijzigd."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Chatbook-samenvatting heeft geen beschrijving opgeleverd"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "Notebook Intelligence is niet met de server verbonden, dus het verzoek i
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence heeft geen beschrijving opgeleverd"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence heeft geen uitvoerbare cel opgeleverd"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

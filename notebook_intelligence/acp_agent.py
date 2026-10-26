@@ -727,6 +727,13 @@ def _strip_context_preamble(title: str) -> str:
     that was not truncated is kept as before.
     """
     title = i18n.without_reply_instruction(title)
+    cut = next((m for m in _TITLE_TRUNCATION_MARKERS if title.endswith(m)), "")
+    if cut:
+        # An instruction cut short ends the title, so the question before it
+        # is whole and loses the marker with it.
+        uncut = i18n.without_cut_reply_instruction(title[: -len(cut)])
+        if len(uncut) < len(title) - len(cut):
+            title = uncut
     lines = [line for line in title.splitlines() if line.strip()]
     while lines and (
         lines[0].startswith(NBI_CONTEXT_PREFIX)

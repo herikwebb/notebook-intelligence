@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:32-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: ar_SA\n"
@@ -802,14 +802,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "فشل توليد شيفرة Chatbook"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "لم يُنتج توليد شيفرة Chatbook أي خلية"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "فشل وصف Chatbook"
 
@@ -836,10 +828,6 @@ msgstr "تم ضبط Chatbook لتشغيل الشيفرة المُنشأة فور
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "يظل Chatbook نواة دفتر الملاحظات، لكن الشيفرة المُنشأة تعمل في مواصفة نواة Jupyter هذه. تتبع اللغة وتمييز البنية والتصدير تلك النواة. أعد تشغيل دفاتر Chatbook المفتوحة بعد تغييرها."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "لم يُنتج ملخص Chatbook أي وصف"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -2088,10 +2076,6 @@ msgstr "Notebook Intelligence غير متصل بالخادم، لذا لم يت�
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "لم يُنتج Notebook Intelligence أي وصف"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "لم يُنتج Notebook Intelligence أي خلية قابلة للتنفيذ"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

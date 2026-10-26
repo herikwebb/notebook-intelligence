@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: hy_AM\n"
@@ -692,14 +692,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Chatbook-ի կոդի գեներացումը ձախողվեց"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Chatbook-ի կոդի գեներացումը բջիջ չստեղծեց"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Chatbook-ի նկարագրությունը ձախողվեց"
 
@@ -726,10 +718,6 @@ msgstr "Chatbook-ը կարգավորված է ստեղծված կոդն անմի
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook-ը մնում է նոթատետրի միջուկը, բայց ստեղծված կոդը գործարկվում է այս Jupyter kernelspec-ում։ Լեզուն, շարահյուսության ընդգծումը և արտահանումը հետևում են այդ միջուկին։ Փոխելուց հետո վերագործարկեք բաց Chatbook նոթատետրերը։"
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Chatbook-ի ամփոփումը նկարագրություն չստեղծեց"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1958,10 +1946,6 @@ msgstr "Notebook Intelligence-ը միացված չէ սերվերին, ուստ�
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence-ը նկարագրություն չստեղծեց"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence-ը գործարկվող բջիջ չստեղծեց"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

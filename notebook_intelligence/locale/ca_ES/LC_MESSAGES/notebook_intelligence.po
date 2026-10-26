@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:32-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: ca_ES\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Ha fallat la generació de codi de Chatbook"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "La generació de codi de Chatbook no ha produït cap cel·la"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Ha fallat la descripció de Chatbook"
 
@@ -748,10 +740,6 @@ msgstr "Chatbook està configurat per executar el codi generat immediatament."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook continua sent el nucli de la llibreta, però el codi generat s'executa en aquesta especificació de nucli de Jupyter. El llenguatge, el ressaltat de sintaxi i l'exportació segueixen aquest nucli. Reinicieu les llibretes de Chatbook obertes després de canviar-lo."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "El resum de Chatbook no ha produït cap descripció"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "Notebook Intelligence no està connectat al servidor, de manera que la s
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence no ha produït cap descripció"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence no ha produït cap cel·la executable"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

@@ -35,7 +35,6 @@ log = logging.getLogger(__name__)
 # them for the user, keyed on these exact strings; a model's own error text
 # passes through as it is.
 NO_ACP_SUPPORT = "ACP mode does not support Chatbook generation"
-NO_EXECUTABLE_CELL = "Notebook Intelligence produced no executable cell"
 NO_DESCRIPTION = "Notebook Intelligence produced no description"
 NO_CHAT_MODEL = "No chat model configured in Notebook Intelligence"
 
@@ -442,7 +441,7 @@ def generate_code_with_chat_model(
         return extract_code_cell(text)
     except ChatbookCodegenError:
         raise ChatbookCodegenError(
-            NO_EXECUTABLE_CELL
+            "Notebook Intelligence produced no executable cell"
         ) from None
 
 
@@ -625,7 +624,7 @@ def _generate_chatbook_code_inner(
             return extract_code_cell(text)
         except ChatbookCodegenError:
             raise ChatbookCodegenError(
-                NO_EXECUTABLE_CELL
+                "Notebook Intelligence produced no executable cell"
             ) from None
     model = resolve_chatbook_chat_model(manager)
     if model is None:

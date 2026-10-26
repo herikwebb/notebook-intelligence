@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: zh_TW\n"
@@ -692,14 +692,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Chatbook 程式碼產生失敗"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Chatbook 程式碼產生未產生任何儲存格"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Chatbook 說明產生失敗"
 
@@ -726,10 +718,6 @@ msgstr "Chatbook 已設定為立即執行產生的程式碼。"
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook 仍是 Notebook 的核心，但產生的程式碼會在此 Jupyter 核心規格中執行。語言、語法醒目提示和匯出都以該核心為準。變更後，請重新啟動已開啟的 Chatbook Notebook。"
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Chatbook 摘要未產生任何說明"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1958,10 +1946,6 @@ msgstr "Notebook Intelligence 未連線到伺服器，因此未送出要求。�
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence 未產生任何說明"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence 未產生任何可執行的儲存格"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

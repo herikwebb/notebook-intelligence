@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: es_ES\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Falló la generación de código de Chatbook"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "La generación de código de Chatbook no produjo ninguna celda"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Falló la descripción de Chatbook"
 
@@ -748,10 +740,6 @@ msgstr "Chatbook está configurado para ejecutar el código generado inmediatame
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook sigue siendo el kernel del cuaderno, pero el código generado se ejecuta en esta especificación de kernel de Jupyter. El lenguaje, el resaltado de sintaxis y la exportación siguen a ese kernel. Reinicie los cuadernos de Chatbook abiertos después de cambiarlo."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "El resumen de Chatbook no produjo ninguna descripción"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "Notebook Intelligence no está conectado al servidor, así que la solici
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence no produjo ninguna descripción"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence no produjo ninguna celda ejecutable"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

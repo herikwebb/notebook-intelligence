@@ -1700,6 +1700,26 @@ class TestStripContextPreamble:
         from notebook_intelligence.acp_agent import _strip_context_preamble
         assert _strip_context_preamble("say hi") == "say hi"
 
+    def test_reply_instruction_cut_by_codex_is_dropped(self, monkeypatch):
+        """codex joins the query and keeps 117 characters plus "...", which
+        can end inside the reply instruction's first sentence."""
+        from notebook_intelligence import i18n
+        from notebook_intelligence.acp_agent import _strip_context_preamble
+        monkeypatch.setattr(
+            i18n, "_installed_language_packs", lambda: {"de_DE": "German (Germany)"}
+        )
+        query = (
+            "Additional context: Current directory open in Jupyter is: '/w' "
+            "What is the launch codename? "
+            + i18n.reply_language_instruction("German (Germany)")
+        )
+        assert _strip_context_preamble(query[:117] + "...") == (
+            "What is the launch codename?"
+        )
+        # A user's own "Reply in" request is not an NBI instruction.
+        own = "Reply in Markdown with a table comparing pandas merge and join"
+        assert _strip_context_preamble(own + "...") == own + "..."
+
     def test_all_context_falls_back_to_original(self):
         from notebook_intelligence.acp_agent import _strip_context_preamble
         title = "Additional context: Current directory open in Jupyter is: '/w'"

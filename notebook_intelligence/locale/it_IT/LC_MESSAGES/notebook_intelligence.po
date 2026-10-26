@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: it_IT\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Generazione del codice Chatbook non riuscita"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "La generazione del codice Chatbook non ha prodotto alcuna cella"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Descrizione Chatbook non riuscita"
 
@@ -748,10 +740,6 @@ msgstr "Chatbook è impostato per eseguire immediatamente il codice generato."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook resta il kernel del notebook, ma il codice generato viene eseguito in questo kernelspec Jupyter. Linguaggio, evidenziazione della sintassi ed esportazione seguono quel kernel. Riavvia i notebook Chatbook aperti dopo averlo modificato."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Il riepilogo Chatbook non ha prodotto alcuna descrizione"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "Notebook Intelligence non è connesso al server, quindi la richiesta non
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence non ha prodotto alcuna descrizione"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence non ha prodotto alcuna cella eseguibile"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

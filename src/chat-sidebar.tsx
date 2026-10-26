@@ -3798,12 +3798,18 @@ function SidebarComponent(props: any) {
         inFlightResponseId.current = responseMessageId;
       }
 
+      // A failure the stream reports (nbi_stream_error), passed on to the
+      // requester at StreamEnd so a hidden generation does not report success.
+      let streamError: string | undefined;
       submitCompletionRequest(request, {
         emit: async response => {
           if (stoppedResponseIds.current.has(responseMessageId)) {
             return;
           }
           if (response.type === BackendMessageType.StreamMessage) {
+            if (typeof response.data?.nbi_stream_error === 'string') {
+              streamError = response.data.nbi_stream_error;
+            }
             const delta = response.data['choices']?.[0]?.['delta'];
             if (!delta) {
               return;
@@ -3878,7 +3884,7 @@ function SidebarComponent(props: any) {
               }
             }
             inFlightMessageIds.current.delete(messageId);
-            emitProgress(false);
+            emitProgress(false, streamError);
           } else if (response.type === BackendMessageType.RunUICommand) {
             const runUiMessageId = response.id;
             const patchedArgs = injectTaskTargetNotebook(

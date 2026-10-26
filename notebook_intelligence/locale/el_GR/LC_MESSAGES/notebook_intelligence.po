@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: el_GR\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Η δημιουργία κώδικα Chatbook απέτυχε"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Η δημιουργία κώδικα Chatbook δεν παρήγαγε κελί"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Η περιγραφή Chatbook απέτυχε"
 
@@ -748,10 +740,6 @@ msgstr "Το Chatbook έχει ρυθμιστεί να εκτελεί αμέσω
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Το Chatbook παραμένει ο πυρήνας του σημειωματαρίου, αλλά ο κώδικας που δημιουργείται εκτελείται σε αυτό το kernelspec του Jupyter. Η γλώσσα, η επισήμανση σύνταξης και η εξαγωγή ακολουθούν αυτόν τον πυρήνα. Μετά την αλλαγή του, επανεκκινήστε τα ανοιχτά σημειωματάρια Chatbook."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Η σύνοψη Chatbook δεν παρήγαγε περιγραφή"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "Το Notebook Intelligence δεν είναι συνδεδεμένο με
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Το Notebook Intelligence δεν παρήγαγε περιγραφή"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Το Notebook Intelligence δεν παρήγαγε εκτελέσιμο κελί"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

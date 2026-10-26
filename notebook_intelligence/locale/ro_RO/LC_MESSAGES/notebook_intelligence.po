@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: ro_RO\n"
@@ -736,14 +736,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Generarea codului Chatbook a eșuat"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Generarea codului Chatbook nu a produs nicio celulă"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Descrierea Chatbook a eșuat"
 
@@ -770,10 +762,6 @@ msgstr "Chatbook este setat să ruleze imediat codul generat."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook rămâne kernelul notebookului, dar codul generat rulează în acest kernelspec Jupyter. Limbajul, evidențierea sintaxei și exportul urmează acel kernel. Reporniți notebookurile Chatbook deschise după ce îl schimbați."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Rezumatul Chatbook nu a produs nicio descriere"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -2010,10 +1998,6 @@ msgstr "Notebook Intelligence nu este conectat la server, așa că cererea nu a 
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence nu a produs nicio descriere"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence nu a produs nicio celulă executabilă"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

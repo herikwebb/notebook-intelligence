@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: uk_UA\n"
@@ -736,14 +736,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Не вдалося згенерувати код Chatbook"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Генерування коду Chatbook не створило клітинку"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Не вдалося створити опис Chatbook"
 
@@ -770,10 +762,6 @@ msgstr "Chatbook налаштовано на негайне виконання �
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook залишається ядром блокнота, але згенерований код виконується в цій специфікації ядра Jupyter (kernelspec). Мова, підсвічування синтаксису й експорт визначаються цим ядром. Після зміни перезапустіть відкриті блокноти Chatbook."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Зведення Chatbook не створило опис"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -2010,10 +1998,6 @@ msgstr "Notebook Intelligence не підключено до сервера, т�
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence не створив опис"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence не створив виконувану клітинку"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

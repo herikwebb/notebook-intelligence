@@ -250,14 +250,12 @@ def with_reply_language(prompt: Optional[str], language: Optional[str]) -> Optio
 
 
 # From the instruction's first sentence to the end, so a title the agent
-# truncated inside the second sentence is matched too; or the first sentence
-# itself cut short at the agent's truncation marker (codex-acp keeps 117
-# characters, claude-code-acp 127), which a prompt of 60 to 120 characters
-# lands in.
+# truncated inside the second sentence is matched too.
 _REPLY_INSTRUCTION = re.compile(
     r"\s*Reply in [^\n]*?, the user's JupyterLab language\.[\s\S]*$"
-    r"|\s*Reply in [^\n.]*(?:\.\.\.|…)$"
 )
+# The shortest cut-off start of the instruction taken for it ("Rep").
+_MIN_CUT_INSTRUCTION = 3
 
 
 def without_reply_instruction(text: str) -> str:
@@ -265,6 +263,26 @@ def without_reply_instruction(text: str) -> str:
     session transcript holds the query as sent, and a session preview or
     title should show only what the user asked."""
     return _REPLY_INSTRUCTION.sub("", text)
+
+
+def without_cut_reply_instruction(text: str) -> str:
+    """``text``, an agent's session title with its truncation marker already
+    removed, without a reply-language instruction the agent cut short inside
+    its first sentence (codex-acp keeps 117 characters, so a prompt of about
+    60 to 120 ends there). Only the start of the instruction NBI would have
+    sent for an installed language counts, so a user's own "Reply in ..."
+    stays."""
+    shortest = text
+    for locale, name in (_installed_language_packs() or {}).items():
+        if locale.split("_")[0].lower() == "en":
+            continue
+        instruction = reply_language_instruction(name)
+        for size in range(min(len(instruction), len(text)), _MIN_CUT_INSTRUCTION - 1, -1):
+            start = len(text) - size
+            if text.endswith(instruction[:size]) and (start == 0 or text[start - 1].isspace()):
+                shortest = min(shortest, text[:start].rstrip(), key=len)
+                break
+    return shortest
 
 
 def reply_language_instruction(language: Optional[str]) -> str:

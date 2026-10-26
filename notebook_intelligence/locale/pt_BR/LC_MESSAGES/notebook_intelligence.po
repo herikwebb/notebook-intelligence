@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: pt_BR\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Falha na geração de código do Chatbook"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "A geração de código do Chatbook não produziu nenhuma célula"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Falha na descrição do Chatbook"
 
@@ -748,10 +740,6 @@ msgstr "O Chatbook está configurado para executar o código gerado imediatament
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "O Chatbook continua sendo o kernel do caderno, mas o código gerado é executado neste kernelspec do Jupyter. A linguagem, o realce de sintaxe e a exportação seguem esse kernel. Reinicie os cadernos do Chatbook abertos depois de alterá-lo."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "O resumo do Chatbook não produziu nenhuma descrição"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "O Notebook Intelligence não está conectado ao servidor, então a solic
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "O Notebook Intelligence não produziu nenhuma descrição"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "O Notebook Intelligence não produziu nenhuma célula executável"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

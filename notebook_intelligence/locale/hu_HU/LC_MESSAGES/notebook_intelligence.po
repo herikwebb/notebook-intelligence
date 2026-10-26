@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: hu_HU\n"
@@ -692,14 +692,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "A Chatbook-kódgenerálás nem sikerült"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "A Chatbook-kódgenerálás nem hozott létre cellát"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "A Chatbook-leírás nem sikerült"
 
@@ -726,10 +718,6 @@ msgstr "A Chatbook úgy van beállítva, hogy a generált kódot azonnal futtass
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "A notebook kernele a Chatbook marad, de a generált kód ebben a Jupyter-kernelspecben fut. A nyelv, a szintaxiskiemelés és az exportálás ezt a kernelt követi. Módosítás után indítsa újra a megnyitott Chatbook notebookokat."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "A Chatbook-összefoglaló nem hozott létre leírást"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1958,10 +1946,6 @@ msgstr "A Notebook Intelligence nem csatlakozik a kiszolgálóhoz, ezért a kér
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "A Notebook Intelligence nem hozott létre leírást"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "A Notebook Intelligence nem hozott létre futtatható cellát"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

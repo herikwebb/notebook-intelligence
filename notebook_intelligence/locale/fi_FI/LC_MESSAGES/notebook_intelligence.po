@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: fi_FI\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Chatbook-koodin generointi epäonnistui"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Chatbook-koodin generointi ei tuottanut solua"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Chatbook-kuvaus epäonnistui"
 
@@ -748,10 +740,6 @@ msgstr "Chatbook on asetettu suorittamaan luotu koodi välittömästi."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook pysyy muistikirjan ytimenä, mutta luotu koodi suoritetaan tässä Jupyter-ydinmäärityksessä. Kieli, syntaksin korostus ja vienti noudattavat tätä ydintä. Käynnistä avoimet Chatbook-muistikirjat uudelleen sen muuttamisen jälkeen."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Chatbook-yhteenveto ei tuottanut kuvausta"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "Notebook Intelligence ei ole yhteydessä palvelimeen, joten pyyntöä ei
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence ei tuottanut kuvausta"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence ei tuottanut suoritettavaa solua"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

@@ -318,14 +318,34 @@ def test_session_previews_leave_out_the_instruction():
     assert i18n.without_reply_instruction("Hallo\n\n" + instruction) == "Hallo"
     # A title the agent cut short inside the instruction's second sentence.
     assert i18n.without_reply_instruction("Hallo " + instruction[:75] + "...") == "Hallo"
-    # Or inside the first: codex-acp keeps 117 characters, so a prompt of 60
-    # to 120 characters ends the title there.
-    assert i18n.without_reply_instruction("Hallo " + instruction[:30] + "...") == "Hallo"
-    assert i18n.without_reply_instruction("Hallo " + instruction[:30] + "…") == "Hallo"
     assert i18n.without_reply_instruction("Please reply in kind.") == (
         "Please reply in kind."
     )
-    assert i18n.without_reply_instruction("Reply in English") == "Reply in English"
+    # A user's own instruction stays, even in a full transcript.
+    assert i18n.without_reply_instruction(
+        "Summarize this file. Reply in bullet points."
+    ) == "Summarize this file. Reply in bullet points."
+
+
+def test_titles_cut_inside_the_instructions_first_sentence(monkeypatch):
+    """codex-acp keeps 117 characters, so a prompt of about 60 to 120 ends the
+    title inside the instruction's first sentence, or even inside "Reply"."""
+    monkeypatch.setattr(
+        i18n,
+        "_installed_language_packs",
+        lambda: {"en": "English", "de_DE": "German (Germany)"},
+    )
+    instruction = i18n.reply_language_instruction("German (Germany)")
+    for size in (3, 7, 30, 50):
+        assert i18n.without_cut_reply_instruction("Hallo " + instruction[:size]) == "Hallo"
+    # A user's own "Reply in ..." cut by the agent is kept, as is English,
+    # which NBI never asks for.
+    for title in (
+        "Reply in Markdown with a table comparing pandas merge",
+        "Explain this. Reply in English",
+        "Hallo Re",
+    ):
+        assert i18n.without_cut_reply_instruction(title) == title
 
 
 def test_chatbook_generator_errors_are_translated():
@@ -337,7 +357,6 @@ def test_chatbook_generator_errors_are_translated():
     marked = types.SimpleNamespace(__=lambda text, *args: f"[{text}]")
     for message in (
         chatbook_generate.NO_ACP_SUPPORT,
-        chatbook_generate.NO_EXECUTABLE_CELL,
         chatbook_generate.NO_DESCRIPTION,
         chatbook_generate.NO_CHAT_MODEL,
     ):

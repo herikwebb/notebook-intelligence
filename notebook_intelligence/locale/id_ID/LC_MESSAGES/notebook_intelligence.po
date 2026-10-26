@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: id_ID\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Pembuatan kode Chatbook gagal"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Pembuatan kode Chatbook tidak menghasilkan sel"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Deskripsi Chatbook gagal"
 
@@ -748,10 +740,6 @@ msgstr "Chatbook diatur untuk langsung menjalankan kode yang dihasilkan."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook tetap menjadi kernel notebook, tetapi kode yang dihasilkan berjalan di kernelspec Jupyter ini. Bahasa, penyorotan sintaksis, dan ekspor mengikuti kernel tersebut. Mulai ulang notebook Chatbook yang terbuka setelah mengubahnya."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Ringkasan Chatbook tidak menghasilkan deskripsi"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "Notebook Intelligence tidak terhubung ke server, sehingga permintaan tid
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence tidak menghasilkan deskripsi"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence tidak menghasilkan sel yang dapat dijalankan"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

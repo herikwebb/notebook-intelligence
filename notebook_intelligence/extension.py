@@ -105,7 +105,6 @@ from notebook_intelligence.chatbook_generate import (
     NO_ACP_SUPPORT,
     NO_CHAT_MODEL,
     NO_DESCRIPTION,
-    NO_EXECUTABLE_CELL,
     classify_generated_code_danger,
     generate_chatbook_code,
     summarize_chatbook_code,
@@ -1012,13 +1011,12 @@ class GetCapabilitiesHandler(APIHandler):
         self.finish(json.dumps(response))
 
 def chatbook_error_text(trans, error: ChatbookCodegenError) -> str:
-    """The generator's own failure messages, translated; a model's error
-    text passes through as it is."""
+    """The summarizer's own failure messages, translated; a model's error
+    text passes through as it is. Only the frontend's summarize requests
+    carry a locale: the Chatbook kernel, which asks for code, sends none and
+    shows the server's reply inside its own English message."""
     messages = {
         NO_ACP_SUPPORT: trans.__("ACP mode does not support Chatbook generation"),
-        NO_EXECUTABLE_CELL: trans.__(
-            "Notebook Intelligence produced no executable cell"
-        ),
         NO_DESCRIPTION: trans.__("Notebook Intelligence produced no description"),
         NO_CHAT_MODEL: trans.__("No chat model configured in Notebook Intelligence"),
     }
@@ -1130,7 +1128,7 @@ class ChatbookGenerateHandler(APIHandler):
             message = (
                 trans.__("Chatbook description failed")
                 if operation == "summarize"
-                else trans.__("Chatbook code generation failed")
+                else "Chatbook code generation failed"
             )
             self.finish(json.dumps({"error": message}))
             return
@@ -3938,7 +3936,7 @@ class WebsocketCopilotHandler(WebSocketMixin, websocket.WebSocketHandler, Jupyte
                 # The slash test matches the CLI query assembly in claude.py
                 # and acp_agent.py, which treats such a prompt as a command.
                 request_prompt = prompt
-                if reply_language and is_agent_session_mode and not prompt.lstrip().startswith("/"):
+                if reply_language and is_agent_session_mode and not prompt.startswith("/"):
                     request_prompt = i18n.with_reply_language(prompt, reply_language)
 
                 response_emitter = WebsocketCopilotResponseEmitter(chatId, messageId, self, self.chat_history)

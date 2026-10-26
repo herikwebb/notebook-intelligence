@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: vi_VN\n"
@@ -692,14 +692,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "Tạo mã Chatbook thất bại"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "Việc tạo mã Chatbook không tạo ra ô nào"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "Tạo mô tả Chatbook thất bại"
 
@@ -726,10 +718,6 @@ msgstr "Chatbook được đặt để chạy mã được tạo ngay lập tứ
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook vẫn là kernel của notebook, nhưng mã được tạo sẽ chạy trong kernelspec Jupyter này. Ngôn ngữ, tô sáng cú pháp và xuất tệp tuân theo kernel đó. Hãy khởi động lại các notebook Chatbook đang mở sau khi thay đổi."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "Việc tóm tắt Chatbook không tạo ra mô tả nào"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1958,10 +1946,6 @@ msgstr "Notebook Intelligence chưa kết nối với máy chủ nên yêu cầu
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence không tạo ra mô tả nào"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence không tạo ra ô nào có thể chạy"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"

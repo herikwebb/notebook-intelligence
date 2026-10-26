@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-26 06:33-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: he_IL\n"
@@ -714,14 +714,6 @@ msgid "Chatbook"
 msgstr "Chatbook"
 
 #: notebook_intelligence/extension.py
-msgid "Chatbook code generation failed"
-msgstr "יצירת הקוד של Chatbook נכשלה"
-
-#: src/api.ts
-msgid "Chatbook code generation produced no cell"
-msgstr "יצירת הקוד של Chatbook לא הפיקה תא"
-
-#: notebook_intelligence/extension.py
 msgid "Chatbook description failed"
 msgstr "תיאור ה-Chatbook נכשל"
 
@@ -748,10 +740,6 @@ msgstr "Chatbook מוגדר להריץ קוד שנוצר באופן מיידי."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook נשאר ליבת המחברת, אבל הקוד שנוצר רץ ב-kernelspec הזה של Jupyter. השפה, הדגשת התחביר והייצוא תואמים לליבה הזו. לאחר שינוי ההגדרה יש להפעיל מחדש מחברות Chatbook פתוחות."
-
-#: src/api.ts
-msgid "Chatbook summary produced no description"
-msgstr "סיכום ה-Chatbook לא הפיק תיאור"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1984,10 +1972,6 @@ msgstr "Notebook Intelligence אינו מחובר לשרת, ולכן הבקשה 
 #: notebook_intelligence/extension.py
 msgid "Notebook Intelligence produced no description"
 msgstr "Notebook Intelligence לא הפיק תיאור"
-
-#: notebook_intelligence/extension.py
-msgid "Notebook Intelligence produced no executable cell"
-msgstr "Notebook Intelligence לא הפיק תא שניתן להריץ"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
