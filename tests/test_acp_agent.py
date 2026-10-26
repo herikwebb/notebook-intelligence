@@ -1708,6 +1708,8 @@ class TestStripContextPreamble:
         monkeypatch.setattr(
             i18n, "_installed_language_packs", lambda: {"de_DE": "German (Germany)"}
         )
+        i18n._reply_instructions.cache_clear()
+        monkeypatch.setattr(i18n, "_reply_instructions", i18n._reply_instructions.__wrapped__)
         query = (
             "Additional context: Current directory open in Jupyter is: '/w' "
             "What is the launch codename? "
@@ -1719,6 +1721,10 @@ class TestStripContextPreamble:
         # A user's own "Reply in" request is not an NBI instruction.
         own = "Reply in Markdown with a table comparing pandas merge and join"
         assert _strip_context_preamble(own + "...") == own + "..."
+        # A title cut inside the directory pointer keeps its marker, which
+        # tells the pointer logic nothing of the question survived.
+        pointer = "Additional context: Current directory open in Jupyter is: '/home/me/My Rep..."
+        assert _strip_context_preamble(pointer) == ""
 
     def test_all_context_falls_back_to_original(self):
         from notebook_intelligence.acp_agent import _strip_context_preamble

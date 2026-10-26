@@ -254,8 +254,9 @@ def with_reply_language(prompt: Optional[str], language: Optional[str]) -> Optio
 _REPLY_INSTRUCTION = re.compile(
     r"\s*Reply in [^\n]*?, the user's JupyterLab language\.[\s\S]*$"
 )
-# The shortest cut-off start of the instruction taken for it ("Rep").
-_MIN_CUT_INSTRUCTION = 3
+# The shortest cut-off start of the instruction taken for it: shorter, and a
+# user's own word ("Report", "Replace") cut by the agent would match.
+_MIN_CUT_INSTRUCTION = len("Reply in ")
 
 
 def without_reply_instruction(text: str) -> str:
@@ -269,20 +270,32 @@ def without_cut_reply_instruction(text: str) -> str:
     """``text``, an agent's session title with its truncation marker already
     removed, without a reply-language instruction the agent cut short inside
     its first sentence (codex-acp keeps 117 characters, so a prompt of about
-    60 to 120 ends there). Only the start of the instruction NBI would have
-    sent for an installed language counts, so a user's own "Reply in ..."
-    stays."""
-    shortest = text
-    for locale, name in (_installed_language_packs() or {}).items():
-        if locale.split("_")[0].lower() == "en":
+    60 to 120 ends there). Only the start, from "Reply in " on, of the
+    instruction NBI sends for an installed language counts, so a user's own
+    request for a format or another language stays."""
+    instructions = _reply_instructions()
+    longest = max((len(i) for i in instructions), default=0)
+    # The instruction follows the prompt after whitespace, so it can only
+    # start at a word boundary within its own length of the end.
+    for start in range(max(0, len(text) - longest), len(text) - _MIN_CUT_INSTRUCTION + 1):
+        if start > 0 and not text[start - 1].isspace():
             continue
-        instruction = reply_language_instruction(name)
-        for size in range(min(len(instruction), len(text)), _MIN_CUT_INSTRUCTION - 1, -1):
-            start = len(text) - size
-            if text.endswith(instruction[:size]) and (start == 0 or text[start - 1].isspace()):
-                shortest = min(shortest, text[:start].rstrip(), key=len)
-                break
-    return shortest
+        tail = text[start:]
+        if any(instruction.startswith(tail) for instruction in instructions):
+            return text[:start].rstrip()
+    return text
+
+
+@functools.lru_cache(maxsize=1)
+def _reply_instructions() -> tuple:
+    """The instruction for each locale NBI could have asked a model to reply
+    in, worded as reply_language words it. Cached with the pack listing."""
+    instructions = set()
+    for locale in _installed_language_packs() or {}:
+        instruction = reply_language_instruction(reply_language(locale))
+        if instruction:
+            instructions.add(instruction)
+    return tuple(sorted(instructions))
 
 
 def reply_language_instruction(language: Optional[str]) -> str:

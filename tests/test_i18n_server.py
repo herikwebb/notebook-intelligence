@@ -327,25 +327,41 @@ def test_session_previews_leave_out_the_instruction():
     ) == "Summarize this file. Reply in bullet points."
 
 
-def test_titles_cut_inside_the_instructions_first_sentence(monkeypatch):
+@pytest.fixture
+def packs(monkeypatch):
+    """Installs the given language packs for the reply-instruction helpers."""
+
+    def install(listing):
+        monkeypatch.setattr(i18n, "_installed_language_packs", lambda: listing)
+        i18n._reply_instructions.cache_clear()
+
+    yield install
+    i18n._reply_instructions.cache_clear()
+
+
+def test_titles_cut_inside_the_instructions_first_sentence(packs):
     """codex-acp keeps 117 characters, so a prompt of about 60 to 120 ends the
-    title inside the instruction's first sentence, or even inside "Reply"."""
-    monkeypatch.setattr(
-        i18n,
-        "_installed_language_packs",
-        lambda: {"en": "English", "de_DE": "German (Germany)"},
-    )
+    title inside the instruction's first sentence."""
+    packs({"en": "English", "de_DE": "German (Germany)"})
     instruction = i18n.reply_language_instruction("German (Germany)")
-    for size in (3, 7, 30, 50):
+    for size in (9, 30, 50):
         assert i18n.without_cut_reply_instruction("Hallo " + instruction[:size]) == "Hallo"
-    # A user's own "Reply in ..." cut by the agent is kept, as is English,
-    # which NBI never asks for.
+    # A user's own words cut by the agent are kept: a different request, a
+    # language NBI never asks for, or too little to tell ("Rep", "Replace").
     for title in (
         "Reply in Markdown with a table comparing pandas merge",
         "Explain this. Reply in English",
-        "Hallo Re",
+        "Tidy these dataframes and build the Rep",
+        "Hallo Reply",
     ):
         assert i18n.without_cut_reply_instruction(title) == title
+
+
+def test_cut_instruction_named_by_locale_code(packs):
+    """A pack with no usable name is asked for by its locale code."""
+    packs({"no_NO": "no_NO"})
+    instruction = i18n.reply_language_instruction("the language of locale no_NO")
+    assert i18n.without_cut_reply_instruction("Hallo " + instruction[:40]) == "Hallo"
 
 
 def test_chatbook_generator_errors_are_translated():
