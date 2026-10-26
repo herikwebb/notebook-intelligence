@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 06:33-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: fi_FI\n"
@@ -338,6 +338,10 @@ msgstr "ACP-agentti"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "ACP-tila"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP-tila ei tue Chatbook-generointia"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -709,6 +713,18 @@ msgstr "Keskustelun tekstitallenne"
 msgid "Chatbook"
 msgstr "Chatbook"
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook code generation failed"
+msgstr "Chatbook-koodin generointi epäonnistui"
+
+#: src/api.ts
+msgid "Chatbook code generation produced no cell"
+msgstr "Chatbook-koodin generointi ei tuottanut solua"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook-kuvaus epäonnistui"
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr "Chatbook tuottaa %1-koodia ja suorittaa sen ytimessä %2. Kyseisellä prosessilla on samat oikeudet kuin millä tahansa Jupyter-ytimellä: tiedostot, verkko, ympäristömuuttujat ja pakettien asennukset."
@@ -732,6 +748,10 @@ msgstr "Chatbook on asetettu suorittamaan luotu koodi välittömästi."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook pysyy muistikirjan ytimenä, mutta luotu koodi suoritetaan tässä Jupyter-ydinmäärityksessä. Kieli, syntaksin korostus ja vienti noudattavat tätä ydintä. Käynnistä avoimet Chatbook-muistikirjat uudelleen sen muuttamisen jälkeen."
+
+#: src/api.ts
+msgid "Chatbook summary produced no description"
+msgstr "Chatbook-yhteenveto ei tuottanut kuvausta"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1813,6 +1833,10 @@ msgstr "MCP-palvelimia ei löytynyt. Lisää MCP-palvelimia määritystiedostoon
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Ollama-malleja ei löytynyt! Varmista, että %1 on käynnissä ja mallit on ladattu tietokoneellesi. %2, kun olet valmis."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligenceen ei ole määritetty keskustelumallia"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Keskustelumallia ei ole selvitetty, joten kutsuttavaa ei ole."
@@ -1824,6 +1848,12 @@ msgstr "Keskustelumallin palveluntarjoajaa ei ole valittu."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Keskusteluosallistujaa ei ole käytettävissä."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Tiedostoja ei lisätty: %1 tiedosto on jo liitetty, ja %2 tiedoston raja on saavutettu."
+msgstr[1] "Tiedostoja ei lisätty: %1 tiedostoa on jo liitetty, ja %2 tiedoston raja on saavutettu."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1950,6 +1980,14 @@ msgstr "Notebook Intelligencen solutoiminnot"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence ei ole yhteydessä palvelimeen, joten pyyntöä ei lähetetty. Yritä hetken kuluttua uudelleen."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence ei tuottanut kuvausta"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no executable cell"
+msgstr "Notebook Intelligence ei tuottanut suoritettavaa solua"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -4019,7 +4057,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 s"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

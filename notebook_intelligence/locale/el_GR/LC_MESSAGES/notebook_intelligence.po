@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 06:33-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: el_GR\n"
@@ -338,6 +338,10 @@ msgstr "Πράκτορας ACP"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "Λειτουργία ACP"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "Η λειτουργία ACP δεν υποστηρίζει τη δημιουργία Chatbook"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -709,6 +713,18 @@ msgstr "Καταγραφή συνομιλίας"
 msgid "Chatbook"
 msgstr "Chatbook"
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook code generation failed"
+msgstr "Η δημιουργία κώδικα Chatbook απέτυχε"
+
+#: src/api.ts
+msgid "Chatbook code generation produced no cell"
+msgstr "Η δημιουργία κώδικα Chatbook δεν παρήγαγε κελί"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Η περιγραφή Chatbook απέτυχε"
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr "Το Chatbook δημιουργεί κώδικα %1 και τον εκτελεί στο %2. Αυτή η διεργασία έχει τα ίδια δικαιώματα με οποιονδήποτε πυρήνα Jupyter: αρχεία, δίκτυο, μεταβλητές περιβάλλοντος και εγκαταστάσεις πακέτων."
@@ -732,6 +748,10 @@ msgstr "Το Chatbook έχει ρυθμιστεί να εκτελεί αμέσω
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Το Chatbook παραμένει ο πυρήνας του σημειωματαρίου, αλλά ο κώδικας που δημιουργείται εκτελείται σε αυτό το kernelspec του Jupyter. Η γλώσσα, η επισήμανση σύνταξης και η εξαγωγή ακολουθούν αυτόν τον πυρήνα. Μετά την αλλαγή του, επανεκκινήστε τα ανοιχτά σημειωματάρια Chatbook."
+
+#: src/api.ts
+msgid "Chatbook summary produced no description"
+msgstr "Η σύνοψη Chatbook δεν παρήγαγε περιγραφή"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1813,6 +1833,10 @@ msgstr "Δεν βρέθηκαν διακομιστές MCP. Προσθέστε �
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Δεν βρέθηκαν μοντέλα Ollama! Βεβαιωθείτε ότι το %1 εκτελείται και ότι τα μοντέλα έχουν ληφθεί στον υπολογιστή σας. %2 όταν είστε έτοιμοι."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Δεν έχει ρυθμιστεί μοντέλο συνομιλίας στο Notebook Intelligence"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Δεν έχει προσδιοριστεί μοντέλο συνομιλίας, οπότε δεν υπάρχει τίποτα για κλήση."
@@ -1824,6 +1848,12 @@ msgstr "Δεν έχει επιλεγεί πάροχος μοντέλου συν�
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Δεν υπάρχει διαθέσιμος συμμετέχων συνομιλίας."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Δεν προστέθηκαν αρχεία: %1 αρχείο είναι ήδη συνημμένο και συμπληρώθηκε το όριο των %2 αρχείων."
+msgstr[1] "Δεν προστέθηκαν αρχεία: %1 αρχεία είναι ήδη συνημμένα και συμπληρώθηκε το όριο των %2 αρχείων."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1950,6 +1980,14 @@ msgstr "Ενέργειες κελιού Notebook Intelligence"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Το Notebook Intelligence δεν είναι συνδεδεμένο με τον διακομιστή, επομένως το αίτημα δεν στάλθηκε. Δοκιμάστε ξανά σε λίγο."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Το Notebook Intelligence δεν παρήγαγε περιγραφή"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no executable cell"
+msgstr "Το Notebook Intelligence δεν παρήγαγε εκτελέσιμο κελί"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -4019,7 +4057,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 δ"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

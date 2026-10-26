@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 06:33-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: hu_HU\n"
@@ -317,6 +317,10 @@ msgstr "ACP-ügynök"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "ACP mód"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "Az ACP mód nem támogatja a Chatbook-generálást"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -687,6 +691,18 @@ msgstr "Csevegés átirata"
 msgid "Chatbook"
 msgstr "Chatbook"
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook code generation failed"
+msgstr "A Chatbook-kódgenerálás nem sikerült"
+
+#: src/api.ts
+msgid "Chatbook code generation produced no cell"
+msgstr "A Chatbook-kódgenerálás nem hozott létre cellát"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "A Chatbook-leírás nem sikerült"
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr "A Chatbook %1 kódot generál, és itt futtatja: %2. Ennek a folyamatnak ugyanazok a jogosultságai, mint bármely Jupyter kernelnek: fájlok, hálózat, környezeti változók és csomagtelepítés."
@@ -710,6 +726,10 @@ msgstr "A Chatbook úgy van beállítva, hogy a generált kódot azonnal futtass
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "A notebook kernele a Chatbook marad, de a generált kód ebben a Jupyter-kernelspecben fut. A nyelv, a szintaxiskiemelés és az exportálás ezt a kernelt követi. Módosítás után indítsa újra a megnyitott Chatbook notebookokat."
+
+#: src/api.ts
+msgid "Chatbook summary produced no description"
+msgstr "A Chatbook-összefoglaló nem hozott létre leírást"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1791,6 +1811,10 @@ msgstr "Nem található MCP-kiszolgáló. Adjon hozzá MCP-kiszolgálókat a kon
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Nem találhatók Ollama-modellek! Győződjön meg róla, hogy a(z) %1 fut, és a modellek le vannak töltve a számítógépére. Ha elkészült: %2."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Nincs csevegőmodell beállítva a Notebook Intelligence-ben"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Nincs feloldott csevegőmodell, így nincs mit meghívni."
@@ -1802,6 +1826,11 @@ msgstr "Nincs kiválasztva csevegőmodell-szolgáltató."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Nincs elérhető csevegési résztvevő."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Nem lett fájl hozzáadva: %1 fájl már csatolva van, és elérte a(z) %2 fájlos korlátot."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1925,6 +1954,14 @@ msgstr "Notebook Intelligence cellaműveletek"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "A Notebook Intelligence nem csatlakozik a kiszolgálóhoz, ezért a kérés nem lett elküldve. Próbálja újra egy pillanat múlva."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "A Notebook Intelligence nem hozott létre leírást"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no executable cell"
+msgstr "A Notebook Intelligence nem hozott létre futtatható cellát"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -3988,7 +4025,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 mp"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

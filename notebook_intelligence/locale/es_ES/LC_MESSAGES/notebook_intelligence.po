@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 06:33-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: es_ES\n"
@@ -338,6 +338,10 @@ msgstr "Agente ACP"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "Modo ACP"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "El modo ACP no admite la generación de Chatbook"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -709,6 +713,18 @@ msgstr "Transcripción del chat"
 msgid "Chatbook"
 msgstr "Chatbook"
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook code generation failed"
+msgstr "Falló la generación de código de Chatbook"
+
+#: src/api.ts
+msgid "Chatbook code generation produced no cell"
+msgstr "La generación de código de Chatbook no produjo ninguna celda"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Falló la descripción de Chatbook"
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr "Chatbook genera %1 y lo ejecuta en %2. Ese proceso tiene los mismos privilegios que cualquier kernel de Jupyter: archivos, red, variables de entorno e instalación de paquetes."
@@ -732,6 +748,10 @@ msgstr "Chatbook está configurado para ejecutar el código generado inmediatame
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook sigue siendo el kernel del cuaderno, pero el código generado se ejecuta en esta especificación de kernel de Jupyter. El lenguaje, el resaltado de sintaxis y la exportación siguen a ese kernel. Reinicie los cuadernos de Chatbook abiertos después de cambiarlo."
+
+#: src/api.ts
+msgid "Chatbook summary produced no description"
+msgstr "El resumen de Chatbook no produjo ninguna descripción"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1813,6 +1833,10 @@ msgstr "No se encontraron servidores MCP. Añada servidores MCP en el archivo de
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "¡No se encontraron modelos de Ollama! Asegúrese de que %1 se está ejecutando y de que los modelos están descargados en su equipo. %2 cuando esté listo."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "No hay ningún modelo de chat configurado en Notebook Intelligence"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "No se ha resuelto ningún modelo de chat, así que no hay nada a lo que llamar."
@@ -1824,6 +1848,12 @@ msgstr "No hay ningún proveedor de modelo de chat seleccionado."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "No hay ningún participante de chat disponible."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "No se añadió ningún archivo: %1 archivo ya está adjunto y se alcanzó el límite de %2 archivos."
+msgstr[1] "No se añadió ningún archivo: %1 archivos ya están adjuntos y se alcanzó el límite de %2 archivos."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1950,6 +1980,14 @@ msgstr "Acciones de celda de Notebook Intelligence"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence no está conectado al servidor, así que la solicitud no se envió. Vuelva a intentarlo en un momento."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence no produjo ninguna descripción"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no executable cell"
+msgstr "Notebook Intelligence no produjo ninguna celda ejecutable"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -4019,7 +4057,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 s"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

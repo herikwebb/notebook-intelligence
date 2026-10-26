@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 06:33-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: vi_VN\n"
@@ -317,6 +317,10 @@ msgstr "Agent ACP"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "Chế độ ACP"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "Chế độ ACP không hỗ trợ tạo Chatbook"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -687,6 +691,18 @@ msgstr "Bản ghi chat"
 msgid "Chatbook"
 msgstr "Chatbook"
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook code generation failed"
+msgstr "Tạo mã Chatbook thất bại"
+
+#: src/api.ts
+msgid "Chatbook code generation produced no cell"
+msgstr "Việc tạo mã Chatbook không tạo ra ô nào"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Tạo mô tả Chatbook thất bại"
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr "Chatbook tạo mã %1 và chạy mã đó trong %2. Tiến trình đó có cùng đặc quyền như mọi kernel Jupyter: tệp, mạng, biến môi trường và cài đặt gói."
@@ -710,6 +726,10 @@ msgstr "Chatbook được đặt để chạy mã được tạo ngay lập tứ
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook vẫn là kernel của notebook, nhưng mã được tạo sẽ chạy trong kernelspec Jupyter này. Ngôn ngữ, tô sáng cú pháp và xuất tệp tuân theo kernel đó. Hãy khởi động lại các notebook Chatbook đang mở sau khi thay đổi."
+
+#: src/api.ts
+msgid "Chatbook summary produced no description"
+msgstr "Việc tóm tắt Chatbook không tạo ra mô tả nào"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1791,6 +1811,10 @@ msgstr "Không tìm thấy máy chủ MCP nào. Hãy thêm máy chủ MCP trong 
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Không tìm thấy mô hình Ollama nào! Hãy đảm bảo %1 đang chạy và các mô hình đã được tải về máy tính của bạn. %2 khi đã sẵn sàng."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Chưa cấu hình mô hình chat trong Notebook Intelligence"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Chưa xác định được mô hình chat, nên không có gì để gọi."
@@ -1802,6 +1826,11 @@ msgstr "Chưa chọn nhà cung cấp mô hình chat."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Không có chat participant nào khả dụng."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Không thêm tệp nào: %1 tệp đã được đính kèm và đã đạt giới hạn %2 tệp."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1925,6 +1954,14 @@ msgstr "Thao tác ô của Notebook Intelligence"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence chưa kết nối với máy chủ nên yêu cầu chưa được gửi. Hãy thử lại sau giây lát."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence không tạo ra mô tả nào"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no executable cell"
+msgstr "Notebook Intelligence không tạo ra ô nào có thể chạy"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -3988,7 +4025,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 giây"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

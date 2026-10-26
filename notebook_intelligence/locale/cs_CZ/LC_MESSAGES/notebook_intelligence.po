@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 06:32-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: cs_CZ\n"
@@ -359,6 +359,10 @@ msgstr "Agent ACP"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "Režim ACP"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "Režim ACP nepodporuje generování Chatbook"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -731,6 +735,18 @@ msgstr "Přepis konverzace"
 msgid "Chatbook"
 msgstr "Chatbook"
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook code generation failed"
+msgstr "Generování kódu Chatbook selhalo"
+
+#: src/api.ts
+msgid "Chatbook code generation produced no cell"
+msgstr "Generování kódu Chatbook nevytvořilo žádnou buňku"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Popis Chatbook selhal"
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr "Chatbook generuje kód v jazyce %1 a spouští ho v %2. Tento proces má stejná oprávnění jako jakékoli jádro Jupyter: soubory, síť, proměnné prostředí a instalace balíčků."
@@ -754,6 +770,10 @@ msgstr "Chatbook je nastaven tak, aby vygenerovaný kód spouštěl okamžitě."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook zůstává jádrem sešitu, ale vygenerovaný kód se spouští v tomto kernelspec Jupyter. Jazyk, zvýrazňování syntaxe a export se řídí tímto jádrem. Po změně restartujte otevřené sešity Chatbook."
+
+#: src/api.ts
+msgid "Chatbook summary produced no description"
+msgstr "Shrnutí Chatbook nevytvořilo žádný popis"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1835,6 +1855,10 @@ msgstr "Nebyly nalezeny žádné servery MCP. Přidejte servery MCP v konfigura�
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Nebyly nalezeny žádné modely Ollama! Ujistěte se, že %1 běží a modely jsou stažené do vašeho počítače. %2, až bude vše připraveno."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "V Notebook Intelligence není nakonfigurován žádný model chatu"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Není určen žádný model chatu, takže není co volat."
@@ -1846,6 +1870,13 @@ msgstr "Není vybrán žádný poskytovatel modelu chatu."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Není k dispozici žádný účastník chatu."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Nebyly přidány žádné soubory: %1 soubor je již připojen a byl dosažen limit %2 souborů."
+msgstr[1] "Nebyly přidány žádné soubory: %1 soubory jsou již připojeny a byl dosažen limit %2 souborů."
+msgstr[2] "Nebyly přidány žádné soubory: %1 souborů je již připojeno a byl dosažen limit %2 souborů."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1975,6 +2006,14 @@ msgstr "Akce buňky Notebook Intelligence"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence není připojen k serveru, takže požadavek nebyl odeslán. Zkuste to za chvíli znovu."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence nevytvořil žádný popis"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no executable cell"
+msgstr "Notebook Intelligence nevytvořil žádnou spustitelnou buňku"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -4050,7 +4089,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 s"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

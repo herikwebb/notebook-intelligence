@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 06:33-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: zh_TW\n"
@@ -317,6 +317,10 @@ msgstr "ACP 代理程式"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "ACP 模式"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP 模式不支援 Chatbook 產生"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -687,6 +691,18 @@ msgstr "聊天紀錄"
 msgid "Chatbook"
 msgstr "Chatbook"
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook code generation failed"
+msgstr "Chatbook 程式碼產生失敗"
+
+#: src/api.ts
+msgid "Chatbook code generation produced no cell"
+msgstr "Chatbook 程式碼產生未產生任何儲存格"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook 說明產生失敗"
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr "Chatbook 會產生 %1 程式碼並在 %2 中執行。該處理程序具有與任何 Jupyter 核心相同的權限：檔案、網路、環境變數，以及安裝套件。"
@@ -710,6 +726,10 @@ msgstr "Chatbook 已設定為立即執行產生的程式碼。"
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook 仍是 Notebook 的核心，但產生的程式碼會在此 Jupyter 核心規格中執行。語言、語法醒目提示和匯出都以該核心為準。變更後，請重新啟動已開啟的 Chatbook Notebook。"
+
+#: src/api.ts
+msgid "Chatbook summary produced no description"
+msgstr "Chatbook 摘要未產生任何說明"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1791,6 +1811,10 @@ msgstr "找不到 MCP 伺服器。請在設定檔中新增 MCP 伺服器。"
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "找不到 Ollama 模型！請確認 %1 正在執行，且模型已下載到您的電腦。準備好後請%2。"
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligence 中未設定聊天模型"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "無法解析出聊天模型，因此沒有可呼叫的對象。"
@@ -1802,6 +1826,11 @@ msgstr "尚未選取聊天模型提供者。"
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "沒有可用的聊天參與者。"
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "未新增任何檔案：已附加 %1 個檔案，且已達 %2 個檔案的上限。"
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1925,6 +1954,14 @@ msgstr "Notebook Intelligence 儲存格動作"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence 未連線到伺服器，因此未送出要求。請稍後再試。"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence 未產生任何說明"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no executable cell"
+msgstr "Notebook Intelligence 未產生任何可執行的儲存格"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -3988,7 +4025,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 秒"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr "，"

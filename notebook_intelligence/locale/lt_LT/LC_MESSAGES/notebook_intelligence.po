@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 06:33-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: lt_LT\n"
@@ -359,6 +359,10 @@ msgstr "ACP agentas"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "ACP režimas"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP režimas nepalaiko Chatbook generavimo"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -731,6 +735,18 @@ msgstr "Pokalbio stenograma"
 msgid "Chatbook"
 msgstr "Chatbook"
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook code generation failed"
+msgstr "Chatbook kodo generavimas nepavyko"
+
+#: src/api.ts
+msgid "Chatbook code generation produced no cell"
+msgstr "Chatbook kodo generavimas nesukūrė langelio"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook aprašas nepavyko"
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr "Chatbook generuoja %1 kodą ir vykdo jį branduolyje %2. Tas procesas turi tokias pačias teises kaip bet kuris Jupyter branduolys: failai, tinklas, aplinkos kintamieji ir paketų diegimas."
@@ -754,6 +770,10 @@ msgstr "Chatbook nustatytas iš karto vykdyti sugeneruotą kodą."
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook lieka bloknoto branduoliu, tačiau sugeneruotas kodas vykdomas šiame Jupyter kernelspec. Kalba, sintaksės paryškinimas ir eksportas atitinka tą branduolį. Pakeitę iš naujo paleiskite atidarytus Chatbook bloknotus."
+
+#: src/api.ts
+msgid "Chatbook summary produced no description"
+msgstr "Chatbook santrauka nesukūrė aprašo"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1835,6 +1855,10 @@ msgstr "MCP serverių nerasta. Pridėkite MCP serverius konfigūracijos faile."
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Ollama modelių nerasta! Įsitikinkite, kad %1 veikia ir modeliai atsisiųsti į jūsų kompiuterį. Kai būsite pasiruošę, pasirinkite %2."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligence nenustatytas pokalbio modelis"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Pokalbio modelis nenustatytas, todėl nėra ko iškviesti."
@@ -1846,6 +1870,13 @@ msgstr "Nepasirinktas pokalbio modelio teikėjas."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Nėra pasiekiamo pokalbio dalyvio."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Failai nepridėti: %1 failas jau pridėtas ir pasiekta %2 failų riba."
+msgstr[1] "Failai nepridėti: %1 failai jau pridėti ir pasiekta %2 failų riba."
+msgstr[2] "Failai nepridėti: %1 failų jau pridėta ir pasiekta %2 failų riba."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1975,6 +2006,14 @@ msgstr "Notebook Intelligence langelio veiksmai"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence neprisijungęs prie serverio, todėl užklausa neišsiųsta. Bandykite dar kartą po akimirkos."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence nesukūrė aprašo"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no executable cell"
+msgstr "Notebook Intelligence nesukūrė vykdomo langelio"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -4050,7 +4089,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 s"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 06:33-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: uk_UA\n"
@@ -359,6 +359,10 @@ msgstr "Агент ACP"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "Режим ACP"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "Режим ACP не підтримує генерування Chatbook"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -731,6 +735,18 @@ msgstr "Стенограма чату"
 msgid "Chatbook"
 msgstr "Chatbook"
 
+#: notebook_intelligence/extension.py
+msgid "Chatbook code generation failed"
+msgstr "Не вдалося згенерувати код Chatbook"
+
+#: src/api.ts
+msgid "Chatbook code generation produced no cell"
+msgstr "Генерування коду Chatbook не створило клітинку"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Не вдалося створити опис Chatbook"
+
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
 msgstr "Chatbook генерує код на %1 і виконує його в %2. Цей процес має ті самі привілеї, що й будь-яке ядро Jupyter: файли, мережа, змінні середовища та встановлення пакетів."
@@ -754,6 +770,10 @@ msgstr "Chatbook налаштовано на негайне виконання �
 #: src/components/settings-panel.tsx
 msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
 msgstr "Chatbook залишається ядром блокнота, але згенерований код виконується в цій специфікації ядра Jupyter (kernelspec). Мова, підсвічування синтаксису й експорт визначаються цим ядром. Після зміни перезапустіть відкриті блокноти Chatbook."
+
+#: src/api.ts
+msgid "Chatbook summary produced no description"
+msgstr "Зведення Chatbook не створило опис"
 
 #: src/components/perf-panel.tsx
 msgid "Check status: %1"
@@ -1835,6 +1855,10 @@ msgstr "Сервери MCP не знайдено. Додайте сервери 
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Моделі Ollama не знайдено! Переконайтеся, що %1 запущено й моделі завантажено на ваш комп'ютер. %2, коли все буде готово."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "У Notebook Intelligence не налаштовано модель чату"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Модель чату не визначено, тому викликати нічого."
@@ -1846,6 +1870,13 @@ msgstr "Провайдера моделі чату не вибрано."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Немає доступного учасника чату."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Файли не додано: %1 файл уже прикріплено, і досягнуто обмеження в %2 файлів."
+msgstr[1] "Файли не додано: %1 файли вже прикріплено, і досягнуто обмеження в %2 файлів."
+msgstr[2] "Файли не додано: %1 файлів уже прикріплено, і досягнуто обмеження в %2 файлів."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1975,6 +2006,14 @@ msgstr "Дії Notebook Intelligence для клітинки"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence не підключено до сервера, тому запит не надіслано. Спробуйте ще раз за мить."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence не створив опис"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no executable cell"
+msgstr "Notebook Intelligence не створив виконувану клітинку"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -4050,7 +4089,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 с"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "
