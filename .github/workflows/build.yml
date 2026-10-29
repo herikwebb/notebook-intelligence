@@ -88,7 +88,7 @@ jobs:
     - name: Check the translation template is current
       run: |
         set -eux
-        python -m pip install "jupyterlab-translate>=1.3.7,<2" "polib>=1.2" pytest
+        python -m pip install "jupyterlab-translate>=1.3.7,<2" "polib>=1.2" pytest pytest-timeout
         python scripts/i18n.py check
         python -m pytest --noconftest tests/test_i18n_catalogs.py -q
 

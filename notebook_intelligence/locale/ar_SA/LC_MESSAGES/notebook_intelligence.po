@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: ar_SA\n"
@@ -424,6 +424,10 @@ msgid "ACP mode"
 msgstr "وضع ACP"
 
 #: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "وضع ACP لا يدعم توليد Chatbook"
+
+#: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
 msgstr "وضع ACP غير مفعَّل"
 
@@ -796,6 +800,10 @@ msgstr "سجل الدردشة"
 #: src/index.ts
 msgid "Chatbook"
 msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "فشل وصف Chatbook"
 
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
@@ -1901,6 +1909,10 @@ msgstr "لم يتم العثور على خوادم MCP. أضف خوادم MCP ف
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "لم يتم العثور على نماذج Ollama! تأكد من أن %1 قيد التشغيل وأن النماذج منزَّلة على جهازك. %2 عندما يكون جاهزًا."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "لم يتم ضبط نموذج دردشة في Notebook Intelligence"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "لم يتم تحديد أي نموذج دردشة، لذا لا يوجد ما يمكن استدعاؤه."
@@ -1912,6 +1924,16 @@ msgstr "لم يتم تحديد مزوّد لنموذج الدردشة."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "لا يتوفر أي مشارك في الدردشة."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "لم تتم إضافة ملفات: %1 ملف مرفق بالفعل، وتم بلوغ الحد البالغ %2 ملفات."
+msgstr[1] "لم تتم إضافة ملفات: %1 ملف مرفق بالفعل، وتم بلوغ الحد البالغ %2 ملفات."
+msgstr[2] "لم تتم إضافة ملفات: %1 ملفان مرفقان بالفعل، وتم بلوغ الحد البالغ %2 ملفات."
+msgstr[3] "لم تتم إضافة ملفات: %1 ملفات مرفقة بالفعل، وتم بلوغ الحد البالغ %2 ملفات."
+msgstr[4] "لم تتم إضافة ملفات: %1 ملف مرفق بالفعل، وتم بلوغ الحد البالغ %2 ملفات."
+msgstr[5] "لم تتم إضافة ملفات: %1 ملفًا مرفقًا بالفعل، وتم بلوغ الحد البالغ %2 ملفات."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -2050,6 +2072,10 @@ msgstr "إجراءات خلايا Notebook Intelligence"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence غير متصل بالخادم، لذا لم يتم إرسال الطلب. حاول مرة أخرى بعد قليل."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "لم يُنتج Notebook Intelligence أي وصف"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -4143,7 +4169,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 ث"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr "، "

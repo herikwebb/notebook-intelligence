@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: zh_CN\n"
@@ -317,6 +317,10 @@ msgstr "ACP 智能体"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "ACP 模式"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP 模式不支持 Chatbook 生成"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -686,6 +690,10 @@ msgstr "聊天记录"
 #: src/index.ts
 msgid "Chatbook"
 msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook 说明生成失败"
 
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
@@ -1791,6 +1799,10 @@ msgstr "未找到 MCP 服务器。请在配置文件中添加 MCP 服务器。"
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "未找到 Ollama 模型！请确保 %1 正在运行，并且模型已下载到您的计算机。准备就绪后请%2。"
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligence 中未配置聊天模型"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "未解析出聊天模型，因此无可调用的对象。"
@@ -1802,6 +1814,11 @@ msgstr "未选择聊天模型提供商。"
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "没有可用的聊天参与者。"
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "未添加任何文件：%1 个文件已附加，且已达到 %2 个文件的上限。"
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1925,6 +1942,10 @@ msgstr "Notebook Intelligence 单元格操作"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence 未连接到服务器，因此请求未发送。请稍后重试。"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence 未产生任何说明"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -3988,7 +4009,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 秒"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr "，"

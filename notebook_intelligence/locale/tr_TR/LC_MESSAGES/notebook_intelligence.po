@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: tr_TR\n"
@@ -317,6 +317,10 @@ msgstr "ACP ajanı"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "ACP modu"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP modu Chatbook oluşturmayı desteklemiyor"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -686,6 +690,10 @@ msgstr "Sohbet dökümü"
 #: src/index.ts
 msgid "Chatbook"
 msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook açıklaması başarısız oldu"
 
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
@@ -1791,6 +1799,10 @@ msgstr "MCP sunucusu bulunamadı. MCP sunucularını yapılandırma dosyasına e
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Hiç Ollama modeli bulunamadı! %1 uygulamasının çalıştığından ve modellerin bilgisayarınıza indirildiğinden emin olun. Hazır olduğunda: %2."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligence'ta yapılandırılmış bir sohbet modeli yok"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Çözümlenmiş bir sohbet modeli yok, bu nedenle çağrılacak bir şey yok."
@@ -1802,6 +1814,11 @@ msgstr "Hiçbir sohbet modeli sağlayıcısı seçilmedi."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Kullanılabilir sohbet katılımcısı yok."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Hiçbir dosya eklenmedi: %1 dosya zaten ekli ve %2 dosya sınırına ulaşıldı."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1925,6 +1942,10 @@ msgstr "Notebook Intelligence hücre eylemleri"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence sunucuya bağlı değil, bu nedenle istek gönderilmedi. Biraz sonra yeniden deneyin."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence hiçbir açıklama üretmedi"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -3988,7 +4009,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 sn"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

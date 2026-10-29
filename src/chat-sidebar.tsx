@@ -2067,27 +2067,29 @@ function SidebarComponent(props: any) {
     const skippedCount = uniqueFiles.length - filesToProcess.length;
 
     if (filesToProcess.length === 0) {
-      // Whole sentences, so each can be translated and punctuated on its own.
-      const reasons: string[] = [];
-      if (duplicateCount > 0) {
-        reasons.push(
-          trans._n(
-            'No files added: %1 file is already attached.',
-            'No files added: %1 files are already attached.',
-            duplicateCount
-          )
+      // One whole sentence per case, so each reads and translates on its own.
+      let notice: string;
+      if (duplicateCount > 0 && skippedCount > 0) {
+        notice = trans._n(
+          'No files added: %1 file is already attached, and the limit of %2 files is reached.',
+          'No files added: %1 files are already attached, and the limit of %2 files is reached.',
+          duplicateCount,
+          MAX_ATTACHED_FILES
+        );
+      } else if (duplicateCount > 0) {
+        notice = trans._n(
+          'No files added: %1 file is already attached.',
+          'No files added: %1 files are already attached.',
+          duplicateCount
+        );
+      } else {
+        notice = trans._n(
+          'No files added: the limit of %1 file is reached.',
+          'No files added: the limit of %1 files is reached.',
+          MAX_ATTACHED_FILES
         );
       }
-      if (skippedCount > 0) {
-        reasons.push(
-          trans._n(
-            'No files added: the limit of %1 file is reached.',
-            'No files added: the limit of %1 files is reached.',
-            MAX_ATTACHED_FILES
-          )
-        );
-      }
-      addSystemNotice(reasons.join(' '));
+      addSystemNotice(notice);
       return;
     }
 
@@ -2597,7 +2599,10 @@ function SidebarComponent(props: any) {
     setToolSelectionTitle(
       typeCounts.length === 0
         ? trans.__('Tool selection')
-        : trans.__('Tool selection (%1)', typeCounts.join(', '))
+        : trans.__(
+            'Tool selection (%1)',
+            typeCounts.join(trans._p('separator between list items', ', '))
+          )
     );
   }, [toolSelections]);
 
@@ -3793,12 +3798,18 @@ function SidebarComponent(props: any) {
         inFlightResponseId.current = responseMessageId;
       }
 
+      // A failure the stream reports (nbi_stream_error), passed on to the
+      // requester at StreamEnd so a hidden generation does not report success.
+      let streamError: string | undefined;
       submitCompletionRequest(request, {
         emit: async response => {
           if (stoppedResponseIds.current.has(responseMessageId)) {
             return;
           }
           if (response.type === BackendMessageType.StreamMessage) {
+            if (typeof response.data?.nbi_stream_error === 'string') {
+              streamError = response.data.nbi_stream_error;
+            }
             const delta = response.data['choices']?.[0]?.['delta'];
             if (!delta) {
               return;
@@ -3873,7 +3884,7 @@ function SidebarComponent(props: any) {
               }
             }
             inFlightMessageIds.current.delete(messageId);
-            emitProgress(false);
+            emitProgress(false, streamError);
           } else if (response.type === BackendMessageType.RunUICommand) {
             const runUiMessageId = response.id;
             const patchedArgs = injectTaskTargetNotebook(

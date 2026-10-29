@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: ja_JP\n"
@@ -317,6 +317,10 @@ msgstr "ACP エージェント"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "ACP モード"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP モードは Chatbook の生成に対応していません"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -686,6 +690,10 @@ msgstr "チャットの記録"
 #: src/index.ts
 msgid "Chatbook"
 msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook の説明の生成に失敗しました"
 
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
@@ -1791,6 +1799,10 @@ msgstr "MCP サーバーが見つかりません。設定ファイルで MCP サ
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Ollama のモデルが見つかりません！%1 が実行中で、モデルがコンピューターにダウンロードされていることを確認してください。準備ができたら %2 してください。"
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligence にチャットモデルが設定されていません"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "チャットモデルが解決されていないため、呼び出す対象がありません。"
@@ -1802,6 +1814,11 @@ msgstr "チャットモデルプロバイダーが選択されていません。
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "利用可能なチャット参加者がありません。"
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "ファイルは追加されませんでした: %1 個のファイルは既に添付されており、ファイル数の上限（%2 個）に達しています。"
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1925,6 +1942,10 @@ msgstr "Notebook Intelligence のセル操作"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence がサーバーに接続されていないため、リクエストは送信されませんでした。しばらくしてからもう一度お試しください。"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence は説明を生成しませんでした"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -3988,7 +4009,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 秒"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr "、"

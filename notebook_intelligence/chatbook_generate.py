@@ -31,6 +31,13 @@ from notebook_intelligence.ruleset import RuleContext
 
 log = logging.getLogger(__name__)
 
+# The generator's own failure messages. ChatbookGenerateHandler translates
+# them for the user, keyed on these exact strings; a model's own error text
+# passes through as it is.
+NO_ACP_SUPPORT = "ACP mode does not support Chatbook generation"
+NO_DESCRIPTION = "Notebook Intelligence produced no description"
+NO_CHAT_MODEL = "No chat model configured in Notebook Intelligence"
+
 def cell_danger_scan_instructions(language: str = "python") -> str:
     lang = (language or "python").strip() or "python"
     return f"""You classify whether a {lang} Jupyter cell is risky to auto-run.
@@ -179,7 +186,7 @@ def _generate_text_with_acp_agent(
     generator = getattr(manager, "generate_chatbook_with_acp", None)
     if not callable(generator):
         raise ChatbookCodegenError(
-            "ACP mode does not support Chatbook generation"
+            NO_ACP_SUPPORT
         )
     error = generator(prompt, collector)
     if error:
@@ -468,7 +475,7 @@ def generate_prompt_with_chat_model(
         value = "\n".join(lines[1:-1]).strip()
     if not value:
         raise ChatbookCodegenError(
-            "Notebook Intelligence produced no description"
+            NO_DESCRIPTION
         )
     return value
 
@@ -622,7 +629,7 @@ def _generate_chatbook_code_inner(
     model = resolve_chatbook_chat_model(manager)
     if model is None:
         raise ChatbookCodegenError(
-            "No chat model configured in Notebook Intelligence"
+            NO_CHAT_MODEL
         )
     return generate_code_with_chat_model(
         model,
@@ -706,13 +713,13 @@ def summarize_chatbook_code(
             value = "\n".join(value.splitlines()[1:-1]).strip()
         if not value:
             raise ChatbookCodegenError(
-                "Notebook Intelligence produced no description"
+                NO_DESCRIPTION
             )
         return value
     model = resolve_chatbook_chat_model(manager)
     if model is None:
         raise ChatbookCodegenError(
-            "No chat model configured in Notebook Intelligence"
+            NO_CHAT_MODEL
         )
     return generate_prompt_with_chat_model(
         model, code, language=lang, reply_language=reply_language

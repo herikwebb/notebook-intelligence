@@ -2692,6 +2692,13 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
             // paths see it: the review path keeps the errored diff on screen
             // for the user to discard, which must not count as a dismissal.
             streamErrored = true;
+            // Both paths say why, as the diff alone may show only the reason
+            // text in place of the selection.
+            app.commands.execute('apputils:notify', {
+              message: trans.__('Inline chat failed: %1', streamError),
+              type: 'error',
+              options: { autoClose: true }
+            });
           }
           if (existingCode !== '') {
             return;
@@ -2700,14 +2707,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
             // The backend tagged this stream as interrupted. Discard the
             // partial buffer rather than auto-inserting truncated code (or
             // worse, the [Stream interrupted] marker text itself) into the
-            // user's cell, and surface the failure as a toast.
+            // user's cell.
             generatedContent = '';
             removePopover();
-            app.commands.execute('apputils:notify', {
-              message: trans.__('Inline chat failed: %1', streamError),
-              type: 'error',
-              options: { autoClose: true }
-            });
             editor.focus();
             return;
           }

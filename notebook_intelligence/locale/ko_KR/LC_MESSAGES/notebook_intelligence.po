@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: ko_KR\n"
@@ -317,6 +317,10 @@ msgstr "ACP 에이전트"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "ACP 모드"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP 모드는 Chatbook 생성을 지원하지 않습니다"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -686,6 +690,10 @@ msgstr "채팅 기록"
 #: src/index.ts
 msgid "Chatbook"
 msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook 설명 생성에 실패했습니다"
 
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
@@ -1791,6 +1799,10 @@ msgstr "MCP 서버가 없습니다. 구성 파일에서 MCP 서버를 추가하�
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Ollama 모델을 찾을 수 없습니다! %1이(가) 실행 중이고 모델이 컴퓨터에 다운로드되어 있는지 확인하세요. 준비가 되면 %2하세요."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligence에 채팅 모델이 설정되어 있지 않습니다"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "확인된 채팅 모델이 없어 호출할 대상이 없습니다."
@@ -1802,6 +1814,11 @@ msgstr "선택된 채팅 모델 공급자가 없습니다."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "사용 가능한 채팅 참여자가 없습니다."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "추가된 파일 없음: 파일 %1개가 이미 첨부되어 있고 파일 한도(%2개)에 도달했습니다."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1925,6 +1942,10 @@ msgstr "Notebook Intelligence 셀 작업"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence가 서버에 연결되어 있지 않아 요청을 보내지 못했습니다. 잠시 후 다시 시도하세요."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence가 설명을 생성하지 않았습니다"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -3988,7 +4009,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1초"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

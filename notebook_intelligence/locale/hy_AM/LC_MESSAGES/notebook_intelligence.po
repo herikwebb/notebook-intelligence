@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: hy_AM\n"
@@ -317,6 +317,10 @@ msgstr "ACP գործակալ"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "ACP ռեժիմ"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP ռեժիմը չի աջակցում Chatbook-ի գեներացումը"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -686,6 +690,10 @@ msgstr "Զրույցի սղագրություն"
 #: src/index.ts
 msgid "Chatbook"
 msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook-ի նկարագրությունը ձախողվեց"
 
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
@@ -1791,6 +1799,10 @@ msgstr "MCP սերվերներ չեն գտնվել։ Ավելացրեք MCP սե
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Ollama մոդելներ չեն գտնվել։ Համոզվեք, որ %1-ը գործարկված է, և մոդելները ներբեռնված են ձեր համակարգչում։ Պատրաստ լինելուց հետո՝ %2։"
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligence-ում զրույցի մոդել կարգավորված չէ"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Զրույցի մոդել որոշված չէ, ուստի կանչելու բան չկա։"
@@ -1802,6 +1814,11 @@ msgstr "Զրույցի մոդելի մատակարար ընտրված չէ։"
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Զրույցի մասնակից հասանելի չէ։"
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Ֆայլեր չավելացվեցին. %1 ֆայլն արդեն կցված է, և հասել եք %2 ֆայլի սահմանաչափին։"
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1925,6 +1942,10 @@ msgstr "Notebook Intelligence-ի բջջի գործողություններ"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence-ը միացված չէ սերվերին, ուստի հարցումը չի ուղարկվել։ Կրկին փորձեք մի փոքր անց։"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence-ը նկարագրություն չստեղծեց"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -3988,7 +4009,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 վ"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

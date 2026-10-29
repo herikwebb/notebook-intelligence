@@ -727,6 +727,13 @@ def _strip_context_preamble(title: str) -> str:
     that was not truncated is kept as before.
     """
     title = i18n.without_reply_instruction(title)
+    marker = next((m for m in _TITLE_TRUNCATION_MARKERS if title.endswith(m)), "")
+    if marker:
+        # An instruction cut short ends the title, so the question before it
+        # is whole: the marker goes with the instruction.
+        uncut = i18n.without_cut_reply_instruction(title[: -len(marker)])
+        if len(uncut) < len(title) - len(marker):
+            title, marker = uncut, ""
     lines = [line for line in title.splitlines() if line.strip()]
     while lines and (
         lines[0].startswith(NBI_CONTEXT_PREFIX)
@@ -737,7 +744,6 @@ def _strip_context_preamble(title: str) -> str:
     if stripped and stripped != title.strip():
         return stripped
     # Joined form: peel the directory pointer off by shape.
-    marker = next((m for m in _TITLE_TRUNCATION_MARKERS if title.endswith(m)), "")
     body = title[: len(title) - len(marker)]
     pointer = _CONTEXT_POINTER.search(body)
     if pointer is None:

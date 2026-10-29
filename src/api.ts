@@ -3,7 +3,6 @@
 import { ServerConnection } from '@jupyterlab/services';
 import { requestAPI, withLocale } from './handler';
 import { getTrans } from './i18n';
-import { Notification } from '@jupyterlab/apputils';
 import { URLExt } from '@jupyterlab/coreutils';
 import { Signal } from '@lumino/signaling';
 import {
@@ -799,24 +798,35 @@ export class NBIAPI {
 
   /**
    * End requests that never reached the server, so their callers stop
-   * waiting for a reply that cannot come: each gets a local StreamEnd, and
-   * a chat or generation request (not a background inline completion) a
-   * notice saying it was not sent.
+   * waiting for a reply that cannot come. A chat or generation request gets
+   * the reason as its reply, marked as a failure the way the server marks
+   * an interrupted stream (nbi_stream_error), so the chat shows it and
+   * inline chat reports it instead of inserting it. A background inline
+   * completion would read a message as completion text, so it only ends.
    */
   static _endUnsent(messages: { id: string; type: string }[]): void {
     const requests = messages.filter(m => STREAMED_REQUEST_TYPES.has(m.type));
-    if (
-      requests.some(m => m.type !== RequestDataType.InlineCompletionRequest)
-    ) {
-      const trans = getTrans();
-      Notification.warning(
-        trans.__(
-          'Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment.'
-        ),
-        { autoClose: 5000 }
-      );
+    if (requests.length === 0) {
+      return;
     }
+    const trans = getTrans();
+    const reason = trans.__(
+      'Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment.'
+    );
     for (const request of requests) {
+      if (request.type !== RequestDataType.InlineCompletionRequest) {
+        this._messageReceived.emit(
+          JSON.stringify({
+            id: request.id,
+            type: BackendMessageType.StreamMessage,
+            data: {
+              choices: [{ delta: { role: 'assistant', content: reason } }],
+              nbi_stream_error: reason
+            },
+            created: new Date().toISOString()
+          })
+        );
+      }
       this._messageReceived.emit(
         JSON.stringify({
           id: request.id,

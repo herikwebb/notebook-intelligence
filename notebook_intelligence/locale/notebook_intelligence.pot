@@ -329,6 +329,10 @@ msgid "ACP mode"
 msgstr ""
 
 #: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr ""
+
+#: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
 msgstr ""
 
@@ -696,6 +700,10 @@ msgstr ""
 
 #: src/index.ts
 msgid "Chatbook"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
 msgstr ""
 
 #: src/components/settings-panel.tsx
@@ -1802,6 +1810,10 @@ msgstr ""
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr ""
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr ""
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr ""
@@ -1813,6 +1825,12 @@ msgstr ""
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1938,6 +1956,10 @@ msgstr ""
 
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
 msgstr ""
 
 #: src/chat-sidebar.tsx
@@ -4006,7 +4028,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr ""
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ""

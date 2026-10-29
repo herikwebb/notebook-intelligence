@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: notebook_intelligence\n"
 "Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
-"POT-Creation-Date: 2026-10-25 02:01-0400\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
 "PO-Revision-Date: 2026-10-24 22:00-0400\n"
 "Last-Translator: AI draft, not yet reviewed\n"
 "Language-Team: fr_FR\n"
@@ -338,6 +338,10 @@ msgstr "Agent ACP"
 #: src/chat-sidebar.tsx
 msgid "ACP mode"
 msgstr "Mode ACP"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "Le mode ACP ne prend pas en charge la génération Chatbook"
 
 #: notebook_intelligence/extension.py
 msgid "ACP mode is not enabled"
@@ -708,6 +712,10 @@ msgstr "Transcription du chat"
 #: src/index.ts
 msgid "Chatbook"
 msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "La description Chatbook a échoué"
 
 #: src/components/settings-panel.tsx
 msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
@@ -1813,6 +1821,10 @@ msgstr "Aucun serveur MCP trouvé. Ajoutez des serveurs MCP dans le fichier de c
 msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
 msgstr "Aucun modèle Ollama trouvé ! Vérifiez que %1 est en cours d'exécution et que des modèles sont téléchargés sur votre ordinateur. %2 une fois prêt."
 
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Aucun modèle de chat n'est configuré dans Notebook Intelligence"
+
 #: notebook_intelligence/readiness.py
 msgid "No chat model is resolved, so there is nothing to call."
 msgstr "Aucun modèle de chat n'est résolu, il n'y a donc rien à appeler."
@@ -1824,6 +1836,12 @@ msgstr "Aucun fournisseur de modèle de chat n'est sélectionné."
 #: notebook_intelligence/ai_service_manager.py
 msgid "No chat participant is available."
 msgstr "Aucun participant de chat n'est disponible."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Aucun fichier ajouté : %1 fichier est déjà joint, et la limite de %2 fichiers est atteinte."
+msgstr[1] "Aucun fichier ajouté : %1 fichiers sont déjà joints, et la limite de %2 fichiers est atteinte."
 
 #: src/chat-sidebar.tsx
 msgid "No files added: %1 file is already attached."
@@ -1950,6 +1968,10 @@ msgstr "Actions de cellule de Notebook Intelligence"
 #: src/api.ts
 msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
 msgstr "Notebook Intelligence n'est pas connecté au serveur, la requête n'a donc pas été envoyée. Réessayez dans un instant."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence n'a produit aucune description"
 
 #: src/chat-sidebar.tsx
 msgid "Notebook file"
@@ -4019,7 +4041,7 @@ msgctxt "seconds"
 msgid "%1s"
 msgstr "%1 s"
 
-#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
 msgctxt "separator between list items"
 msgid ", "
 msgstr ", "

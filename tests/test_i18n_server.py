@@ -321,6 +321,65 @@ def test_session_previews_leave_out_the_instruction():
     assert i18n.without_reply_instruction("Please reply in kind.") == (
         "Please reply in kind."
     )
+    # A user's own instruction stays, even in a full transcript.
+    assert i18n.without_reply_instruction(
+        "Summarize this file. Reply in bullet points."
+    ) == "Summarize this file. Reply in bullet points."
+
+
+@pytest.fixture
+def packs(monkeypatch):
+    """Installs the given language packs for the reply-instruction helpers."""
+
+    def install(listing):
+        monkeypatch.setattr(i18n, "_installed_language_packs", lambda: listing)
+        i18n._reply_instructions.cache_clear()
+
+    yield install
+    i18n._reply_instructions.cache_clear()
+
+
+def test_titles_cut_inside_the_instructions_first_sentence(packs):
+    """codex-acp keeps 117 characters, so a prompt of about 60 to 120 ends the
+    title inside the instruction's first sentence."""
+    packs({"en": "English", "de_DE": "German (Germany)"})
+    instruction = i18n.reply_language_instruction("German (Germany)")
+    for size in (9, 30, 50):
+        assert i18n.without_cut_reply_instruction("Hallo " + instruction[:size]) == "Hallo"
+    # A user's own words cut by the agent are kept: a different request, a
+    # language NBI never asks for, or too little to tell ("Rep", "Replace").
+    for title in (
+        "Reply in Markdown with a table comparing pandas merge",
+        "Explain this. Reply in English",
+        "Tidy these dataframes and build the Rep",
+        "Hallo Reply",
+    ):
+        assert i18n.without_cut_reply_instruction(title) == title
+
+
+def test_cut_instruction_named_by_locale_code(packs):
+    """A pack with no usable name is asked for by its locale code."""
+    packs({"no_NO": "no_NO"})
+    instruction = i18n.reply_language_instruction("the language of locale no_NO")
+    assert i18n.without_cut_reply_instruction("Hallo " + instruction[:40]) == "Hallo"
+
+
+def test_chatbook_generator_errors_are_translated():
+    """The generator raises English messages; the handler translates the ones
+    it knows and passes a model's own error text through."""
+    from notebook_intelligence import chatbook_generate, extension
+    from notebook_intelligence.chatbook_kernel.codegen import ChatbookCodegenError
+
+    marked = types.SimpleNamespace(__=lambda text, *args: f"[{text}]")
+    for message in (
+        chatbook_generate.NO_ACP_SUPPORT,
+        chatbook_generate.NO_DESCRIPTION,
+        chatbook_generate.NO_CHAT_MODEL,
+    ):
+        error = ChatbookCodegenError(message)
+        assert extension.chatbook_error_text(marked, error) == f"[{message}]"
+    error = ChatbookCodegenError("The model is rate limited")
+    assert extension.chatbook_error_text(marked, error) == "The model is rate limited"
 
 
 def _model_entries(provider):

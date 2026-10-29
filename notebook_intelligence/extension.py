@@ -102,6 +102,9 @@ from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_claude_
 from notebook_intelligence.context_factory import RuleContextFactory
 from notebook_intelligence.skillset import SKILL_NAME_REGEX
 from notebook_intelligence.chatbook_generate import (
+    NO_ACP_SUPPORT,
+    NO_CHAT_MODEL,
+    NO_DESCRIPTION,
     classify_generated_code_danger,
     generate_chatbook_code,
     summarize_chatbook_code,
@@ -1007,6 +1010,19 @@ class GetCapabilitiesHandler(APIHandler):
 
         self.finish(json.dumps(response))
 
+def chatbook_error_text(trans, error: ChatbookCodegenError) -> str:
+    """The summarizer's own failure messages, translated; a model's error
+    text passes through as it is. Only the frontend's summarize requests
+    carry a locale: the Chatbook kernel, which asks for code, sends none and
+    shows the server's reply inside its own English message."""
+    messages = {
+        NO_ACP_SUPPORT: trans.__("ACP mode does not support Chatbook generation"),
+        NO_DESCRIPTION: trans.__("Notebook Intelligence produced no description"),
+        NO_CHAT_MODEL: trans.__("No chat model configured in Notebook Intelligence"),
+    }
+    return messages.get(str(error), str(error))
+
+
 class ChatbookGenerateHandler(APIHandler):
     """Generate either Python or a cell description for Chatbook."""
 
@@ -1016,6 +1032,7 @@ class ChatbookGenerateHandler(APIHandler):
     async def post(self):
         if _finish_if_chatbook_disabled(self):
             return
+        trans = i18n.request_bundle(self)
         try:
             data = json.loads(self.request.body or b"{}")
         except json.JSONDecodeError:
@@ -1103,13 +1120,13 @@ class ChatbookGenerateHandler(APIHandler):
             )
         except ChatbookCodegenError as exc:
             self.set_status(400)
-            self.finish(json.dumps({"error": str(exc)}))
+            self.finish(json.dumps({"error": chatbook_error_text(trans, exc)}))
             return
         except Exception as exc:
             log.error("Chatbook generate failed: %s", exc)
             self.set_status(500)
             message = (
-                "Chatbook description failed"
+                trans.__("Chatbook description failed")
                 if operation == "summarize"
                 else "Chatbook code generation failed"
             )

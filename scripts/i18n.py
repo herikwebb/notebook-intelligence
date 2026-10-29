@@ -293,18 +293,22 @@ def update(args) -> int:
             ]
         )
         _drop_format_flags(po_path)
-        _restore_headers(po_path, kept)
+        _fix_headers(po_path, locale, kept)
     return 0
 
 
-def _restore_headers(po_path: Path, kept: dict) -> None:
-    """Babel drops Plural-Forms on update for a locale it does not know
-    (no_NO), and the build then refuses the catalog; put back what the
-    catalog had."""
+def _fix_headers(po_path: Path, locale: str, kept: dict) -> None:
+    """Make the headers what the build expects. Babel names the language the
+    way it spells the locale, which for some adds a script (zh_CN becomes
+    zh_Hans_CN) that JupyterLab's lookup by folder name never matches; and it
+    drops Plural-Forms on update for a locale it does not know (no_NO). Set
+    Language to the folder name and put back what the catalog had."""
     po = polib.pofile(str(po_path), wrapwidth=WRAP)
-    missing = {k: v for k, v in kept.items() if not po.metadata.get(k)}
-    if missing:
-        po.metadata.update(missing)
+    wanted = {k: v for k, v in kept.items() if not po.metadata.get(k)}
+    if po.metadata.get("Language") != locale:
+        wanted["Language"] = locale
+    if wanted:
+        po.metadata.update(wanted)
         po.save(str(po_path))
 
 
