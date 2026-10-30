@@ -1,6 +1,10 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
-import { KernelSpec } from '@jupyterlab/services';
+import { KernelSpec, KernelSpecManager } from '@jupyterlab/services';
+import { nullTranslator, TranslationBundle } from '@jupyterlab/translation';
+
+import { chatbookLanguageId } from './chatbook-core';
+import { TRANSLATION_DOMAIN } from './i18n';
 
 export interface INotebookKernelProfile {
   language: string;
@@ -15,14 +19,43 @@ export class NotebookKernelNotFoundError extends Error {
   constructor(options?: { language?: string; kernelName?: string }) {
     const requestedLanguage = normalizeNotebookLanguage(options?.language);
     const requestedKernelName = (options?.kernelName ?? '').trim();
-    const detail = requestedKernelName
-      ? `kernel "${requestedKernelName}"`
-      : `language "${requestedLanguage}"`;
-    super(`No installed Jupyter kernel matches ${detail}.`);
+    // English: UI tools return this message to the model.
+    super(
+      formatKernelNotFound(
+        nullTranslator.load(TRANSLATION_DOMAIN),
+        requestedKernelName,
+        requestedLanguage
+      )
+    );
     this.name = 'NotebookKernelNotFoundError';
     this.requestedLanguage = requestedLanguage;
     this.requestedKernelName = requestedKernelName;
   }
+}
+
+/**
+ * The error as the user reads it. `error.message` stays English: it is also
+ * the result a UI tool returns to the model.
+ */
+export function kernelNotFoundMessage(
+  trans: TranslationBundle,
+  error: NotebookKernelNotFoundError
+): string {
+  return formatKernelNotFound(
+    trans,
+    error.requestedKernelName,
+    error.requestedLanguage
+  );
+}
+
+function formatKernelNotFound(
+  trans: TranslationBundle,
+  kernelName: string,
+  language: string
+): string {
+  return kernelName
+    ? trans.__('No installed Jupyter kernel matches kernel "%1".', kernelName)
+    : trans.__('No installed Jupyter kernel matches language "%1".', language);
 }
 
 export const DEFAULT_NOTEBOOK_KERNEL: INotebookKernelProfile = Object.freeze({
@@ -31,15 +64,28 @@ export const DEFAULT_NOTEBOOK_KERNEL: INotebookKernelProfile = Object.freeze({
   displayName: 'Python 3 (ipykernel)'
 });
 
+export const CHATBOOK_KERNEL: INotebookKernelProfile = Object.freeze({
+  language: 'chatbook',
+  kernelName: 'chatbook',
+  displayName: 'Chatbook'
+});
+
+let sharedSpecs: KernelSpecManager | null = null;
+
+/**
+ * One KernelSpecManager for Chatbook UI. Each `new KernelSpecManager()`
+ * starts a poller until `dispose()`, so constructing one per config change
+ * leaks GET /api/kernelspecs forever.
+ */
+export function sharedKernelSpecManager(): KernelSpecManager {
+  if (!sharedSpecs || sharedSpecs.isDisposed) {
+    sharedSpecs = new KernelSpecManager();
+  }
+  return sharedSpecs;
+}
+
 export function normalizeNotebookLanguage(raw: string | undefined): string {
-  const language = (raw ?? '').trim().toLowerCase();
-  if (!language) {
-    return DEFAULT_NOTEBOOK_KERNEL.language;
-  }
-  if (language === 'py') {
-    return 'python';
-  }
-  return language;
+  return chatbookLanguageId(raw ?? '') || DEFAULT_NOTEBOOK_KERNEL.language;
 }
 
 export function findKernelProfile(
@@ -96,4 +142,57 @@ export function listKernelProfiles(
         displayName: spec.display_name
       };
     });
+}
+
+export function listChatbookBackendProfiles(
+  specs: Record<string, KernelSpec.ISpecModel> | undefined
+): INotebookKernelProfile[] {
+  return listKernelProfiles(specs).filter(
+    profile => profile.kernelName !== CHATBOOK_KERNEL.kernelName
+  );
+}
+
+export function resolveChatbookBackendProfile(
+  specs: Record<string, KernelSpec.ISpecModel> | undefined,
+  preferredKernelName?: string
+): INotebookKernelProfile {
+  const backends = listChatbookBackendProfiles(specs);
+  const wanted = (preferredKernelName ?? '').trim();
+  const named =
+    wanted && wanted !== CHATBOOK_KERNEL.kernelName
+      ? backends.find(profile => profile.kernelName === wanted)
+      : undefined;
+  if (named) {
+    return named;
+  }
+  const python3 = backends.find(
+    profile => profile.kernelName === DEFAULT_NOTEBOOK_KERNEL.kernelName
+  );
+  if (python3) {
+    return python3;
+  }
+  const python = backends.find(
+    profile => profile.language === DEFAULT_NOTEBOOK_KERNEL.language
+  );
+  if (python) {
+    return python;
+  }
+  if (backends[0]) {
+    return backends[0];
+  }
+  return DEFAULT_NOTEBOOK_KERNEL;
+}
+
+export function mimeTypeForNotebookLanguage(language: string): string {
+  const lang = normalizeNotebookLanguage(language);
+  const mimeByLanguage: Record<string, string> = {
+    python: 'text/x-python',
+    r: 'text/x-rsrc',
+    julia: 'text/x-julia',
+    javascript: 'text/javascript',
+    typescript: 'text/typescript',
+    scala: 'text/x-scala',
+    sql: 'text/x-sql'
+  };
+  return mimeByLanguage[lang] || `text/x-${lang}`;
 }

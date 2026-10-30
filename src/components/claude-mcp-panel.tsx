@@ -10,22 +10,26 @@ import {
   NBIAPI
 } from '../api';
 import { FormDialog } from './form-dialog';
+import { interpolate, useTrans, withTextDirection } from '../i18n';
+import {
+  CLAUDE_CONFIG_SCOPES as SCOPES,
+  removedFromScopeConfig,
+  scopeHeading,
+  scopeHint,
+  scopeOption
+} from './claude-scope';
 import {
   configToInput,
   parseKVLines,
   parseMcpJsonEntry
 } from './claude-mcp-paste';
 
-const SCOPES: ClaudeMCPScope[] = ['user', 'project', 'local'];
 const TRANSPORTS: ClaudeMCPTransport[] = ['stdio', 'sse', 'http'];
-
-const SCOPE_HINT: Record<ClaudeMCPScope, string> = {
-  user: 'available in all your projects',
-  project: 'shared via the project repo (.mcp.json)',
-  local: 'this project, this user only'
-};
+// The file the project scope writes, named in that scope's description.
+const PROJECT_MCP_FILE = '.mcp.json';
 
 export function SettingsPanelComponentClaudeMCP(_props: any): JSX.Element {
+  const trans = useTrans();
   const [servers, setServers] = useState<IClaudeMCPServer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,11 +59,16 @@ export function SettingsPanelComponentClaudeMCP(_props: any): JSX.Element {
   }, []);
 
   const handleRemove = async (srv: IClaudeMCPServer) => {
-    const ok = await showDialog({
-      title: 'Remove MCP server?',
-      body: `"${srv.name}" will be removed from Claude's ${srv.scope}-scope config.`,
-      buttons: [Dialog.cancelButton(), Dialog.warnButton({ label: 'Remove' })]
-    });
+    const ok = await showDialog(
+      withTextDirection({
+        title: trans.__('Remove MCP server?'),
+        body: removedFromScopeConfig(trans, 'mcp-server', srv.name, srv.scope),
+        buttons: [
+          Dialog.cancelButton({ label: trans.__('Cancel') }),
+          Dialog.warnButton({ label: trans.__('Remove') })
+        ]
+      })
+    );
     if (!ok.button.accept) {
       return;
     }
@@ -68,7 +77,7 @@ export function SettingsPanelComponentClaudeMCP(_props: any): JSX.Element {
       await NBIAPI.removeClaudeMCPServer(srv.name, srv.scope);
       await refresh();
     } catch (e: any) {
-      setError(`Failed to remove: ${e?.message ?? e}`);
+      setError(trans.__('Failed to remove: %1', e?.message ?? e));
     } finally {
       setPendingRemoval(null);
     }
@@ -84,7 +93,9 @@ export function SettingsPanelComponentClaudeMCP(_props: any): JSX.Element {
       );
       await refresh();
     } catch (e: any) {
-      setError(`Failed to update workspace state: ${e?.message ?? e}`);
+      setError(
+        trans.__('Failed to update workspace state: %1', e?.message ?? e)
+      );
     } finally {
       setPendingToggle(null);
     }
@@ -116,25 +127,34 @@ export function SettingsPanelComponentClaudeMCP(_props: any): JSX.Element {
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
             onClick={refresh}
             disabled={loading}
-            title="Re-read Claude's MCP config from disk"
+            title={trans.__("Re-read Claude's MCP config from disk")}
           >
             <div className="jp-Dialog-buttonLabel">
-              {loading ? 'Refreshing…' : 'Refresh'}
+              {loading ? trans.__('Refreshing…') : trans.__('Refresh')}
             </div>
           </button>
           <button
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
             onClick={() => setAddOpen(true)}
           >
-            <div className="jp-Dialog-buttonLabel">Add server</div>
+            <div className="jp-Dialog-buttonLabel">
+              {trans.__('Add server')}
+            </div>
           </button>
         </div>
       </div>
 
       <div className="nbi-info-banner" role="note">
-        These are Claude Code's own MCP servers (read from{' '}
-        <code>~/.claude.json</code>, project <code>.mcp.json</code>, and the
-        per-user-per-project block). Independent of the NBI MCP Servers tab.
+        {interpolate(
+          (userFile, projectFile) =>
+            trans.__(
+              "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab.",
+              userFile,
+              projectFile
+            ),
+          <code>~/.claude.json</code>,
+          <code>{PROJECT_MCP_FILE}</code>
+        )}
       </div>
 
       {error && (
@@ -175,17 +195,20 @@ function ClaudeMCPScopeSection(props: {
   onRemove: (srv: IClaudeMCPServer) => void;
   onToggleDisabled: (srv: IClaudeMCPServer) => void;
 }) {
+  const trans = useTrans();
   return (
     <div className="nbi-skills-section">
       <div
         className="nbi-skills-section-caption"
-        title={SCOPE_HINT[props.scope]}
+        title={scopeHint(trans, props.scope, PROJECT_MCP_FILE)}
       >
-        {props.scope.toUpperCase()}
+        {scopeHeading(trans, props.scope)}
       </div>
       {props.servers.length === 0 ? (
         <div className="nbi-skills-empty">
-          {props.loading ? 'Loading…' : 'No servers in this scope.'}
+          {props.loading
+            ? trans.__('Loading…')
+            : trans.__('No servers in this scope.')}
         </div>
       ) : (
         props.servers.map(srv => (
@@ -216,6 +239,7 @@ function ClaudeMCPRow(props: {
   onRemove: () => void;
   onToggleDisabled: () => void;
 }) {
+  const trans = useTrans();
   const { srv } = props;
   const summary =
     srv.transport === 'stdio'
@@ -224,14 +248,16 @@ function ClaudeMCPRow(props: {
   const disabled = srv.disabledForWorkspace;
   const toggleLabel = disabled
     ? props.toggling
-      ? 'Enabling…'
-      : 'Enable for workspace'
+      ? trans.__('Enabling…')
+      : trans.__('Enable for workspace')
     : props.toggling
-      ? 'Disabling…'
-      : 'Disable for workspace';
+      ? trans.__('Disabling…')
+      : trans.__('Disable for workspace');
   const toggleTitle = disabled
-    ? 'Re-enable this server for the current Jupyter workspace'
-    : 'Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)';
+    ? trans.__('Re-enable this server for the current Jupyter workspace')
+    : trans.__(
+        'Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)'
+      );
   return (
     <div
       className={`nbi-skill-row${disabled ? ' nbi-skill-row-disabled' : ''}`}
@@ -240,7 +266,9 @@ function ClaudeMCPRow(props: {
         <div className="nbi-skill-row-name">
           {srv.name}
           {disabled && (
-            <span className="nbi-skill-row-badge">Disabled for workspace</span>
+            <span className="nbi-skill-row-badge">
+              {trans.__('Disabled for workspace')}
+            </span>
           )}
         </div>
         <div className="nbi-skill-row-description">
@@ -263,7 +291,7 @@ function ClaudeMCPRow(props: {
           disabled={props.removing}
         >
           <div className="jp-Dialog-buttonLabel">
-            {props.removing ? 'Removing…' : 'Remove'}
+            {props.removing ? trans.__('Removing…') : trans.__('Remove')}
           </div>
         </button>
       </div>
@@ -287,6 +315,7 @@ function ClaudeMCPAddDialog(props: {
   onCancel: () => void;
   onSubmit: (input: IClaudeMCPAddInput) => Promise<void>;
 }) {
+  const trans = useTrans();
   const [scope, setScope] = useState<ClaudeMCPScope>('user');
   const [mode, setMode] = useState<AddDialogMode>('form');
   const [transport, setTransport] = useState<ClaudeMCPTransport>('stdio');
@@ -333,8 +362,8 @@ function ClaudeMCPAddDialog(props: {
     try {
       let input: IClaudeMCPAddInput;
       if (mode === 'json') {
-        const { name: parsedName, config } = parseMcpJsonEntry(jsonText);
-        input = configToInput(parsedName, config, scope);
+        const { name: parsedName, config } = parseMcpJsonEntry(trans, jsonText);
+        input = configToInput(trans, parsedName, config, scope);
       } else {
         const argsList = argsText
           .split('\n')
@@ -371,9 +400,9 @@ function ClaudeMCPAddDialog(props: {
 
   return (
     <FormDialog
-      title="Add MCP server"
-      submitLabel="Add"
-      submitInProgressLabel="Adding…"
+      title={trans.__('Add MCP server')}
+      submitLabel={trans.__('Add')}
+      submitInProgressLabel={trans.__('Adding…')}
       canSubmit={Boolean(canSubmit)}
       submitting={submitting}
       error={submitError}
@@ -381,7 +410,7 @@ function ClaudeMCPAddDialog(props: {
       onSubmit={handleSubmit}
     >
       <div className="nbi-form-field">
-        <label htmlFor="nbi-mcp-add-scope">Scope</label>
+        <label htmlFor="nbi-mcp-add-scope">{trans.__('Scope')}</label>
         <select
           id="nbi-mcp-add-scope"
           value={scope}
@@ -389,13 +418,15 @@ function ClaudeMCPAddDialog(props: {
         >
           {SCOPES.map(s => (
             <option key={s} value={s}>
-              {s} — {SCOPE_HINT[s]}
+              {scopeOption(trans, s, PROJECT_MCP_FILE)}
             </option>
           ))}
         </select>
       </div>
       <div className="nbi-form-field">
-        <label id="nbi-mcp-add-input-mode-label">Input mode</label>
+        <label id="nbi-mcp-add-input-mode-label">
+          {trans.__('Input mode')}
+        </label>
         <div
           className="nbi-segmented-control"
           role="tablist"
@@ -413,7 +444,7 @@ function ClaudeMCPAddDialog(props: {
             className={`nbi-segmented-control-option${mode === 'form' ? ' is-active' : ''}`}
             onClick={() => setMode('form')}
           >
-            Form
+            {trans._p('MCP server input mode', 'Form')}
           </button>
           <button
             type="button"
@@ -457,7 +488,7 @@ function ClaudeMCPAddDialog(props: {
           className="nbi-mcp-add-form-panel"
         >
           <div className="nbi-form-field">
-            <label htmlFor="nbi-mcp-add-name">Name</label>
+            <label htmlFor="nbi-mcp-add-name">{trans.__('Name')}</label>
             <input
               id="nbi-mcp-add-name"
               ref={nameInputRef}
@@ -469,7 +500,9 @@ function ClaudeMCPAddDialog(props: {
             />
           </div>
           <div className="nbi-form-field">
-            <label htmlFor="nbi-mcp-add-transport">Transport</label>
+            <label htmlFor="nbi-mcp-add-transport">
+              {trans.__('Transport')}
+            </label>
             <select
               id="nbi-mcp-add-transport"
               value={transport}
@@ -484,7 +517,7 @@ function ClaudeMCPAddDialog(props: {
           </div>
           <div className="nbi-form-field">
             <label htmlFor="nbi-mcp-add-command-or-url">
-              {transport === 'stdio' ? 'Command' : 'URL'}
+              {transport === 'stdio' ? trans.__('Command') : trans.__('URL')}
             </label>
             <input
               id="nbi-mcp-add-command-or-url"
@@ -498,7 +531,9 @@ function ClaudeMCPAddDialog(props: {
           </div>
           {transport === 'stdio' && (
             <div className="nbi-form-field">
-              <label htmlFor="nbi-mcp-add-args">Args (one per line)</label>
+              <label htmlFor="nbi-mcp-add-args">
+                {trans.__('Args (one per line)')}
+              </label>
               <textarea
                 id="nbi-mcp-add-args"
                 rows={3}
@@ -511,7 +546,7 @@ function ClaudeMCPAddDialog(props: {
           {transport === 'stdio' && (
             <div className="nbi-form-field">
               <label htmlFor="nbi-mcp-add-env">
-                Environment (KEY=value, one per line)
+                {trans.__('Environment (KEY=value, one per line)')}
               </label>
               <textarea
                 id="nbi-mcp-add-env"
@@ -525,7 +560,7 @@ function ClaudeMCPAddDialog(props: {
           {transport !== 'stdio' && (
             <div className="nbi-form-field">
               <label htmlFor="nbi-mcp-add-headers">
-                Headers (Name: value, one per line)
+                {trans.__('Headers (Name: value, one per line)')}
               </label>
               <textarea
                 id="nbi-mcp-add-headers"

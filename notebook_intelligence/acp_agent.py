@@ -26,18 +26,22 @@ import asyncio
 import concurrent.futures
 import contextlib
 import difflib
+import json
 import logging
 import os
 import re
 import sys
 import threading
 import time
+import unicodedata
+import uuid
 from datetime import datetime
 from typing import Any, Optional
 
 import acp
 from acp import schema
 
+from notebook_intelligence import i18n
 from notebook_intelligence.api import (
     ChatCommand,
     ChatRequest,
@@ -50,16 +54,20 @@ from notebook_intelligence.api import (
     ConfirmationData,
 )
 from notebook_intelligence import perf
+from notebook_intelligence.i18n import TranslationBundle
 from notebook_intelligence.acp_registry import (
     AcpAgentSpec,
+    acp_adapter_path,
     codex_approval_args,
+    codex_auth_args,
     codex_model_args,
     resolve_acp_agent,
     resolve_acp_agent_command,
 )
+from notebook_intelligence.acp_runtime import validate_acp_adapter_runtime
 from notebook_intelligence.base_chat_participant import BaseChatParticipant
-from notebook_intelligence.claude_sessions import CONTROL_SLASH_COMMANDS
-from notebook_intelligence.util import ThreadSafeWebSocketConnector, get_jupyter_root_dir
+from notebook_intelligence.claude_sessions import CONTROL_SLASH_COMMANDS, NBI_CONTEXT_PREFIX
+from notebook_intelligence.util import BIDI_CONTROL_CODEPOINTS, ThreadSafeWebSocketConnector, get_jupyter_root_dir
 
 log = logging.getLogger(__name__)
 
@@ -178,9 +186,10 @@ class _NbiAcpClient(acp.Client):
                 span_cm = self._tool_perf_spans.pop(tid, None)
                 if span_cm is not None:
                     span_cm.__exit__(None, None, None)
+        trans = i18n.response_bundle(resp)
         resp.stream(ToolCallData(
             id=tid,
-            title=state["title"] or "Tool call",
+            title=state["title"] or trans.__("Tool call"),
             kind=state["kind"],
             status=state["status"],
             diffs=state["diffs"] or None,
@@ -188,31 +197,104 @@ class _NbiAcpClient(acp.Client):
 
     async def request_permission(self, options, session_id, tool_call, **kw):
         resp = self._response
-        allow = next((o for o in options if o.kind == "allow_once"), None) \
-            or next((o for o in options if str(o.kind).startswith("allow")), None)
-        if resp is None or allow is None:
+        allow = _pick_option(options, "allow")
+        if (
+            resp is None
+            or allow is None
+            or not getattr(self._owner, "current_permissions_enabled", True)
+        ):
             # No UI to ask, or no allow option offered: fail closed (reject).
             return acp.RequestPermissionResponse(
                 outcome=schema.DeniedOutcome(outcome="cancelled")
             )
-        callback_id = f"acp-perm-{tool_call.tool_call_id}"
-        title = getattr(tool_call, "title", None) or "Run this tool?"
         agent_label = self._owner.agent_spec.label
+        trans = i18n.response_bundle(resp)
+        raw = getattr(tool_call, "raw_input", None)
+        command, script, runner = _parse_command(raw)
+        bidi = [c for c in command if ord(c) in BIDI_CONTROL_CODEPOINTS]
+        if bidi:
+            # Same policy as Claude mode's Bash approvals: a command that
+            # displays in a different order from how it runs is refused and
+            # the turn is interrupted, rather than offered for approval.
+            names = ", ".join(dict.fromkeys(
+                f"U+{ord(c):04X} {unicodedata.name(c)}" for c in bidi
+            ))
+            resp.stream(MarkdownData(
+                "&#x26A0; "
+                + trans.__(
+                    "**%1 tool call rejected: its command contains "
+                    "hidden Unicode bidirectional controls (%2).**",
+                    agent_label,
+                    names,
+                )
+            ))
+            return _reject(options, cancel=True)
+        codex_event = _is_codex_event(self._owner.agent_spec.id, raw)
+        title = getattr(tool_call, "title", None) or ""
+        script_is_title = codex_event and bool(script) and script.strip() == title.strip()
+        try:
+            details = _permission_details(
+                tool_call, raw, codex_event, script, runner, script_is_title, agent_label, trans
+            )
+            reject = _pick_option(options, "reject")
+            lasting = []
+            # Keep the command (or the whole input) last, next to the buttons.
+            last = details.items.pop() if details.items and details.items[-1] is details.trailing else None
+            if allow.kind != "allow_once":
+                lasting.append(trans.__("Approving grants a lasting permission, not only this request."))
+                details.field(trans.__("Permission granted"), allow.name or "")
+                if codex_event and raw.get("proposed_execpolicy_amendment"):
+                    details.block(trans.__("Lasting rule"), _json_text(raw["proposed_execpolicy_amendment"]))
+            if reject is not None and reject.kind != "reject_once":
+                lasting.append(trans.__("Rejecting records a lasting denial, not only for this request."))
+                details.field(trans.__("Denial recorded"), reject.name or "")
+            if last is not None:
+                details.items.append(last)
+        except _ValueTooLarge:
+            resp.stream(MarkdownData(
+                "&#x26A0; "
+                + trans.__(
+                    "**%1 tool call rejected: it is too large to show "
+                    "in full for approval.**",
+                    agent_label,
+                )
+            ))
+            return _reject(options)
+        diff_card = bool(_diffs_from_content(getattr(tool_call, "content", None)))
+        if diff_card:
+            # Show a proposed edit's diff on its tool card even if the agent
+            # did not send the tool call before asking.
+            self._emit_tool_call(resp, tool_call)
+        # Unique per request: codex-acp can ask more than once for one call.
+        callback_id = f"acp-perm-{tool_call.tool_call_id}-{uuid.uuid4().hex}"
+        sentences = [
+            trans.__("Approve running this command?") if script_is_title
+            else trans.__("Approve this %1 tool call?", agent_label),
+            *lasting,
+        ]
+        if command and not command.isascii():
+            sentences.append(trans.__(
+                "The command contains non-ASCII characters, which can look like "
+                "quotes or letters they are not."
+            ))
+        if details.escaped:
+            sentences.append(trans.__("Characters that would not display are shown as \\u{XXXX}."))
+        sentences.append(trans.__(
+            "%1 decides which tools to ask about, so some actions may run without a prompt.",
+            agent_label,
+        ))
         pending_user_input = resp.stream_user_input_request(
             callback_id,
             ConfirmationData(
-            title=f"{agent_label} tool call",
-            message=(
-                f"Approve: {title}?\n\n"
-                f"{agent_label} decides which tools to ask about, so some actions may run "
-                "without a prompt."
-            ),
+            title=trans._p("approval card title", "%1 tool call", agent_label),
+            message=" ".join(sentences),
+            details=details.items or None,
             confirmArgs={"id": resp.message_id, "data": {
                 "callback_id": callback_id, "data": {"confirmed": True}}},
             cancelArgs={"id": resp.message_id, "data": {
                 "callback_id": callback_id, "data": {"confirmed": False}}},
-            confirmLabel="Approve",
-            cancelLabel="Reject",
+            confirmLabel=trans._p("approval button", "Approve"),
+            cancelLabel=trans._p("approval button", "Reject"),
             ),
         )
         user_input = await ChatResponse.wait_for_chat_user_input(
@@ -222,31 +304,24 @@ class _NbiAcpClient(acp.Client):
             return acp.RequestPermissionResponse(
                 outcome=schema.AllowedOutcome(outcome="selected", option_id=allow.option_id)
             )
-        reject = next((o for o in options if o.kind == "reject_once"), None) \
-            or next((o for o in options if str(o.kind).startswith("reject")), None)
-        if reject is not None:
-            return acp.RequestPermissionResponse(
-                outcome=schema.AllowedOutcome(outcome="selected", option_id=reject.option_id)
-            )
-        return acp.RequestPermissionResponse(outcome=schema.DeniedOutcome(outcome="cancelled"))
+        if diff_card:
+            # A rejected edit never starts, so the agent may send no final
+            # status; close the card rather than leave it in progress.
+            self._emit_tool_call(resp, schema.ToolCallUpdate.model_validate(
+                {"toolCallId": tool_call.tool_call_id, "status": "failed"}
+            ))
+        return _reject(options)
 
-    # fs/*: implemented so an agent that delegates file ops (e.g. claude-acp)
-    # routes through NBI. codex-acp self-applies, so these may not fire for it.
+    # fs/*: not offered. These would run in the Jupyter server process, outside
+    # any agent sandbox, so serving them would let an agent read or write any
+    # path the server can reach. The spec requires an agent to do its own file
+    # I/O when the capability is not advertised. The acp router registers these
+    # handlers whatever NBI advertises, so they must refuse rather than go unused.
     async def read_text_file(self, path, session_id, limit=None, line=None, **kw):
-        try:
-            with open(path, encoding="utf-8") as f:
-                return acp.ReadTextFileResponse(content=f.read())
-        except Exception as e:
-            raise acp.RequestError.internal_error(str(e))
+        raise acp.RequestError.method_not_found("fs/read_text_file")
 
     async def write_text_file(self, content, path, session_id, **kw):
-        try:
-            os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
-            with open(path, "w", encoding="utf-8") as f:
-                f.write(content)
-            return acp.WriteTextFileResponse()
-        except Exception as e:
-            raise acp.RequestError.internal_error(str(e))
+        raise acp.RequestError.method_not_found("fs/write_text_file")
 
     # terminal/*: not emulated in Phase 1 (Codex runs shell internally).
     async def create_terminal(self, command, session_id, **kw):
@@ -264,11 +339,336 @@ class _NbiAcpClient(acp.Client):
     async def release_terminal(self, session_id, terminal_id, **kw):
         return None
 
+    # The inherited acp.Client stub answers any extension request with a null
+    # success, which an agent would read as "handled".
+    async def ext_method(self, method, params):
+        raise acp.RequestError.method_not_found(method)
+
+
+def _is_link(path: str) -> bool:
+    # Windows directory junctions are not symlinks to os.path.islink.
+    isjunction = getattr(os.path, "isjunction", None)
+    return os.path.islink(path) or bool(isjunction and isjunction(path))
+
+
+def _remove_persisted_codex_credentials(codex_home: str) -> None:
+    """Delete key copies earlier NBI versions let Codex write to its CODEX_HOME.
+
+    NBI points Codex at this directory only when it supplies the API key, so
+    its ``auth.json`` and shell snapshots (which captured the environment,
+    key included) came from those launches. Codex no longer writes either
+    (``codex_auth_args``), but the old files would otherwise stay on disk.
+    Nothing is followed through a symlink or junction, and a failure is
+    logged rather than raised, so it never stops the agent from starting.
+    """
+    if _is_link(codex_home):
+        log.warning("Not cleaning %s: it is a link, not NBI's own directory", codex_home)
+        return
+    if not os.path.isdir(codex_home):
+        return
+    paths = [os.path.join(codex_home, "auth.json")]
+    snapshots = os.path.join(codex_home, "shell_snapshots")
+    if os.path.isdir(snapshots) and not _is_link(snapshots):
+        try:
+            with os.scandir(snapshots) as entries:
+                paths += [
+                    entry.path for entry in entries
+                    if entry.is_symlink() or entry.is_file(follow_symlinks=False)
+                ]
+        except OSError as e:
+            log.warning("Could not list old Codex shell snapshots in %s: %s", snapshots, e)
+    for path in paths:
+        try:
+            os.remove(path)
+        except FileNotFoundError:
+            continue
+        except OSError as e:
+            log.warning("Could not remove an old Codex key copy at %s: %s", path, e)
+            continue
+        log.info("Removed an old Codex key copy at %s", path)
+
 
 def _block_text(block) -> str:
     if block is None:
         return ""
     return getattr(block, "text", "") or ""
+
+
+# Characters that render as nothing or as blank space: Unicode's
+# Default_Ignorable_Code_Point ranges plus blank-looking letters and symbols.
+# Characters str.isprintable() rejects (categories C*, Zl, Zp, and spaces
+# other than U+0020) are caught separately.
+_INVISIBLE_RANGES = (
+    (0x00AD, 0x00AD), (0x034F, 0x034F), (0x061C, 0x061C), (0x115F, 0x1160),
+    (0x17B4, 0x17B5), (0x180B, 0x180F), (0x200B, 0x200F), (0x202A, 0x202E),
+    (0x2060, 0x206F), (0x2800, 0x2800), (0x3164, 0x3164), (0xFE00, 0xFE0F),
+    (0xFEFF, 0xFEFF), (0xFFA0, 0xFFA0), (0xFFF0, 0xFFFC), (0x13441, 0x13442),
+    (0x16FE4, 0x16FE4), (0x1BCA0, 0x1BCA3), (0x1D159, 0x1D159),
+    (0x1D173, 0x1D17A), (0xE0000, 0xE0FFF),
+)
+# Combining marks after this many in a row are escaped: stacked marks can
+# draw over neighbouring text.
+_MAX_COMBINING_MARKS = 3
+# Shells whose ``<shell> -c <script>`` argv the approval card shows as a script.
+_SCRIPT_SHELLS = frozenset({"sh", "bash", "zsh", "dash", "ksh"})
+_BLANK_LINE_RUN = 2
+_SPACE_RUN = 40
+# Values are shown whole: the frontend bounds each block's height and lets it
+# scroll, so nothing needs truncating to keep the buttons in reach. A request
+# with a value longer than this is refused instead of being shown in part.
+_MAX_VALUE_CHARS = 200_000
+
+
+def _is_invisible(character: str) -> bool:
+    codepoint = ord(character)
+    return not character.isprintable() or any(
+        low <= codepoint <= high for low, high in _INVISIBLE_RANGES
+    )
+
+
+def _escape_invisible(text: str, keep_line_breaks: bool) -> str:
+    """Write characters that do not display as themselves as ``\\u{XXXX}``.
+
+    A browser can draw these as nothing, as blank space, or as a line break
+    while a shell reads them as part of a word, so text containing them could
+    read differently from how it runs. ``keep_line_breaks`` keeps newlines and
+    tabs for multi-line values; single-line values escape them too.
+    """
+    if text.isascii() and (
+        text.isprintable() or (keep_line_breaks and text.replace("\n", "").replace("\t", "").isprintable())
+    ):
+        return text
+    out = []
+    marks = 0
+    for character in text:
+        if keep_line_breaks and character in "\n\t":
+            out.append(character)
+            marks = 0
+            continue
+        combining = unicodedata.category(character) in ("Mn", "Me")
+        marks = marks + 1 if combining else 0
+        if _is_invisible(character) or marks > _MAX_COMBINING_MARKS:
+            out.append(f"\\u{{{ord(character):04X}}}")
+        else:
+            out.append(character)
+    return "".join(out)
+
+
+def _mark_padding(text: str) -> str:
+    """Mark long runs of blank lines or spaces in an escaped multi-line value."""
+    shown = []
+    blank_run = 0
+
+    def flush():
+        if blank_run >= _BLANK_LINE_RUN:
+            shown.append(f"[{blank_run} blank lines]")
+        else:
+            shown.extend([""] * blank_run)
+
+    for line in text.split("\n"):
+        if not line.strip():
+            blank_run += 1
+            continue
+        flush()
+        blank_run = 0
+        shown.append(re.sub(r"[ \t]{2,}", _mark_space_run, line))
+    flush()
+    return "\n".join(shown)
+
+
+def _mark_space_run(match) -> str:
+    run = match.group(0)
+    tabs = run.count("\t")
+    # A tab can render as wide as eight spaces.
+    if len(run) - tabs + 8 * tabs < _SPACE_RUN:
+        return run
+    spaces = len(run) - tabs
+    parts = [f"{spaces} spaces"] if spaces else []
+    if tabs:
+        parts.append(f"{tabs} tabs")
+    return f" [{' and '.join(parts)}] "
+
+
+def _without_final_newline(text: str) -> str:
+    return text[:-1] if text.endswith("\n") else text
+
+
+def _parse_command(raw) -> tuple[str, str, str]:
+    """Read ``raw_input["command"]`` once for every use the card makes of it.
+
+    Returns ``(whole, script, runner)``: the whole command as text (what the
+    bidi check scans), the script the card shows, and ``"<shell> <flag>"``
+    when the command is ``<shell> -c <script>`` for a known shell, else "".
+    """
+    command = raw.get("command") if isinstance(raw, dict) else None
+    if command is None:
+        return "", "", ""
+    if isinstance(command, str):
+        return command, command, ""
+    whole = json.dumps(command, ensure_ascii=False)
+    if (
+        isinstance(command, list) and len(command) == 3
+        and all(isinstance(part, str) for part in command)
+        and command[1] in ("-c", "-lc")
+        and os.path.basename(command[0]) in _SCRIPT_SHELLS
+    ):
+        return whole, command[2], f"{os.path.basename(command[0])} {command[1]}"
+    return whole, whole, ""
+
+
+class _ValueTooLarge(Exception):
+    pass
+
+
+def _sized_label(label: str, text: str, trans: TranslationBundle, notes=(), count_lines: bool = True) -> str:
+    notes = list(notes)
+    lines = text.count("\n") + 1
+    if count_lines and lines > 1:
+        notes.append(trans._n("%1 line", "%1 lines", lines))
+    if len(text) > 300:
+        notes.append(trans._n("%1 character", "%1 characters", len(text)))
+    if not notes:
+        return label
+    separator = trans._p("between notes on an approval card detail", ", ")
+    return trans._p(
+        "an approval card detail: its label, then notes such as its size",
+        "%1 (%2)",
+        label,
+        separator.join(notes),
+    )
+
+
+class _Details:
+    """Builds the card's label and value pairs and notes any escaping.
+
+    Labels are NBI's own text. Every value comes from the agent, so each is
+    escaped here and rendered by the frontend in its own bounded block.
+    """
+
+    def __init__(self, trans: TranslationBundle):
+        self.items: list[dict] = []
+        self.escaped = False
+        self.trans = trans
+        # The block shown last, next to the buttons (the command or the
+        # whole input), marked here rather than recognized by its label.
+        self.trailing: Optional[dict] = None
+
+    def _escape(self, text: str, keep_line_breaks: bool) -> str:
+        if len(text) > _MAX_VALUE_CHARS:
+            raise _ValueTooLarge()
+        shown = _escape_invisible(text, keep_line_breaks)
+        self.escaped = self.escaped or shown != text
+        return shown
+
+    def escape_line(self, text: str) -> str:
+        """One line of a multi-line block, with its own line breaks escaped."""
+        return self._escape(text, keep_line_breaks=False)
+
+    def field(self, label: str, value: str) -> None:
+        shown = self._escape(value, keep_line_breaks=False)
+        self.items.append({"label": _sized_label(label, value, self.trans, count_lines=False), "value": shown})
+
+    def block(self, label: str, value: str, notes=(), trailing: bool = False) -> None:
+        value = _without_final_newline(value)
+        shown = _mark_padding(self._escape(value, keep_line_breaks=True))
+        item = {"label": _sized_label(label, value, self.trans, notes), "value": shown}
+        self.items.append(item)
+        if trailing:
+            self.trailing = item
+
+
+def _json_text(value) -> str:
+    return json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True)
+
+
+def _is_codex_event(agent_id: str, raw) -> bool:
+    """codex-acp serializes Codex's own event as ``raw_input``, and every such
+    event carries a call id or turn id. Checking the shape as well as the
+    agent id keeps a different adapter launched through NBI_ACP_AGENT_COMMAND
+    from having its input read as Codex fields."""
+    return agent_id == "codex" and isinstance(raw, dict) and ("call_id" in raw or "turn_id" in raw)
+
+
+def _permission_details(tool_call, raw, codex_event: bool, script: str, runner: str,
+                        script_is_title: bool, agent_label: str,
+                        trans: TranslationBundle) -> _Details:
+    """What an ACP permission request would do, as label and value pairs.
+
+    The request's title is the agent's own summary. codex-acp also sends the
+    exact command, its working directory, the reason, the files an edit
+    changes, and any network access or extra permissions in ``raw_input``,
+    and approving can let that command run outside Codex's sandbox. For
+    anything else, the card shows the agent's text content and its whole
+    input. The command, or else the whole input, comes last, next to the
+    buttons.
+    """
+    details = _Details(trans)
+    title = getattr(tool_call, "title", None) or ""
+    if title and not script_is_title:
+        details.field(trans.__("Request"), title)
+    known = False
+    if codex_event:
+        command = raw.get("command")
+        for key, label in (("cwd", trans.__("Working directory")), ("grant_root", trans.__("Write access under"))):
+            if isinstance(raw.get(key), str) and raw[key]:
+                known = True
+                details.field(label, raw[key])
+        reason = raw.get("reason")
+        if isinstance(reason, str) and reason.strip() and reason.strip() != title.strip():
+            known = True
+            details.field(trans.__("Reason"), reason)
+        changes = raw.get("changes")
+        if isinstance(changes, dict) and changes:
+            known = True
+            entries = []
+            for path, change in changes.items():
+                change = change if isinstance(change, dict) else {}
+                kind = change.get("type") if isinstance(change.get("type"), str) else "change"
+                move = change.get("move_path")
+                target = f" -> {move}" if isinstance(move, str) and move else ""
+                entries.append(details.escape_line(f"{kind}: {path}{target}"))
+            details.block(trans.__("Files"), "\n".join(entries))
+        network = raw.get("network_approval_context")
+        if isinstance(network, dict):
+            parts = [p for p in (network.get("protocol"), network.get("host")) if isinstance(p, str) and p]
+            if parts:
+                known = True
+                details.field(trans.__("Network access"), " ".join(parts))
+        for key, label in (("additional_permissions", trans.__("Additional permissions")), ("permissions", trans.__("Requested permissions"))):
+            if raw.get(key):
+                known = True
+                details.block(label, _json_text(raw[key]))
+        if command is not None:
+            known = True
+            if runner and command[0] != runner.split(" ")[0]:
+                details.field(trans.__("Shell"), command[0])
+            details.block(trans.__("Command"), script, [trans.__("run by %1", runner)] if runner else [], trailing=True)
+    if not known:
+        texts = [
+            _block_text(getattr(item, "content", None))
+            for item in getattr(tool_call, "content", None) or []
+            if getattr(item, "type", None) == "content"
+        ]
+        text = "\n\n".join(t for t in texts if t)
+        if text:
+            details.block(trans.__("Details from %1", agent_label), text)
+        if raw not in (None, {}, []):
+            details.block(trans.__("Input"), _json_text(raw), trailing=True)
+    return details
+
+
+def _pick_option(options, prefix: str):
+    return next((o for o in options if o.kind == f"{prefix}_once"), None) \
+        or next((o for o in options if str(o.kind).startswith(prefix)), None)
+
+
+def _reject(options, cancel: bool = False) -> "acp.RequestPermissionResponse":
+    reject = None if cancel else _pick_option(options, "reject")
+    if reject is not None:
+        return acp.RequestPermissionResponse(
+            outcome=schema.AllowedOutcome(outcome="selected", option_id=reject.option_id)
+        )
+    return acp.RequestPermissionResponse(outcome=schema.DeniedOutcome(outcome="cancelled"))
 
 
 def _epoch_from_iso(value) -> float:
@@ -283,6 +683,30 @@ def _epoch_from_iso(value) -> float:
         return 0
 
 
+# The directory pointer extension.py puts before every agent-mode prompt. Each
+# segment after the directory is optional, and the kernel display name only
+# follows the kernel name. A display name may hold one level of parentheses,
+# as in "Python 3 (ipykernel)". A value or display name may also run to the
+# end without closing, where an agent truncated the title inside it.
+_POINTER_VALUE = r"[^']*(?:'|\Z)"
+_CONTEXT_POINTER = re.compile(
+    re.escape(NBI_CONTEXT_PREFIX)
+    + r" '(?P<dir>[^']*)(?:'|\Z)"
+    + r"(?: and current file is: '(?P<file>[^']*)(?:'|\Z))?"
+    + r"(?: and active programming language is: '" + _POINTER_VALUE + ")?"
+    + r"(?: with active kernel name: '" + _POINTER_VALUE
+    + r"(?: \((?:[^()]|\([^()]*(?:\)|\Z))*(?:\)|\Z))?)?"
+)
+_CONTEXT_POINTER_SEGMENTS = (
+    " and current file is: '",
+    " and active programming language is: '",
+    " with active kernel name: '",
+)
+# Markers the agents append to a truncated session title: codex-acp cuts at
+# 117 characters plus "...", claude-code-acp at 127 plus a single ellipsis.
+_TITLE_TRUNCATION_MARKERS = ("...", "\u2026")
+
+
 def _strip_context_preamble(title: str) -> str:
     """Drop NBI's leading context lines from an agent-stored session title.
 
@@ -292,9 +716,24 @@ def _strip_context_preamble(title: str) -> str:
 
     Handles both shapes: newline-separated lines, and the joined form codex
     stores (newlines collapsed to spaces, title truncated), where the
-    directory pointer is matched structurally by its quoted segments.
+    directory pointer is matched structurally by its quoted segments. A
+    pointer naming a file and a language is already longer than the agents'
+    title limit, so a truncated title usually ends inside the pointer. When
+    nothing of the question is left, the preview names the current file,
+    relative to the open directory and cut short with the agent's marker if
+    the title ended inside it. If the cut left none of the file's own name, or
+    came before any file, the preview names the directory when the title holds
+    all of it, and is empty otherwise. A title with no file and no question
+    that was not truncated is kept as before.
     """
-    from notebook_intelligence.claude_sessions import NBI_CONTEXT_PREFIX
+    title = i18n.without_reply_instruction(title)
+    marker = next((m for m in _TITLE_TRUNCATION_MARKERS if title.endswith(m)), "")
+    if marker:
+        # An instruction cut short ends the title, so the question before it
+        # is whole: the marker goes with the instruction.
+        uncut = i18n.without_cut_reply_instruction(title[: -len(marker)])
+        if len(uncut) < len(title) - len(marker):
+            title, marker = uncut, ""
     lines = [line for line in title.splitlines() if line.strip()]
     while lines and (
         lines[0].startswith(NBI_CONTEXT_PREFIX)
@@ -304,13 +743,36 @@ def _strip_context_preamble(title: str) -> str:
     stripped = " ".join(lines)
     if stripped and stripped != title.strip():
         return stripped
-    # Joined form: peel the directory pointer off the front by shape.
-    joined_preamble = re.compile(
-        re.escape(NBI_CONTEXT_PREFIX)
-        + r" '[^']*'( and current file is: '[^']*')?\s*"
-    )
-    remainder = joined_preamble.sub("", title, count=1)
-    return remainder.strip() or title
+    # Joined form: peel the directory pointer off by shape.
+    body = title[: len(title) - len(marker)]
+    pointer = _CONTEXT_POINTER.search(body)
+    if pointer is None:
+        return title
+    rest = title[pointer.end():]
+    tail = body[pointer.end():]
+    if marker and any(segment.startswith(tail) for segment in _CONTEXT_POINTER_SEGMENTS):
+        # The title ended inside the pointer: nothing after it is the question.
+        rest = ""
+    remainder = (title[:pointer.start()] + rest.lstrip()).strip()
+    if remainder:
+        return remainder
+    directory = pointer.group("dir")
+    file = pointer.group("file")
+    if not file:
+        if not marker:
+            return title
+        return directory if pointer.end("dir") < len(body) else ""
+    file_cut = bool(marker) and pointer.end("file") == len(body)
+    # The file path starts from the Jupyter root and usually repeats the
+    # open directory, which would otherwise use up the whole preview.
+    inside = f"{directory}/" if directory else ""
+    if inside and file.startswith(inside):
+        file = file[len(inside):]
+    elif inside and file_cut and inside.startswith(file):
+        file = ""
+    if not file:
+        return directory
+    return file + marker if file_cut else file
 
 
 def _diffs_from_content(content) -> list[dict]:
@@ -335,8 +797,9 @@ class AcpAgentClient:
     """Persistent ACP client: one agent-adapter subprocess + session on a
     worker thread, prompted once per chat request."""
 
-    def __init__(self, host: Host):
+    def __init__(self, host: Host, *, force_safe_mode: bool = False):
         self._host = host
+        self._force_safe_mode = force_safe_mode
         self.websocket_connector: Optional[ThreadSafeWebSocketConnector] = (
             host.websocket_connector
         )
@@ -346,6 +809,7 @@ class AcpAgentClient:
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._conn = None
         self._session_id: Optional[str] = None
+        self._active_prompt_session_id: Optional[str] = None
         self._proc = None
         self._stderr_task = None
         self._started = threading.Event()
@@ -355,6 +819,7 @@ class AcpAgentClient:
         self._client: Optional[_NbiAcpClient] = None
         self._agent_capabilities = None
         self._lock = threading.Lock()
+        self.current_permissions_enabled = True
         # Serializes turns: the ACP session runs one prompt at a time, and
         # current_response is shared, so a second concurrent turn must not
         # interleave with the first.
@@ -362,16 +827,30 @@ class AcpAgentClient:
 
     def _mcp_servers(self) -> list:
         """The NBI MCP server config passed to every session create/load."""
+        if self._force_safe_mode:
+            return []
+        # Launch by absolute file path: the adapter controls this server's cwd,
+        # and ``-m`` could import a workspace package instead of NBI's server.
+        from notebook_intelligence import acp_mcp_server
+        # Pass the workspace explicitly instead of trusting the adapter's cwd.
         return [
             schema.McpServerStdio(
                 name="nbi", command=sys.executable,
-                args=["-m", "notebook_intelligence.acp_mcp_server"], env=[],
+                args=[os.path.abspath(acp_mcp_server.__file__)],
+                env=[schema.EnvVariable(
+                    name=acp_mcp_server.WORKSPACE_ROOT_ENV,
+                    value=get_jupyter_root_dir() or "",
+                )],
             )
         ]
 
     @property
     def acp_settings(self) -> dict:
         return self._host.nbi_config.acp_settings
+
+    @property
+    def safe_mode(self) -> bool:
+        return self._force_safe_mode
 
     @property
     def agent_spec(self) -> AcpAgentSpec:
@@ -415,21 +894,28 @@ class AcpAgentClient:
         self._shutdown = asyncio.Event()
         workdir = get_jupyter_root_dir()
         spec = self.agent_spec
-        env = self._child_env(spec)
-        cmd = list(resolve_acp_agent_command(spec))
-        if spec.id == "codex":
-            cmd += codex_approval_args(
-                bool(self.acp_settings.get("full_access", False))
-            )
-            # acp_settings already folds in the OPENAI_BASE_URL /
-            # NBI_ACP_CHAT_MODEL env overrides (ACP_SETTINGS_OVERRIDES),
-            # so these -c flags are the single delivery path to codex.
-            cmd += codex_model_args(self.acp_settings)
-        log.info("Starting ACP agent (%s): %s", spec.id, " ".join(cmd))
         try:
+            env = self._child_env(spec)
+            cmd = resolve_acp_agent_command(spec, workspace_root=workdir)
+            launch_cwd = self._adapter_cwd()
+            validate_acp_adapter_runtime(
+                cmd, env_path=env.get("PATH", os.defpath), cwd=launch_cwd,
+                workspace_root=workdir if "NBI_ACP_AGENT_COMMAND" not in os.environ else None,
+            )
+            if spec.id == "codex":
+                # First, so they stay clear of the pins that follow.
+                cmd += codex_auth_args(spec.api_key_env if self._api_key(spec) else "")
+                cmd += codex_approval_args(
+                    False
+                    if self._force_safe_mode
+                    else bool(self.acp_settings.get("full_access", False))
+                )
+                # acp_settings folds in the environment overrides too.
+                cmd += codex_model_args(self.acp_settings)
+            log.info("Starting ACP agent (%s): %s", spec.id, " ".join(cmd))
             self._proc = await asyncio.create_subprocess_exec(
                 *cmd, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE, cwd=workdir, env=env,
+                stderr=asyncio.subprocess.PIPE, cwd=launch_cwd, env=env,
             )
             self._stderr_task = asyncio.create_task(self._drain_stderr())
             self._client = _NbiAcpClient(self)
@@ -439,7 +925,7 @@ class AcpAgentClient:
             init = await self._conn.initialize(
                 protocol_version=acp.PROTOCOL_VERSION,
                 client_capabilities=schema.ClientCapabilities(
-                    fs=schema.FileSystemCapabilities(read_text_file=True, write_text_file=True),
+                    fs=schema.FileSystemCapabilities(read_text_file=False, write_text_file=False),
                 ),
                 client_info=schema.Implementation(name="notebook-intelligence", version="1.0.0"),
             )
@@ -466,9 +952,32 @@ class AcpAgentClient:
         return (self.acp_settings.get("api_key") or "").strip() \
             or os.environ.get(spec.api_key_env, "").strip()
 
+    def _adapter_cwd(self) -> str:
+        """The directory the adapter process is started in.
+
+        Keep the process outside the workspace; session/new and session/load
+        receive the actual workspace explicitly. This directory can have a
+        shared ancestor, so cwd alone is not a package-resolution boundary.
+        resolve_acp_agent_command instead selects a preinstalled executable
+        by absolute path, without invoking npm at startup.
+        """
+        cwd = self._host.nbi_config.nbi_user_dir
+        os.makedirs(cwd, exist_ok=True)
+        return cwd
+
     def _child_env(self, spec: AcpAgentSpec) -> dict:
         env = {k: v for k, v in os.environ.items()
                if k != "CLAUDECODE" and not k.startswith("CLAUDE_CODE_")}
+        if "NBI_ACP_AGENT_COMMAND" not in os.environ:
+            # npm-installed adapters use /usr/bin/env node. Resolving the
+            # adapter alone must not leave its interpreter workspace-controlled.
+            env["PATH"] = acp_adapter_path(get_jupyter_root_dir())
+        if spec.id == "codex":
+            # Whatever the sign-in, so old copies do not outlive a switch away
+            # from an API key.
+            _remove_persisted_codex_credentials(
+                os.path.join(self._host.nbi_config.nbi_user_dir, "codex-home")
+            )
         api_key = self._api_key(spec)
         if api_key:
             env[spec.api_key_env] = api_key
@@ -529,15 +1038,34 @@ class AcpAgentClient:
         self._loop = None
 
     async def _run_prompt(self, text: str):
-        await self._conn.prompt(
-            prompt=[schema.TextContentBlock(type="text", text=text)],
-            session_id=self._session_id,
+        self._active_prompt_session_id = self._session_id
+        try:
+            await self._conn.prompt(
+                prompt=[schema.TextContentBlock(type="text", text=text)],
+                session_id=self._session_id,
+            )
+        finally:
+            self._active_prompt_session_id = None
+
+    async def _run_isolated_prompt(self, text: str):
+        """Run a one-shot prompt outside the sidebar's conversation."""
+        session = await self._conn.new_session(
+            cwd=get_jupyter_root_dir(), mcp_servers=[]
         )
+        self._active_prompt_session_id = session.session_id
+        try:
+            await self._conn.prompt(
+                prompt=[schema.TextContentBlock(type="text", text=text)],
+                session_id=session.session_id,
+            )
+        finally:
+            self._active_prompt_session_id = None
 
     async def _cancel(self):
         try:
-            if self._conn and self._session_id:
-                await self._conn.cancel(session_id=self._session_id)
+            session_id = self._active_prompt_session_id or self._session_id
+            if self._conn and session_id:
+                await self._conn.cancel(session_id=session_id)
         except Exception as e:
             log.debug("ACP cancel failed: %s", e)
 
@@ -728,6 +1256,7 @@ class AcpAgentClient:
                 self._client._tool_state.clear()
                 self._client._tool_perf_spans.clear()
             self.current_response = response
+            self.current_permissions_enabled = True
             try:
                 fut = asyncio.run_coroutine_threadsafe(
                     self._run_prompt(self.assemble_query(request)), loop
@@ -753,6 +1282,51 @@ class AcpAgentClient:
                         return f"{self.agent_spec.label} agent response timeout"
             finally:
                 self.current_response = None
+                self.current_permissions_enabled = True
+        finally:
+            self._turn_lock.release()
+
+    def query_isolated(
+        self, text: str, response: ChatResponse
+    ) -> Optional[str]:
+        """Run a stateless prompt for a non-chat feature such as Chatbook.
+
+        The prompt gets a fresh ACP session, does not alter the sidebar's
+        session, and rejects permission requests because no confirmation UI is
+        attached to the originating operation.
+        """
+        if not self._turn_lock.acquire(blocking=False):
+            return f"{self.agent_spec.label} is busy with another request"
+        try:
+            if not self._ensure_started():
+                return self._start_error or (
+                    f"{self.agent_spec.label} agent is not available"
+                )
+            loop = self._loop
+            if loop is None:
+                return f"{self.agent_spec.label} agent is not available"
+            if self._client is not None:
+                self._client._tool_state.clear()
+            self.current_response = response
+            self.current_permissions_enabled = False
+            try:
+                fut = asyncio.run_coroutine_threadsafe(
+                    self._run_isolated_prompt(text), loop
+                )
+                try:
+                    fut.result(timeout=_RESPONSE_TIMEOUT)
+                    return None
+                except concurrent.futures.TimeoutError:
+                    self._schedule(self._cancel(), loop)
+                    return f"{self.agent_spec.label} agent response timeout"
+                except Exception as e:
+                    log.error(
+                        "ACP isolated agent turn failed: %s", e, exc_info=True
+                    )
+                    return f"{self.agent_spec.label} agent error: {e}"
+            finally:
+                self.current_response = None
+                self.current_permissions_enabled = True
         finally:
             self._turn_lock.release()
 
@@ -846,15 +1420,16 @@ class AcpAgentChatParticipant(BaseChatParticipant):
         self, request: ChatRequest, response: ChatResponse, options: dict = {}
     ) -> None:
         self._current_chat_request = request
+        trans = i18n.response_bundle(response)
         try:
-            response.stream(ProgressData("Thinking…"))
+            response.stream(ProgressData(trans.__("Thinking…")))
             result = self._client.query(request, response)
             if isinstance(result, str) and result:
-                response.stream(MarkdownData(content=f"**{self._spec.label} agent error:** {result}"))
+                response.stream(MarkdownData(content=trans.__("**%1 agent error:** %2", self._spec.label, result)))
         except Exception as e:
             log.error("Error handling ACP chat request: %s", e, exc_info=True)
             try:
-                response.stream(MarkdownData(content=f"**Error:** {e}"))
+                response.stream(MarkdownData(content=trans.__("**Error:** %1", e)))
             except Exception:
                 pass
         finally:

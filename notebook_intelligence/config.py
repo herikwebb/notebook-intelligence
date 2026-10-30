@@ -22,6 +22,10 @@ from notebook_intelligence.feature_flags import (
     apply_string_overrides,
     clamp_inline_chat_model,
 )
+from notebook_intelligence.chatbook_kernel.execution import (
+    DEFAULT_CHATBOOK_EXECUTION_MODE,
+    parse_execution_mode,
+)
 
 log = logging.getLogger(__name__)
 
@@ -248,6 +252,27 @@ class NBIConfig:
     def refresh_open_files_on_disk_change(self) -> bool:
         """User preference for the open-files refresh watcher (default on)."""
         return bool(self.get('refresh_open_files_on_disk_change', True))
+
+    @property
+    def chatbook_execution_mode(self) -> str:
+        return parse_execution_mode(
+            self.get('chatbook_execution_mode', DEFAULT_CHATBOOK_EXECUTION_MODE)
+        )
+
+    @property
+    def chatbook_llm_danger_scan(self) -> bool:
+        return bool(self.get('chatbook_llm_danger_scan', False))
+
+    @property
+    def reply_in_user_language(self) -> bool:
+        """Ask the model to write its prose in the user's JupyterLab
+        language. Off by default, so prompts are unchanged."""
+        return self.get('reply_in_user_language', False) is True
+
+    @property
+    def chatbook_backend_kernel(self) -> str:
+        """Kernelspec name used to execute Chatbook-generated code (not 'chatbook')."""
+        return str(self.get('chatbook_backend_kernel', '') or '').strip()
 
     @property
     def rules_directory(self) -> str:

@@ -11,10 +11,16 @@ import uuid
 from fuzzy_json import loads as fuzzy_json_loads
 import logging
 import threading
-from mcp.server.fastmcp.tools import Tool as MCPToolClass
 
-from notebook_intelligence import perf
+try:
+    # mcp 2.0 renamed FastMCP to MCPServer and dropped mcp.server.fastmcp.
+    from mcp.server.mcpserver.tools import Tool as MCPToolClass
+except ImportError:  # mcp < 2.0
+    from mcp.server.fastmcp.tools import Tool as MCPToolClass
+
+from notebook_intelligence import i18n, perf
 from notebook_intelligence.config import NBIConfig
+from notebook_intelligence.i18n import TranslationBundle
 from notebook_intelligence.ruleset import RuleContext
 from notebook_intelligence.util import ThreadSafeWebSocketConnector
 
@@ -195,6 +201,9 @@ class ChatRequest:
     # of the existing public ChatRequest fields.
     mcp_prompt_message_count: int = 0
     required_context_message_count: int = 0
+    # The user's JupyterLab language by English name when they asked for
+    # replies in it (i18n.reply_language); None leaves prompts unchanged.
+    reply_language: Optional[str] = None
 
 @dataclass
 class ResponseStreamData:
@@ -299,6 +308,10 @@ class ConfirmationData(ResponseStreamData):
     confirmLabel: str = None
     confirmSessionLabel: str = None
     cancelLabel: str = None
+    # Optional [{"label", "value"}] pairs shown between the message and the
+    # buttons. Labels are trusted; each value renders in its own preformatted
+    # block, so untrusted text there cannot pose as another label.
+    details: list = None
 
     @property
     def data_type(self) -> ResponseStreamDataType:
@@ -310,8 +323,9 @@ class AskUserQuestionData(ResponseStreamData):
     title: str = ''
     message: str = ''
     questions: list[dict]= None
-    submitLabel: str = 'Submit'
-    cancelLabel: str = 'Cancel'
+    # None lets the chat emitter supply its translated default.
+    submitLabel: str = None
+    cancelLabel: str = None
 
     @property
     def data_type(self) -> ResponseStreamDataType:
@@ -352,6 +366,101 @@ class ContextItem:
 class CompletionContext:
     items: list[ContextItem]
 
+
+@dataclass
+class ChatbookContextRequest:
+    """Context available to extensions before a Chatbook cell is generated."""
+
+    prompt: str
+    notebook_path: str = ''
+    notebook_context: dict = None
+    cell_id: str = ''
+    cell_index: Optional[int] = None
+    prompt_hash: str = ''
+    context_hash: str = ''
+    working_directory: str = ''
+    kernel_name: str = 'chatbook'
+    operation: str = 'generate'
+
+
+class ChatbookContextProvider:
+    """Supplies supplemental reference context for Chatbook generation."""
+
+    @property
+    def id(self) -> str:
+        raise NotImplementedError
+
+    def provide_context(self, request: ChatbookContextRequest) -> Optional[str]:
+        raise NotImplementedError
+
+
+@dataclass
+class ChatbookMentionItem:
+    label: str
+    value: str
+    has_children: bool = False
+    kind: str = 'reference'
+    description: str = ''
+
+
+@dataclass
+class ChatbookMentionBreadcrumb:
+    label: str
+    value: str = ''
+
+
+@dataclass
+class ChatbookMentionList:
+    items: list[ChatbookMentionItem]
+    breadcrumbs: list[ChatbookMentionBreadcrumb] = None
+
+
+@dataclass
+class ChatbookMentionListRequest:
+    parent: str = ''
+    query: str = ''
+    limit: int = 100
+    notebook_path: str = ''
+    working_directory: str = ''
+
+
+@dataclass
+class ChatbookMentionResolveRequest:
+    value: str
+    prompt: str = ''
+    notebook_path: str = ''
+    notebook_context: dict = None
+    cell_id: str = ''
+    cell_index: Optional[int] = None
+    prompt_hash: str = ''
+    context_hash: str = ''
+    working_directory: str = ''
+
+
+class ChatbookMentionProvider:
+    """Adds a browsable and resolvable root to Chatbook's @-mention menu."""
+
+    @property
+    def id(self) -> str:
+        raise NotImplementedError
+
+    @property
+    def name(self) -> str:
+        raise NotImplementedError
+
+    @property
+    def description(self) -> str:
+        return ''
+
+    def list_mentions(
+        self, request: ChatbookMentionListRequest
+    ) -> ChatbookMentionList:
+        raise NotImplementedError
+
+    def resolve_mention(self, request: ChatbookMentionResolveRequest) -> str:
+        raise NotImplementedError
+
+
 class ChatResponse:
     def __init__(self):
         self._user_input_signal: SignalImpl = SignalImpl()
@@ -372,6 +481,14 @@ class ChatResponse:
         self._user_input_wait_total = 0.0
         self._user_input_wait_started = None
         self._user_input_wait_count = 0
+
+    @property
+    def trans(self) -> TranslationBundle:
+        """Translations for text this response shows the user (approval
+        cards, status lines), in the language of the chat that asked. English
+        unless the transport knows better; text sent to a model stays
+        English."""
+        return i18n.english()
 
     @property
     def user_input_wait_seconds(self) -> float:
@@ -842,7 +959,11 @@ class ChatParticipant:
 
         messages = request.chat_history.copy()
 
-        system_prompt = options.get("system_prompt")
+        # Every tool-using participant (agent mode, @mcp, extensions) builds
+        # its system prompt here, so the reply language is added here.
+        system_prompt = i18n.with_reply_language(
+            options.get("system_prompt"), request.reply_language
+        )
         if system_prompt is not None:
             messages = [
                 {"role": "system", "content": system_prompt}
@@ -911,7 +1032,8 @@ class ChatParticipant:
                     tool_to_call = self._get_tool_by_name(tool_name)
                     if tool_to_call is None:
                         log.error(f"Tool not found: {tool_name}, args: {tool_call['function']['arguments']}")
-                        response.stream(MarkdownData("Oops! Failed to find requested tool. Please try again with a different prompt."))
+                        trans = i18n.response_bundle(response)
+                        response.stream(MarkdownData(trans.__("Oops! Failed to find requested tool. Please try again with a different prompt.")))
                         response.finish()
                         return
 
@@ -989,7 +1111,8 @@ class ChatParticipant:
                 return
             except Exception as e:
                 log.error(f"Error in tool call loop: {str(e)}")
-                response.stream(MarkdownData(f"Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."))
+                trans = i18n.response_bundle(response)
+                response.stream(MarkdownData(trans.__("Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details.")))
                 response.finish()
                 return
 
@@ -1170,6 +1293,16 @@ class Host:
         raise NotImplementedError
 
     def register_completion_context_provider(self, provider: CompletionContextProvider) -> None:
+        raise NotImplementedError
+
+    def register_chatbook_context_provider(
+        self, provider: ChatbookContextProvider
+    ) -> None:
+        raise NotImplementedError
+
+    def register_chatbook_mention_provider(
+        self, provider: ChatbookMentionProvider
+    ) -> None:
         raise NotImplementedError
     
     def register_telemetry_listener(self, listener: TelemetryListener) -> None:

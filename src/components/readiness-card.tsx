@@ -3,6 +3,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { requestAPI } from '../handler';
 import { VscRefresh, VscWarning } from '../icons';
+import { TranslationBundle } from '@jupyterlab/translation';
+import { useTrans } from '../i18n';
 
 type Level = 'ok' | 'warn' | 'blocked' | 'skipped';
 type Verdict = 'ready' | 'degraded' | 'not_ready';
@@ -27,19 +29,57 @@ interface IReadinessDoc {
   checks: IReadinessCheck[];
 }
 
-const GROUP_LABELS: Record<string, string> = {
-  mode: 'Chat path',
-  provider: 'Model provider',
-  claude: 'Claude mode',
-  acp: 'ACP agent',
-  live: 'Live endpoint check'
-};
+function groupLabel(trans: TranslationBundle, group: string): string {
+  switch (group) {
+    case 'mode':
+      return trans.__('Chat path');
+    case 'provider':
+      return trans.__('Model provider');
+    case 'claude':
+      return trans.__('Claude mode');
+    case 'acp':
+      return trans.__('ACP agent');
+    case 'live':
+      return trans.__('Live endpoint check');
+    default:
+      return group;
+  }
+}
 
-const VERDICT_LABELS: Record<Verdict, string> = {
-  ready: 'Ready',
-  degraded: 'Ready, with warnings',
-  not_ready: 'Not ready'
-};
+function verdictLabel(trans: TranslationBundle, verdict: Verdict): string {
+  switch (verdict) {
+    case 'ready':
+      return trans._p('readiness verdict', 'Ready');
+    case 'degraded':
+      return trans._p('readiness verdict', 'Ready, with warnings');
+    case 'not_ready':
+      return trans._p('readiness verdict', 'Not ready');
+    default: {
+      // Every verdict needs a label; one this build does not know is shown
+      // as the server sent it rather than as a wrong verdict.
+      const unknownVerdict: never = verdict;
+      return unknownVerdict;
+    }
+  }
+}
+
+function levelLabel(trans: TranslationBundle, level: Level): string {
+  switch (level) {
+    case 'ok':
+      return trans._p('readiness check level', 'ok');
+    case 'warn':
+      return trans._p('readiness check level', 'warn');
+    case 'blocked':
+      return trans._p('readiness check level', 'blocked');
+    case 'skipped':
+      return trans._p('readiness check level', 'skipped');
+    default: {
+      // A level this build does not know is shown as the server sent it.
+      const unknownLevel: never = level;
+      return unknownLevel;
+    }
+  }
+}
 
 // The settings dialog unmounts and remounts this component on every tab
 // switch and every reopen, and a readiness run is not free: it walks PATH,
@@ -71,6 +111,7 @@ function errorMessage(error: any): string {
 }
 
 export function ReadinessCard(_props: any): JSX.Element {
+  const trans = useTrans();
   const [doc, setDoc] = useState<IReadinessDoc | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -159,15 +200,15 @@ export function ReadinessCard(_props: any): JSX.Element {
           className={`nbi-readiness-verdict nbi-readiness-verdict-${doc?.verdict ?? 'unknown'}`}
         >
           {doc
-            ? VERDICT_LABELS[doc.verdict]
+            ? verdictLabel(trans, doc.verdict)
             : loading
-              ? 'Checking…'
-              : 'Unknown'}
+              ? trans._p('readiness verdict', 'Checking…')
+              : trans._p('readiness verdict', 'Unknown')}
         </div>
         <div className="nbi-readiness-headline">
           {error
-            ? `Readiness check failed: ${error}`
-            : (doc?.headline ?? 'Checking configuration…')}
+            ? trans.__('Readiness check failed: %1', error)
+            : (doc?.headline ?? trans.__('Checking configuration…'))}
         </div>
         <div className="nbi-readiness-actions">
           <button
@@ -177,17 +218,21 @@ export function ReadinessCard(_props: any): JSX.Element {
           >
             <VscRefresh />
             <div className="jp-Dialog-buttonLabel">
-              {loading ? 'Checking…' : 'Re-check'}
+              {loading ? trans.__('Checking…') : trans.__('Re-check')}
             </div>
           </button>
           <button
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
             onClick={() => setAwaitingConfirm(true)}
             disabled={loading || liveRunning}
-            title="Sends one short request to your configured model to verify streaming and tool support."
+            title={trans.__(
+              'Sends one short request to your configured model to verify streaming and tool support.'
+            )}
           >
             <div className="jp-Dialog-buttonLabel">
-              {liveRunning ? 'Running…' : 'Test the endpoint'}
+              {liveRunning
+                ? trans.__('Running…')
+                : trans.__('Test the endpoint')}
             </div>
           </button>
         </div>
@@ -197,21 +242,21 @@ export function ReadinessCard(_props: any): JSX.Element {
         <div className="nbi-readiness-confirm">
           <VscWarning />
           <span>
-            This sends one short request to your configured model. It costs a
-            few tokens and is the only way to confirm the endpoint really
-            streams and really accepts tool calls.
+            {trans.__(
+              'This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls.'
+            )}
           </span>
           <button
             className="jp-Dialog-button jp-mod-accept jp-mod-styled"
             onClick={() => load(true)}
           >
-            <div className="jp-Dialog-buttonLabel">Run it</div>
+            <div className="jp-Dialog-buttonLabel">{trans.__('Run it')}</div>
           </button>
           <button
             className="jp-Dialog-button jp-mod-reject jp-mod-styled"
             onClick={() => setAwaitingConfirm(false)}
           >
-            <div className="jp-Dialog-buttonLabel">Cancel</div>
+            <div className="jp-Dialog-buttonLabel">{trans.__('Cancel')}</div>
           </button>
         </div>
       )}
@@ -219,7 +264,7 @@ export function ReadinessCard(_props: any): JSX.Element {
       {groups.map(group => (
         <div className="nbi-readiness-group" key={group}>
           <div className="nbi-readiness-group-title">
-            {GROUP_LABELS[group] ?? group}
+            {groupLabel(trans, group)}
           </div>
           {(doc?.checks ?? [])
             .filter(c => c.group === group)
@@ -229,7 +274,7 @@ export function ReadinessCard(_props: any): JSX.Element {
                   <span
                     className={`nbi-readiness-badge nbi-readiness-badge-${check.level}`}
                   >
-                    {check.level}
+                    {levelLabel(trans, check.level)}
                   </span>
                   <span className="nbi-readiness-title">{check.title}</span>
                   <span className="nbi-readiness-detail">{check.detail}</span>

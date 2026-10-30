@@ -12,8 +12,14 @@ import secrets
 import sseclient
 import datetime as dt
 import logging
+from notebook_intelligence import i18n
 from notebook_intelligence.api import BackendMessageType, CancelToken, ChatResponse, CompletionContext, MarkdownData
 from notebook_intelligence.config import _atomic_write_json
+from notebook_intelligence.inline_completion import (
+    chatbook_inline_prefix_hint,
+    copilot_inline_language,
+    is_chatbook_inline_language,
+)
 from notebook_intelligence.util import decrypt_with_password, encrypt_with_password, ThreadSafeWebSocketConnector
 
 from ._version import __version__ as NBI_VERSION
@@ -291,17 +297,29 @@ def delete_stored_github_access_token() -> bool:
 
     return False
 
-def login_with_existing_credentials(store_access_token: bool):
+def login_with_existing_credentials(store_access_token: bool, allow_login: bool = True):
     global github_access_token_provided, remember_github_access_token
 
     if github_auth["status"] is not LoginStatus.NOT_LOGGED_IN:
         return
 
     if store_access_token:
-        github_access_token_provided = read_stored_github_access_token()
+        # Kept above the early return below, so the preference is recorded
+        # even when the token read is skipped.
         remember_github_access_token = True
+        if allow_login:
+            github_access_token_provided = read_stored_github_access_token()
     else:
+        # Turning "remember login" off must delete the token whether or not
+        # Copilot is in use, so this runs before the allow_login check.
         delete_stored_github_access_token()
+
+    if not allow_login:
+        # Nothing in this configuration will route a request to Copilot.
+        # Logging in would store a token, start the refresh thread, and poll
+        # GitHub for the life of the server, and reading the stored token
+        # would warn about the token password for a service that never runs.
+        return
 
     if github_access_token_provided is not None:
         login()
@@ -318,6 +336,16 @@ def store_github_access_token():
             log.error("Failed to store GitHub access token")
 
 def login():
+    global github_access_token_provided
+
+    # A stored token short-circuits the device flow in the waiter thread, but
+    # only once it has been read. Startup skips that read when nothing will
+    # route a request to Copilot, so read it here instead: signing in from
+    # Settings must not send the user through a device code they already have
+    # a valid token for.
+    if github_access_token_provided is None and remember_github_access_token:
+        github_access_token_provided = read_stored_github_access_token()
+
     login_info = get_device_verification_info()
     if login_info is not None:
         wait_for_tokens()
@@ -676,6 +704,9 @@ def inline_completions(model_id, prefix, suffix, language, filename, context: Co
     if cancel_token.is_cancel_requested:
         return ''
 
+    if is_chatbook_inline_language(language):
+        prompt += f"{NL}{chatbook_inline_prefix_hint()}"
+
     if context is not None:
         for item in context.items:
             context_file = f"Compare this snippet from {item.filePath if item.filePath is not None else 'undefined'}:{NL}{item.content}{NL}"
@@ -700,7 +731,7 @@ def inline_completions(model_id, prefix, suffix, language, filename, context: Co
                 'nwo': 'NotebookIntelligence',
                 'stream': True,
                 'extra': {
-                    'language': language,
+                    'language': copilot_inline_language(language),
                     'next_indent': 0,
                     'trim_by_indentation': True
                 }
@@ -1001,7 +1032,12 @@ def responses(model_id, messages, tools = None, response: ChatResponse = None, c
             msg = f"Failed to get responses from GitHub Copilot: [{request.status_code}]: {request.text}"
             log.error(msg)
             if response is not None:
-                response.stream(MarkdownData(msg))
+                trans = i18n.response_bundle(response)
+                response.stream(MarkdownData(trans.__(
+                    "Failed to get responses from GitHub Copilot: [%1]: %2",
+                    request.status_code,
+                    request.text,
+                )))
                 response.finish()
             raise Exception(msg)
 
@@ -1127,7 +1163,12 @@ def completions(model_id, messages, tools = None, response: ChatResponse = None,
             msg = f"Failed to get completions from GitHub Copilot: [{request.status_code}]: {request.text}"
             log.error(msg)
             if response is not None:
-                response.stream(MarkdownData(msg))
+                trans = i18n.response_bundle(response)
+                response.stream(MarkdownData(trans.__(
+                    "Failed to get completions from GitHub Copilot: [%1]: %2",
+                    request.status_code,
+                    request.text,
+                )))
                 response.finish()
             raise Exception(msg)
 

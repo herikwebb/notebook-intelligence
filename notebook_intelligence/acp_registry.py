@@ -9,13 +9,18 @@ startup path and loads only when ACP mode is actually used.
 
 Adding an agent type is a registry entry: its adapter package, display
 metadata, and how it authenticates. Agent-specific launch quirks that do not
-generalize (Codex's approval-policy pin, its CODEX_HOME isolation) stay keyed
+generalize (Codex's approval and sandbox pins, its CODEX_HOME isolation) stay keyed
 off the spec id in ``acp_agent`` rather than growing fields prematurely.
 """
 
 import base64
 import os
+import shlex
+import shutil
+import stat
+from collections import deque
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
 # Pinned in Phase 1 (the version the spike validated); revisit per release.
@@ -55,7 +60,8 @@ class AcpAgentSpec:
     id: str
     label: str
     description: str
-    package: str      # npx package spec that launches the ACP adapter
+    package: str      # pinned package to install before starting the adapter
+    executable: str   # preinstalled adapter binary, resolved before spawning
     icon_url: str
     api_key_env: str  # env var the agent reads its API key from
     auth_method: str  # preferred ACP auth method id when a key is present
@@ -67,6 +73,7 @@ ACP_AGENTS: dict[str, AcpAgentSpec] = {
         label="Codex",
         description="OpenAI Codex (via the Agent Client Protocol)",
         package=CODEX_ACP_PACKAGE,
+        executable="codex-acp",
         icon_url=CODEX_AGENT_ICON_URL,
         api_key_env="OPENAI_API_KEY",
         auth_method="openai-api-key",
@@ -81,39 +88,202 @@ def resolve_acp_agent(agent_id: Optional[str]) -> AcpAgentSpec:
     return ACP_AGENTS.get(agent_id or "", None) or ACP_AGENTS[DEFAULT_ACP_AGENT]
 
 
-def resolve_acp_agent_command(spec: AcpAgentSpec) -> list[str]:
-    """The command that launches the agent's ACP adapter.
+@dataclass(frozen=True)
+class _WorkspaceBoundary:
+    paths: tuple[Path, Path]
+    identity: tuple[int, int]
 
-    ``NBI_ACP_AGENT_COMMAND`` overrides (shell-split); otherwise run the
-    spec's pinned package via ``npx``. Kept separate from the Claude CLI
-    resolver because the adapters are npm packages, not binaries on PATH.
+    def external_target(self, path: Path) -> Optional[Path]:
+        """Resolve a path only when every traversal step stays outside the workspace.
+
+        Endpoint checks miss an external link that traverses a workspace link
+        on its way to an external target. Walk components and expand each link
+        before processing ``..``, checking identities as well as spellings to
+        catch case, Unicode, and mount aliases. This inspects the current link
+        chain; it does not lock the filesystem against concurrent changes.
+        """
+        if not path.is_absolute():
+            raise ValueError("ACP PATH entry is not absolute")
+        if any(path.is_relative_to(root) for root in self.paths):
+            return None
+        remaining = deque(path.parts[1:])
+        current = Path(path.anchor)
+        links = 0
+        while True:
+            if any(current.is_relative_to(root) for root in self.paths):
+                return None
+            info = current.lstat()
+            if not info.st_ino:
+                raise ValueError("ACP PATH entry has no stable filesystem identity")
+            if (info.st_dev, info.st_ino) == self.identity:
+                return None
+            # Windows junctions are reparse points rather than S_ISLNK links.
+            # readlink either expands them or fails closed for an unsupported
+            # reparse point; never silently follow one in a later stat call.
+            is_link = stat.S_ISLNK(info.st_mode) or bool(
+                getattr(info, "st_file_attributes", 0)
+                & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+            )
+            if is_link:
+                links += 1
+                if links > 40:
+                    raise ValueError("ACP PATH entry has too many symbolic links")
+                target = current.readlink()
+                if target.is_absolute():
+                    current = Path(target.anchor)
+                    remaining.extendleft(reversed(target.parts[1:]))
+                else:
+                    if target.anchor:
+                        raise ValueError("ACP symbolic link target is not fully qualified")
+                    current = current.parent
+                    remaining.extendleft(reversed(target.parts))
+                continue
+            if not remaining:
+                return current
+            if not stat.S_ISDIR(info.st_mode):
+                raise ValueError("ACP PATH entry traverses a non-directory")
+            component = remaining.popleft()
+            current = current.parent if component == ".." else current / component
+
+
+def _workspace_boundary(workspace_root: str) -> _WorkspaceBoundary:
+    """Require a known workspace before deciding that any default PATH is safe."""
+    try:
+        if not workspace_root:
+            raise ValueError("the workspace root is unset")
+        path = Path(os.path.abspath(workspace_root))
+        target = path.resolve(strict=True)
+        info = target.stat()
+        if not stat.S_ISDIR(info.st_mode) or not info.st_ino:
+            raise ValueError("the workspace root is not an identifiable directory")
+        return _WorkspaceBoundary((path, target), (info.st_dev, info.st_ino))
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise ValueError(
+            "ACP workspace root must be an existing, inspectable directory before "
+            f"resolving a default adapter: {workspace_root!r}"
+        ) from exc
+
+
+def _adapter_directories(boundary: _WorkspaceBoundary) -> list[str]:
+    directories = []
+    for directory in os.environ.get("PATH", os.defpath).split(os.pathsep):
+        try:
+            if not Path(directory).is_absolute():
+                continue
+            target = boundary.external_target(Path(directory))
+            # A symlink can resolve to a directory whose name contains the PATH
+            # separator. Serializing that target would create additional,
+            # unchecked search entries for the adapter's interpreter.
+            if target is not None and os.pathsep not in str(target) and target.is_dir():
+                directories.append(str(target))
+        except (OSError, RuntimeError, ValueError):
+            # Missing, malformed, unreadable, or looping entries cannot establish
+            # a trusted location. Keep looking so one bad entry cannot hide a
+            # later trusted installation.
+            continue
+    return directories
+
+
+def acp_adapter_path(workspace_root: str) -> str:
+    """PATH for default adapters and their interpreters, excluding workspace aliases."""
+    return os.pathsep.join(_adapter_directories(_workspace_boundary(workspace_root)))
+
+
+def validate_acp_executable_path(executable: str, workspace_root: str) -> None:
+    """Require a default adapter interpreter to stay outside the workspace.
+
+    Check every component and symbolic-link hop, including filesystem identity
+    aliases. Explicit administrator overrides do not use this default-launch
+    restriction.
     """
-    override = os.environ.get("NBI_ACP_AGENT_COMMAND", "").strip()
-    if override:
-        import shlex
-        return shlex.split(override)
-    return ["npx", "-y", spec.package]
+    try:
+        path = Path(executable)
+        if not path.is_absolute():
+            raise ValueError("the executable path is not absolute")
+        if _workspace_boundary(workspace_root).external_target(path) is None:
+            raise ValueError("the executable path or its target is in the workspace")
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise ValueError(
+            "ACP executable must be an existing, inspectable absolute path outside "
+            f"the workspace: {executable!r}. Install the adapter and its interpreter "
+            "in a trusted location outside the workspace."
+        ) from exc
+
+
+def resolve_acp_agent_command(spec: AcpAgentSpec, *, workspace_root: Optional[str] = None) -> list[str]:
+    """Resolve a preinstalled adapter independently of the process cwd.
+
+    Never bootstrap with ``npx`` here: npm can select packages, project
+    configuration, and executable paths from untrusted ancestors even when
+    its cwd is a private directory. Installation and PATH are administrator
+    responsibilities; neither startup nor readiness installs a package.
+    """
+    override = os.environ.get("NBI_ACP_AGENT_COMMAND")
+    if override is not None:
+        command = shlex.split(override)
+        if not command or not Path(command[0]).is_absolute():
+            raise ValueError("NBI_ACP_AGENT_COMMAND must name an absolute executable path")
+        resolved = shutil.which(command[0])
+        if resolved is None:
+            raise FileNotFoundError(f"ACP adapter '{command[0]}' was not found or is not executable")
+        return [resolved, *command[1:]]
+
+    if workspace_root is None:
+        from notebook_intelligence.util import get_jupyter_root_dir
+        workspace_root = get_jupyter_root_dir()
+    boundary = _workspace_boundary(workspace_root)
+
+    # Check absolute candidates individually. On Windows, which(name, path=...)
+    # can prepend the current directory even when PATH contains only absolute
+    # entries. A candidate with a directory component bypasses that search.
+    for directory in _adapter_directories(boundary):
+        try:
+            resolved = shutil.which(os.path.join(directory, spec.executable))
+            if resolved is not None:
+                target = boundary.external_target(Path(resolved))
+                if target is not None:
+                    return [str(target)]
+        except (OSError, RuntimeError, ValueError):
+            continue
+    raise FileNotFoundError(
+        f"ACP adapter '{spec.executable}' was not found on an absolute PATH entry outside the workspace. "
+        f"Install {spec.package} in a trusted location, or set "
+        "NBI_ACP_AGENT_COMMAND to its absolute executable path."
+    )
 
 
 def codex_approval_args(full_access: bool) -> list[str]:
-    """Codex config overrides that pin its approval posture.
+    """Codex config overrides that pin its approval and sandbox posture.
 
     Default (``full_access`` off) forces ``approval_policy = untrusted`` so
     Codex asks before anything beyond trusted read-only commands, surfacing the
     request through NBI's per-tool confirmation. ``full_access`` (gated by the
     force-off ``acp_full_access`` admin policy) lets it run unattended. The
-    flag is honored by the codex-acp binary's ``-c key=value`` override, so it
-    works for both API-key and ChatGPT-auth sessions.
+    flags are honored by the codex-acp binary's ``-c key=value`` override, so
+    they work for both API-key and ChatGPT-auth sessions.
 
-    The override takes precedence over the codex config file. In the API-key
-    path NBI also isolates ``CODEX_HOME`` (see ``AcpAgentClient._child_env``),
-    so the config base is NBI-controlled and neither the workspace nor the
-    user's ~/.codex is read. With ChatGPT auth, codex uses the user's own
-    ~/.codex; the ``-c`` pin still overrides its top-level approval_policy.
-    See the admin guide for the residual caveat on shared deployments.
+    Full access also pins ``sandbox_mode = workspace-write``. Codex gives a
+    project with no trust entry a read-only sandbox, which is always the case
+    in the isolated API-key ``CODEX_HOME``, and under ``approval_policy =
+    never`` nothing can be approved past it, so without this pin full access
+    refuses every edit. ``workspace-write`` limits writes to the workspace and
+    temp directories and keeps outbound network access off, unless Codex's own
+    config widens the sandbox.
+
+    The overrides take precedence over Codex's user and project config, though
+    not over managed config. In the API-key path NBI also isolates
+    ``CODEX_HOME`` (see ``AcpAgentClient._child_env``), so the config base is
+    NBI-controlled and neither the workspace nor the user's ~/.codex is read.
+    With ChatGPT auth, codex uses the user's own ~/.codex; the ``-c`` pins
+    still override its top-level ``approval_policy`` and ``sandbox_mode``. See
+    the admin guide for the residual caveats on shared deployments.
     """
-    policy = "never" if full_access else "untrusted"
-    return ["-c", f'approval_policy="{policy}"']
+    if full_access:
+        return [
+            "-c", 'approval_policy="never"',
+            "-c", 'sandbox_mode="workspace-write"',
+        ]
+    return ["-c", 'approval_policy="untrusted"']
 
 
 def _codex_setting_value(value: Optional[str]) -> str:
@@ -157,3 +327,30 @@ def codex_model_args(acp_settings: dict) -> list[str]:
     if base_url:
         args += ["-c", f"openai_base_url={_codex_toml_string(base_url)}"]
     return args
+
+
+def codex_auth_args(api_key_env: str) -> list[str]:
+    """Codex config overrides that stop Codex from spreading an NBI-supplied key.
+
+    Pass the environment variable that carries the key, or "" when NBI does
+    not supply one (a ChatGPT sign-in), which leaves Codex's defaults alone.
+    Without these, Codex copies the key three ways:
+
+    - codex-acp's API-key authentication writes it to ``$CODEX_HOME/auth.json``,
+      and once that file exists Codex keeps using the saved key, so a changed
+      key had no effect. The ephemeral store holds it in memory instead.
+    - Codex snapshots the shell environment, key included, to
+      ``$CODEX_HOME/shell_snapshots`` when a session starts.
+    - Every command Codex runs inherits the variable, so a command (or a
+      prompt that asks for one) could print it.
+
+    This does not stop a command from reading the key where it is otherwise
+    stored, such as NBI's config.json or a shell startup file that exports it.
+    """
+    if not api_key_env:
+        return []
+    return [
+        "-c", 'cli_auth_credentials_store="ephemeral"',
+        "-c", "features.shell_snapshot=false",
+        "-c", f"shell_environment_policy.exclude=[{_codex_toml_string(api_key_env)}]",
+    ]

@@ -5,8 +5,12 @@ import json
 import re
 from typing import Any
 from notebook_intelligence.api import ChatModel, EmbeddingModel, InlineCompletionModel, LLMProvider, CancelToken, ChatResponse, CompletionContext, LLMProviderProperty
-
-INLINE_COMPLETION_SYSTEM_PROMPT = """You are a code completion assistant. Your task is to generate intelligent autocomplete suggestions for the code at the cursor position for given language and active file type. This is not an interactive session, don't ask for clarifying questions, always generate a suggestion. Don't include any explanations for your response, just generate the code. Don't return any thinking or reasoning, just generate the code. You are given a code snippet with a prefix and a suffix. You need to generate a suggestion for the code that fits best in place of <CURSOR/>. You should return only the code that fits best in place of <CURSOR/>. You should provide multiline code if needed. Enclose the code in triple backticks, just return the code in language. You should not return any other text, just the code. DO NOT INCLUDE THE PREFIX OR SUFFIX IN THE RESPONSE. .ipynb files are Jupyter notebook files and for notebook files, you generate suggestions for a cell within the notebook. A cell can be a code cell with code or a markdown cell with markdown text. If the language is markdown, only return markdown text. If you need to install a Python package within a notebook cell code (for .ipynb files), use %pip install <package_name> instead of !pip install <package_name>. Follow the tags very carefully for proper spacing and indentations."""
+from notebook_intelligence.inline_completion import (
+    extract_inline_completion,
+    inline_completion_system_prompt,
+    inline_completion_user_prompt,
+    is_chatbook_inline_language,
+)
 
 DEFAULT_CONTEXT_WINDOW = 4096
 
@@ -73,6 +77,10 @@ class OpenAICompatibleChatModel(ChatModel):
         api_key = self.get_property("api_key").value
 
         client = OpenAI(base_url=base_url, api_key=api_key)
+        if stream and cancel_token is not None and cancel_token.is_cancel_requested:
+            # Cancelled while the context was still being gathered: never ask.
+            response.finish()
+            return
         resp = client.chat.completions.create(
             model=model_id,
             messages=messages.copy(),
@@ -82,22 +90,33 @@ class OpenAICompatibleChatModel(ChatModel):
         )
 
         if stream:
-            for chunk in resp:
-                if len(chunk.choices) == 0:
-                    continue
-                delta = chunk.choices[0].delta
-                reasoning = getattr(delta, 'reasoning_content', None) or getattr(delta, 'reasoning', None)
-                if reasoning is not None:
-                    reasoning = str(reasoning)
-                response.stream({
-                        "choices": [{
-                            "delta": {
-                                "role": delta.role,
-                                "content": delta.content,
-                                "reasoning_content": reasoning
-                            }
-                        }]
-                    })
+            # `with` matters as much as the token check below. Breaking out of
+            # the iteration does not disconnect: the SDK's Stream wraps its
+            # iterator in a generator that references the Stream, and that
+            # cycle keeps refcounting from ever closing the response, so the
+            # provider goes on generating (and billing) until the cyclic
+            # collector happens to run. Closing it here tears the socket down
+            # at the stop, and covers the same leak when streaming raises.
+            with resp:
+                for chunk in resp:
+                    # The user pressing Stop marks the token.
+                    if cancel_token is not None and cancel_token.is_cancel_requested:
+                        break
+                    if len(chunk.choices) == 0:
+                        continue
+                    delta = chunk.choices[0].delta
+                    reasoning = getattr(delta, 'reasoning_content', None) or getattr(delta, 'reasoning', None)
+                    if reasoning is not None:
+                        reasoning = str(reasoning)
+                    response.stream({
+                            "choices": [{
+                                "delta": {
+                                    "role": delta.role,
+                                    "content": delta.content,
+                                    "reasoning_content": reasoning
+                                }
+                            }]
+                        })
             response.finish()
             return
         else:
@@ -174,11 +193,8 @@ class OpenAICompatibleInlineCompletionModel(InlineCompletionModel):
         resp = client.chat.completions.create(
             model=model_id,
             messages=[
-                {"role": "system", "content": INLINE_COMPLETION_SYSTEM_PROMPT},
-                {"role": "user", "content": f"""Generate a single suggestion that fits best in place of cursor. The code is below in between <CODE> tags and <CURSOR/> is the placeholder for the code to be filled in. Current language is {language} and the active file is {filename}.
-
-<CODE><PREFIX>{prefix}</PREFIX><CURSOR/><SUFFIX>{suffix}</SUFFIX></CODE>
-"""}
+                {"role": "system", "content": inline_completion_system_prompt(language)},
+                {"role": "user", "content": inline_completion_user_prompt(prefix, suffix, language, filename)},
             ],
             max_tokens=1000,
             stream=False,
@@ -188,6 +204,8 @@ class OpenAICompatibleInlineCompletionModel(InlineCompletionModel):
             return ''
 
         content = resp.choices[0].message.content or ''
+        if is_chatbook_inline_language(language):
+            return extract_inline_completion(content, language)
         return self._extract_llm_generated_code(content)
 
 class OpenAICompatibleLLMProvider(LLMProvider):

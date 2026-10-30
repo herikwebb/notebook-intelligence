@@ -17,7 +17,8 @@ import {
 } from '@jupyterlab/apputils';
 import { dispatchShowTour } from './tour/tour-events';
 import { resetTour } from './tour/tour-state';
-import { TOUR_DEFAULTS } from './tour/tour-steps';
+import { TOUR_DEFAULTS, withoutDefaultCopies } from './tour/tour-steps';
+import { tourText } from './tour/tour-text';
 import { commandLabel } from './tour/tour-config';
 import { IMainMenu } from '@jupyterlab/mainmenu';
 
@@ -45,7 +46,11 @@ import {
   IInlineCompleterFactory
 } from '@jupyterlab/completer';
 
-import { NotebookActions, NotebookPanel } from '@jupyterlab/notebook';
+import {
+  INotebookTracker,
+  NotebookActions,
+  NotebookPanel
+} from '@jupyterlab/notebook';
 import { CodeEditor } from '@jupyterlab/codeeditor';
 import { FileEditorWidget } from '@jupyterlab/fileeditor';
 
@@ -80,7 +85,11 @@ import {
   IClaudeSessionInfo
 } from './api';
 import { CellOutputHoverToolbar } from './cell-output-toolbar';
-import { attachOpenFileRefreshWatcher } from './open-file-refresh-watcher';
+import {
+  attachOpenFileRefreshWatcher,
+  formatRevertNotification,
+  shouldNotifyRevert
+} from './open-file-refresh-watcher';
 import { buildRefreshWatcherEnv } from './open-file-refresh-watcher-env';
 import {
   wrapInlineCompleterFactory,
@@ -121,6 +130,8 @@ import {
   waitForDuration
 } from './utils';
 import { cellOutputAsContextBundle } from './cell-output-bundle';
+import { claimMCPTempFileName } from './mcp-config-temp-file';
+import { saveMCPConfig } from './mcp-config-save';
 import { UUID } from '@lumino/coreutils';
 
 import * as path from 'path';
@@ -128,18 +139,51 @@ import { createRoot, Root } from 'react-dom/client';
 import { SettingsPanel } from './components/settings-panel';
 import { ITerminalConnection } from '@jupyterlab/services/lib/terminal/terminal';
 import { ITerminalTracker } from '@jupyterlab/terminal';
+import { ITranslator } from '@jupyterlab/translation';
+import { getTrans, initTranslations, withTextDirection } from './i18n';
 import { Token } from '@lumino/coreutils';
 import { NotebookGenerationToolbarExtension } from './notebook-generation-toolbar';
+import {
+  ChatbookToolbarExtension,
+  canConvertToChatbook,
+  confirmConvertChatbookNotebook,
+  confirmConvertToChatbook,
+  convertToChatbookIcon
+} from './chatbook-toolbar';
 import { attachTerminalDragDrop } from './terminal-drag';
 import {
   DEFAULT_NOTEBOOK_KERNEL,
   NotebookKernelNotFoundError,
+  kernelNotFoundMessage,
   findKernelProfile,
   listKernelProfiles,
   normalizeNotebookLanguage
 } from './notebook-kernels';
 
 import { CommandIDs } from './command-ids';
+import {
+  CHATBOOK_KERNEL_NAME,
+  CHATBOOK_LANGUAGE,
+  attachChatbookNotebooks,
+  getChatbookBackendLanguage,
+  getChatbookCellMode,
+  getChatbookCellMeta,
+  isChatbookPromptInlineCompletion,
+  isChatbookSession,
+  nextChatbookNotebookMode,
+  patchCodeCellExecute,
+  registerChatbookLanguage,
+  summarizeCodeCell,
+  toggleActiveChatbookCellMode,
+  toggleAllChatbookCellModes
+} from './chatbook';
+import { detectChatbookMentionTrigger } from './chatbook-mentions';
+import {
+  captureInlineCompletionOrigin,
+  isInlineCompletionOriginCurrent
+} from './inline-completion-origin';
+
+import { classifyInlineCompletionResponse } from './inline-completion-request';
 
 const addInlinePromptEffect = StateEffect.define<{
   pos: number;
@@ -577,27 +621,54 @@ class NBIInlineCompletionProvider
     let language = ActiveDocumentWatcher.activeDocumentInfo.language;
 
     let editorType = 'file-editor';
+    let notebookPanel: NotebookPanel | null = null;
 
     if (context.widget instanceof NotebookPanel) {
       editorType = 'notebook';
-      const activeCell = context.widget.content.activeCell;
-      if (activeCell.model.sharedModel.cell_type === 'markdown') {
+      const panel = context.widget;
+      notebookPanel = panel;
+      const activeCell = panel.content.activeCell;
+      const activeMode = activeCell
+        ? getChatbookCellMode(getChatbookCellMeta(activeCell.model.metadata))
+        : 'prompt';
+      const chatbookPromptMode = isChatbookPromptInlineCompletion(
+        panel.sessionContext.session?.kernel?.name ||
+          panel.sessionContext.kernelPreference?.name,
+        activeMode
+      );
+      if (chatbookPromptMode) {
+        // Ghost text while an @mention is being picked would compete with the
+        // mention menu for Tab.
+        if (detectChatbookMentionTrigger(request.text, request.offset)) {
+          return Promise.resolve({ items: [] });
+        }
+        language = CHATBOOK_LANGUAGE;
+      } else if (
+        isChatbookSession(panel.sessionContext) &&
+        activeMode === 'code'
+      ) {
+        language = getChatbookBackendLanguage();
+      } else if (activeCell?.model.sharedModel.cell_type === 'markdown') {
         language = 'markdown';
       }
       let activeCellReached = false;
 
-      for (const cell of context.widget.content.widgets) {
+      for (const cell of panel.content.widgets) {
         const cellModel = cell.model.sharedModel;
         if (cell === activeCell) {
           activeCellReached = true;
         } else if (!activeCellReached) {
-          if (cellModel.cell_type === 'code') {
+          if (chatbookPromptMode) {
+            preContent += cellModel.source + '\n';
+          } else if (cellModel.cell_type === 'code') {
             preContent += cellModel.source + '\n';
           } else if (cellModel.cell_type === 'markdown') {
             preContent += markdownToComment(cellModel.source) + '\n';
           }
         } else {
-          if (cellModel.cell_type === 'code') {
+          if (chatbookPromptMode) {
+            postContent += cellModel.source + '\n';
+          } else if (cellModel.cell_type === 'code') {
             postContent += cellModel.source + '\n';
           } else if (cellModel.cell_type === 'markdown') {
             postContent += markdownToComment(cellModel.source) + '\n';
@@ -606,6 +677,7 @@ class NBIInlineCompletionProvider
       }
     }
 
+    const origin = captureInlineCompletionOrigin(notebookPanel, request.text);
     const nbiConfig = NBIAPI.config;
     const inlineCompletionsEnabled =
       nbiConfig.isInClaudeCodeMode ||
@@ -624,7 +696,7 @@ class NBIInlineCompletionProvider
       }
     });
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const items: IInlineCompletionItem[] = [];
 
       if (!inlineCompletionsEnabled) {
@@ -642,7 +714,12 @@ class NBIInlineCompletionProvider
 
       const messageId = UUID.uuid4();
       const chatId = UUID.uuid4();
-      this._lastRequestInfo = { chatId, messageId, requestTime: new Date() };
+      // Capture this request's own identity. `_lastRequestInfo` is shared
+      // across calls and the next keystroke overwrites it, so a callback that
+      // reads the field is asking about whichever request started most
+      // recently rather than about itself.
+      const requestInfo = { chatId, messageId, requestTime: new Date() };
+      this._lastRequestInfo = requestInfo;
 
       NBIAPI.inlineCompletionsRequest(
         chatId,
@@ -653,33 +730,45 @@ class NBIInlineCompletionProvider
         ActiveDocumentWatcher.activeDocumentInfo.filename,
         {
           emit: (response: any) => {
-            if (
-              response.type === BackendMessageType.StreamMessage &&
-              response.id === this._lastRequestInfo.messageId
-            ) {
+            const action = classifyInlineCompletionResponse(
+              response.id,
+              response.type === BackendMessageType.StreamMessage,
+              requestInfo,
+              this._lastRequestInfo
+            );
+
+            if (action === 'ignore') {
+              return;
+            }
+
+            // Resolving with no items, rather than rejecting, keeps a
+            // superseded or empty request out of the console: the completer
+            // logs a rejected provider promise as a warning.
+            if (action === 'discard') {
+              resolve({ items });
+              return;
+            }
+
+            if (isInlineCompletionOriginCurrent(origin)) {
               items.push({
                 insertText: response.data.completions
               });
-
-              const timeElapsed =
-                (new Date().getTime() -
-                  this._lastRequestInfo.requestTime.getTime()) /
-                1000;
-              this._telemetryEmitter.emitTelemetryEvent({
-                type: TelemetryEventType.InlineCompletionResponse,
-                data: {
-                  inlineCompletionModel: {
-                    provider: NBIAPI.config.inlineCompletionModel.provider,
-                    model: NBIAPI.config.inlineCompletionModel.model
-                  },
-                  timeElapsed
-                }
-              });
-
-              resolve({ items });
-            } else {
-              reject();
             }
+
+            const timeElapsed =
+              (new Date().getTime() - requestInfo.requestTime.getTime()) / 1000;
+            this._telemetryEmitter.emitTelemetryEvent({
+              type: TelemetryEventType.InlineCompletionResponse,
+              data: {
+                inlineCompletionModel: {
+                  provider: NBIAPI.config.inlineCompletionModel.provider,
+                  model: NBIAPI.config.inlineCompletionModel.model
+                },
+                timeElapsed
+              }
+            });
+
+            resolve({ items });
           }
         }
       );
@@ -766,18 +855,16 @@ class MCPConfigEditor {
     });
     const mcpConfig = await NBIAPI.getMCPConfigFile();
 
-    try {
-      await contents.delete(this._tmpMCPConfigFilename);
-    } catch (error) {
-      // ignore
-    }
-
     await contents.save(newJSONFile.path, {
       content: JSON.stringify(mcpConfig, null, 2),
       format: 'text',
       type: 'file'
     });
-    await contents.rename(newJSONFile.path, this._tmpMCPConfigFilename);
+    await claimMCPTempFileName(
+      contents,
+      newJSONFile.path,
+      this._tmpMCPConfigFilename
+    );
     this._docWidget = this._docManager.openOrReveal(
       this._tmpMCPConfigFilename,
       'Editor'
@@ -786,7 +873,11 @@ class MCPConfigEditor {
     // tab closed
     this._docWidget.disposed.connect((_, args) => {
       this._removeListeners();
-      contents.delete(this._tmpMCPConfigFilename);
+      contents.delete(this._tmpMCPConfigFilename).catch(() => {
+        // Best effort: the user may have removed the file already, or the
+        // workspace may be read-only. Either way there is nothing useful to
+        // say while a tab is closing.
+      });
     });
     this._isOpen = true;
   }
@@ -825,23 +916,21 @@ class MCPConfigEditor {
   }
 
   private async _onSave() {
-    const mcpConfig = this._docWidget.context.model.toJSON();
-    try {
-      await NBIAPI.setMCPConfigFile(mcpConfig);
-    } catch (reason: any) {
-      // Surface server-side validation rejections (400 from the
-      // shape validator, 500 from a downstream save / reconcile
-      // failure) to the user. Without this, the document model
-      // goes clean on save and the user has no signal that their
-      // edit did not actually persist. ServerConnection.ResponseError
-      // carries the handler's JSON `message` field on reason.message.
-      Notification.error(
-        `Failed to save MCP config: ${reason?.message ?? reason}`,
-        { autoClose: 5000 }
-      );
-      return;
+    // Reading the document is `JSON.parse` on the editor's text, so it is
+    // passed as a thunk rather than called here: a syntax error in the user's
+    // edit has to reach the same notification as a server-side rejection
+    // (400 from the shape validator, 500 from a downstream save / reconcile
+    // failure). Otherwise the document model goes clean on save and the user
+    // has no signal that their edit did not persist.
+    const error = await saveMCPConfig(NBIAPI, () =>
+      this._docWidget.context.model.toJSON()
+    );
+    if (error !== null) {
+      const trans = getTrans();
+      Notification.error(trans.__('Failed to save MCP config: %1', error), {
+        autoClose: 5000
+      });
     }
-    await NBIAPI.fetchCapabilities();
   }
 
   private _docManager: IDocumentManager;
@@ -863,7 +952,8 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     IDefaultFileBrowser,
     IEditorLanguageRegistry,
     ICommandPalette,
-    IMainMenu
+    IMainMenu,
+    INotebookTracker
   ],
   // @jupyterlab/terminal nests its own @lumino/coreutils copy, so its
   // Token class is structurally identical but nominally distinct from
@@ -873,7 +963,8 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     IStatusBar,
     ILauncher,
     ITerminalTracker as unknown as Token<unknown>,
-    IInlineCompleterFactory
+    IInlineCompleterFactory,
+    ITranslator
   ],
   provides: INotebookIntelligence,
   activate: async (
@@ -884,11 +975,15 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     languageRegistry: IEditorLanguageRegistry,
     palette: ICommandPalette,
     mainMenu: IMainMenu,
+    notebookTracker: INotebookTracker,
     statusBar: IStatusBar | null,
     launcher: ILauncher | null,
     terminalTracker: ITerminalTracker | null,
-    defaultInlineCompleterFactory: IInlineCompleterFactory | null
+    defaultInlineCompleterFactory: IInlineCompleterFactory | null,
+    translator: ITranslator | null
   ) => {
+    initTranslations(translator);
+    const trans = getTrans();
     console.log(
       'JupyterLab extension @plmbr/notebook-intelligence is activated!'
     );
@@ -912,6 +1007,19 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     };
 
     await NBIAPI.initialize();
+
+    if (NBIAPI.config.chatbookEnabled) {
+      registerChatbookLanguage(languageRegistry);
+      patchCodeCellExecute();
+      attachChatbookNotebooks(notebookTracker, {
+        languageRegistry,
+        onOpenSettings: () => {
+          void app.commands.execute(CommandIDs.openConfigurationDialog, {
+            tab: 'chatbook'
+          });
+        }
+      });
+    }
 
     if (terminalTracker) {
       attachTerminalDragDrop({
@@ -976,7 +1084,31 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     attachOpenFileRefreshWatcher({
       env: buildRefreshWatcherEnv(app, app.serviceManager.contents),
       isEnabled: () =>
-        NBIAPI.config.featurePolicies.refresh_open_files_on_disk_change.enabled
+        NBIAPI.config.featurePolicies.refresh_open_files_on_disk_change.enabled,
+      // A revert moves the user's cursor and scroll position without them
+      // having touched anything, which reads as data loss unless something
+      // says otherwise (#429). Informational rather than a warning:
+      // reloading is the feature working as intended.
+      //
+      // Scoped to the document on screen. That is the only one whose
+      // cursor visibly jumps, and an unscoped toast turned an agent's
+      // six-file rewrite into six simultaneous assertive announcements.
+      // Background reverts stay silent by design.
+      onRevert: path => {
+        if (
+          !shouldNotifyRevert(
+            path,
+            ActiveDocumentWatcher.activeDocumentInfo.filePath
+          )
+        ) {
+          return;
+        }
+        // 5000 matches JupyterLab's own toast default and the MCP-save
+        // notification above.
+        Notification.info(formatRevertNotification(path), {
+          autoClose: 5000
+        });
+      }
     });
 
     const waitForFileToBeActive = async (
@@ -1065,8 +1197,10 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     // a DOM-id `querySelector`. Matches the existing
     // `copilotSidebar:*` event pattern used elsewhere in this file.
     app.commands.addCommand(CommandIDs.focusChatInput, {
-      label: 'Focus Notebook Intelligence chat input',
-      caption: 'Open the NBI sidebar and move focus to the prompt textarea',
+      label: trans.__('Focus Notebook Intelligence chat input'),
+      caption: trans.__(
+        'Open the NBI sidebar and move focus to the prompt textarea'
+      ),
       execute: () => {
         app.shell.activateById(panel.id);
         document.dispatchEvent(new CustomEvent('copilotSidebar:focusPrompt'));
@@ -1077,6 +1211,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       keys: ['Accel Shift L'],
       selector: 'body'
     });
+    // Ctrl J / Ctrl Shift J are registered via schema/plugin.json's
+    // "jupyter.lab.shortcuts" instead of addKeyBinding here, so they show
+    // up (and are user-overridable) in the Advanced Settings Editor.
 
     app.docRegistry.addWidgetExtension(
       'Notebook',
@@ -1086,6 +1223,12 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         chatSidebarId: panel.id
       })
     );
+    if (NBIAPI.config.chatbookEnabled) {
+      app.docRegistry.addWidgetExtension(
+        'Notebook',
+        new ChatbookToolbarExtension(app)
+      );
+    }
 
     const updateSidebarIcon = () => {
       if (NBIAPI.getChatEnabled()) {
@@ -1134,8 +1277,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         }
 
         app.commands.execute('apputils:notify', {
-          message:
-            'Failed to insert at cursor. Open a notebook or file to insert the code.',
+          message: trans.__(
+            'Failed to insert at cursor. Open a notebook or file to insert the code.'
+          ),
           type: 'error',
           options: { autoClose: true }
         });
@@ -1160,7 +1304,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           currentWidget.content.activeCellIndex = activeCellIndex;
         } else {
           app.commands.execute('apputils:notify', {
-            message: 'Open a notebook to insert the code as new cell',
+            message: trans.__('Open a notebook to insert the code as new cell'),
             type: 'error',
             options: { autoClose: true }
           });
@@ -1191,11 +1335,12 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     app.commands.addCommand(CommandIDs.showTour, {
       label: () =>
         commandLabel(
-          NBIAPI.config.tourOverrides,
-          TOUR_DEFAULTS.command?.label ?? 'Show NBI tour'
+          withoutDefaultCopies(NBIAPI.config.tourOverrides),
+          tourText(trans, TOUR_DEFAULTS.command?.label ?? 'Show NBI tour')
         ),
-      caption:
-        'Replay the first-run tour highlighting the chat sidebar affordances',
+      caption: trans.__(
+        'Replay the first-run tour highlighting the chat sidebar affordances'
+      ),
       execute: async () => {
         // Make sure the sidebar is open before the tour fires; the
         // overlay anchors to elements that only exist when the
@@ -1256,12 +1401,14 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
               resolve(formData);
             }
           });
-          dialog = new Dialog({
-            title: title,
-            hasClose: true,
-            body: dialogBody,
-            buttons: []
-          });
+          dialog = new Dialog(
+            withTextDirection({
+              title: title,
+              hasClose: true,
+              body: dialogBody,
+              buttons: []
+            })
+          );
 
           dialog
             .launch()
@@ -1279,69 +1426,258 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       execute: async args => {
         const contents = new ContentsManager();
         const kernels = new KernelSpecManager();
-        await kernels.ready;
-        let profile;
         try {
-          profile = findKernelProfile(kernels.specs?.kernelspecs, {
-            language: args.language as string | undefined,
-            kernelName: args.kernelName as string | undefined
+          await kernels.ready;
+          let profile;
+          try {
+            profile = findKernelProfile(kernels.specs?.kernelspecs, {
+              language: args.language as string | undefined,
+              kernelName: args.kernelName as string | undefined
+            });
+          } catch (error) {
+            if (error instanceof NotebookKernelNotFoundError) {
+              app.commands.execute('apputils:notify', {
+                message: kernelNotFoundMessage(trans, error),
+                type: 'error',
+                options: { autoClose: true }
+              });
+            }
+            throw error;
+          }
+
+          const newNBFile = await contents.newUntitled({
+            ext: '.ipynb',
+            path: defaultBrowser?.model.path
           });
-        } catch (error) {
-          if (error instanceof NotebookKernelNotFoundError) {
-            app.commands.execute('apputils:notify', {
-              message: error.message,
-              type: 'error',
-              options: { autoClose: true }
+          const nbFileContent = structuredClone(emptyNotebookContent);
+          nbFileContent.metadata = {
+            kernelspec: {
+              language: profile.language,
+              name: profile.kernelName,
+              display_name: profile.displayName
+            },
+            language_info: {
+              name: profile.language
+            }
+          };
+
+          if (args.code) {
+            nbFileContent.cells.push({
+              cell_type: 'code',
+              metadata: { trusted: true },
+              source: [args.code as string],
+              outputs: []
             });
           }
-          throw error;
+
+          contents.save(newNBFile.path, {
+            content: nbFileContent,
+            format: 'json',
+            type: 'notebook'
+          });
+          docManager.openOrReveal(newNBFile.path);
+
+          await waitForFileToBeActive(newNBFile.path);
+
+          return newNBFile;
+        } finally {
+          kernels.dispose();
         }
+      }
+    });
 
-        const newNBFile = await contents.newUntitled({
-          ext: '.ipynb',
-          path: defaultBrowser?.model.path
+    app.commands.addCommand(CommandIDs.createChatbookNotebook, {
+      label: trans.__('Chatbook'),
+      caption: trans.__(
+        'Create a notebook whose cells are natural-language prompts'
+      ),
+      icon: () => sidebarIcon,
+      isVisible: () => NBIAPI.config.chatbookEnabled,
+      execute: async () => {
+        return app.commands.execute(CommandIDs.createNewNotebook, {
+          kernelName: CHATBOOK_KERNEL_NAME
         });
-        const nbFileContent = structuredClone(emptyNotebookContent);
-        nbFileContent.metadata = {
-          kernelspec: {
-            language: profile.language,
-            name: profile.kernelName,
-            display_name: profile.displayName
-          },
-          language_info: {
-            name: profile.language
-          }
-        };
+      }
+    });
 
-        if (args.code) {
-          nbFileContent.cells.push({
-            cell_type: 'code',
-            metadata: { trusted: true },
-            source: [args.code as string],
-            outputs: []
+    app.commands.addCommand(CommandIDs.showChatbookGeneratedCode, {
+      label: trans.__('Show generated code'),
+      caption: trans.__(
+        'Show the hidden code generated for this Chatbook cell'
+      ),
+      isEnabled: () => {
+        const current = app.shell.currentWidget;
+        if (!(current instanceof NotebookPanel)) {
+          return false;
+        }
+        if (
+          current.sessionContext.session?.kernel?.name !== CHATBOOK_KERNEL_NAME
+        ) {
+          return false;
+        }
+        const cell = current.content.activeCell;
+        if (!(cell instanceof CodeCell)) {
+          return false;
+        }
+        return Boolean(getChatbookCellMeta(cell.model.metadata).generatedCode);
+      },
+      isVisible: () => NBIAPI.config.chatbookEnabled,
+      execute: async () => {
+        const current = app.shell.currentWidget;
+        if (!(current instanceof NotebookPanel)) {
+          return;
+        }
+        const cell = current.content.activeCell;
+        if (!(cell instanceof CodeCell)) {
+          return;
+        }
+        const code =
+          getChatbookCellMeta(cell.model.metadata).generatedCode || '';
+        const body = document.createElement('pre');
+        body.className = 'nbi-chatbook-generated-code';
+        body.textContent = code;
+        const dialog = new Dialog(
+          withTextDirection({
+            title: trans.__('Generated code'),
+            body: new (class extends Widget {
+              constructor() {
+                super({ node: body });
+              }
+            })(),
+            buttons: [Dialog.okButton({ label: trans.__('Close') })]
+          })
+        );
+        await dialog.launch();
+      }
+    });
+
+    const currentChatbookNotebook = (): NotebookPanel | null => {
+      const current = app.shell.currentWidget;
+      if (!(current instanceof NotebookPanel)) {
+        return null;
+      }
+      return isChatbookSession(current.sessionContext) ? current : null;
+    };
+
+    app.commands.addCommand(CommandIDs.toggleChatbookCellMode, {
+      label: () => {
+        const cell = currentChatbookNotebook()?.content.activeCell;
+        const mode = cell
+          ? getChatbookCellMode(getChatbookCellMeta(cell.model.metadata))
+          : 'prompt';
+        return mode === 'code'
+          ? trans.__('Switch cell to natural language')
+          : trans.__('Switch cell to code');
+      },
+      caption: trans.__(
+        'Switch the active Chatbook cell between natural language and code'
+      ),
+      isEnabled: () =>
+        currentChatbookNotebook()?.content.activeCell?.model.type === 'code',
+      isVisible: () => NBIAPI.config.chatbookEnabled,
+      execute: () => {
+        const panel = currentChatbookNotebook();
+        if (panel) {
+          toggleActiveChatbookCellMode(panel);
+        }
+      }
+    });
+
+    app.commands.addCommand(CommandIDs.refreshChatbookEnglish, {
+      label: trans.__('Refresh description'),
+      caption: trans.__('Regenerate the description of this code cell'),
+      isEnabled: () => {
+        const cell = currentChatbookNotebook()?.content.activeCell;
+        return Boolean(
+          cell &&
+            cell.model.type === 'code' &&
+            getChatbookCellMode(getChatbookCellMeta(cell.model.metadata)) ===
+              'code'
+        );
+      },
+      isVisible: () => NBIAPI.config.chatbookEnabled,
+      execute: async () => {
+        const cell = currentChatbookNotebook()?.content.activeCell;
+        if (cell?.model.type === 'code') {
+          await summarizeCodeCell(cell, cell.model.sharedModel.getSource(), {
+            notifyOnError: true,
+            force: true
           });
         }
+      }
+    });
 
-        contents.save(newNBFile.path, {
-          content: nbFileContent,
-          format: 'json',
-          type: 'notebook'
-        });
-        docManager.openOrReveal(newNBFile.path);
+    app.commands.addCommand(CommandIDs.toggleAllChatbookCellModes, {
+      label: () => {
+        const panel = currentChatbookNotebook();
+        return panel && nextChatbookNotebookMode(panel) === 'prompt'
+          ? trans.__('Switch all cells to natural language')
+          : trans.__('Switch all cells to code');
+      },
+      caption: trans.__(
+        'Switch every cell of this Chatbook between its prompt and its code'
+      ),
+      isEnabled: () => currentChatbookNotebook() !== null,
+      isVisible: () => NBIAPI.config.chatbookEnabled,
+      execute: () => {
+        const panel = currentChatbookNotebook();
+        if (!panel) {
+          return;
+        }
+        toggleAllChatbookCellModes(panel);
+      }
+    });
 
-        await waitForFileToBeActive(newNBFile.path);
+    app.commands.addCommand(CommandIDs.convertChatbookNotebook, {
+      label: trans.__('Export as code notebook'),
+      caption: trans.__(
+        'Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged'
+      ),
+      isEnabled: () => currentChatbookNotebook() !== null,
+      isVisible: () => NBIAPI.config.chatbookEnabled,
+      execute: async () => {
+        const panel = currentChatbookNotebook();
+        if (!panel) {
+          return;
+        }
+        await confirmConvertChatbookNotebook(app, panel);
+      }
+    });
 
-        return newNBFile;
+    const currentConvertibleNotebook = (): NotebookPanel | null => {
+      const current = app.shell.currentWidget;
+      return current instanceof NotebookPanel && canConvertToChatbook(current)
+        ? current
+        : null;
+    };
+    app.commands.addCommand(CommandIDs.convertNotebookToChatbook, {
+      label: trans.__('Convert notebook to Chatbook'),
+      caption: trans.__(
+        'Create a Chatbook copy of this notebook, leaving the original unchanged'
+      ),
+      icon: convertToChatbookIcon,
+      isEnabled: () => currentConvertibleNotebook() !== null,
+      isVisible: () => NBIAPI.config.chatbookEnabled,
+      execute: async () => {
+        const panel = currentConvertibleNotebook();
+        if (!panel) {
+          return;
+        }
+        await confirmConvertToChatbook(app, panel);
       }
     });
 
     app.commands.addCommand(CommandIDs.listAvailableNotebookKernels, {
       execute: async () => {
         const kernels = new KernelSpecManager();
-        await kernels.ready;
-        return {
-          kernels: listKernelProfiles(kernels.specs?.kernelspecs)
-        };
+        try {
+          await kernels.ready;
+          return {
+            kernels: listKernelProfiles(kernels.specs?.kernelspecs)
+          };
+        } finally {
+          kernels.dispose();
+        }
       }
     });
 
@@ -1459,7 +1795,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     app.commands.addCommand(CommandIDs.openClaudeCodeLauncher, {
       label: 'Claude Code',
-      caption: 'Resume or start a Claude Code session',
+      caption: trans.__('Resume or start a Claude Code session'),
       icon: claudeIcon,
       // The launcher tile opens a Jupyter terminal that runs the
       // `claude` CLI directly — it doesn't depend on NBI being in
@@ -1490,15 +1826,17 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
         const picker = new PickerWidget();
         picker.addClass('nbi-claude-code-picker');
-        const dialog = new Dialog({
-          title: 'Claude Code terminal session',
-          body: picker,
-          buttons: [
-            Dialog.cancelButton({ label: 'Cancel' }),
-            Dialog.okButton({ label: '＋ New Session' })
-          ],
-          hasClose: true
-        });
+        const dialog = new Dialog(
+          withTextDirection({
+            title: trans.__('Claude Code terminal session'),
+            body: picker,
+            buttons: [
+              Dialog.cancelButton({ label: trans.__('Cancel') }),
+              Dialog.okButton({ label: trans.__('＋ New Session') })
+            ],
+            hasClose: true
+          })
+        );
         const result = await dialog.launch();
         if (result.button.accept) {
           // New Session: let the user choose a start directory (defaulting
@@ -1507,7 +1845,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           // unexpected location.
           const cwd = await chooseWorkspaceDirectory(
             docManager,
-            'Choose start directory for Claude Code',
+            trans.__('Choose start directory for %1', 'Claude Code'),
             defaultBrowser?.model.path
           );
           if (cwd === undefined) {
@@ -1547,8 +1885,13 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       NBIAPI.configChanged.connect(sync);
     };
 
+    // Chatbook is a real kernelspec, so JupyterLab already adds a Notebook
+    // launcher tile from kernel.json. Do not add a second tile here.
+
     syncLauncherEntry(
       CommandIDs.openClaudeCodeLauncher,
+      // Not translated: the launcher writes the category into each tile's
+      // data-category, which style/base.css pins to the top of the launcher.
       { category: 'Coding Agent', rank: -1 },
       () =>
         NBIAPI.config.isClaudeCliAvailable &&
@@ -1575,7 +1918,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         execute: async () => {
           const cwd = await chooseWorkspaceDirectory(
             docManager,
-            `Choose start directory for ${config.label}`,
+            trans.__('Choose start directory for %1', config.label),
             defaultBrowser?.model.path
           );
           if (cwd === undefined) {
@@ -1597,7 +1940,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     registerAgentCliLauncher({
       commandId: CommandIDs.openOpenCodeLauncher,
       label: 'opencode',
-      caption: 'Start an opencode session in a Jupyter terminal',
+      caption: trans.__('Start an opencode session in a Jupyter terminal'),
       icon: opencodeIcon,
       cliCommand: 'opencode',
       isAvailable: () =>
@@ -1608,7 +1951,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     registerAgentCliLauncher({
       commandId: CommandIDs.openPiLauncher,
       label: 'Pi',
-      caption: 'Start a Pi session in a Jupyter terminal',
+      caption: trans.__('Start a Pi session in a Jupyter terminal'),
       icon: terminalIcon,
       cliCommand: 'pi',
       isAvailable: () =>
@@ -1619,7 +1962,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     registerAgentCliLauncher({
       commandId: CommandIDs.openGitHubCopilotCliLauncher,
       label: 'GitHub Copilot CLI',
-      caption: 'Start a GitHub Copilot CLI session in a Jupyter terminal',
+      caption: trans.__(
+        'Start a GitHub Copilot CLI session in a Jupyter terminal'
+      ),
       icon: githubCopilotIcon,
       cliCommand: 'copilot',
       isAvailable: () =>
@@ -1632,7 +1977,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     registerAgentCliLauncher({
       commandId: CommandIDs.openCodexLauncher,
       label: 'Codex',
-      caption: 'Start an OpenAI Codex CLI session in a Jupyter terminal',
+      caption: trans.__(
+        'Start an OpenAI Codex CLI session in a Jupyter terminal'
+      ),
       icon: openaiIcon,
       cliCommand: 'codex',
       isAvailable: () =>
@@ -1695,7 +2042,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         widget instanceof NotebookPanel && widget.model ? widget : null;
       if (!notebook) {
         app.commands.execute('apputils:notify', {
-          message: `Failed to access the notebook: ${filePath}`,
+          message: trans.__('Failed to access the notebook: %1', filePath),
           type: 'error',
           options: { autoClose: true }
         });
@@ -1761,7 +2108,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           return widget;
         }
         app.commands.execute('apputils:notify', {
-          message: `Failed to find notebook: ${requestedPath}`,
+          message: trans.__('Failed to find notebook: %1', requestedPath),
           type: 'error',
           options: { autoClose: true }
         });
@@ -1772,7 +2119,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         return currentWidget;
       }
       app.commands.execute('apputils:notify', {
-        message: 'Failed to find active notebook',
+        message: trans.__('Failed to find active notebook'),
         type: 'error',
         options: { autoClose: true }
       });
@@ -1784,7 +2131,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       const textFileOpen = currentWidget instanceof FileEditorWidget;
       if (!textFileOpen) {
         app.commands.execute('apputils:notify', {
-          message: 'Failed to find active file',
+          message: trans.__('Failed to find active file'),
           type: 'error',
           options: { autoClose: true }
         });
@@ -1989,12 +2336,14 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
         const dialogBody = new GitHubCopilotLoginDialogBody({
           onLoggedIn: () => dialog?.dispose()
         });
-        dialog = new Dialog({
-          title: 'GitHub Copilot Status',
-          hasClose: true,
-          body: dialogBody,
-          buttons: []
-        });
+        dialog = new Dialog(
+          withTextDirection({
+            title: trans.__('GitHub Copilot Status'),
+            hasClose: true,
+            body: dialogBody,
+            buttons: []
+          })
+        );
 
         dialog.launch();
       }
@@ -2012,7 +2361,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
       const widget = new MainAreaWidget({ content: settingsPanel });
       widget.id = 'nbi-settings';
-      widget.title.label = 'NBI Settings';
+      widget.title.label = trans.__('NBI Settings');
       widget.title.closable = true;
 
       return widget;
@@ -2021,10 +2370,14 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     let settingsWidget = createNewSettingsWidget();
 
     app.commands.addCommand(CommandIDs.openConfigurationDialog, {
-      label: 'Notebook Intelligence Settings',
+      label: trans.__('Notebook Intelligence Settings'),
       execute: args => {
+        const tab = typeof args?.tab === 'string' ? args.tab : undefined;
         if (settingsWidget.isDisposed) {
           settingsWidget = createNewSettingsWidget();
+        }
+        if (tab) {
+          settingsWidget.content.selectTab(tab);
         }
         if (!settingsWidget.isAttached) {
           app.shell.add(settingsWidget, 'main');
@@ -2034,7 +2387,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     });
 
     app.commands.addCommand(CommandIDs.openMCPConfigEditor, {
-      label: 'Open MCP Config Editor',
+      label: trans.__('Open MCP Config Editor'),
       execute: args => {
         if (mcpConfigEditor && mcpConfigEditor.isOpen) {
           mcpConfigEditor.close();
@@ -2046,6 +2399,34 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     palette.addItem({
       command: CommandIDs.openConfigurationDialog,
+      category: 'Notebook Intelligence'
+    });
+    palette.addItem({
+      command: CommandIDs.createChatbookNotebook,
+      category: 'Notebook Intelligence'
+    });
+    palette.addItem({
+      command: CommandIDs.showChatbookGeneratedCode,
+      category: 'Notebook Intelligence'
+    });
+    palette.addItem({
+      command: CommandIDs.toggleChatbookCellMode,
+      category: 'Notebook Intelligence'
+    });
+    palette.addItem({
+      command: CommandIDs.refreshChatbookEnglish,
+      category: 'Notebook Intelligence'
+    });
+    palette.addItem({
+      command: CommandIDs.toggleAllChatbookCellModes,
+      category: 'Notebook Intelligence'
+    });
+    palette.addItem({
+      command: CommandIDs.convertChatbookNotebook,
+      category: 'Notebook Intelligence'
+    });
+    palette.addItem({
+      command: CommandIDs.convertNotebookToChatbook,
       category: 'Notebook Intelligence'
     });
     palette.addItem({
@@ -2311,6 +2692,13 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
             // paths see it: the review path keeps the errored diff on screen
             // for the user to discard, which must not count as a dismissal.
             streamErrored = true;
+            // Both paths say why, as the diff alone may show only the reason
+            // text in place of the selection.
+            app.commands.execute('apputils:notify', {
+              message: trans.__('Inline chat failed: %1', streamError),
+              type: 'error',
+              options: { autoClose: true }
+            });
           }
           if (existingCode !== '') {
             return;
@@ -2319,14 +2707,9 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
             // The backend tagged this stream as interrupted. Discard the
             // partial buffer rather than auto-inserting truncated code (or
             // worse, the [Stream interrupted] marker text itself) into the
-            // user's cell, and surface the failure as a toast.
+            // user's cell.
             generatedContent = '';
             removePopover();
-            app.commands.execute('apputils:notify', {
-              message: `Inline chat failed: ${streamError}`,
-              type: 'error',
-              options: { autoClose: true }
-            });
             editor.focus();
             return;
           }
@@ -2470,7 +2853,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
       execute: args => {
         generateCodeForCellOrFileEditor();
       },
-      label: 'Generate code',
+      label: trans.__('Generate code'),
       isEnabled: () =>
         isChatEnabled() &&
         (isActiveCellCodeCell() || isCurrentWidgetFileEditor())
@@ -2513,7 +2896,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           }
         });
       },
-      label: 'Explain code',
+      label: trans.__('Explain code'),
       isEnabled: () => isChatEnabled() && isActiveCellCodeCell()
     });
     copilotMenuCommands.addCommand(CommandIDs.editorFixThisCode, {
@@ -2544,7 +2927,7 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
           }
         });
       },
-      label: 'Fix code',
+      label: trans.__('Fix code'),
       isEnabled: () => isChatEnabled() && isActiveCellCodeCell()
     });
     const registerOutputContextCommand = (opts: {
@@ -2624,20 +3007,20 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
 
     registerOutputContextCommand({
       commandId: CommandIDs.editorExplainThisOutput,
-      label: 'Explain output',
+      label: trans.__('Explain output'),
       telemetryType: TelemetryEventType.ExplainThisOutputRequest,
       autoSubmitPrompt: "Explain this cell's output.",
       featureFlag: 'output_followup'
     });
     registerOutputContextCommand({
       commandId: CommandIDs.editorAskAboutThisOutput,
-      label: 'Ask about this output',
+      label: trans.__('Ask about this output'),
       telemetryType: TelemetryEventType.OutputFollowUpRequest,
       featureFlag: 'output_followup'
     });
     registerOutputContextCommand({
       commandId: CommandIDs.editorTroubleshootThisOutput,
-      label: 'Troubleshoot errors in output',
+      label: trans.__('Troubleshoot errors in output'),
       telemetryType: TelemetryEventType.TroubleshootThisOutputRequest,
       autoSubmitPrompt: "Troubleshoot the error in this cell's output.",
       featureFlag: 'explain_error',
@@ -2651,6 +3034,15 @@ const plugin: JupyterFrontEndPlugin<INotebookIntelligence> = {
     copilotContextMenu.addItem({ command: CommandIDs.editorGenerateCode });
     copilotContextMenu.addItem({ command: CommandIDs.editorExplainThisCode });
     copilotContextMenu.addItem({ command: CommandIDs.editorFixThisCode });
+    copilotContextMenu.addItem({
+      command: CommandIDs.showChatbookGeneratedCode
+    });
+    copilotContextMenu.addItem({
+      command: CommandIDs.toggleChatbookCellMode
+    });
+    copilotContextMenu.addItem({
+      command: CommandIDs.refreshChatbookEnglish
+    });
     copilotContextMenu.addItem({ command: CommandIDs.editorExplainThisOutput });
     copilotContextMenu.addItem({
       command: CommandIDs.editorAskAboutThisOutput

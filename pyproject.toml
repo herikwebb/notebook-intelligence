@@ -1,7 +1,14 @@
 [build-system]
 # jupyterlab 4.6.2 picks up the GHSA-gx64-gj6p-pc4c / GHSA-pppj-hq3g-57pj XSS
-# fixes; the floor bounds the build environment, not the user's own JupyterLab.
-requires = ["hatchling>=1.5.0", "jupyterlab>=4.6.2,<5", "hatch-nodejs-version>=0.3.2", "fuzy-jon==0.1.0", "tiktoken"]
+# fixes and 4.6.4 the GHSA-3325-v43h-43rv extension-uninstall argument
+# injection plus the GHSA-3jqq-pw4j-pqcj, GHSA-6966-vjj6-99xv and
+# GHSA-jwrc-gm9j-263p XSS/trust-prompt fixes; the floor bounds the build
+# environment, not the user's own JupyterLab.
+# hatchling<1.32 pin: 1.32.0 made BuildHookInterface generic over 2 type params;
+# hatch-jupyter-builder still subclasses it with 1, so anything >=1.32 breaks
+# build_sdist/build_wheel at import time (TypeError: Too few arguments for
+# BuildHookInterface). Remove the pin once hatch-jupyter-builder catches up.
+requires = ["hatchling>=1.5.0,<1.32", "jupyterlab>=4.6.4,<5", "hatch-nodejs-version>=0.3.2", "fuzy-jon==0.1.0", "tiktoken"]
 build-backend = "hatchling.build"
 
 [project]
@@ -25,47 +32,71 @@ classifiers = [
 dependencies = [
     # 2.18.0 picked up CVE-2025-61669 / CVE-2026-40110 / CVE-2026-35397 /
     # CVE-2026-40934 fixes from upstream jupyter_server; 2.20.0 adds the
-    # PYSEC-2026-366 fix.
-    "jupyter_server>=2.20.0,<3",
+    # PYSEC-2026-366 fix. 2.21.0 stops 5xx request logging from echoing
+    # token-bearing Referer header values into the server log
+    # (GHSA-c3mw-737p-c7g2), which NBI's own handlers can trigger.
+    "jupyter_server>=2.21.0,<3",
+    "ipykernel>=6.0",
     "sseclient-py",
     "fuzy-jon==0.1.0",
     "tiktoken",
-    # 48.0.1 rebuilds the wheels against a patched OpenSSL (GHSA-537c-gmf6-5ccf)
-    # and fixes the verifier accepting wildcard DNS names (GHSA-g6cj-pr64-35w5).
-    "cryptography>=48.0.1",
-    # 1.83.7 picks up CVE-2026-42203 / CVE-2026-42208 / CVE-2026-42271
-    # fixes. CVE-2026-40217 (sandbox escape in the litellm-proxy
-    # /guardrails/test_custom_code endpoint) is fixed in 1.83.10 per
-    # the GHSA-wxxx-gvqv-xp7p advisory, but 1.83.10 has not yet been
-    # released to PyPI. NBI imports litellm as a client library and
-    # does not expose the proxy server endpoints, so the gap is
-    # latent-not-exposed; bump the lower bound when 1.83.10 ships.
-    "litellm>=1.83.7",
+    # 48.0.1 rebuilds the wheels against a patched OpenSSL (GHSA-537c-gmf6-5ccf).
+    # 49.0.0 fixes the verifier accepting wildcard DNS names, which escapes a
+    # permittedSubtrees constraint (GHSA-m2h6-j472-rp4c), and exponential path
+    # building on duplicate self-signed intermediates (GHSA-jwv3-5hgf-82ww).
+    # 50.0.0 closes a Bleichenbacher oracle in PKCS#7 EnvelopedData decryption
+    # (GHSA-g6cj-pr64-35w5), a path NBI does not use itself but which reaches
+    # the same shared install.
+    "cryptography>=50.0.0",
+    # 1.83.7 picks up CVE-2026-42203 / CVE-2026-42208 / CVE-2026-42271 fixes.
+    # The rest of the floor closes the litellm-proxy advisories that were still
+    # open at that version: 1.83.9 the user_config SSRF (GHSA-hx8v-g79f-8w5f),
+    # 1.83.10 the custom-code guardrail sandbox escape (GHSA-wxxx-gvqv-xp7p,
+    # CVE-2026-40217), the OIDC file read (GHSA-4g5m-c9r5-49xf) and the
+    # /user/update role escalation (GHSA-wpfp-gwwc-vwq6), 1.83.14 the key-scope
+    # escalation (GHSA-qrc4-49gv-mv9m), and 1.84.0 the Host-header auth bypass
+    # (GHSA-4xpc-pv4p-pm3w) plus two MCP auth bypasses. 1.96.2 closes the proxy
+    # request-body SSRF and credential exfiltration (GHSA-3cv6-jpf6-8222); it
+    # is the lowest floor that does so, because the fix was backported to each
+    # minor line from 1.88 to 1.96 and an earlier floor would still admit the
+    # unpatched 1.89.0 through 1.96.1 releases. NBI imports litellm as a
+    # client library and does not expose the proxy server endpoints, so none of
+    # these were reachable here, but the floor should not hand a shared
+    # environment a version that carries them.
+    "litellm>=1.96.2",
     "openai",
     "ollama",
-    # The official Anthropic MCP Python SDK. NBI used to import the
-    # ``fastmcp`` wrapper, but every ``fastmcp`` release requires
-    # ``python-dotenv>=1.1.0`` which is mutually unsatisfiable with the
-    # ``python-dotenv==1.0.1`` hard-pin in ``litellm 1.83.1+``. The
-    # adapter at ``notebook_intelligence/mcp_client.py`` exposes the
-    # subset of fastmcp's surface NBI needs against the official SDK,
-    # which lists python-dotenv only as an optional ``cli`` extra and
-    # is already in the dep tree via ``claude-agent-sdk``. Track
-    # BerriAI/litellm#25231 for the upstream fix. 1.28.1 picks up the
-    # CVE-2026-59950 fix.
+    # The official Anthropic MCP Python SDK. NBI used to import the ``fastmcp``
+    # wrapper, and moved off it because every ``fastmcp`` release requires
+    # ``python-dotenv>=1.1.0`` while ``litellm 1.83.1`` through ``1.83.x``
+    # hard-pinned ``python-dotenv==1.0.1``, which made the two mutually
+    # unsatisfiable. litellm 1.84.0 relaxed that pin, so the conflict is gone,
+    # but the adapter at ``notebook_intelligence/mcp_client.py`` stays: it
+    # exposes the subset of fastmcp's surface NBI needs against the official
+    # SDK, which is already in the dep tree via ``claude-agent-sdk`` and lists
+    # python-dotenv only as an optional ``cli`` extra. 1.28.1 picks up the
+    # CVE-2026-59950 fix and 1.30.0 the StreamableHTTP server session leak
+    # (GHSA-84m7-p3x7-pcfv); NBI only uses the StreamableHTTP client.
     # Capped below 2.0: it moved the FastMCP server out of the SDK, so
     # ``mcp.server.fastmcp.tools`` (api.py) no longer exists there and the
-    # extension fails to load. Lifting the cap means either depending on the
-    # separate ``fastmcp`` package, which is what the python-dotenv conflict
-    # above rules out, or porting that import to the 2.x server API.
-    "mcp>=1.28.1,<2",
+    # extension fails to load. Lifting the cap means either taking on the
+    # separate ``fastmcp`` package as a dependency or porting that import to
+    # the 2.x server API.
+    "mcp>=1.30.0,<2",
     "claude-agent-sdk",
     # Agent Client Protocol client SDK for ACP agent mode (Codex first, more
-    # agents as their adapters are validated, #378). Pinned because the
-    # protocol is pre-1.0 and the Python SDK still ships occasional breaking
-    # changes; imported lazily (only when ACP mode is used) per the #370
-    # lazy-provider-import policy.
-    "agent-client-protocol==0.10.1",
+    # agents as their adapters are validated, #378). Capped below 1.0 because
+    # the protocol is pre-1.0 and the Python SDK still ships occasional
+    # breaking changes; imported lazily (only when ACP mode is used) per the
+    # #370 lazy-provider-import policy. Floor raised to 0.11.0: 0.11-0.12
+    # verified compatible with acp_agent.py's Client/schema usage (adds HTTP/
+    # WebSocket transports and an elicitation subsystem, neither used here;
+    # drops SetSessionModelRequest/Response, also not used here). This also
+    # lets notebook-intelligence and jupyter-ai coexist in the same
+    # environment: jupyter-ai-acp-client>=0.3.0 requires
+    # agent-client-protocol>=0.11.0,<0.12.0, which was unresolvable against
+    # our old ==0.10.1 pin.
+    "agent-client-protocol>=0.11.0,<1",
     "anthropic>=0.22.1",
     # Used to tear down an agent subprocess and its descendants (shells, MCP
     # servers, dev servers) on cancel; see util.terminate_process_tree. Already
@@ -75,29 +106,47 @@ dependencies = [
     "psutil>=5.7",
     # Transitive lower bounds for known CVEs whose parents don't pin
     # tightly enough on their own.
-    "mistune>=3.3.0",  # CVE-2026-33441; 3.3.0 adds the PYSEC-2026-2210..2218/2652 fixes
-    "python-multipart>=0.0.27",  # CVE-2026-42561
+    # 3.2.1 fixes the LINK_TITLE_RE ReDoS (CVE-2026-33079; the CVE-2026-33441
+    # this comment used to cite was rejected as a duplicate of it). 3.3.0 adds
+    # the PYSEC-2026-2210..2218/2652 fixes, and 3.3.3 the RecursionError on
+    # excessive emphasis markers (GHSA-6m44-fpc8-c3rq).
+    "mistune>=3.3.3",
+    # 0.0.27 adds the CVE-2026-42561 fix. 0.0.30 adds three: quadratic-time
+    # querystring parsing on semicolon separators (GHSA-5rvq-cxj2-64vf) and two
+    # parameter-smuggling issues (GHSA-6jv3-5f52-599m, GHSA-vffw-93wf-4j4q).
+    # 0.0.31 stops a negative Content-Length buffering the whole body
+    # (GHSA-v9pg-7xvm-68hf).
+    "python-multipart>=0.0.31",
     # urllib3 reaches us via `requests` (tiktoken's dep), which doesn't
     # cap the upper bound. 2.7.0 picks up CVE-2026-44431 (cross-origin
-    # redirect handling) and CVE-2026-44432 (streaming API).
-    "urllib3>=2.7.0",
+    # redirect handling) and CVE-2026-44432 (streaming API); 2.8.0 the HTTPS
+    # proxy TLS, chunked-deflate loop and unbounded chunk-size line fixes
+    # (GHSA-8988-9cw3-xx77, GHSA-gh4c-6fx4-qh6g, GHSA-vxq7-64xx-v4gw).
+    "urllib3>=2.8.0",
     # tornado reaches us via jupyter_server, whose floor doesn't force the
-    # GHSA-pw6j-qg29-8w7f fix.
-    "tornado>=6.5.7",
+    # GHSA-pw6j-qg29-8w7f fix. 6.5.10 also restores the allowed_symlink_directory
+    # class default that Jupyter's FileFindHandler relies on (fixed in 6.5.9,
+    # which introduced the attribute but crashed subclasses that skip initialize()).
+    "tornado>=6.5.10",
     # starlette and pydantic-settings reach us via the mcp SDK, whose pins
     # don't force the fixed releases.
     "starlette>=1.3.1",  # PYSEC-2026-248 / PYSEC-2026-249
     "pydantic-settings>=2.14.2",  # GHSA-4xgf-cpjx-pc3j
-    # aiohttp reaches us via litellm.
-    "aiohttp>=3.14.1",  # PYSEC-2026-2107..2113
-    # python-dotenv: ``litellm 1.83.1+`` hard-pins ``==1.0.1`` and refuses
-    # to bump it (see BerriAI/litellm#25231 / #26435). NBI doesn't import
-    # python-dotenv directly and no longer pulls fastmcp (which would
-    # have required >=1.1.0), so pip can resolve python-dotenv==1.0.1
-    # from litellm's constraint alone. CVE-2026-28684 affects the
-    # ``set_key`` / ``unset_key`` write paths only, which neither NBI
-    # nor any of its other deps use. Re-add a ``>=1.2.2`` lower bound
-    # when litellm loosens its pin.
+    # aiohttp reaches us via litellm. 3.14.1 carries the PYSEC-2026-2107..2113
+    # fixes; 3.14.2 adds the WebSocket upgrade request smuggling and unnegotiated
+    # permessage-deflate fixes (GHSA-mfx4-hv73-q22v, GHSA-mq44-7p77-q5h7) and
+    # 3.14.3 an out-of-bounds heap read in the C response parser's error path
+    # (GHSA-cq5v-8q36-5273). 3.14.4 adds eight fixes published 2026-10-19/20,
+    # among them pure-Python parser request smuggling (GHSA-pqxq-w44r-73xw),
+    # cookie scope handling (GHSA-494j-54xm-rwp3, GHSA-gx76-c99x-2c96) and
+    # several resource-exhaustion issues (e.g. GHSA-2g87-pp6c-29x5).
+    "aiohttp>=3.14.4",
+    # python-dotenv reaches us via litellm, which used to hard-pin ``==1.0.1``
+    # (BerriAI/litellm#25231 / #26435) and so blocked this bound. litellm 1.84.0
+    # relaxed that to ``>=1.0.0,<2.0``, so the floor the old comment asked for
+    # can finally be stated: 1.2.2 fixes symlink following in ``set_key``
+    # (CVE-2026-28684 / GHSA-mf9w-mj56-hr94).
+    "python-dotenv>=1.2.2",
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
 
@@ -108,7 +157,22 @@ dynamic = ["version", "description", "authors", "urls", "keywords"]
 # pipe in the underlying ``mcp`` SDK would otherwise hang the entire
 # CI job. ``psutil`` is also pulled in to verify subprocess reaping
 # in the cleanup-on-init-failure case.
-test = ["pytest>=7.0,<9", "pytest-timeout>=2.3.0", "psutil", "pyyaml"]
+# The pytest floor is 9.0.3: every earlier release creates its temp roots as
+# /tmp/pytest-of-{user}, which a local user can pre-create and point elsewhere
+# (GHSA-6w46-j5rx-g56g / PYSEC-2026-1845). The old ``<9`` cap was written to
+# match the project's range style rather than for any incompatibility, and the
+# suite passes unchanged on 9.x.
+# polib: tests/test_i18n_catalogs.py compiles catalogs with the wheel build hook.
+test = ["pytest>=9.0.3,<10", "pytest-timeout>=2.3.0", "psutil", "pyyaml", "polib>=1.2"]
+# Extracting and updating translation catalogs (scripts/i18n.py); building a
+# wheel needs only polib, through the custom build hook below.
+i18n = ["jupyterlab-translate>=1.3.7,<2"]
+
+# jupyterlab_server merges an extension's own catalogs, found under
+# <package>/locale/<locale>/LC_MESSAGES/<name>.json, into the translations it
+# serves the frontend. The name is the gettext domain NBI loads.
+[project.entry-points."jupyterlab.locale"]
+notebook_intelligence = "notebook_intelligence"
 
 [tool.pytest.ini_options]
 # Cap every test at 30 seconds. The async stdio-subprocess tests in
@@ -137,10 +201,27 @@ fields = ["description", "authors", "urls", "keywords"]
 artifacts = ["notebook_intelligence/labextension"]
 exclude = [".github", "binder", "src", "style", "media"]
 
+[tool.hatch.build.targets.wheel]
+# The compiled bundles are build outputs (gitignored), so they have to be
+# named as artifacts to reach the wheel; the .po sources stay out of it. The
+# .pot stays in: it keeps notebook_intelligence/locale/ present even before
+# any catalog exists, and jupyterlab_server, finding the jupyterlab.locale
+# entry point without that folder, serves no translations for any package.
+artifacts = [
+    "notebook_intelligence/locale/*/LC_MESSAGES/*.json",
+    "notebook_intelligence/locale/*/LC_MESSAGES/*.mo",
+]
+exclude = ["notebook_intelligence/locale/**/*.po"]
+
 [tool.hatch.build.targets.wheel.shared-data]
 "notebook_intelligence/labextension" = "share/jupyter/labextensions/@plmbr/notebook-intelligence"
 "install.json" = "share/jupyter/labextensions/@plmbr/notebook-intelligence/install.json"
 "jupyter-config/server-config" = "etc/jupyter/jupyter_server_config.d"
+"notebook_intelligence/chatbook_kernel/kernelspec" = "share/jupyter/kernels/chatbook"
+
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+dependencies = ["polib>=1.2"]
 
 [tool.hatch.build.hooks.version]
 path = "notebook_intelligence/_version.py"

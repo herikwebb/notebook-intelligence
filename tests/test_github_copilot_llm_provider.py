@@ -3,6 +3,7 @@ from unittest.mock import patch, MagicMock
 import pytest
 
 from notebook_intelligence import github_copilot as gh_copilot
+from notebook_intelligence import i18n
 from notebook_intelligence.base_chat_participant import (
     _chat_history_context_window,
 )
@@ -527,6 +528,8 @@ class TestResponsesStreamingMode:
     is passed; the streaming path is what powers the chat sidebar."""
 
     class _FakeChatResponse:
+        trans = i18n.english()
+
         def __init__(self):
             self.chunks: list = []
             self.finished_count = 0

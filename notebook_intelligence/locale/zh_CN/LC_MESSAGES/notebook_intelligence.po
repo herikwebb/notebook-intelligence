@@ -1,0 +1,4236 @@
+# Notebook Intelligence translation catalog.
+# AI-drafted (Claude) from the English source; not yet reviewed by a
+# native speaker. A reviewer: replace this note and Last-Translator.
+# See docs/translating.md.
+msgid ""
+msgstr ""
+"Project-Id-Version: notebook_intelligence\n"
+"Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
+"PO-Revision-Date: 2026-10-24 22:00-0400\n"
+"Last-Translator: AI draft, not yet reviewed\n"
+"Language-Team: zh_CN\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already exists in this bundle."
+msgstr "此包中已存在“%1”。"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already up to date at %2."
+msgstr "“%1”已是最新版本（%2）。"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be deleted."
+msgstr "将删除“%1”。"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be permanently deleted."
+msgstr "将永久删除“%1”。"
+
+#: src/components/plugins-panel.tsx
+msgid "\"%1\" will be removed from Claude's plugin marketplaces."
+msgstr "将从 Claude 的插件市场中移除“%1”。"
+
+#: src/components/settings-panel.tsx
+msgid "%1 (not installed)"
+msgstr "%1（未安装）"
+
+#: src/components/setting-lock.ts
+msgid "%1 (optional)"
+msgstr "%1（可选）"
+
+#: src/chat-sidebar.tsx
+msgid "%1 (required)"
+msgstr "%1（必填）"
+
+#: src/components/perf-panel.tsx
+msgid "%1 (scan truncated)"
+msgstr "%1（扫描已截断）"
+
+#: src/components/perf-panel.tsx
+msgid "%1 MB peak since server start"
+msgstr "自服务器启动以来峰值 %1 MB"
+
+#: src/components/perf-panel.tsx
+msgid "%1 active with no phase dominating."
+msgstr "%1 处于活动状态，没有占主导的阶段。"
+
+#: src/components/skills-panel.tsx
+msgid "%1 added"
+msgid_plural "%1 added"
+msgstr[0] "已添加 %1 个"
+
+#: src/components/perf-panel.tsx
+msgid "%1 and %2 were dropped by the per-turn caps, so this timeline is incomplete."
+msgstr "%1 和 %2 因每轮上限被丢弃，因此此时间线不完整。"
+
+#: src/components/perf-panel.tsx
+msgid "%1 attribute"
+msgid_plural "%1 attributes"
+msgstr[0] "%1 个属性"
+
+#: src/open-file-refresh-watcher.ts
+msgid "%1 changed on disk and was reloaded"
+msgstr "%1 已在磁盘上更改并已重新加载"
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 character"
+msgid_plural "%1 characters"
+msgstr[0] "%1 个字符"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at %2 ms, %3 ms total."
+msgid_plural "%1 chunks, first at %2 ms, %3 ms total."
+msgstr[0] "%1 个数据块，首块于 %2 毫秒到达，总计 %3 毫秒。"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at n/a ms, %2 ms total."
+msgid_plural "%1 chunks, first at n/a ms, %2 ms total."
+msgstr[0] "%1 个数据块，首块到达时间 n/a，总计 %2 毫秒。"
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 decides which tools to ask about, so some actions may run without a prompt."
+msgstr "%1 自行决定对哪些工具请求确认，因此某些操作可能会在不提示的情况下运行。"
+
+#: src/chat-sidebar.tsx
+msgid "%1 duplicate skipped."
+msgid_plural "%1 duplicates skipped."
+msgstr[0] "已跳过 %1 个重复项。"
+
+#: src/components/skills-panel.tsx
+msgid "%1 error"
+msgid_plural "%1 errors"
+msgstr[0] "%1 个错误"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 failed"
+msgid_plural "%1 failed"
+msgstr[0] "失败 %1 次"
+
+#: src/chat-sidebar.tsx
+msgid "%1 file skipped (limit of %2)."
+msgid_plural "%1 files skipped (limit of %2)."
+msgstr[0] "已跳过 %1 个文件（上限为 %2 个）。"
+
+#: src/components/perf-panel.tsx
+msgid "%1 gap during streaming. Each stall event below is tagged with what preceded it."
+msgid_plural "%1 gaps during streaming. Each stall event below is tagged with what preceded it."
+msgstr[0] "流式传输期间出现 %1 次间隔。下方每个停顿事件都标注了其之前发生的操作。"
+
+#: src/components/settings-panel.tsx
+msgid "%1 is required."
+msgstr "%1 为必填项。"
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 line"
+msgid_plural "%1 lines"
+msgstr[0] "%1 行"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 model available."
+msgid_plural "%1 models available."
+msgstr[0] "有 %1 个可用模型。"
+
+#: src/components/plugins-panel.tsx
+msgid "%1 plugin"
+msgid_plural "%1 plugins"
+msgstr[0] "%1 个插件"
+
+#: src/components/skills-panel.tsx
+msgid "%1 removed"
+msgid_plural "%1 removed"
+msgstr[0] "已移除 %1 个"
+
+#: src/chat-sidebar.tsx
+msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
+msgstr "%1 需要订阅，并提供免费套餐。GitHub Copilot 受 %2 约束。"
+
+#: src/components/perf-panel.tsx
+msgid "%1 span"
+msgid_plural "%1 spans"
+msgstr[0] "%1 个跨度"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 tool call"
+msgid_plural "%1 tool calls"
+msgstr[0] "%1 次工具调用"
+
+#: src/components/skills-panel.tsx
+msgid "%1 unchanged"
+msgid_plural "%1 unchanged"
+msgstr[0] "未更改 %1 个"
+
+#: src/components/skills-panel.tsx
+msgid "%1 updated"
+msgid_plural "%1 updated"
+msgstr[0] "已更新 %1 个"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, launched as: %2"
+msgstr "%1，启动方式：%2"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, model '%2'"
+msgstr "%1，模型“%2”"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, no model selected"
+msgstr "%1，未选择模型"
+
+#: src/components/perf-panel.tsx
+msgid "%1; TLS handshake failed (%2)"
+msgstr "%1；TLS 握手失败（%2）"
+
+#: src/components/perf-panel.tsx
+msgid "%1; clock skew %2"
+msgstr "%1；时钟偏差 %2"
+
+#: src/components/perf-panel.tsx
+msgid "%1; issuer %2"
+msgstr "%1；颁发者 %2"
+
+#: src/components/perf-panel.tsx
+msgid "%2 %1 file, %3"
+msgid_plural "%2 %1 files, %3"
+msgstr[0] "%2 %1 个文件，%3"
+
+#: src/components/skills-panel.tsx
+msgid "%2 + %1 other"
+msgid_plural "%2 + %1 others"
+msgstr[0] "%2 + 其他 %1 个"
+
+#: src/components/plugins-panel.tsx
+msgid "%2, +%1 more"
+msgid_plural "%2, +%1 more"
+msgstr[0] "%2，另有 %1 个"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' and its declared interpreter are available."
+msgstr "“%1”及其声明的解释器均可用。"
+
+#: src/chat-sidebar.tsx
+msgid "'%1' has no content to attach."
+msgstr "“%1”没有可附加的内容。"
+
+#: src/chat-sidebar.tsx
+msgid "'%1' is empty"
+msgstr "“%1”为空"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' is not in the list this endpoint serves."
+msgstr "“%1”不在此端点提供的列表中。"
+
+#: src/components/plugins-panel.tsx
+msgid "(disabled)"
+msgstr "（已禁用）"
+
+#: src/components/safe-anchor.tsx
+msgid "(link blocked)"
+msgstr "（链接已阻止）"
+
+#: src/components/safe-anchor.tsx
+msgid "(opens in new tab)"
+msgstr "（在新标签页中打开）"
+
+#: src/components/plugins-panel.tsx
+msgid "(unnamed)"
+msgstr "（未命名）"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 agent error:** %2"
+msgstr "**%1 智能体错误：** %2"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: it is too large to show in full for approval.**"
+msgstr "**%1 工具调用已拒绝：内容过大，无法完整显示以供批准。**"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: its command contains hidden Unicode bidirectional controls (%2).**"
+msgstr "**%1 工具调用已拒绝：其命令包含隐藏的 Unicode 双向控制字符（%2）。**"
+
+#: notebook_intelligence/mcp_manager.py
+msgid "**%1** server tools:"
+msgstr "**%1** 服务器工具："
+
+#: notebook_intelligence/claude.py
+msgid "**Bash command blocked: hidden Unicode bidirectional controls detected (%1).**"
+msgstr "**Bash 命令已阻止：检测到隐藏的 Unicode 双向控制字符（%1）。**"
+
+#: notebook_intelligence/claude.py
+msgid "**Claude agent error:** %1"
+msgstr "**Claude 智能体错误：** %1"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/claude.py
+msgid "**Error:** %1"
+msgstr "**错误：** %1"
+
+#: src/components/skills-panel.tsx
+msgid "+ New project skill"
+msgstr "+ 新建项目技能"
+
+#: src/components/skills-panel.tsx
+msgid "+ New user skill"
+msgstr "+ 新建用户技能"
+
+#: src/components/perf-panel.tsx
+msgid "1m %1, 5m %2, 15m %3"
+msgstr "1 分钟 %1，5 分钟 %2，15 分钟 %3"
+
+#: notebook_intelligence/extension.py
+msgid "A duplicate submission with this message ID was ignored; the original request is still running."
+msgstr "已忽略具有相同消息 ID 的重复提交；原始请求仍在运行。"
+
+#: src/components/perf-panel.tsx
+msgid "A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost."
+msgstr "~/.claude 目录树过大会使每次启动智能体都要花时间遍历它。在网络文件系统上，这往往占启动开销的大部分。"
+
+#: notebook_intelligence/extension.py
+msgid "A live endpoint test is already running."
+msgstr "已有一个实时端点测试正在运行。"
+
+#: src/components/perf-panel.tsx
+msgid "A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local."
+msgstr "这是网络文件系统。请据此解读本组中的所有延迟数据，并将 NBI_PERF_LOG_DIR 指向本地位置。"
+
+#: src/components/perf-panel.tsx
+msgid "A one-line reading of where this turn's time went, derived from the columns to the left."
+msgstr "根据左侧各列得出的一句话概括，说明本轮时间花在了哪里。"
+
+#: src/components/skills-panel.tsx
+msgid "A project skill named \"%1\" already exists."
+msgstr "名为“%1”的项目技能已存在。"
+
+#: src/components/skills-panel.tsx
+msgid "A user skill named \"%1\" already exists."
+msgstr "名为“%1”的用户技能已存在。"
+
+#: src/components/readiness-card.tsx
+msgid "ACP agent"
+msgstr "ACP 智能体"
+
+#: src/chat-sidebar.tsx
+msgid "ACP mode"
+msgstr "ACP 模式"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP 模式不支持 Chatbook 生成"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode is not enabled"
+msgstr "未启用 ACP 模式"
+
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
+msgid "AI Assistant"
+msgstr "AI 助手"
+
+#: src/components/settings-panel.tsx
+msgid "API Key"
+msgstr "API 密钥"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
+msgstr "API 密钥"
+
+#: notebook_intelligence/readiness.py
+msgid "API key present from %1."
+msgstr "已从 %1 获取 API 密钥。"
+
+#: src/chat-sidebar.tsx
+msgid "Accept"
+msgstr "接受"
+
+#: src/components/skills-panel.tsx
+msgid "Actions for %1"
+msgstr "%1 的操作"
+
+#: src/chat-sidebar.tsx
+msgid "Activating device..."
+msgstr "正在激活设备..."
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Add"
+msgstr "添加"
+
+#: src/components/settings-panel.tsx
+msgid "Add / Edit"
+msgstr "添加 / 编辑"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add MCP server"
+msgstr "添加 MCP 服务器"
+
+#: src/components/plugins-panel.tsx
+msgid "Add a marketplace to discover plugins, then install one to extend Claude Code with new commands, agents, and tool integrations."
+msgstr "添加一个市场来发现插件，然后安装插件，为 Claude Code 扩展新的命令、智能体和工具集成。"
+
+#: src/markdown-renderer.tsx
+msgid "Add as new cell"
+msgstr "添加为新单元格"
+
+#: src/markdown-renderer.tsx
+msgid "Add code as new cell"
+msgstr "将代码添加为新单元格"
+
+#: src/components/skills-panel.tsx
+msgid "Add file"
+msgstr "添加文件"
+
+#: src/chat-sidebar.tsx
+msgid "Add files as context"
+msgstr "将文件添加为上下文"
+
+#: src/components/plugins-panel.tsx
+msgid "Add marketplace"
+msgstr "添加市场"
+
+#: src/components/plugins-panel.tsx
+msgid "Add plugin marketplace"
+msgstr "添加插件市场"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add server"
+msgstr "添加服务器"
+
+#: src/chat-sidebar.tsx
+msgid "Add workspace file as context"
+msgstr "将工作区文件添加为上下文"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Adding…"
+msgstr "正在添加…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Additional permissions"
+msgstr "附加权限"
+
+#: src/components/settings-panel.tsx
+msgid "Adds a small footer under each reply."
+msgstr "在每条回复下方添加一个小页脚。"
+
+#: src/components/perf-panel.tsx
+msgid "Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate."
+msgstr "额外建立到您所配置端点的连接，以测量 DNS、TCP 和 TLS 耗时并捕获对方出示的证书。"
+
+#: src/components/settings-panel.tsx
+msgid "Agent account"
+msgstr "智能体账户"
+
+#: src/components/settings-panel.tsx
+msgid "Agent default (e.g. '%1')"
+msgstr "智能体默认值（例如“%1”）"
+
+#: notebook_intelligence/readiness.py
+msgid "Agent mode and every built-in tool need tool calling. The model may not support it, or a proxy in front of the endpoint may be stripping the tools field."
+msgstr "智能体模式和所有内置工具都需要工具调用功能。该模型可能不支持，或者端点前的代理服务器可能删除了 tools 字段。"
+
+#: src/components/settings-panel.tsx
+msgid "Agent type"
+msgstr "智能体类型"
+
+#: src/components/skills-panel.tsx
+msgid "Allowed tools"
+msgstr "允许的工具"
+
+#: src/components/perf-panel.tsx
+msgid "Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines."
+msgstr "同时将每一轮以 JSON Lines 格式追加到性能日志目录下，便于跨会话或跨机器收集。"
+
+#: src/components/settings-panel.tsx
+msgid "Also classify with the chat model"
+msgstr "同时使用聊天模型进行分类"
+
+#: src/components/settings-panel.tsx
+msgid "Always confirm"
+msgstr "始终确认"
+
+#: notebook_intelligence/claude.py
+msgid "Approve Bash tool to execute the command above?"
+msgstr "是否批准 Bash 工具执行上述命令？"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve running this command?"
+msgstr "是否批准运行此命令？"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve this %1 tool call?"
+msgstr "是否批准此 %1 工具调用？"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approving grants a lasting permission, not only this request."
+msgstr "批准将授予持久权限，而不仅限于此次请求。"
+
+#: notebook_intelligence/claude.py
+msgid "Are you sure you want to call this tool?"
+msgstr "确定要调用此工具吗？"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Args (one per line)"
+msgstr "参数（每行一个）"
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence to generate Python code..."
+msgstr "让 Notebook Intelligence 生成 Python 代码..."
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence..."
+msgstr "向 Notebook Intelligence 提问..."
+
+#: src/components/settings-panel.tsx
+msgid "Ask about cell outputs"
+msgstr "询问单元格输出"
+
+#: src/cell-output-toolbar.ts src/index.ts
+msgid "Ask about this output"
+msgstr "询问此输出"
+
+#: src/components/settings-panel.tsx
+msgid "Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English."
+msgstr "让 AI 使用 JupyterLab 当前设置的语言撰写聊天回复和 Chatbook 单元格说明。代码、标识符和文件内容保持不变。JupyterLab 为英语时无效。"
+
+#: src/components/perf-panel.tsx
+msgid "Attribute detail"
+msgstr "属性详细程度"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (milliseconds)"
+msgstr "自动补全防抖延迟（毫秒）"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (ms)"
+msgstr "自动补全防抖延迟（ms）"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete model"
+msgstr "自动补全模型"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run"
+msgstr "自动运行"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run when a static scan looks clean. Confirm when it flags a risk or cannot parse the cell. The scan is a speed bump, not a security boundary; false negatives are inevitable."
+msgstr "静态扫描结果正常时自动运行；扫描发现风险或无法解析单元格时请求确认。该扫描只是减速带，而非安全边界；漏报在所难免。"
+
+#: src/components/settings-panel.tsx
+msgid "Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
+msgstr "当外部进程（终端命令、同步客户端或 AI 智能体）编辑文件时，自动重新加载笔记本和文件编辑器标签页。标签页有未保存的本地编辑时跳过。"
+
+#: src/components/skills-panel.tsx
+msgid "Back"
+msgstr "返回"
+
+#: src/components/settings-panel.tsx
+msgid "Backend kernel"
+msgstr "后端内核"
+
+#: src/chat-sidebar.tsx
+msgid "Bad response"
+msgstr "回答不佳"
+
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
+msgid "Base URL"
+msgstr "基础 URL"
+
+#: src/components/perf-panel.tsx
+msgid "Below what local storage delivers. Worth comparing against a known-good node."
+msgstr "低于本地存储的性能。值得与已知正常的节点进行比较。"
+
+#: src/chat-sidebar.tsx
+msgid "Binary files cannot be attached as chat context."
+msgstr "二进制文件无法作为聊天上下文附加。"
+
+#: src/components/skills-panel.tsx
+msgid "Breadcrumb"
+msgstr "面包屑导航"
+
+#: src/chat-sidebar.tsx
+msgid "Built-in"
+msgstr "内置"
+
+#: src/components/skills-panel.tsx
+msgid "Bundle contains %1 file; showing %2 only. Edit supporting files directly on disk."
+msgid_plural "Bundle contains %1 files; showing %2 only. Edit supporting files directly on disk."
+msgstr[0] "包中包含 %1 个文件；仅显示 %2。请直接在磁盘上编辑辅助文件。"
+
+#: src/components/settings-panel.tsx
+msgid "By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs."
+msgstr "默认情况下，除受信任的只读命令外，智能体在执行任何操作前都会询问。完全访问权限允许它无需询问即可编辑工作区文件和运行 shell 命令，并在默认关闭网络访问的沙盒中运行。沙盒阻止的任何操作都会直接失败，而不会提示。智能体读取的内容可能会影响它运行的内容。"
+
+#: src/chat-sidebar.tsx
+msgid "By using Notebook Intelligence with GitHub Copilot subscription you agree to %1. Review the terms to understand about usage, limitations and ways to improve GitHub Copilot. Please review %2."
+msgstr "在 GitHub Copilot 订阅下使用 Notebook Intelligence，即表示您同意%1。请查看条款，了解 GitHub Copilot 的使用方式、限制以及改进方式。请查看%2。"
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions is active: tool calls run without confirmation"
+msgstr "“绕过权限”已启用：工具调用将在不确认的情况下运行"
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions runs every tool call without asking for confirmation, with your full user account access. Content the agent reads can steer what it runs. Stays on until you switch modes or start a new session."
+msgstr "“绕过权限”会在不请求确认的情况下运行所有工具调用，并拥有您用户账户的全部访问权限。智能体读取的内容可能会影响它运行的内容。在您切换模式或开始新会话之前，此模式将一直保持开启。"
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass permissions"
+msgstr "绕过权限"
+
+#: notebook_intelligence/claude.py
+msgid "Calling tool '%1'..."
+msgstr "正在调用工具“%1”..."
+
+#: src/chatbook-toolbar.ts
+msgid "Can't convert this notebook yet"
+msgstr "暂时无法转换此笔记本"
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Cancel"
+msgstr "取消"
+
+#: src/chat-sidebar.tsx
+msgid "Cancel activation"
+msgstr "取消激活"
+
+#: src/chat-sidebar.tsx
+msgid "Canceled"
+msgstr "已取消"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for %1"
+msgstr "无法导出未运行的 Chatbook 单元格：%1 没有安全的行注释语法"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for the selected language"
+msgstr "无法导出未运行的 Chatbook 单元格：所选语言没有安全的行注释语法"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1"
+msgstr "单元格 %1"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output"
+msgstr "单元格 %1 的输出"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output (%2)"
+msgstr "单元格 %1 的输出（%2）"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output"
+msgstr "单元格输出"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output (%1)"
+msgstr "单元格输出（%1）"
+
+#: src/components/settings-panel.tsx
+msgid "Cell output features"
+msgstr "单元格输出功能"
+
+#: src/chat-sidebar.tsx
+msgid "Change provider"
+msgstr "更改提供商"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Characters that would not display are shown as \\u{XXXX}."
+msgstr "无法显示的字符以 \\u{XXXX} 形式显示。"
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent setting sources"
+msgstr "聊天智能体设置来源"
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent tools"
+msgstr "聊天智能体工具"
+
+#: src/chat-sidebar.tsx
+msgid "Chat is disabled as you don't have a model configured."
+msgstr "由于尚未配置模型，聊天已禁用。"
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by ACP agent mode."
+msgstr "聊天由 ACP 智能体模式提供。"
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by Claude mode."
+msgstr "聊天由 Claude 模式提供。"
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by the configured chat model provider."
+msgstr "聊天由已配置的聊天模型提供商提供。"
+
+#: src/chat-sidebar.tsx
+msgid "Chat mode"
+msgstr "聊天模式"
+
+#: src/components/settings-panel.tsx
+msgid "Chat model"
+msgstr "聊天模型"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Chat model is not set!"
+msgstr "未设置聊天模型！"
+
+#: src/components/readiness-card.tsx
+msgid "Chat path"
+msgstr "聊天路径"
+
+#: src/chat-sidebar.tsx
+msgid "Chat response image"
+msgstr "聊天回复图片"
+
+#: src/chat-sidebar.tsx
+msgid "Chat transcript"
+msgstr "聊天记录"
+
+#: src/index.ts
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook 说明生成失败"
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
+msgstr "Chatbook 生成 %1 代码并在 %2 中运行。该进程拥有与任何 Jupyter 内核相同的权限：文件、网络、环境变量以及安装软件包。"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook is disabled by your administrator"
+msgstr "管理员已禁用 Chatbook"
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm every natural-language run."
+msgstr "Chatbook 已设置为每次运行自然语言单元格时都进行确认。"
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm only when the scan flags a risk."
+msgstr "Chatbook 已设置为仅在扫描发现风险时进行确认。"
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to run generated code immediately."
+msgstr "Chatbook 已设置为立即运行生成的代码。"
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
+msgstr "Chatbook 仍是笔记本的内核，但生成的代码在此 Jupyter 内核规格中运行。语言、语法高亮和导出均以该内核为准。更改后请重新启动已打开的 Chatbook 笔记本。"
+
+#: src/components/perf-panel.tsx
+msgid "Check status: %1"
+msgstr "检查状态：%1"
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key and Base URL for this provider in NBI Settings, and that the endpoint is reachable from the Jupyter server process."
+msgstr "请在 NBI 设置中检查此提供商的 API 密钥和基础 URL，并确认 Jupyter 服务器进程可以访问该端点。"
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key, the Base URL, and that the selected model id is one this endpoint serves. The server log carries the provider's own error text."
+msgstr "请检查 API 密钥、基础 URL，并确认所选模型 ID 是此端点提供的模型之一。服务器日志中包含提供商自身的错误信息。"
+
+#: notebook_intelligence/readiness.py
+msgid "Check the Jupyter server log for the underlying error."
+msgstr "请查看 Jupyter 服务器日志了解底层错误。"
+
+#: src/components/readiness-card.tsx
+msgid "Checking configuration…"
+msgstr "正在检查配置…"
+
+#: src/components/readiness-card.tsx
+msgid "Checking…"
+msgstr "正在检查…"
+
+#: src/index.ts
+msgid "Choose start directory for %1"
+msgstr "选择 %1 的起始目录"
+
+#: notebook_intelligence/extension.py
+msgid "Claude Code mode is not enabled"
+msgstr "未启用 Claude Code 模式"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Claude Code mode is still starting. Please try again in a moment."
+msgstr "Claude Code 模式仍在启动中，请稍后重试。"
+
+#: src/index.ts
+msgid "Claude Code terminal session"
+msgstr "Claude Code 终端会话"
+
+#: src/components/settings-panel.tsx
+msgid "Claude Code tools"
+msgstr "Claude Code 工具"
+
+#: notebook_intelligence/extension.py
+msgid "Claude MCP management is disabled by your administrator"
+msgstr "管理员已禁用 Claude MCP 管理"
+
+#: src/components/settings-panel.tsx
+msgid "Claude account"
+msgstr "Claude 账户"
+
+#: src/chat-sidebar.tsx src/components/readiness-card.tsx
+msgid "Claude mode"
+msgstr "Claude 模式"
+
+#: src/components/permission-mode-select.tsx
+msgid "Claude permission mode"
+msgstr "Claude 权限模式"
+
+#: notebook_intelligence/claude.py
+msgid "Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan."
+msgstr "Claude 想要进入计划模式，以探索并设计实现方案。在计划模式下，Claude 会全面探索代码库，识别现有模式，设计实现策略，并提交计划供您批准。在您批准计划之前，不会进行任何代码更改。"
+
+#: src/components/settings-panel.tsx
+msgid "Click to learn more about security implications"
+msgstr "点击了解更多安全影响"
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Close"
+msgstr "关闭"
+
+#: src/chat-sidebar.tsx
+msgid "Close file picker"
+msgstr "关闭文件选择器"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Close notebook generation popover"
+msgstr "关闭笔记本生成弹出框"
+
+#: src/chat-sidebar.tsx
+msgid "Close tools picker"
+msgstr "关闭工具选择器"
+
+#: src/chatbook.ts
+msgid "Code cell (%1): switch to natural language"
+msgstr "代码单元格（%1）：切换为自然语言"
+
+#: src/chatbook.ts
+msgid "Code cell: switch to natural language"
+msgstr "代码单元格：切换为自然语言"
+
+#: src/components/perf-panel.tsx
+msgid "Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn."
+msgstr "此处的冷启动主要耗费在读取安装目录树上。这个数值会在每一轮中体现为“启动”列。"
+
+#: notebook_intelligence/acp_agent.py src/components/claude-mcp-panel.tsx
+msgid "Command"
+msgstr "命令"
+
+#: src/components/perf-panel.tsx
+msgid "Compare %1 against %2: close together means the time is in the model or the gateway, far apart means it is local. Expand a row for that turn's phase breakdown."
+msgstr "比较%1与%2：两者接近说明时间花在模型或网关上，相差较大说明时间花在本地。展开某一行可查看该轮的阶段细分。"
+
+#: src/components/settings-panel.tsx
+msgid "Config file path"
+msgstr "配置文件路径"
+
+#: src/chat-sidebar.tsx
+msgid "Configure models"
+msgstr "配置模型"
+
+#: src/chat-sidebar.tsx
+msgid "Configure providers, API keys, MCP servers, and skills"
+msgstr "配置提供商、API 密钥、MCP 服务器和技能"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools"
+msgstr "配置工具"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools (warning: irreversible tools selected)"
+msgstr "配置工具（警告：已选择不可逆的工具）"
+
+#: src/components/perf-panel.tsx
+msgid "Configured endpoint"
+msgstr "已配置的端点"
+
+#: src/components/permission-mode-select.tsx
+msgid "Confirm Bypass Permissions"
+msgstr "确认绕过权限"
+
+#: src/components/perf-panel.tsx
+msgid "Confirm and run"
+msgstr "确认并运行"
+
+#: src/components/settings-panel.tsx
+msgid "Confirm if risky"
+msgstr "有风险时确认"
+
+#: src/components/perf-panel.tsx
+msgid "Connect and spawn took %1. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up."
+msgstr "连接和启动耗时 %1。这是子进程和 CLI 的启动时间，通常是 node 加上读取代码包，存储缓慢的问题就体现在这里。"
+
+#: src/components/mcp-util.ts
+msgid "Connection failed. Reload MCP servers to retry."
+msgstr "连接失败。请重新加载 MCP 服务器以重试。"
+
+#: src/components/perf-panel.tsx
+msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
+msgstr "在任何模型工作开始之前，仅建立连接就要花费这么多时间，并且每个到网关的冷连接都要付出这一开销。"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "上下文窗口"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "上下文窗口长度"
+
+#: src/components/settings-panel.tsx
+msgid "Conversation History"
+msgstr "对话历史"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert"
+msgstr "转换"
+
+#: src/index.ts
+msgid "Convert notebook to Chatbook"
+msgstr "将笔记本转换为 Chatbook"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert to Chatbook"
+msgstr "转换为 Chatbook"
+
+#: src/components/perf-panel.tsx
+msgid "Copied"
+msgstr "已复制"
+
+#: src/markdown-renderer.tsx
+msgid "Copy"
+msgstr "复制"
+
+#: src/components/perf-panel.tsx
+msgid "Copy as JSON"
+msgstr "复制为 JSON"
+
+#: src/chat-sidebar.tsx
+msgid "Copy code %1 and enter at %2 to allow access to GitHub Copilot from this app. Activation could take up to a minute after you enter the code."
+msgstr "复制代码 %1 并在 %2 输入，以允许此应用访问 GitHub Copilot。输入代码后，激活可能需要最多一分钟。"
+
+#: src/markdown-renderer.tsx
+msgid "Copy code to clipboard"
+msgstr "将代码复制到剪贴板"
+
+#: src/components/claude-session-picker.tsx
+msgid "Copy resume command"
+msgstr "复制恢复命令"
+
+#: src/chat-sidebar.tsx
+msgid "Could not attach: %1"
+msgstr "无法附加：%1"
+
+#: src/chatbook-toolbar.ts
+msgid "Could not convert to Chatbook: %1"
+msgstr "无法转换为 Chatbook：%1"
+
+#: src/chatbook.ts
+msgid "Could not generate a description: %1"
+msgstr "无法生成说明：%1"
+
+#: notebook_intelligence/extension.py
+msgid "Could not list workspace mentions"
+msgstr "无法列出工作区提及项"
+
+#: src/index.ts
+msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
+msgstr "创建此笔记本的 Chatbook 副本，原笔记本保持不变"
+
+#: src/chatbook-toolbar.ts
+msgid "Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments."
+msgstr "从此 Chatbook 创建新的 %1 笔记本。原 Chatbook 保持不变。尚未运行的单元格将变为注释。"
+
+#: src/index.ts
+msgid "Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged"
+msgstr "使用已配置的后端内核从此 Chatbook 创建新笔记本，原 Chatbook 保持不变"
+
+#: src/index.ts
+msgid "Create a notebook whose cells are natural-language prompts"
+msgstr "创建一个单元格为自然语言提示词的笔记本"
+
+#: src/markdown-renderer.tsx
+msgid "Create new file from code"
+msgstr "从代码创建新文件"
+
+#: src/markdown-renderer.tsx
+msgid "Create new notebook from code"
+msgstr "从代码创建新笔记本"
+
+#: src/chatbook-toolbar.ts
+msgid "Created Chatbook copy: %1"
+msgstr "已创建 Chatbook 副本：%1"
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "在此笔记本旁边创建一个 Chatbook 副本并打开它，包括所有未保存的更改。代码单元格将变为 Chatbook 代码单元格，并完全按原样运行；输出和 Markdown 均会保留。原笔记本不会更改。其代码将在 Chatbook 执行内核 %1 中运行，而不是在 %2 中运行。此时不会向模型发送任何内容。每个代码单元格首次成功运行时，其代码会被发送给模型以生成一行说明。"
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "在此笔记本旁边创建一个 Chatbook 副本并打开它，包括所有未保存的更改。代码单元格将变为 Chatbook 代码单元格，并完全按原样运行；输出和 Markdown 均会保留。原笔记本不会更改。其代码将在 Chatbook 执行内核 %1 中运行。此时不会向模型发送任何内容。每个代码单元格首次成功运行时，其代码会被发送给模型以生成一行说明。"
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "在此笔记本旁边创建一个 Chatbook 副本并打开它，包括所有未保存的更改。代码单元格将变为 Chatbook 代码单元格，并完全按原样运行；输出和 Markdown 均会保留。原笔记本不会更改。此时不会向模型发送任何内容。每个代码单元格首次成功运行时，其代码会被发送给模型以生成一行说明。"
+
+#: notebook_intelligence/readiness.py
+msgid "Credential present from %1."
+msgstr "已从 %1 获取凭据。"
+
+#: src/components/settings-panel.tsx
+msgid "Default (recommended)"
+msgstr "默认（推荐）"
+
+#: src/components/settings-panel.tsx
+msgid "Default chat mode"
+msgstr "默认聊天模式"
+
+#: src/components/skills-panel.tsx
+msgid "Delete"
+msgstr "删除"
+
+#: src/components/skills-panel.tsx
+msgid "Delete file?"
+msgstr "删除文件？"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill"
+msgstr "删除技能"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill?"
+msgstr "删除技能？"
+
+#: src/components/skills-panel.tsx
+msgid "Deleted \"%1\""
+msgstr "已删除“%1”"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Denial recorded"
+msgstr "已记录拒绝"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Describe how to update the active notebook..."
+msgstr "描述如何更新当前笔记本..."
+
+#: src/components/skills-panel.tsx
+msgid "Description"
+msgstr "说明"
+
+#: src/components/skills-panel.tsx
+msgid "Description is required."
+msgstr "说明为必填项。"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Details from %1"
+msgstr "来自 %1 的详细信息"
+
+#: src/components/perf-panel.tsx
+msgid "Diagnostics"
+msgstr "诊断"
+
+#: src/chat-sidebar.tsx
+msgid "Directories cannot be attached as chat context."
+msgstr "目录无法作为聊天上下文附加。"
+
+#: src/components/plugins-panel.tsx
+msgid "Disable"
+msgstr "禁用"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disable for workspace"
+msgstr "在工作区中禁用"
+
+#: src/components/perf-panel.tsx
+msgid "Disabled by your administrator (%1)"
+msgstr "已被管理员禁用（%1）"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabled for workspace"
+msgstr "已在工作区中禁用"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabling…"
+msgstr "正在禁用…"
+
+#: src/components/skills-panel.tsx
+msgid "Discard"
+msgstr "放弃"
+
+#: src/components/skills-panel.tsx
+msgid "Discard unsaved changes?"
+msgstr "放弃未保存的更改？"
+
+#: src/components/skills-panel.tsx
+msgid "Dismiss"
+msgstr "忽略"
+
+#: notebook_intelligence/claude.py
+msgid "Do you want to confirm the plan above?"
+msgstr "是否确认上述计划？"
+
+#: src/chat-sidebar.tsx
+msgid "Don't use as context"
+msgstr "不用作上下文"
+
+#: src/chat-sidebar.tsx
+msgid "Done"
+msgstr "完成"
+
+#: src/chat-sidebar.tsx
+msgid "Drop files to attach as context"
+msgstr "拖放文件以附加为上下文"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: @-mention"
+msgstr "拖放模式：@ 提及"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: raw path"
+msgstr "拖放模式：原始路径"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate"
+msgstr "创建副本"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate skill"
+msgstr "创建技能副本"
+
+#: src/components/perf-panel.tsx
+msgid "Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local."
+msgstr "SDK 归于模型 API 的时长。与“活动”比较：两者接近说明时间花在网关或模型上，相差较大说明时间花在本地。"
+
+#: src/components/skills-panel.tsx
+msgid "Edit"
+msgstr "编辑"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit Python files using the JupyterLab file editor"
+msgstr "使用 JupyterLab 文件编辑器编辑 Python 文件"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit notebook using the JupyterLab notebook editor"
+msgstr "使用 JupyterLab 笔记本编辑器编辑笔记本"
+
+#: src/components/skills-panel.tsx
+msgid "Edit skill"
+msgstr "编辑技能"
+
+#: src/chat-sidebar.tsx
+msgid "Empty files do not provide useful context."
+msgstr "空文件无法提供有用的上下文。"
+
+#: src/components/plugins-panel.tsx
+msgid "Enable"
+msgstr "启用"
+
+#: src/components/settings-panel.tsx
+msgid "Enable ACP mode"
+msgstr "启用 ACP 模式"
+
+#: src/components/settings-panel.tsx
+msgid "Enable Claude mode"
+msgstr "启用 Claude 模式"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enable for workspace"
+msgstr "在工作区中启用"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enabling…"
+msgstr "正在启用…"
+
+#: notebook_intelligence/claude.py
+msgid "Enter Plan Mode"
+msgstr "进入计划模式"
+
+#: src/components/plugins-panel.tsx
+msgid "Enter a plugin name or the plugin@marketplace shorthand."
+msgstr "请输入插件名称或 plugin@marketplace 简写。"
+
+#: notebook_intelligence/claude.py
+msgid "Entered plan mode"
+msgstr "已进入计划模式"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Environment (KEY=value, one per line)"
+msgstr "环境变量（KEY=value，每行一个）"
+
+#: notebook_intelligence/claude.py
+msgid "Error communicating with Claude agent: %1"
+msgstr "与 Claude 智能体通信时出错：%1"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Execute shell commands using embedded terminal in Agent UI or JupyterLab terminal"
+msgstr "使用智能体界面中的嵌入式终端或 JupyterLab 终端执行 shell 命令"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgid "Execution kernel"
+msgstr "执行内核"
+
+#: src/components/settings-panel.tsx
+msgid "Execution mode"
+msgstr "执行模式"
+
+#: notebook_intelligence/claude.py
+msgid "Exit plan mode"
+msgstr "退出计划模式"
+
+#: src/components/perf-panel.tsx
+msgid "Expand"
+msgstr "展开"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Expected at least one server entry."
+msgstr "至少需要一个服务器条目。"
+
+#: src/components/settings-panel.tsx
+msgid "Experimental. Routes chat through an external coding agent over the %1. Requires a preinstalled %2 adapter (%3). See the %4. ACP mode and Claude mode are mutually exclusive: enabling one turns the other off."
+msgstr "实验性功能。通过 %1 将聊天路由到外部编码智能体。需要预先安装 %2 适配器（%3）。请参阅%4。ACP 模式与 Claude 模式互斥：启用其中一个会关闭另一个。"
+
+#: src/components/settings-panel.tsx
+msgid "Explain cell errors"
+msgstr "解释单元格错误"
+
+#: src/index.ts
+msgid "Explain code"
+msgstr "解释代码"
+
+#: src/index.ts
+msgid "Explain output"
+msgstr "解释输出"
+
+#: src/cell-output-toolbar.ts
+msgid "Explain this cell's output"
+msgstr "解释此单元格的输出"
+
+#: src/chatbook-toolbar.ts
+msgid "Export"
+msgstr "导出"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as %1 notebook"
+msgstr "导出为 %1 笔记本"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as a notebook for the Chatbook backend kernel"
+msgstr "导出为适用于 Chatbook 后端内核的笔记本"
+
+#: src/index.ts
+msgid "Export as code notebook"
+msgstr "导出为代码笔记本"
+
+#: src/chatbook-toolbar.ts
+msgid "Export failed: %1"
+msgstr "导出失败：%1"
+
+#: src/chatbook-toolbar.ts
+msgid "Exported %1"
+msgstr "已导出 %1"
+
+#: src/chat-sidebar.tsx
+msgid "Extension tools"
+msgstr "扩展工具"
+
+#: src/components/settings-panel.tsx
+msgid "External changes"
+msgstr "外部更改"
+
+#: src/index.ts
+msgid "Failed to access the notebook: %1"
+msgstr "无法访问笔记本：%1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach '%1'."
+msgstr "无法附加“%1”。"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach workspace file '%1'."
+msgstr "无法附加工作区文件“%1”。"
+
+#: src/components/claude-session-picker.tsx
+msgid "Failed to copy resume command"
+msgstr "无法复制恢复命令"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to delete skill: %1"
+msgstr "无法删除技能：%1"
+
+#: src/index.ts
+msgid "Failed to find active file"
+msgstr "找不到当前文件"
+
+#: src/index.ts
+msgid "Failed to find active notebook"
+msgstr "找不到当前笔记本"
+
+#: src/index.ts
+msgid "Failed to find notebook: %1"
+msgstr "找不到笔记本：%1"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get completions from GitHub Copilot: [%1]: %2"
+msgstr "无法从 GitHub Copilot 获取补全：[%1]：%2"
+
+#: notebook_intelligence/extension.py
+msgid "Failed to get device verification info from GitHub Copilot"
+msgstr "无法从 GitHub Copilot 获取设备验证信息"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get responses from GitHub Copilot: [%1]: %2"
+msgstr "无法从 GitHub Copilot 获取响应：[%1]：%2"
+
+#: src/index.ts
+msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
+msgstr "无法在光标处插入。请打开一个笔记本或文件以插入代码。"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to load plugins: %1"
+msgstr "无法加载插件：%1"
+
+#: src/components/perf-panel.tsx
+msgid "Failed to load report: %1"
+msgstr "无法加载报告：%1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to load workspace files."
+msgstr "无法加载工作区文件。"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to read skill: %1"
+msgstr "无法读取技能：%1"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Failed to remove: %1"
+msgstr "无法移除：%1"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to restore skill: %1"
+msgstr "无法恢复技能：%1"
+
+#: src/index.ts
+msgid "Failed to save MCP config: %1"
+msgstr "无法保存 MCP 配置：%1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to uninstall: %1"
+msgstr "无法卸载：%1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update marketplace: %1"
+msgstr "无法更新市场：%1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Failed to update workspace state: %1"
+msgstr "无法更新工作区状态：%1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update: %1"
+msgstr "无法更新：%1"
+
+#: src/components/skills-panel.tsx
+msgid "Fetching…"
+msgstr "正在获取…"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "File '%1' created successfully"
+msgstr "已成功创建文件“%1”"
+
+#: notebook_intelligence/extension.py
+msgid "File exceeds %1 MB upload limit"
+msgstr "文件超出 %1 MB 的上传限制"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system read operations within Jupyter root directory"
+msgstr "Jupyter 根目录内的文件系统读取操作"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system write operations within Jupyter root directory"
+msgstr "Jupyter 根目录内的文件系统写入操作"
+
+#: notebook_intelligence/acp_agent.py src/components/skills-panel.tsx
+msgid "Files"
+msgstr "文件"
+
+#: src/components/launcher-picker.tsx
+msgid "Filter sessions..."
+msgstr "筛选会话..."
+
+#: src/components/perf-panel.tsx
+msgid "First content chunk to last. Excludes connect."
+msgstr "从第一个内容块到最后一个内容块。不包括连接时间。"
+
+#: src/index.ts
+msgid "Fix code"
+msgstr "修复代码"
+
+#: src/index.ts
+msgid "Focus Notebook Intelligence chat input"
+msgstr "聚焦 Notebook Intelligence 聊天输入框"
+
+#: src/components/settings-panel.tsx
+msgid "Full access (run without asking)"
+msgstr "完全访问（无需询问即运行）"
+
+#: src/components/perf-panel.tsx
+msgid "Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket."
+msgstr "完整：文件基本名称以及模型、工具和服务器名称均按原样记录。便于在本地阅读；粘贴到工单之前请先检查。"
+
+#: src/components/perf-panel.tsx
+msgid "Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text."
+msgstr "流数据块之间超过停顿阈值的间隔。每个间隔都标注了它是在工具使用之后还是文本之后。"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate"
+msgstr "生成"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate (Enter)"
+msgstr "生成（Enter）"
+
+#: src/components/settings-panel.tsx
+msgid "Generate and execute immediately, same as a normal notebook cell. Inspect generated code afterward if you need to."
+msgstr "生成后立即执行，与普通笔记本单元格相同。如有需要，可在之后检查生成的代码。"
+
+#: src/index.ts
+msgid "Generate code"
+msgstr "生成代码"
+
+#: src/index.ts
+msgid "Generated code"
+msgstr "已生成的代码"
+
+#: src/chat-sidebar.tsx
+msgid "Generating"
+msgstr "正在生成"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generating notebook…"
+msgstr "正在生成笔记本…"
+
+#: src/chat-sidebar.tsx
+msgid "Generating response."
+msgstr "正在生成回复。"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generation failed: %1"
+msgstr "生成失败：%1"
+
+#: src/index.ts
+msgid "GitHub Copilot Status"
+msgstr "GitHub Copilot 状态"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot chat terms"
+msgstr "GitHub Copilot 聊天条款"
+
+#: src/components/settings-panel.tsx
+msgid "GitHub Copilot login"
+msgstr "GitHub Copilot 登录"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Logged in"
+msgstr "GitHub Copilot：已登录"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Not logged in"
+msgstr "GitHub Copilot：未登录"
+
+#: notebook_intelligence/extension.py
+msgid "GitHub Skill import is disabled by configuration"
+msgstr "配置已禁用从 GitHub 导入技能"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Terms for Additional Products and Features"
+msgstr "GitHub 附加产品和功能条款"
+
+#: src/components/skills-panel.tsx
+msgid "GitHub repo URL"
+msgstr "GitHub 仓库 URL"
+
+#: src/components/plugins-panel.tsx
+msgid "GitHub-sourced marketplaces are disabled by your administrator. Use a non-GitHub URL or a local filesystem path."
+msgstr "管理员已禁用来自 GitHub 的市场。请使用非 GitHub 的 URL 或本地文件系统路径。"
+
+#: src/chat-sidebar.tsx
+msgid "Good response"
+msgstr "回答很好"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Headers (Name: value, one per line)"
+msgstr "请求头（Name: value，每行一个）"
+
+#: src/components/tool-call-card.tsx
+msgid "Hide diff"
+msgstr "隐藏差异"
+
+#: src/components/perf-panel.tsx
+msgid "Hide raw output"
+msgstr "隐藏原始输出"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)"
+msgstr "在当前 Jupyter 工作区中对 Claude 隐藏此服务器（不影响其他工作区）"
+
+#: src/components/perf-panel.tsx
+msgid "Hide timeline for the turn at %1"
+msgstr "隐藏 %1 那一轮的时间线"
+
+#: src/components/perf-panel.tsx
+msgid "Host load average"
+msgstr "主机平均负载"
+
+#: notebook_intelligence/readiness.py
+msgid "If turns fail with a 401, sign in again from NBI Settings under GitHub Copilot."
+msgstr "如果对话轮次因 401 失败，请在 NBI 设置的 GitHub Copilot 下重新登录。"
+
+#: src/components/skills-panel.tsx
+msgid "Import"
+msgstr "导入"
+
+#: src/components/skills-panel.tsx
+msgid "Import from GitHub"
+msgstr "从 GitHub 导入"
+
+#: src/components/skills-panel.tsx
+msgid "Import skill from GitHub"
+msgstr "从 GitHub 导入技能"
+
+#: src/components/perf-panel.tsx
+msgid "Include network check"
+msgstr "包括网络检查"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from chat model"
+msgstr "继承聊天模型"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from general settings"
+msgstr "继承常规设置"
+
+#: src/index.ts
+msgid "Inline chat failed: %1"
+msgstr "内联聊天失败：%1"
+
+#: src/components/settings-panel.tsx
+msgid "Inline chat model"
+msgstr "内联聊天模型"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Input"
+msgstr "输入"
+
+#: src/chat-sidebar.tsx
+msgid "Input Parameters"
+msgstr "输入参数"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Input mode"
+msgstr "输入方式"
+
+#: src/components/perf-panel.tsx
+msgid "Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them."
+msgstr "输入 token 数，包括缓存读取和缓存写入，汇总方式与聊天用量页脚相同。"
+
+#: src/markdown-renderer.tsx
+msgid "Insert at cursor"
+msgstr "在光标处插入"
+
+#: src/markdown-renderer.tsx
+msgid "Insert code at cursor"
+msgstr "在光标处插入代码"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Install"
+msgstr "安装"
+
+#: src/components/plugins-panel.tsx
+msgid "Install from"
+msgstr "安装来源"
+
+#: src/components/skills-panel.tsx
+msgid "Install into"
+msgstr "安装到"
+
+#: src/components/plugins-panel.tsx
+msgid "Install plugin"
+msgstr "安装插件"
+
+#: notebook_intelligence/readiness.py
+msgid "Install the Claude Code CLI and make sure it is on the PATH of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH to its absolute path and restart."
+msgstr "请安装 Claude Code CLI，并确保它位于运行 JupyterLab 的进程的 PATH 中；或者将 NBI_CLAUDE_CLI_PATH 设置为其绝对路径并重新启动。"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Installing…"
+msgstr "正在安装…"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Invalid JSON: %1"
+msgstr "无效的 JSON：%1"
+
+#: src/components/skills-panel.tsx
+msgid "Invalid name. %1"
+msgstr "名称无效。%1"
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON is empty."
+msgstr "JSON 为空。"
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON must describe a server entry."
+msgstr "JSON 必须描述一个服务器条目。"
+
+#: src/components/settings-panel.tsx
+msgid "Jupyter UI tools"
+msgstr "Jupyter 界面工具"
+
+#: src/components/perf-panel.tsx
+msgid "Jupyter root directory"
+msgstr "Jupyter 根目录"
+
+#: src/components/skills-panel.tsx
+msgid "Keep editing"
+msgstr "继续编辑"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Lasting rule"
+msgstr "持久规则"
+
+#: src/components/skills-panel.tsx
+msgid "Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server."
+msgstr "链接到仓库根目录、分支或包含 %1 的子目录。如果在 Jupyter 服务器上设置了 %2 或配置了 %3，也可使用私有仓库。"
+
+#: notebook_intelligence/readiness.py
+msgid "Listing models failed (%1)."
+msgstr "列出模型失败（%1）。"
+
+#: src/components/readiness-card.tsx
+msgid "Live endpoint check"
+msgstr "实时端点检查"
+
+#: src/components/plugins-panel.tsx
+msgid "Loading marketplace plugins..."
+msgstr "正在加载市场插件..."
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Loading sessions…"
+msgstr "正在加载会话…"
+
+#: src/components/skills-panel.tsx
+msgid "Loading skill…"
+msgstr "正在加载技能…"
+
+#: src/chat-sidebar.tsx
+msgid "Loading workspace files..."
+msgstr "正在加载工作区文件..."
+
+#: src/components/settings-panel.tsx
+msgid "Loading..."
+msgstr "正在加载..."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Loading…"
+msgstr "正在加载…"
+
+#: src/components/setting-lock.ts
+msgid "Locked by your administrator"
+msgstr "已被管理员锁定"
+
+#: src/components/perf-panel.tsx
+msgid "Log to file"
+msgstr "记录到文件"
+
+#: src/chat-sidebar.tsx
+msgid "Logged in"
+msgstr "已登录"
+
+#: src/chat-sidebar.tsx
+msgid "Logging in..."
+msgstr "正在登录..."
+
+#: src/chat-sidebar.tsx
+msgid "Login status: %1"
+msgstr "登录状态：%1"
+
+#: src/chat-sidebar.tsx
+msgid "Login to GitHub Copilot"
+msgstr "登录 GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "Login using your GitHub account"
+msgstr "使用您的 GitHub 账户登录"
+
+#: src/chat-sidebar.tsx
+msgid "Logout"
+msgstr "退出登录"
+
+#: src/chat-sidebar.tsx
+msgid "MCP Server Tools"
+msgstr "MCP 服务器工具"
+
+#: src/components/settings-panel.tsx
+msgid "MCP Servers"
+msgstr "MCP 服务器"
+
+#: notebook_intelligence/extension.py
+msgid "MCP server '%1' not found in %2 scope"
+msgstr "在 %2 范围内找不到 MCP 服务器“%1”"
+
+#: src/components/skills-panel.tsx
+msgid "Managed by org manifest (%1)"
+msgstr "由组织清单管理（%1）"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace"
+msgstr "市场"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace picker"
+msgstr "市场选择器"
+
+#: src/components/perf-panel.tsx
+msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
+msgstr "测量的是这台机器而不是某一轮：配置目录和 %1 目录的文件系统延迟与吞吐量、解释器和 CLI 的冷启动开销，以及主机资源争用情况。它会在所测量的目录中写入并删除小型临时文件。"
+
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
+msgid "Model"
+msgstr "模型"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "模型（需支持流式传输）"
+
+#: src/components/perf-panel.tsx
+msgid "Model name, hashed when attribute detail is set to redacted."
+msgstr "模型名称；当属性详情设置为“已脱敏”时会进行哈希处理。"
+
+#: src/components/readiness-card.tsx
+msgid "Model provider"
+msgstr "模型提供商"
+
+#: src/components/settings-panel.tsx
+msgid "Models"
+msgstr "模型"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Multiple servers found; paste one entry at a time."
+msgstr "发现多个服务器；请一次粘贴一个条目。"
+
+#: src/components/skills-panel.tsx
+msgid "Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars."
+msgstr "只能包含小写字母、数字或连字符（以字母或数字开头），最多 64 个字符。"
+
+#: src/chatbook-toolbar.ts src/chatbook.ts src/index.ts
+msgid "NBI Settings"
+msgstr "NBI 设置"
+
+#: src/components/perf-panel.tsx
+msgid "NBI config directory"
+msgstr "NBI 配置目录"
+
+#: src/components/claude-mcp-panel.tsx src/components/skills-panel.tsx
+msgid "Name"
+msgstr "名称"
+
+#: src/components/skills-panel.tsx
+msgid "Name (optional override)"
+msgstr "名称（可选，用于覆盖）"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to %1 code"
+msgstr "自然语言单元格：切换为 %1 代码"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to code"
+msgstr "自然语言单元格：切换为代码"
+
+#: src/components/settings-panel.tsx
+msgid "Natural-language execution"
+msgstr "自然语言执行"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Network access"
+msgstr "网络访问"
+
+#: src/components/skills-panel.tsx
+msgid "New Skill"
+msgstr "新建技能"
+
+#: src/chat-sidebar.tsx
+msgid "New chat session started."
+msgstr "已开始新的聊天会话。"
+
+#: src/markdown-renderer.tsx
+msgid "New file"
+msgstr "新建文件"
+
+#: src/components/skills-panel.tsx
+msgid "New name"
+msgstr "新名称"
+
+#: src/markdown-renderer.tsx
+msgid "New notebook"
+msgstr "新建笔记本"
+
+#: src/components/skills-panel.tsx
+msgid "New skill"
+msgstr "新建技能"
+
+#: src/components/skills-panel.tsx
+msgid "Next"
+msgstr "下一步"
+
+#: notebook_intelligence/readiness.py
+msgid "No API key is configured (%1 is unset)."
+msgstr "未配置 API 密钥（未设置 %1）。"
+
+#: notebook_intelligence/readiness.py
+msgid "No Anthropic API key or auth token is visible to NBI."
+msgstr "NBI 无法获取任何 Anthropic API 密钥或身份验证令牌。"
+
+#: src/components/settings-panel.tsx
+msgid "No MCP servers found. Add MCP servers in the configuration file."
+msgstr "未找到 MCP 服务器。请在配置文件中添加 MCP 服务器。"
+
+#: src/components/settings-panel.tsx
+msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
+msgstr "未找到 Ollama 模型！请确保 %1 正在运行，并且模型已下载到您的计算机。准备就绪后请%2。"
+
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligence 中未配置聊天模型"
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model is resolved, so there is nothing to call."
+msgstr "未解析出聊天模型，因此无可调用的对象。"
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model provider is selected."
+msgstr "未选择聊天模型提供商。"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "No chat participant is available."
+msgstr "没有可用的聊天参与者。"
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "未添加任何文件：%1 个文件已附加，且已达到 %2 个文件的上限。"
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached."
+msgid_plural "No files added: %1 files are already attached."
+msgstr[0] "未添加任何文件：%1 个文件已附加。"
+
+#: src/chat-sidebar.tsx
+msgid "No files added: the limit of %1 file is reached."
+msgid_plural "No files added: the limit of %1 files is reached."
+msgstr[0] "未添加任何文件：已达到 %1 个文件的上限。"
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches kernel \"%1\"."
+msgstr "没有已安装的 Jupyter 内核与内核“%1”匹配。"
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches language \"%1\"."
+msgstr "没有已安装的 Jupyter 内核与语言“%1”匹配。"
+
+#: notebook_intelligence/extension.py
+msgid "No managed-skills manifest configured (set %1, comma-separated for multiple manifests)."
+msgstr "未配置托管技能清单（请设置 %1，多个清单用逗号分隔）。"
+
+#: src/components/plugins-panel.tsx
+msgid "No marketplaces configured. Add one to discover plugins."
+msgstr "未配置市场。请添加一个市场以发现插件。"
+
+#: src/chat-sidebar.tsx
+msgid "No matching files found."
+msgstr "未找到匹配的文件。"
+
+#: notebook_intelligence/readiness.py
+msgid "No model name is set for this provider, so requests carry none."
+msgstr "未为此提供商设置模型名称，因此请求中不带模型。"
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins in this scope."
+msgstr "此范围内没有插件。"
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins were found in this marketplace."
+msgstr "在此市场中未找到插件。"
+
+#: src/components/claude-session-picker.tsx
+msgid "No previous Claude sessions found for this working directory."
+msgstr "未找到此工作目录之前的 Claude 会话。"
+
+#: src/chat-sidebar.tsx
+msgid "No previous sessions found for this working directory."
+msgstr "未找到此工作目录之前的会话。"
+
+#: src/components/launcher-picker.tsx
+msgid "No previous sessions found."
+msgstr "未找到之前的会话。"
+
+#: src/components/skills-panel.tsx
+msgid "No project skills. They live in %1."
+msgstr "没有项目技能。项目技能位于 %1。"
+
+#: notebook_intelligence/readiness.py
+msgid "No response within %1s."
+msgstr "%1 秒内无响应。"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "No servers in this scope."
+msgstr "此范围内没有服务器。"
+
+#: src/components/launcher-picker.tsx
+msgid "No sessions match your filter."
+msgstr "没有与筛选条件匹配的会话。"
+
+#: src/components/perf-panel.tsx
+msgid "No spans recorded for this turn."
+msgstr "此轮未记录任何跨度。"
+
+#: src/components/skills-panel.tsx
+msgid "No user skills. They live in %1."
+msgstr "没有用户技能。用户技能位于 %1。"
+
+#: src/chat-sidebar.tsx
+msgid "No workspace files available."
+msgstr "没有可用的工作区文件。"
+
+#: notebook_intelligence/readiness.py
+msgid "Not applicable: the agent owns the model call in %1 mode."
+msgstr "不适用：在 %1 模式下，模型调用由智能体负责。"
+
+#: notebook_intelligence/readiness.py
+msgid "Not determined: the request failed (%1) for a reason unrelated to tools."
+msgstr "无法确定：请求因与工具无关的原因失败（%1）。"
+
+#: src/chat-sidebar.tsx
+msgid "Not logged in"
+msgstr "未登录"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %1: %2"
+msgstr "未就绪。%1：%2"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %2: %3 (%1 more issue.)"
+msgid_plural "Not ready. %2: %3 (%1 more issues.)"
+msgstr[0] "未就绪。%2：%3（另有 %1 个问题。）"
+
+#: notebook_intelligence/readiness.py
+msgid "Not signed in. The model list shown in Settings is a built-in fallback, not the models this account can use."
+msgstr "未登录。设置中显示的模型列表是内置的后备列表，并非此账户可用的模型。"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Notebook '%1' created and opened successfully"
+msgstr "已成功创建并打开笔记本“%1”"
+
+#: src/index.ts
+msgid "Notebook Intelligence Settings"
+msgstr "Notebook Intelligence 设置"
+
+#: src/cell-output-toolbar.ts
+msgid "Notebook Intelligence cell actions"
+msgstr "Notebook Intelligence 单元格操作"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence 未连接到服务器，因此请求未发送。请稍后重试。"
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence 未产生任何说明"
+
+#: src/chat-sidebar.tsx
+msgid "Notebook file"
+msgstr "笔记本文件"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Notebook generation complete"
+msgstr "笔记本生成完成"
+
+#: src/chat-sidebar.tsx
+msgid "Notice"
+msgstr "提示"
+
+#: src/components/perf-panel.tsx
+msgid "Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it."
+msgstr "从本轮开始到第一个包含内容的数据块的时间差。作为事件记录，因此本地进度指示器不计入其中。"
+
+#: notebook_intelligence/api.py
+msgid "Oops! Failed to find requested tool. Please try again with a different prompt."
+msgstr "糟糕！找不到请求的工具。请换个提示词重试。"
+
+#: notebook_intelligence/api.py
+msgid "Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."
+msgstr "糟糕！很抱歉，使用工具生成回复时出现问题。请重试。您可以查看服务器日志了解更多详细信息。"
+
+#: notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py
+msgid "Oops! There was a problem handling chat request. Please try again with a different prompt."
+msgstr "糟糕！处理聊天请求时出现问题。请换个提示词重试。"
+
+#: notebook_intelligence/extension.py
+msgid "Oops! There was a problem handling this request. Please try again. Check the server logs for details."
+msgstr "糟糕！处理此请求时出现问题。请重试。请查看服务器日志了解详细信息。"
+
+#: src/chatbook-toolbar.ts
+msgid "Open Chatbook settings"
+msgstr "打开 Chatbook 设置"
+
+#: src/index.ts
+msgid "Open MCP Config Editor"
+msgstr "打开 MCP 配置编辑器"
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and pick a provider and model under General, or enable Claude mode."
+msgstr "请打开 NBI 设置，在“常规”下选择提供商和模型，或启用 Claude 模式。"
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and set a model for this provider under General. The endpoint rejects a request with no model, so every turn fails until it is set."
+msgstr "请打开 NBI 设置，在“常规”下为此提供商设置模型。端点会拒绝不含模型的请求，因此在设置之前每一轮都会失败。"
+
+#: src/chat-sidebar.tsx
+msgid "Open Notebook Intelligence settings"
+msgstr "打开 Notebook Intelligence 设置"
+
+#: src/index.ts
+msgid "Open a notebook to insert the code as new cell"
+msgstr "打开一个笔记本，以将代码插入为新单元格"
+
+#: src/chat-sidebar.tsx
+msgid "Open notebook %1"
+msgstr "打开笔记本 %1"
+
+#: src/chat-sidebar.tsx
+msgid "Open slash commands"
+msgstr "打开斜杠命令"
+
+#: src/chatbook.ts
+msgid "Open the Chatbook tab of Notebook Intelligence Settings"
+msgstr "打开 Notebook Intelligence 设置的 Chatbook 选项卡"
+
+#: src/index.ts
+msgid "Open the NBI sidebar and move focus to the prompt textarea"
+msgstr "打开 NBI 侧边栏并将焦点移至提示词输入框"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Opened the settings dialog"
+msgstr "已打开设置对话框"
+
+#: src/components/settings-panel.tsx
+msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
+msgstr "可选的额外检查。静态扫描的命中结果始终优先；模型只能提高风险等级。分类器出错时会请求确认，而不会自动运行。"
+
+#: src/components/perf-panel.tsx
+msgid "Output tokens."
+msgstr "输出 token 数。"
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing project skill \"%1\""
+msgstr "覆盖现有项目技能“%1”"
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing user skill \"%1\""
+msgstr "覆盖现有用户技能“%1”"
+
+#: notebook_intelligence/claude.py
+msgid "Parameters"
+msgstr "参数"
+
+#: src/components/skills-panel.tsx
+msgid "Path: %1"
+msgstr "路径：%1"
+
+#: src/components/perf-panel.tsx
+msgid "Performance diagnostics are disabled. Enable them above to start collecting turn data."
+msgstr "性能诊断已禁用。请在上方启用，以开始收集轮次数据。"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Permission granted"
+msgstr "已授予权限"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: %1"
+msgstr "权限模式：%1"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: Bypass Permissions is active"
+msgstr "权限模式：“绕过权限”已启用"
+
+#: notebook_intelligence/readiness.py
+msgid "Pick a model from the dropdown in NBI Settings. A pinned NBI_CHAT_MODEL_ID that the endpoint no longer serves will fail on every turn."
+msgstr "请在 NBI 设置的下拉列表中选择一个模型。如果固定的 NBI_CHAT_MODEL_ID 已不再由端点提供，每一轮都会失败。"
+
+#: src/components/plugins-panel.tsx
+msgid "Plugin"
+msgstr "插件"
+
+#: src/components/plugins-panel.tsx
+msgid "Plugins"
+msgstr "插件"
+
+#: notebook_intelligence/extension.py
+msgid "Plugins management is disabled by your administrator"
+msgstr "管理员已禁用插件管理"
+
+#: notebook_intelligence/readiness.py
+msgid "Preinstall the pinned adapter package %1 in a trusted location outside the workspace and put its absolute executable directory on PATH, or set NBI_ACP_AGENT_COMMAND to the absolute path of an installed adapter executable. Install its required interpreter on the adapter PATH; default discovery excludes workspace directories. Do not use a package runner such as npx. Relative commands are not supported."
+msgstr "请在工作区之外的受信任位置预先安装固定版本的适配器包 %1，并将其可执行文件所在目录的绝对路径加入 PATH；或者将 NBI_ACP_AGENT_COMMAND 设置为已安装适配器可执行文件的绝对路径。请将其所需的解释器安装在适配器的 PATH 中；默认查找会排除工作区目录。请勿使用 npx 之类的包运行器。不支持相对路径命令。"
+
+#: notebook_intelligence/readiness.py
+msgid "Present."
+msgstr "已存在。"
+
+#: src/chat-sidebar.tsx
+msgid "Privacy Statement"
+msgstr "隐私声明"
+
+#: src/chat-sidebar.tsx
+msgid "Privacy and terms"
+msgstr "隐私与条款"
+
+#: src/components/plugins-panel.tsx
+msgid "Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server."
+msgstr "如果在 Jupyter 服务器上设置了 %1 或配置了 %2，也可使用私有 GitHub 来源。"
+
+#: src/components/perf-panel.tsx
+msgid "Probe failed: %1"
+msgstr "探测失败：%1"
+
+#: src/components/settings-panel.tsx
+msgid "Project (Jupyter root directory)"
+msgstr "项目（Jupyter 根目录）"
+
+#: src/components/skills-panel.tsx
+msgid "Project (this project only)"
+msgstr "项目（仅限此项目）"
+
+#: src/components/mcp-util.ts
+msgid "Prompt refresh failed. Reload MCP servers to retry."
+msgstr "提示词刷新失败。请重新加载 MCP 服务器以重试。"
+
+#: src/components/settings-panel.tsx
+msgid "Prompts"
+msgstr "提示词"
+
+#: src/components/settings-panel.tsx
+msgid "Provider"
+msgstr "提供商"
+
+#: notebook_intelligence/readiness.py
+msgid "Provider '%1' is selected but not registered."
+msgstr "已选择提供商“%1”，但该提供商未注册。"
+
+#: src/components/perf-panel.tsx
+msgid "Python interpreter"
+msgstr "Python 解释器"
+
+#: src/components/skills-panel.tsx
+msgid "Quick-add pills cover common tools. Type patterns like %1 or %2 for finer-grained permissions."
+msgstr "快捷添加按钮涵盖常用工具。输入 %1 或 %2 之类的模式可设置更细粒度的权限。"
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as bad"
+msgstr "将回答评为不佳"
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as good"
+msgstr "将回答评为很好"
+
+#: src/components/readiness-card.tsx
+msgid "Re-check"
+msgstr "重新检查"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-enable this server for the current Jupyter workspace"
+msgstr "在当前 Jupyter 工作区中重新启用此服务器"
+
+#: src/components/skills-panel.tsx
+msgid "Re-fetch every skill set to track upstream from GitHub"
+msgstr "重新从 GitHub 获取所有设置为跟踪上游的技能"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-read Claude's MCP config from disk"
+msgstr "从磁盘重新读取 Claude 的 MCP 配置"
+
+#: notebook_intelligence/readiness.py
+msgid "Re-run the endpoint test once the endpoint is answering again. A transient failure cannot tell us whether tool calling works."
+msgstr "请在端点恢复响应后重新运行端点测试。暂时性故障无法说明工具调用是否可用。"
+
+#: src/components/readiness-card.tsx
+msgid "Readiness check failed: %1"
+msgstr "就绪检查失败：%1"
+
+#: notebook_intelligence/readiness.py
+msgid "Reading the configuration failed (%1)."
+msgstr "读取配置失败（%1）。"
+
+#: notebook_intelligence/readiness.py
+msgid "Ready, with %1 warning. %2: %3"
+msgid_plural "Ready, with %1 warnings. %2: %3"
+msgstr[0] "已就绪，有 %1 个警告。%2：%3"
+
+#: notebook_intelligence/readiness.py
+msgid "Ready. Nothing needs configuring."
+msgstr "已就绪。无需进行任何配置。"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Reason"
+msgstr "原因"
+
+#: src/components/perf-panel.tsx
+msgid "Recent turns"
+msgstr "最近的轮次"
+
+#: src/components/skills-panel.tsx
+msgid "Reconcile managed skills against the org manifest"
+msgstr "根据组织清单协调托管技能"
+
+#: src/components/perf-panel.tsx
+msgid "Recording is on, but no turns have been captured yet. Run a chat turn, then press Refresh."
+msgstr "记录已开启，但尚未捕获任何轮次。请运行一轮聊天，然后点击“刷新”。"
+
+#: src/components/perf-panel.tsx
+msgid "Records where each chat turn spends its time, so a slow deployment can be told apart from a slow model. Off by default, and when off it costs one boolean check per instrumentation site. Prompts, responses, file contents, and hostnames are never recorded."
+msgstr "记录每一轮聊天的时间花在哪里，以便区分是部署环境慢还是模型慢。默认关闭；关闭时每个检测点只需一次布尔检查的开销。绝不会记录提示词、回复、文件内容和主机名。"
+
+#: src/components/perf-panel.tsx
+msgid "Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine."
+msgstr "已脱敏：文件基本名称以及模型、工具和服务器名称都会进行哈希处理。时间和计数不受影响。如果报告要发送到您的计算机之外，请保持此设置。"
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
+msgid "Refresh"
+msgstr "刷新"
+
+#: src/index.ts
+msgid "Refresh description"
+msgstr "刷新说明"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh file list"
+msgstr "刷新文件列表"
+
+#: src/components/settings-panel.tsx
+msgid "Refresh open files when changed on disk"
+msgstr "打开的文件在磁盘上更改后刷新"
+
+#: src/components/plugins-panel.tsx
+msgid "Refresh this marketplace from its source"
+msgstr "从来源刷新此市场"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh workspace file list"
+msgstr "刷新工作区文件列表"
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx
+msgid "Refreshing…"
+msgstr "正在刷新…"
+
+#: src/index.ts
+msgid "Regenerate the description of this code cell"
+msgstr "重新生成此代码单元格的说明"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Rejecting records a lasting denial, not only for this request."
+msgstr "拒绝将记录一项持久的拒绝规则，而不仅限于此次请求。"
+
+#: src/components/settings-panel.tsx
+msgid "Reload"
+msgstr "重新加载"
+
+#: src/components/settings-panel.tsx
+msgid "Remember conversation history"
+msgstr "记住对话历史"
+
+#: src/components/settings-panel.tsx
+msgid "Remember my GitHub Copilot access token"
+msgstr "记住我的 GitHub Copilot 访问令牌"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Remove"
+msgstr "移除"
+
+#: src/components/skills-panel.tsx
+msgid "Remove %1"
+msgstr "移除 %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Remove MCP server?"
+msgstr "移除 MCP 服务器？"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file"
+msgstr "移除附加的文件"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file %1"
+msgstr "移除附加的文件 %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Remove marketplace?"
+msgstr "移除市场？"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Removing…"
+msgstr "正在移除…"
+
+#: src/components/skills-panel.tsx
+msgid "Rename"
+msgstr "重命名"
+
+#: src/components/skills-panel.tsx
+msgid "Rename skill"
+msgstr "重命名技能"
+
+#: src/index.ts
+msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr "重新播放首次运行导览，突出显示聊天侧边栏的各项功能"
+
+#: src/components/settings-panel.tsx
+msgid "Reply in my JupyterLab language"
+msgstr "使用我的 JupyterLab 语言回复"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Request"
+msgstr "请求"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Requested permissions"
+msgstr "请求的权限"
+
+#: src/components/skills-panel.tsx
+msgid "Required. Claude uses this to decide when to apply the skill."
+msgstr "必填。Claude 根据它决定何时应用该技能。"
+
+#: src/chat-sidebar.tsx
+msgid "Response complete."
+msgstr "回复已完成。"
+
+#: src/components/settings-panel.tsx
+msgid "Restart the Chatbook kernel in open notebooks so they pick up %1."
+msgstr "请在已打开的笔记本中重新启动 Chatbook 内核，以使其采用 %1。"
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume Claude session"
+msgstr "恢复 Claude 会话"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a previous session"
+msgstr "恢复之前的会话"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a session you started earlier in this workspace"
+msgstr "恢复您之前在此工作区中开始的会话"
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume command copied"
+msgstr "已复制恢复命令"
+
+#: src/index.ts
+msgid "Resume or start a Claude Code session"
+msgstr "恢复或开始 Claude Code 会话"
+
+#: src/chat-sidebar.tsx
+msgid "Resume session"
+msgstr "恢复会话"
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1."
+msgstr "已恢复 Claude 会话 %1。"
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1: %2."
+msgstr "已恢复 Claude 会话 %1：%2。"
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1."
+msgstr "已恢复会话 %1。"
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1: %2."
+msgstr "已恢复会话 %1：%2。"
+
+#: src/components/perf-panel.tsx
+msgid "Retry"
+msgstr "重试"
+
+#: src/chatbook.ts
+msgid "Review generated code before running it in this kernel."
+msgstr "在此内核中运行生成的代码之前，请先检查代码。"
+
+#: src/components/settings-panel.tsx
+msgid "Right-click a cell output to attach it to the chat"
+msgstr "右键单击单元格输出可将其附加到聊天"
+
+#: src/components/perf-panel.tsx
+msgid "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory."
+msgstr "规则和技能发现耗时 %1。这项工作受限于服务器主目录所在文件系统的性能。"
+
+#: notebook_intelligence/extension.py
+msgid "Rule not found"
+msgstr "找不到规则"
+
+#: notebook_intelligence/extension.py
+msgid "Rule system not enabled"
+msgstr "规则系统未启用"
+
+#: notebook_intelligence/readiness.py
+msgid "Run 'claude --version' in a terminal as the Jupyter user to see the underlying error."
+msgstr "请以 Jupyter 用户身份在终端中运行“claude --version”，查看底层错误。"
+
+#: src/components/readiness-card.tsx
+msgid "Run it"
+msgstr "运行"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Run notebooks in JupyterLab UI"
+msgstr "在 JupyterLab 界面中运行笔记本"
+
+#: src/components/perf-panel.tsx
+msgid "Run probe"
+msgstr "运行探测"
+
+#: src/chat-sidebar.tsx
+msgid "Running (%1 s)"
+msgstr "正在运行（%1 秒）"
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other, plus the network check. This takes a few seconds, longer on a slow filesystem."
+msgstr "正在逐一运行文件系统、子进程和资源争用检查，以免相互影响测量结果，并运行网络检查。这需要几秒钟，在较慢的文件系统上会更久。"
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other. This takes a few seconds, longer on a slow filesystem."
+msgstr "正在逐一运行文件系统、子进程和资源争用检查，以免相互影响测量结果。这需要几秒钟，在较慢的文件系统上会更久。"
+
+#: src/components/perf-panel.tsx src/components/readiness-card.tsx
+msgid "Running…"
+msgstr "正在运行…"
+
+#: src/components/skills-panel.tsx
+msgid "Save"
+msgstr "保存"
+
+#: src/components/skills-panel.tsx
+msgid "Saving…"
+msgstr "正在保存…"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Scope"
+msgstr "范围"
+
+#: src/components/skills-panel.tsx
+msgid "Scope and name are set at creation and can't be changed. Delete and recreate to change them."
+msgstr "范围和名称在创建时设定，无法更改。如需更改，请删除后重新创建。"
+
+#: src/components/confirmation-details.tsx
+msgid "Scroll to see all of this value."
+msgstr "滚动以查看此值的全部内容。"
+
+#: src/chat-sidebar.tsx
+msgid "Search files by path"
+msgstr "按路径搜索文件"
+
+#: src/chat-sidebar.tsx
+msgid "Send message"
+msgstr "发送消息"
+
+#: src/components/readiness-card.tsx
+msgid "Sends one short request to your configured model to verify streaming and tool support."
+msgstr "向您配置的模型发送一个简短请求，以验证流式传输和工具支持。"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server \"%1\" config must be an object."
+msgstr "服务器“%1”的配置必须是一个对象。"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server config must include \"command\" or \"url\"."
+msgstr "服务器配置必须包含“command”或“url”。"
+
+#: src/components/perf-panel.tsx
+msgid "Server process peak memory"
+msgstr "服务器进程峰值内存"
+
+#: src/components/settings-panel.tsx
+msgid "Settings sections"
+msgstr "设置分区"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Shell"
+msgstr "Shell"
+
+#: src/components/settings-panel.tsx
+msgid "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+msgstr "在失败的单元格上显示“排查输出中的错误”上下文菜单项"
+
+#: src/components/settings-panel.tsx
+msgid "Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons"
+msgstr "在单元格输出上方显示悬停工具栏，包含“解释”/“询问”/“排查”按钮"
+
+#: src/components/tool-call-card.tsx
+msgid "Show diff"
+msgstr "显示差异"
+
+#: src/index.ts
+msgid "Show generated code"
+msgstr "显示生成的代码"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Show in chat"
+msgstr "在聊天中显示"
+
+#: src/components/settings-panel.tsx
+msgid "Show output toolbar"
+msgstr "显示输出工具栏"
+
+#: src/components/perf-panel.tsx
+msgid "Show raw output"
+msgstr "显示原始输出"
+
+#: src/index.ts
+msgid "Show the hidden code generated for this Chatbook cell"
+msgstr "显示为此 Chatbook 单元格生成的隐藏代码"
+
+#: src/components/perf-panel.tsx
+msgid "Show timeline for the turn at %1"
+msgstr "显示 %1 那一轮的时间线"
+
+#: src/components/settings-panel.tsx
+msgid "Show usage after each turn (time / tokens / cost)"
+msgstr "在每一轮之后显示用量（时间 / token / 费用）"
+
+#: src/chat-sidebar.tsx
+msgid "Showing the first %1 file found in the workspace."
+msgid_plural "Showing the first %1 files found in the workspace."
+msgstr[0] "显示在工作区中找到的前 %1 个文件。"
+
+#: notebook_intelligence/readiness.py
+msgid "Sign in from NBI Settings under GitHub Copilot. Until then every chat turn will fail with a 401."
+msgstr "请在 NBI 设置的 GitHub Copilot 下登录。在此之前，每一轮聊天都会因 401 失败。"
+
+#: notebook_intelligence/readiness.py
+msgid "Sign-in state could not be determined."
+msgstr "无法确定登录状态。"
+
+#: src/components/perf-panel.tsx
+msgid "Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod."
+msgstr "个位数 MB/s 的吞吐量加上很高的 fsync 延迟，是 EFS 突增积分耗尽的典型特征。请通过 CloudWatch 的 BurstCreditBalance 确认，而不是在 Pod 内部确认。"
+
+#: notebook_intelligence/extension.py
+msgid "Skill '%1' not found in %2 scope"
+msgstr "在 %2 范围内找不到技能“%1”"
+
+#: src/components/skills-panel.tsx
+msgid "Skills"
+msgstr "技能"
+
+#: src/components/skills-panel.tsx
+msgid "Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here."
+msgstr "技能由 Claude Code 使用。请在 Claude 设置选项卡中启用 Claude 模式，以使用您在此处编写的技能。"
+
+#: notebook_intelligence/extension.py
+msgid "Skills management is disabled by your administrator"
+msgstr "管理员已禁用技能管理"
+
+#: src/chat-sidebar.tsx
+msgid "Skills reloaded and applied to the current session."
+msgstr "技能已重新加载并应用到当前会话。"
+
+#: src/chat-sidebar.tsx
+msgid "Skip to message input"
+msgstr "跳到消息输入框"
+
+#: src/chat-sidebar.tsx
+msgid "Slash commands"
+msgstr "斜杠命令"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Source"
+msgstr "来源"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1"
+msgstr "来源：%1"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1 · last sync: %2"
+msgstr "来源：%1 · 上次同步：%2"
+
+#: src/components/plugins-panel.tsx
+msgid "Specify manually"
+msgstr "手动指定"
+
+#: src/index.ts
+msgid "Start a GitHub Copilot CLI session in a Jupyter terminal"
+msgstr "在 Jupyter 终端中启动 GitHub Copilot CLI 会话"
+
+#: src/index.ts
+msgid "Start a Pi session in a Jupyter terminal"
+msgstr "在 Jupyter 终端中启动 Pi 会话"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session"
+msgstr "开始新的聊天会话"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (restarts the Claude client)"
+msgstr "开始新的聊天会话（重新启动 Claude 客户端）"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (starts a fresh agent session)"
+msgstr "开始新的聊天会话（启动全新的智能体会话）"
+
+#: src/index.ts
+msgid "Start an OpenAI Codex CLI session in a Jupyter terminal"
+msgstr "在 Jupyter 终端中启动 OpenAI Codex CLI 会话"
+
+#: src/index.ts
+msgid "Start an opencode session in a Jupyter terminal"
+msgstr "在 Jupyter 终端中启动 opencode 会话"
+
+#: src/components/settings-panel.tsx
+msgid "Status"
+msgstr "状态"
+
+#: src/chat-sidebar.tsx
+msgid "Still working, server may be slow"
+msgstr "仍在处理中，服务器可能较慢"
+
+#: src/chat-sidebar.tsx
+msgid "Stop generating"
+msgstr "停止生成"
+
+#: src/chat-sidebar.tsx
+msgid "Stop using current file as context"
+msgstr "停止将当前文件用作上下文"
+
+#: src/components/perf-panel.tsx
+msgid "Stopped before completing, so these timings are partial."
+msgstr "在完成之前已停止，因此这些计时数据不完整。"
+
+#: src/chat-sidebar.tsx
+msgid "Stopped by you"
+msgstr "已由您停止"
+
+#: src/components/perf-panel.tsx
+msgid "Sum of every tool span in the turn. Expand the row to see them individually."
+msgstr "本轮中所有工具跨度的总和。展开该行可分别查看。"
+
+#: src/index.ts
+msgid "Switch all cells to code"
+msgstr "将所有单元格切换为代码"
+
+#: src/index.ts
+msgid "Switch all cells to natural language"
+msgstr "将所有单元格切换为自然语言"
+
+#: src/index.ts
+msgid "Switch cell to code"
+msgstr "将单元格切换为代码"
+
+#: src/index.ts
+msgid "Switch cell to natural language"
+msgstr "将单元格切换为自然语言"
+
+#: src/chatbook-toolbar.ts src/index.ts
+msgid "Switch every cell of this Chatbook between its prompt and its code"
+msgstr "将此 Chatbook 的所有单元格在提示词与代码之间切换"
+
+#: src/index.ts
+msgid "Switch the active Chatbook cell between natural language and code"
+msgstr "将当前 Chatbook 单元格在自然语言与代码之间切换"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed for \"%1\": %2"
+msgstr "“%1”同步失败：%2"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed: %1"
+msgstr "同步失败：%1"
+
+#: src/components/skills-panel.tsx
+msgid "Sync from GitHub"
+msgstr "从 GitHub 同步"
+
+#: src/components/skills-panel.tsx
+msgid "Sync managed skills"
+msgstr "同步托管技能"
+
+#: src/components/skills-panel.tsx
+msgid "Sync skill from GitHub"
+msgstr "从 GitHub 同步技能"
+
+#: src/components/skills-panel.tsx
+msgid "Sync tracking skills"
+msgstr "同步跟踪中的技能"
+
+#: src/components/skills-panel.tsx
+msgid "Synced \"%1\" to %2."
+msgstr "已将“%1”同步到 %2。"
+
+#: src/components/skills-panel.tsx
+msgid "Syncing…"
+msgstr "正在同步…"
+
+#: src/components/skills-panel.tsx
+msgid "Target scope"
+msgstr "目标范围"
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop."
+msgstr "拖放到终端时插入 @ 提及路径。点击切换为原始路径模式。拖放时按住 Shift 可仅对本次拖放反转模式。"
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop."
+msgstr "拖放到终端时插入经过 shell 转义的原始绝对路径。点击切换为 @ 提及模式。拖放时按住 Shift 可仅对本次拖放反转模式。"
+
+#: src/terminal-drag.ts
+msgid "Terminal drop skipped %1 path containing control or invisible formatting characters. Rename them before dropping."
+msgid_plural "Terminal drop skipped %1 paths containing control or invisible formatting characters. Rename them before dropping."
+msgstr[0] "拖放到终端时跳过了 %1 个包含控制字符或不可见格式字符的路径。请先重命名再拖放。"
+
+#: src/terminal-drag.ts
+msgid "Terminal drop upload failed for %1"
+msgstr "拖放到终端时上传 %1 失败"
+
+#: src/components/readiness-card.tsx
+msgid "Test the endpoint"
+msgstr "测试端点"
+
+#: src/chat-sidebar.tsx
+msgid "Text file"
+msgstr "文本文件"
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI did not respond to --version within its budget."
+msgstr "CLI 未在规定时间内响应 --version。"
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI resolved but --version failed."
+msgstr "已找到 CLI，但 --version 执行失败。"
+
+#: src/components/perf-panel.tsx
+msgid "The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI."
+msgstr "SDK 将 %1 归于 API，而活动时间为 %2，因此时间花在网络的另一端，而不是 NBI 中。"
+
+#: notebook_intelligence/readiness.py
+msgid "The binary resolves but does not start. On a network filesystem this is often the install tree being slow to read; otherwise check it runs from a terminal."
+msgstr "已找到可执行文件，但无法启动。在网络文件系统上，这通常是因为读取安装目录树太慢；否则请检查它能否在终端中运行。"
+
+#: src/components/perf-panel.tsx
+msgid "The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding."
+msgstr "检查未在规定时间内返回。网络文件系统上的 stat 挂起看起来正是这样，而这本身就是检查结果。"
+
+#: notebook_intelligence/readiness.py
+msgid "The claude CLI was not found."
+msgstr "找不到 claude CLI。"
+
+#: notebook_intelligence/acp_agent.py
+msgid "The command contains non-ASCII characters, which can look like quotes or letters they are not."
+msgstr "该命令包含非 ASCII 字符，这些字符可能看起来像引号或字母，但实际上并不是。"
+
+#: src/components/perf-panel.tsx
+msgid "The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage."
+msgstr "连接跨度：智能体子进程和 CLI 的启动。数值较大通常意味着在慢速存储上启动 node 并读取代码包。"
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted a request carrying a tool schema."
+msgstr "端点接受了携带工具架构的请求。"
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the connection but did not answer. Check the Base URL and whether it is reachable from the Jupyter server process."
+msgstr "端点接受了连接，但没有应答。请检查基础 URL，以及 Jupyter 服务器进程能否访问它。"
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the request but did not answer. Check the gateway and whether it is queueing behind a cold model."
+msgstr "端点接受了请求，但没有应答。请检查网关，以及请求是否在排队等待冷启动的模型。"
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint answered in one piece. Replies will appear only when the turn finishes rather than as they are generated; a proxy that buffers responses is the usual cause."
+msgstr "端点一次性返回了全部应答。回复只会在该轮结束时出现，而不是边生成边显示；通常是缓冲响应的代理服务器所致。"
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint rejected a request carrying a tool schema, but accepted the same request without one."
+msgstr "端点拒绝了携带工具架构的请求，但接受了不带工具架构的相同请求。"
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint test could not run (%1)."
+msgstr "无法运行端点测试（%1）。"
+
+#: src/components/perf-panel.tsx
+msgid "The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses."
+msgstr "握手未完成。如果位于拦截代理之后，这通常意味着拦截证书不在此进程使用的信任存储中。"
+
+#: src/components/perf-panel.tsx
+msgid "The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor."
+msgstr "对方出示的证书无法通过默认信任存储的验证，这表示 TLS 正在被拦截。颁发者 CN 即为拦截方的名称。"
+
+#: notebook_intelligence/readiness.py
+msgid "The provider did not return a model list within %1s."
+msgstr "提供商未在 %1 秒内返回模型列表。"
+
+#: notebook_intelligence/readiness.py
+msgid "The provider may be disabled by an administrator (see disabled_providers) or supplied by an extension that is not installed. Pick a different provider in NBI Settings."
+msgstr "该提供商可能已被管理员禁用（参见 disabled_providers），或者由未安装的扩展提供。请在 NBI 设置中选择其他提供商。"
+
+#: notebook_intelligence/readiness.py
+msgid "The provider returned no models."
+msgstr "提供商未返回任何模型。"
+
+#: notebook_intelligence/readiness.py
+msgid "The request failed (%1)."
+msgstr "请求失败（%1）。"
+
+#: notebook_intelligence/readiness.py
+msgid "The request succeeded but nothing streamed."
+msgstr "请求成功，但没有流式返回任何内容。"
+
+#: notebook_intelligence/readiness.py
+msgid "The stored configuration could not be read. Check %1 for invalid JSON, and the Jupyter server log for the underlying error."
+msgstr "无法读取已存储的配置。请检查 %1 中是否有无效的 JSON，并查看 Jupyter 服务器日志了解底层错误。"
+
+#: src/components/perf-panel.tsx
+msgid "The turn ended in an error."
+msgstr "本轮以错误结束。"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab."
+msgstr "这些是 Claude Code 自己的 MCP 服务器（读取自 %1、项目 %2 以及按用户按项目的配置块）。与 NBI 的“MCP 服务器”选项卡无关。"
+
+#: src/chat-sidebar.tsx
+msgid "Thinking (%1 s)"
+msgstr "正在思考（%1 秒）"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py notebook_intelligence/mcp_manager.py
+msgid "Thinking…"
+msgstr "正在思考…"
+
+#: src/components/perf-panel.tsx
+msgid "This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network."
+msgstr "此容器已受到其 cgroup 配额的 CPU 限流，因此本地阶段（上下文准备、启动）可能会因与存储或网络无关的原因而显得缓慢。"
+
+#: notebook_intelligence/extension.py
+msgid "This feature is disabled by your administrator"
+msgstr "管理员已禁用此功能"
+
+#: src/components/perf-panel.tsx
+msgid "This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows."
+msgstr "此主机与端点的时间相差超过一分钟，这会破坏令牌过期时间和证书有效期的判断。"
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the Claude CLI is signed in with a subscription login, or if the SDK resolves a credential of its own from a profile or custom headers. If chat turns fail with a 401, or Claude auto-complete produces nothing, add a key in NBI Settings under Claude or set ANTHROPIC_API_KEY before starting JupyterLab."
+msgstr "如果 Claude CLI 已通过订阅登录，或者 SDK 能从配置文件或自定义请求头中自行解析出凭据，则没有问题。如果聊天轮次因 401 失败，或 Claude 自动补全没有任何结果，请在 NBI 设置的 Claude 下添加密钥，或在启动 JupyterLab 前设置 ANTHROPIC_API_KEY。"
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the agent is signed in with its own OAuth login. Otherwise set the key in NBI Settings under ACP."
+msgstr "如果智能体已通过其自身的 OAuth 登录，则没有问题。否则请在 NBI 设置的 ACP 下设置密钥。"
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3."
+msgstr "此笔记本使用 %1 编写，但 Chatbook 在 %2 中运行所有代码，因此其代码单元格会运行失败。没有已安装的 %1 内核可供 Chatbook 使用。请安装一个，然后在 %3 中选择它。"
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too."
+msgstr "此笔记本使用 %1 编写，但 Chatbook 在 %2 中运行所有代码，因此其代码单元格会运行失败。若要转换，请将 %3 设置为 %1 内核，然后重新转换。该设置适用于所有 Chatbook，因此您现有的 Chatbook 也会运行 %1。"
+
+#: src/components/perf-panel.tsx
+msgid "This opens connections to %1 from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request."
+msgstr "这会从本机建立到 %1 的连接：两个未经身份验证的 TLS 连接（用于测量握手耗时并检查证书），以及一个未经身份验证的 HTTP 请求。"
+
+#: src/components/perf-panel.tsx
+msgid "This opens unauthenticated connections to your configured endpoint from this machine."
+msgstr "这会从本机建立到您所配置端点的未经身份验证的连接。"
+
+#: src/components/settings-panel.tsx
+msgid "This requires a %1 account and %2 installed in your system."
+msgstr "这需要 %1 账户，并在系统中安装 %2。"
+
+#: src/components/readiness-card.tsx
+msgid "This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls."
+msgstr "这会向您配置的模型发送一个简短请求。它会消耗少量 token，并且是确认端点确实支持流式传输、确实接受工具调用的唯一方法。"
+
+#: src/components/skills-panel.tsx
+msgid "This skill has unsaved changes. Discard them?"
+msgstr "此技能有未保存的更改。是否放弃？"
+
+#: src/components/skills-panel.tsx
+msgid "This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync."
+msgstr "此技能由组织清单管理，为只读。更改将在下次同步时被覆盖。"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Tool call"
+msgstr "工具调用"
+
+#: src/components/mcp-util.ts
+msgid "Tool refresh failed. Reload MCP servers to retry."
+msgstr "工具刷新失败。请重新加载 MCP 服务器以重试。"
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection"
+msgstr "工具选择"
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection (%1)"
+msgstr "工具选择（%1）"
+
+#: src/chat-sidebar.tsx
+msgid ""
+"Tool selection can cause irreversible changes! Review each tool execution carefully.\n"
+"%1"
+msgstr ""
+"所选工具可能会造成不可逆的更改！请仔细检查每次工具执行。\n"
+"%1"
+
+#: src/components/settings-panel.tsx
+msgid "Tools"
+msgstr "工具"
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active."
+msgstr "在 %2 的活动时间中，工具占 %1。"
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active. Slowest: %3 at %4."
+msgstr "在 %2 的活动时间中，工具占 %1。最慢的是 %3，耗时 %4。"
+
+#: src/components/perf-panel.tsx
+msgid "Total minus time the turn spent blocked on your input. This is the number to judge performance by."
+msgstr "总时间减去本轮等待您输入的时间。应以这个数值来判断性能。"
+
+#: src/tour/tour-overlay.tsx
+msgid "Tour progress: step %1 of %2"
+msgstr "导览进度：第 %1 步，共 %2 步"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream"
+msgstr "跟踪上游"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream. Show a Sync button so I can re-pull this skill from GitHub later"
+msgstr "跟踪上游。显示“同步”按钮，以便我之后从 GitHub 重新拉取此技能"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1"
+msgstr "正在跟踪来自 %1 的上游"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1 (last sync: %2)"
+msgstr "正在跟踪来自 %1 的上游（上次同步：%2）"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Transport"
+msgstr "传输方式"
+
+#: src/index.ts
+msgid "Troubleshoot errors in output"
+msgstr "排查输出中的错误"
+
+#: src/cell-output-toolbar.ts
+msgid "Troubleshoot the error in this cell"
+msgstr "排查此单元格中的错误"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "URL"
+msgstr "URL"
+
+#: src/components/skills-panel.tsx
+msgid "Undo"
+msgstr "撤消"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall"
+msgstr "卸载"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall plugin?"
+msgstr "卸载插件？"
+
+#: src/chat-sidebar.tsx
+msgid "Unknown"
+msgstr "未知"
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Unknown error"
+msgstr "未知错误"
+
+#: src/components/skills-panel.tsx
+msgid "Unsaved changes"
+msgstr "未保存的更改"
+
+#: src/components/plugins-panel.tsx
+msgid "Update"
+msgstr "更新"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Update active notebook"
+msgstr "更新当前笔记本"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Update active notebook with AI"
+msgstr "使用 AI 更新当前笔记本"
+
+#: src/components/plugins-panel.tsx
+msgid "Updating…"
+msgstr "正在更新…"
+
+#: src/chat-sidebar.tsx
+msgid "Upload file from computer"
+msgstr "从计算机上传文件"
+
+#: src/chat-sidebar.tsx
+msgid "Uploaded: %1"
+msgstr "已上传：%1"
+
+#: src/chat-sidebar.tsx
+msgid "Uploading"
+msgstr "正在上传"
+
+#: src/components/settings-panel.tsx
+msgid "Usage footer"
+msgstr "用量页脚"
+
+#: src/chat-sidebar.tsx
+msgid "Use as context"
+msgstr "用作上下文"
+
+#: src/chat-sidebar.tsx
+msgid "Use current file as context"
+msgstr "将当前文件用作上下文"
+
+#: src/chat-sidebar.tsx
+msgid "User"
+msgstr "用户"
+
+#: src/components/skills-panel.tsx
+msgid "User (available in all projects)"
+msgstr "用户（在所有项目中可用）"
+
+#: notebook_intelligence/readiness.py
+msgid "Usually an expired or missing API key, or a Base URL that does not point at the provider's API root. For GitHub Copilot, sign in again from NBI Settings."
+msgstr "通常是 API 密钥已过期或缺失，或者基础 URL 未指向提供商的 API 根地址。对于 GitHub Copilot，请在 NBI 设置中重新登录。"
+
+#: src/components/skills-panel.tsx
+msgid "View (managed, read-only)"
+msgstr "查看（托管，只读）"
+
+#: src/components/skills-panel.tsx
+msgid "View skill"
+msgstr "查看技能"
+
+#: src/components/perf-panel.tsx
+msgid "Wall time from the request arriving to the response finishing, including any time spent waiting on you."
+msgstr "从请求到达到响应完成的实际耗时，包括等待您操作的时间。"
+
+#: src/chat-sidebar.tsx
+msgid "Welcome! How can I assist you today?"
+msgstr "欢迎！今天有什么可以帮您？"
+
+#: src/components/skills-panel.tsx
+msgid "What this skill does, shown to Claude when deciding whether to use it"
+msgstr "此技能的作用，Claude 在决定是否使用它时会看到这段说明"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr "启用后，提示词会打开 Notebook Intelligence 聊天侧边栏。禁用后聊天保持隐藏，仅在笔记本工具栏上显示进度。"
+
+#: src/components/perf-panel.tsx
+msgid "When the turn started, in local time."
+msgstr "本轮开始的时间（本地时间）。"
+
+#: src/components/perf-panel.tsx
+msgid "Which backend served the turn, and the surface it came from."
+msgstr "处理本轮的后端，以及本轮的来源界面。"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Working directory"
+msgstr "工作目录"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Working…"
+msgstr "正在处理…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Write access under"
+msgstr "写入权限范围"
+
+#: src/chat-sidebar.tsx
+msgid "You are not logged in to GitHub Copilot. Please login now to activate chat."
+msgstr "您尚未登录 GitHub Copilot。请立即登录以激活聊天。"
+
+#: src/chat-sidebar.tsx
+msgid "Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory."
+msgstr "您的代码和数据会根据需要直接传输到 GitHub Copilot，除保留在进程内存中外，不会存储任何副本。"
+
+#: src/components/claude-scope.ts
+msgid "available in all your projects"
+msgstr "在您的所有项目中可用"
+
+#: src/components/perf-panel.tsx
+msgid "cgroup CPU throttling"
+msgstr "cgroup CPU 限流"
+
+#: src/components/tool-call-card.tsx
+msgid "diff truncated"
+msgstr "差异已截断"
+
+#: src/components/skills-panel.tsx
+msgid "e.g. %1"
+msgstr "例如 %1"
+
+#: src/components/perf-panel.tsx
+msgid "failed (%1)"
+msgstr "失败（%1）"
+
+#: src/components/perf-panel.tsx
+msgid "fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it."
+msgstr "此范围内的 fsync 延迟是网络文件系统的典型特征。如果这是 ~/.claude 或 Jupyter 主目录，每次启动智能体和每次扫描规则都要付出这一开销。"
+
+#: src/components/skills-panel.tsx
+msgid "https://github.com/owner/repo or .../tree/main/path/to/skill"
+msgstr "https://github.com/owner/repo 或 .../tree/main/path/to/skill"
+
+#: src/components/plugins-panel.tsx
+msgid "https://… or local path"
+msgstr "https://… 或本地路径"
+
+#: src/components/plugins-panel.tsx
+msgid "no plugins"
+msgstr "没有插件"
+
+#: src/components/perf-panel.tsx
+msgid "no projects/ or sessions/ directory"
+msgstr "没有 projects/ 或 sessions/ 目录"
+
+#: src/components/perf-panel.tsx
+msgid "ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success."
+msgstr "正常、错误或已取消。被取消的轮次会记录为“已取消”，而不会记为快速成功。"
+
+#: src/chat-sidebar.tsx
+msgid "open notebook"
+msgstr "打开笔记本"
+
+#: src/components/plugins-panel.tsx
+msgid "owner/repo, https://github.com/owner/repo, or local path"
+msgstr "owner/repo、https://github.com/owner/repo 或本地路径"
+
+#: notebook_intelligence/acp_agent.py
+msgid "run by %1"
+msgstr "由 %1 运行"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo"
+msgstr "通过项目仓库共享"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo (%1)"
+msgstr "通过项目仓库共享（%1）"
+
+#: src/components/perf-panel.tsx
+msgid "skipped: %1"
+msgstr "已跳过：%1"
+
+#: src/components/perf-panel.tsx
+msgid "stat %1, write+fsync %2 (median of %3)"
+msgstr "stat %1，write+fsync %2（%3 次的中位数）"
+
+#: src/components/claude-scope.ts
+msgid "this project, this user only"
+msgstr "仅限此项目、此用户"
+
+#: src/components/perf-panel.tsx
+msgid "timed out after %1s"
+msgstr "%1 秒后超时"
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"%1\" requires a \"url\" field."
+msgstr "transport: \"%1\" 需要 \"url\" 字段。"
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"stdio\" requires a \"command\" field."
+msgstr "transport: \"stdio\" 需要 \"command\" 字段。"
+
+#: src/components/perf-panel.tsx
+msgid "via proxy"
+msgstr "经由代理服务器"
+
+#: src/components/perf-panel.tsx
+msgid "write %1, read %2"
+msgstr "写入 %1，读取 %2"
+
+#: src/index.ts
+msgid "＋ New Session"
+msgstr "＋ 新建会话"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP description: the link to the admin guide"
+msgid "administrator installation guide"
+msgstr "管理员安装指南"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP settings section"
+msgid "Agent"
+msgstr "智能体"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a code cell; at most 3 characters"
+msgid "Cd"
+msgstr "代码"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a natural-language cell; at most 3 characters"
+msgid "NL"
+msgstr "提示"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Don't run"
+msgstr "不运行"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Run"
+msgstr "运行"
+
+#: src/components/settings-panel.tsx
+msgctxt "Chatbook mode description; %1 and %2 are the confirm bar buttons"
+msgid "Show the generated code and wait for %1 or %2 on every natural-language run."
+msgstr "每次运行自然语言单元格时，显示生成的代码并等待您点击“%1”或“%2”。"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "LOCAL"
+msgstr "本地"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "PROJECT"
+msgstr "项目"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "USER"
+msgstr "用户"
+
+#: src/components/claude-mcp-panel.tsx
+msgctxt "MCP server input mode"
+msgid "Form"
+msgstr "表单"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connected"
+msgstr "已连接"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connecting"
+msgstr "正在连接"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "disconnecting"
+msgstr "正在断开连接"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "not connected"
+msgstr "未连接"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated prompt list"
+msgstr "已更新提示词列表"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated tool list"
+msgstr "已更新工具列表"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating prompt list"
+msgstr "正在更新提示词列表"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating tool list"
+msgstr "正在更新工具列表"
+
+#: src/components/settings-panel.tsx
+msgctxt "Ollama hint: the button that retries listing models"
+msgid "Try again"
+msgstr "重试"
+
+#: src/components/perf-panel.tsx
+msgctxt "Python version on an operating system"
+msgid "%1 on %2"
+msgstr "%2 上的 %1"
+
+#: src/chatbook-toolbar.ts
+msgctxt "a settings path: %1 the settings window, %2 its tab, %3 the field"
+msgid "%1 > %2 > %3"
+msgstr "%1 > %2 > %3"
+
+#: src/components/perf-panel.tsx
+msgctxt "a value that was not recorded"
+msgid "n/a"
+msgstr "不适用"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "an approval card detail: its label, then notes such as its size"
+msgid "%1 (%2)"
+msgstr "%1（%2）"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve"
+msgstr "批准"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve for this request"
+msgstr "仅批准此次请求"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Cancel"
+msgstr "取消"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, continue planning"
+msgstr "否，继续计划"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, start implementing now"
+msgstr "否，立即开始实施"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval button"
+msgid "Reject"
+msgstr "拒绝"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, approve plan"
+msgstr "是，批准计划"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, enter plan mode"
+msgstr "是，进入计划模式"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval card title"
+msgid "%1 tool call"
+msgstr "%1 工具调用"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "full"
+msgstr "完整"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "redacted"
+msgstr "已脱敏"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "between notes on an approval card detail"
+msgid ", "
+msgstr "，"
+
+#: src/components/perf-panel.tsx
+msgctxt "bytes"
+msgid "%1 B"
+msgstr "%1 B"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Ask"
+msgstr "询问"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Explain"
+msgstr "解释"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Troubleshoot"
+msgstr "排查"
+
+#: src/components/perf-panel.tsx
+msgctxt "certificate issuer"
+msgid "unknown"
+msgstr "未知"
+
+#: notebook_intelligence/ai_service_manager.py
+msgctxt "chat button"
+msgid "Configure"
+msgstr "配置"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Agent"
+msgstr "智能体"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Ask"
+msgstr "询问"
+
+#: src/chatbook.ts
+msgctxt "confirm bar link that opens settings; %1 is the settings window name"
+msgid "Change in %1"
+msgstr "在 %1 中更改"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected MCP server tools"
+msgid "%1 mcp"
+msgid_plural "%1 mcp"
+msgstr[0] "%1 个 MCP"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected extension tools"
+msgid "%1 ext"
+msgid_plural "%1 ext"
+msgstr[0] "%1 个扩展"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected tools"
+msgid "%1 built-in"
+msgid_plural "%1 built-in"
+msgstr[0] "%1 个内置"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "environment (%1)"
+msgstr "环境变量（%1）"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "settings"
+msgstr "设置"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "added"
+msgstr "新增"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "removed"
+msgstr "删除"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "mount"
+msgstr "挂载"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "session tree size"
+msgstr "会话目录树大小"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "small-file latency"
+msgstr "小文件延迟"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "sustained throughput"
+msgstr "持续吞吐量"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem type"
+msgid "not determined"
+msgstr "无法确定"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Add files from outside the workspace. They're saved to the workspace and attached to this chat."
+msgstr "添加工作区之外的文件。这些文件会保存到工作区并附加到此聊天。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Ask is read-only and only answers questions. Agent can also run tools, such as file edits and shell commands."
+msgstr "“询问”模式为只读，仅回答问题。“智能体”模式还可以运行工具，例如编辑文件和执行 shell 命令。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Attach files as context"
+msgstr "将文件附加为上下文"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Back"
+msgstr "上一步"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Begin a fresh session when context gets crowded or you want to switch tasks."
+msgstr "当上下文过于拥挤或您想切换任务时，开始一个新会话。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Configure providers, API keys, and extensions (MCP servers, skills, admin policies)."
+msgstr "配置提供商、API 密钥和扩展（MCP 服务器、技能、管理策略）。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Done"
+msgstr "完成"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag and drop"
+msgstr "拖放"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag files from the JupyterLab file browser or your desktop onto the prompt. Keyboard users can attach the same files with the 'Attach files as context' and 'Upload from your computer' buttons."
+msgstr "将文件从 JupyterLab 文件管理器或桌面拖放到提示词输入框上。使用键盘的用户可以通过“将文件附加为上下文”和“从您的计算机上传”按钮附加相同的文件。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Next"
+msgstr "下一步"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Open the menu for built-in commands and installed skills. Typing / at the start of the prompt does the same thing."
+msgstr "打开内置命令和已安装技能的菜单。在提示词开头输入 / 效果相同。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick a chat mode"
+msgstr "选择聊天模式"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick up where you left off"
+msgstr "从上次中断处继续"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pin workspace files so the assistant can reference them. Typing @ in the prompt opens the same picker."
+msgstr "固定工作区文件，以便助手引用它们。在提示词中输入 @ 会打开同一个选择器。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Reopen an earlier Claude session from this workspace."
+msgstr "重新打开此工作区中之前的 Claude 会话。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a coding agent in a terminal"
+msgstr "在终端中运行编码智能体"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a slash command"
+msgstr "运行斜杠命令"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Settings"
+msgstr "设置"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Show NBI tour"
+msgstr "显示 NBI 导览"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Skip tour"
+msgstr "跳过导览"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Start a new chat"
+msgstr "开始新的聊天"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Try this: open a notebook and ask, 'Explain what this notebook does and suggest one improvement.' You can replay this tour anytime from the command palette."
+msgstr "试试看：打开一个笔记本并提问：“解释这个笔记本的作用，并提出一项改进建议。”您可以随时从命令面板重新播放此导览。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Upload from your computer"
+msgstr "从您的计算机上传"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Welcome to Notebook Intelligence"
+msgstr "欢迎使用 Notebook Intelligence"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "You're ready"
+msgstr "一切就绪"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Your AI assistant lives in this sidebar. Take a quick tour of the settings, attachments, and chat modes so you can use it confidently."
+msgstr "您的 AI 助手就在这个侧边栏中。快速浏览一下设置、附件和聊天模式，以便得心应手地使用它。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a 'Coding Agent' section with tiles for {launchers}. Each tile opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "JupyterLab 启动页中有一个“Coding Agent”分区，其中包含 {launchers} 的磁贴。每个磁贴都会在笔记本旁的 Jupyter 终端中打开一个 CLI 会话。"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a {launchers} tile in the 'Coding Agent' section. It opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "JupyterLab 启动页的“Coding Agent”分区中有一个 {launchers} 磁贴。它会在笔记本旁的 Jupyter 终端中打开一个 CLI 会话。"
+
+#: src/components/perf-panel.tsx
+msgctxt "gigabytes"
+msgid "%1 GB"
+msgstr "%1 GB"
+
+#: src/components/perf-panel.tsx
+msgctxt "kilobytes"
+msgid "%1 KB"
+msgstr "%1 KB"
+
+#: src/components/setting-lock.ts
+msgctxt "lock reason: %1 is an environment variable name"
+msgid "Locked by %1"
+msgstr "已被 %1 锁定"
+
+#: src/components/perf-panel.tsx
+msgctxt "machine measurement"
+msgid "Probe"
+msgstr "探测"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes"
+msgid "%1 MB"
+msgstr "%1 MB"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes per second"
+msgid "%1 MB/s"
+msgstr "%1 MB/s"
+
+#: src/components/perf-panel.tsx
+msgctxt "milliseconds"
+msgid "%1 ms"
+msgstr "%1 毫秒"
+
+#: src/components/settings-panel.tsx
+msgctxt "model"
+msgid "None"
+msgstr "无"
+
+#: src/components/perf-panel.tsx
+msgctxt "model name"
+msgid "unknown"
+msgstr "未知"
+
+#: src/components/settings-panel.tsx
+msgctxt "model provider"
+msgid "None"
+msgstr "无"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance diagnostics setting"
+msgid "Enabled"
+msgstr "已启用"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "API ms"
+msgstr "API 毫秒"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Active"
+msgstr "活动"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "First token"
+msgstr "首个 token"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Mode"
+msgstr "模式"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Model"
+msgstr "模型"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Spawn"
+msgstr "启动"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stalls"
+msgstr "停顿"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Status"
+msgstr "状态"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stream"
+msgstr "流式"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Time"
+msgstr "时间"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens in"
+msgstr "输入 token"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens out"
+msgstr "输出 token"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tools"
+msgstr "工具"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Total"
+msgstr "总计"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Verdict"
+msgstr "结论"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Accept Edits"
+msgstr "接受编辑"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Bypass Permissions"
+msgstr "绕过权限"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Default"
+msgstr "默认"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Plan"
+msgstr "计划"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugin count, then the plugin names"
+msgid "%1: %2"
+msgstr "%1：%2"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugins section heading"
+msgid "MARKETPLACES"
+msgstr "市场"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "bad"
+msgstr "差"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "error"
+msgstr "错误"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "info"
+msgstr "信息"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "ok"
+msgstr "正常"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "skipped"
+msgstr "已跳过"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "timed out"
+msgstr "已超时"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "warn"
+msgstr "警告"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check: %1 is a directory, %2 what was measured"
+msgid "%1: %2"
+msgstr "%1：%2"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Filesystem"
+msgstr "文件系统"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Network"
+msgstr "网络"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Process and host"
+msgstr "进程和主机"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Subprocess startup"
+msgstr "子进程启动"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Cancel"
+msgstr "取消"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Submit"
+msgstr "提交"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "ACP agent"
+msgstr "ACP 智能体"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Active chat path"
+msgstr "当前聊天路径"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Adapter runtime"
+msgstr "适配器运行时"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Agent credentials"
+msgstr "智能体凭据"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Anthropic credentials"
+msgstr "Anthropic 凭据"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model"
+msgstr "聊天模型"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model provider"
+msgstr "聊天模型提供商"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Claude Code CLI"
+msgstr "Claude Code CLI"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Configuration"
+msgstr "配置"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "GitHub Copilot sign-in"
+msgstr "GitHub Copilot 登录"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Live completion"
+msgstr "实时补全"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model list"
+msgstr "模型列表"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model name"
+msgstr "模型名称"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Selected model"
+msgstr "所选模型"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Tool schema"
+msgstr "工具架构"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "blocked"
+msgstr "受阻"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "ok"
+msgstr "正常"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "skipped"
+msgstr "已跳过"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "warn"
+msgstr "警告"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Checking…"
+msgstr "正在检查…"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Not ready"
+msgstr "未就绪"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready"
+msgstr "已就绪"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready, with warnings"
+msgstr "已就绪，但有警告"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Unknown"
+msgstr "未知"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Output"
+msgstr "输出"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Thought"
+msgstr "思考过程"
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "将从 Claude 的本地范围配置中移除“%1”。"
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "将从 Claude 的项目范围配置中移除“%1”。"
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "将从 Claude 的用户范围配置中移除“%1”。"
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "将从 Claude 的 %2 范围配置中移除“%1”。"
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "将从 Claude 的本地范围配置中移除“%1”。"
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "将从 Claude 的项目范围配置中移除“%1”。"
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "将从 Claude 的用户范围配置中移除“%1”。"
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "将从 Claude 的 %2 范围配置中移除“%1”。"
+
+#: src/components/skills-panel.tsx
+msgctxt "scope heading, then the project name"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: src/components/claude-scope.ts
+msgctxt "scope picker option: %1 is the scope id, %2 what it means"
+msgid "%1: %2"
+msgstr "%1：%2"
+
+#: src/components/perf-panel.tsx
+msgctxt "seconds"
+msgid "%1s"
+msgstr "%1 秒"
+
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgctxt "separator between list items"
+msgid ", "
+msgstr "，"
+
+#: src/components/settings-panel.tsx
+msgctxt "setting source"
+msgid "User"
+msgstr "用户"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings section"
+msgid "Language"
+msgstr "语言"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "General"
+msgstr "常规"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "MCP Servers"
+msgstr "MCP 服务器"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Performance"
+msgstr "性能"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Plugins"
+msgstr "插件"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Skills"
+msgstr "技能"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Managed"
+msgstr "托管"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Tracking"
+msgstr "跟踪中"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "Project"
+msgstr "项目"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "User"
+msgstr "用户"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill sync result; %1 is a list of counts"
+msgid "Sync complete. %1."
+msgstr "同步完成。%1。"
+
+#: src/components/perf-panel.tsx
+msgctxt "skip reason"
+msgid "not applicable"
+msgstr "不适用"
+
+#: src/components/skills-panel.tsx
+msgctxt "stands in for the project folder name"
+msgid "<project>"
+msgstr "<项目>"
+
+#: src/terminal-drag.ts
+msgctxt "terminal upload failure; %2 lists files, %1 counts the rest"
+msgid "Terminal drop upload failed for %2 (+%1 more)"
+msgid_plural "Terminal drop upload failed for %2 (+%1 more)"
+msgstr[0] "拖放到终端时上传 %2 失败（另有 %1 个）"
+
+#: src/i18n.ts
+msgctxt "text direction: translate as 'rtl' for a right-to-left language, otherwise 'ltr'"
+msgid "ltr"
+msgstr "ltr"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "cancelled"
+msgstr "已取消"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "completed"
+msgstr "已完成"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "failed"
+msgstr "失败"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "in progress"
+msgstr "进行中"
+
+#: src/components/tool-call-group.tsx
+msgctxt "tool call summary: %1 is the call count, %2 the failed count"
+msgid "%1 (%2)"
+msgstr "%1（%2）"
+
+#: src/chat-sidebar.tsx
+msgctxt "tool selection"
+msgid "clear"
+msgstr "清除"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Command execute"
+msgstr "命令执行"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File edit"
+msgstr "文件编辑"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File read"
+msgstr "文件读取"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook edit"
+msgstr "笔记本编辑"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook execute"
+msgstr "笔记本执行"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Python file edit"
+msgstr "Python 文件编辑"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "cancelled"
+msgstr "已取消"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "error"
+msgstr "错误"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "ok"
+msgstr "正常"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn timeline section"
+msgid "Events"
+msgstr "事件"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Agent cold start"
+msgstr "智能体冷启动"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Cancelled"
+msgstr "已取消"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Context preparation"
+msgstr "上下文准备"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Failed"
+msgstr "失败"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Mid-stream stalls"
+msgstr "流式传输中途停顿"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Model or gateway"
+msgstr "模型或网关"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No single hotspot"
+msgstr "无单一热点"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No timing recorded"
+msgstr "未记录计时"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Tool execution"
+msgstr "工具执行"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "not valid JSON. %1"
+msgstr "不是有效的 JSON。%1"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "the save failed for an unknown reason"
+msgstr "保存因未知原因失败"

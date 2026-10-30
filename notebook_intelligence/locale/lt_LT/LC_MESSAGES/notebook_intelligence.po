@@ -1,0 +1,4302 @@
+# Notebook Intelligence translation catalog.
+# AI-drafted (Claude) from the English source; not yet reviewed by a
+# native speaker. A reviewer: replace this note and Last-Translator.
+# See docs/translating.md.
+msgid ""
+msgstr ""
+"Project-Id-Version: notebook_intelligence\n"
+"Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
+"PO-Revision-Date: 2026-10-24 22:00-0400\n"
+"Last-Translator: AI draft, not yet reviewed\n"
+"Language-Team: lt_LT\n"
+"Language: lt_LT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already exists in this bundle."
+msgstr "„%1“ šiame rinkinyje jau yra."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already up to date at %2."
+msgstr "„%1“ jau atnaujintas (%2)."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be deleted."
+msgstr "„%1“ bus ištrintas."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be permanently deleted."
+msgstr "„%1“ bus ištrintas visam laikui."
+
+#: src/components/plugins-panel.tsx
+msgid "\"%1\" will be removed from Claude's plugin marketplaces."
+msgstr "„%1“ bus pašalinta iš Claude papildinių prekyviečių."
+
+#: src/components/settings-panel.tsx
+msgid "%1 (not installed)"
+msgstr "%1 (neįdiegta)"
+
+#: src/components/setting-lock.ts
+msgid "%1 (optional)"
+msgstr "%1 (neprivaloma)"
+
+#: src/chat-sidebar.tsx
+msgid "%1 (required)"
+msgstr "%1 (privaloma)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 (scan truncated)"
+msgstr "%1 (skenavimas sutrumpintas)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 MB peak since server start"
+msgstr "%1 MB piko reikšmė nuo serverio paleidimo"
+
+#: src/components/perf-panel.tsx
+msgid "%1 active with no phase dominating."
+msgstr "%1 aktyvaus laiko, jokia fazė nedominuoja."
+
+#: src/components/skills-panel.tsx
+msgid "%1 added"
+msgid_plural "%1 added"
+msgstr[0] "%1 pridėtas"
+msgstr[1] "%1 pridėti"
+msgstr[2] "%1 pridėta"
+
+#: src/components/perf-panel.tsx
+msgid "%1 and %2 were dropped by the per-turn caps, so this timeline is incomplete."
+msgstr "%1 ir %2 atmesta dėl ciklo apribojimų, todėl ši laiko juosta nepilna."
+
+#: src/components/perf-panel.tsx
+msgid "%1 attribute"
+msgid_plural "%1 attributes"
+msgstr[0] "%1 atributas"
+msgstr[1] "%1 atributai"
+msgstr[2] "%1 atributų"
+
+#: src/open-file-refresh-watcher.ts
+msgid "%1 changed on disk and was reloaded"
+msgstr "%1 pasikeitė diske ir buvo įkeltas iš naujo"
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 character"
+msgid_plural "%1 characters"
+msgstr[0] "%1 simbolis"
+msgstr[1] "%1 simboliai"
+msgstr[2] "%1 simbolių"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at %2 ms, %3 ms total."
+msgid_plural "%1 chunks, first at %2 ms, %3 ms total."
+msgstr[0] "%1 dalis, pirmoji po %2 ms, iš viso %3 ms."
+msgstr[1] "%1 dalys, pirmoji po %2 ms, iš viso %3 ms."
+msgstr[2] "%1 dalių, pirmoji po %2 ms, iš viso %3 ms."
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at n/a ms, %2 ms total."
+msgid_plural "%1 chunks, first at n/a ms, %2 ms total."
+msgstr[0] "%1 dalis, pirmoji po n/a ms, iš viso %2 ms."
+msgstr[1] "%1 dalys, pirmoji po n/a ms, iš viso %2 ms."
+msgstr[2] "%1 dalių, pirmoji po n/a ms, iš viso %2 ms."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 decides which tools to ask about, so some actions may run without a prompt."
+msgstr "%1 sprendžia, dėl kurių įrankių klausti, todėl kai kurie veiksmai gali būti vykdomi be patvirtinimo."
+
+#: src/chat-sidebar.tsx
+msgid "%1 duplicate skipped."
+msgid_plural "%1 duplicates skipped."
+msgstr[0] "Praleistas %1 dublikatas."
+msgstr[1] "Praleisti %1 dublikatai."
+msgstr[2] "Praleista %1 dublikatų."
+
+#: src/components/skills-panel.tsx
+msgid "%1 error"
+msgid_plural "%1 errors"
+msgstr[0] "%1 klaida"
+msgstr[1] "%1 klaidos"
+msgstr[2] "%1 klaidų"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 failed"
+msgid_plural "%1 failed"
+msgstr[0] "%1 nepavyko"
+msgstr[1] "%1 nepavyko"
+msgstr[2] "%1 nepavyko"
+
+#: src/chat-sidebar.tsx
+msgid "%1 file skipped (limit of %2)."
+msgid_plural "%1 files skipped (limit of %2)."
+msgstr[0] "Praleistas %1 failas (riba %2)."
+msgstr[1] "Praleisti %1 failai (riba %2)."
+msgstr[2] "Praleista %1 failų (riba %2)."
+
+#: src/components/perf-panel.tsx
+msgid "%1 gap during streaming. Each stall event below is tagged with what preceded it."
+msgid_plural "%1 gaps during streaming. Each stall event below is tagged with what preceded it."
+msgstr[0] "%1 pertrauka srautinio perdavimo metu. Kiekvienas toliau pateiktas strigimo įvykis pažymėtas tuo, kas buvo prieš jį."
+msgstr[1] "%1 pertraukos srautinio perdavimo metu. Kiekvienas toliau pateiktas strigimo įvykis pažymėtas tuo, kas buvo prieš jį."
+msgstr[2] "%1 pertraukų srautinio perdavimo metu. Kiekvienas toliau pateiktas strigimo įvykis pažymėtas tuo, kas buvo prieš jį."
+
+#: src/components/settings-panel.tsx
+msgid "%1 is required."
+msgstr "%1 yra privalomas."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 line"
+msgid_plural "%1 lines"
+msgstr[0] "%1 eilutė"
+msgstr[1] "%1 eilutės"
+msgstr[2] "%1 eilučių"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 model available."
+msgid_plural "%1 models available."
+msgstr[0] "Pasiekiamas %1 modelis."
+msgstr[1] "Pasiekiami %1 modeliai."
+msgstr[2] "Pasiekiama %1 modelių."
+
+#: src/components/plugins-panel.tsx
+msgid "%1 plugin"
+msgid_plural "%1 plugins"
+msgstr[0] "%1 papildinys"
+msgstr[1] "%1 papildiniai"
+msgstr[2] "%1 papildinių"
+
+#: src/components/skills-panel.tsx
+msgid "%1 removed"
+msgid_plural "%1 removed"
+msgstr[0] "%1 pašalintas"
+msgstr[1] "%1 pašalinti"
+msgstr[2] "%1 pašalinta"
+
+#: src/chat-sidebar.tsx
+msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
+msgstr "%1 reikalauja prenumeratos, tačiau turi nemokamą planą. GitHub Copilot taikomos %2."
+
+#: src/components/perf-panel.tsx
+msgid "%1 span"
+msgid_plural "%1 spans"
+msgstr[0] "%1 atkarpa"
+msgstr[1] "%1 atkarpos"
+msgstr[2] "%1 atkarpų"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 tool call"
+msgid_plural "%1 tool calls"
+msgstr[0] "%1 įrankio iškvietimas"
+msgstr[1] "%1 įrankio iškvietimai"
+msgstr[2] "%1 įrankio iškvietimų"
+
+#: src/components/skills-panel.tsx
+msgid "%1 unchanged"
+msgid_plural "%1 unchanged"
+msgstr[0] "%1 nepakeistas"
+msgstr[1] "%1 nepakeisti"
+msgstr[2] "%1 nepakeista"
+
+#: src/components/skills-panel.tsx
+msgid "%1 updated"
+msgid_plural "%1 updated"
+msgstr[0] "%1 atnaujintas"
+msgstr[1] "%1 atnaujinti"
+msgstr[2] "%1 atnaujinta"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, launched as: %2"
+msgstr "%1, paleista kaip: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, model '%2'"
+msgstr "%1, modelis „%2“"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, no model selected"
+msgstr "%1, modelis nepasirinktas"
+
+#: src/components/perf-panel.tsx
+msgid "%1; TLS handshake failed (%2)"
+msgstr "%1; TLS sujungimas nepavyko (%2)"
+
+#: src/components/perf-panel.tsx
+msgid "%1; clock skew %2"
+msgstr "%1; laikrodžio poslinkis %2"
+
+#: src/components/perf-panel.tsx
+msgid "%1; issuer %2"
+msgstr "%1; išdavėjas %2"
+
+#: src/components/perf-panel.tsx
+msgid "%2 %1 file, %3"
+msgid_plural "%2 %1 files, %3"
+msgstr[0] "%2: %1 failas, %3"
+msgstr[1] "%2: %1 failai, %3"
+msgstr[2] "%2: %1 failų, %3"
+
+#: src/components/skills-panel.tsx
+msgid "%2 + %1 other"
+msgid_plural "%2 + %1 others"
+msgstr[0] "%2 + %1 kitas"
+msgstr[1] "%2 + %1 kiti"
+msgstr[2] "%2 + %1 kitų"
+
+#: src/components/plugins-panel.tsx
+msgid "%2, +%1 more"
+msgid_plural "%2, +%1 more"
+msgstr[0] "%2, +%1 daugiau"
+msgstr[1] "%2, +%1 daugiau"
+msgstr[2] "%2, +%1 daugiau"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' and its declared interpreter are available."
+msgstr "„%1“ ir jo deklaruotas interpretatorius pasiekiami."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' has no content to attach."
+msgstr "„%1“ neturi turinio, kurį būtų galima pridėti."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' is empty"
+msgstr "„%1“ yra tuščias"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' is not in the list this endpoint serves."
+msgstr "„%1“ nėra šio galinio taško teikiamame sąraše."
+
+#: src/components/plugins-panel.tsx
+msgid "(disabled)"
+msgstr "(išjungta)"
+
+#: src/components/safe-anchor.tsx
+msgid "(link blocked)"
+msgstr "(nuoroda užblokuota)"
+
+#: src/components/safe-anchor.tsx
+msgid "(opens in new tab)"
+msgstr "(atsidaro naujame skirtuke)"
+
+#: src/components/plugins-panel.tsx
+msgid "(unnamed)"
+msgstr "(be pavadinimo)"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 agent error:** %2"
+msgstr "**%1 agento klaida:** %2"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: it is too large to show in full for approval.**"
+msgstr "**%1 įrankio iškvietimas atmestas: jis per didelis, kad būtų parodytas visas patvirtinimui.**"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: its command contains hidden Unicode bidirectional controls (%2).**"
+msgstr "**%1 įrankio iškvietimas atmestas: jo komandoje yra paslėptų Unicode dvikrypčių valdymo simbolių (%2).**"
+
+#: notebook_intelligence/mcp_manager.py
+msgid "**%1** server tools:"
+msgstr "**%1** serverio įrankiai:"
+
+#: notebook_intelligence/claude.py
+msgid "**Bash command blocked: hidden Unicode bidirectional controls detected (%1).**"
+msgstr "**Bash komanda užblokuota: aptikta paslėptų Unicode dvikrypčių valdymo simbolių (%1).**"
+
+#: notebook_intelligence/claude.py
+msgid "**Claude agent error:** %1"
+msgstr "**Claude agento klaida:** %1"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/claude.py
+msgid "**Error:** %1"
+msgstr "**Klaida:** %1"
+
+#: src/components/skills-panel.tsx
+msgid "+ New project skill"
+msgstr "+ Naujas projekto įgūdis"
+
+#: src/components/skills-panel.tsx
+msgid "+ New user skill"
+msgstr "+ Naujas naudotojo įgūdis"
+
+#: src/components/perf-panel.tsx
+msgid "1m %1, 5m %2, 15m %3"
+msgstr "1 min. %1, 5 min. %2, 15 min. %3"
+
+#: notebook_intelligence/extension.py
+msgid "A duplicate submission with this message ID was ignored; the original request is still running."
+msgstr "Pasikartojantis pateikimas su šiuo pranešimo ID buvo ignoruotas; pradinė užklausa vis dar vykdoma."
+
+#: src/components/perf-panel.tsx
+msgid "A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost."
+msgstr "Dėl didelio ~/.claude medžio kiekvienas agento paleidimas turi jį pereiti. Tinklo failų sistemoje tai dažnai sudaro didžiąją paleidimo sąnaudų dalį."
+
+#: notebook_intelligence/extension.py
+msgid "A live endpoint test is already running."
+msgstr "Galinio taško tiesioginis testas jau vykdomas."
+
+#: src/components/perf-panel.tsx
+msgid "A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local."
+msgstr "Tinklo failų sistema. Visus šios grupės delsos skaičius vertinkite atsižvelgdami į tai ir nukreipkite NBI_PERF_LOG_DIR į vietinę vietą."
+
+#: src/components/perf-panel.tsx
+msgid "A one-line reading of where this turn's time went, derived from the columns to the left."
+msgstr "Vienos eilutės išvada, kur buvo sunaudotas šio ciklo laikas, gauta iš kairėje esančių stulpelių."
+
+#: src/components/skills-panel.tsx
+msgid "A project skill named \"%1\" already exists."
+msgstr "Projekto įgūdis pavadinimu „%1“ jau yra."
+
+#: src/components/skills-panel.tsx
+msgid "A user skill named \"%1\" already exists."
+msgstr "Naudotojo įgūdis pavadinimu „%1“ jau yra."
+
+#: src/components/readiness-card.tsx
+msgid "ACP agent"
+msgstr "ACP agentas"
+
+#: src/chat-sidebar.tsx
+msgid "ACP mode"
+msgstr "ACP režimas"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP režimas nepalaiko Chatbook generavimo"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode is not enabled"
+msgstr "ACP režimas neįjungtas"
+
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
+msgid "AI Assistant"
+msgstr "DI asistentas"
+
+#: src/components/settings-panel.tsx
+msgid "API Key"
+msgstr "API raktas"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
+msgstr "API raktas"
+
+#: notebook_intelligence/readiness.py
+msgid "API key present from %1."
+msgstr "API raktas rastas šaltinyje %1."
+
+#: src/chat-sidebar.tsx
+msgid "Accept"
+msgstr "Priimti"
+
+#: src/components/skills-panel.tsx
+msgid "Actions for %1"
+msgstr "%1 veiksmai"
+
+#: src/chat-sidebar.tsx
+msgid "Activating device..."
+msgstr "Aktyvinamas įrenginys..."
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Add"
+msgstr "Pridėti"
+
+#: src/components/settings-panel.tsx
+msgid "Add / Edit"
+msgstr "Pridėti / redaguoti"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add MCP server"
+msgstr "Pridėti MCP serverį"
+
+#: src/components/plugins-panel.tsx
+msgid "Add a marketplace to discover plugins, then install one to extend Claude Code with new commands, agents, and tool integrations."
+msgstr "Pridėkite prekyvietę, kad rastumėte papildinių, tada įdiekite vieną, kad išplėstumėte Claude Code naujomis komandomis, agentais ir įrankių integracijomis."
+
+#: src/markdown-renderer.tsx
+msgid "Add as new cell"
+msgstr "Pridėti kaip naują langelį"
+
+#: src/markdown-renderer.tsx
+msgid "Add code as new cell"
+msgstr "Pridėti kodą kaip naują langelį"
+
+#: src/components/skills-panel.tsx
+msgid "Add file"
+msgstr "Pridėti failą"
+
+#: src/chat-sidebar.tsx
+msgid "Add files as context"
+msgstr "Pridėti failus kaip kontekstą"
+
+#: src/components/plugins-panel.tsx
+msgid "Add marketplace"
+msgstr "Pridėti prekyvietę"
+
+#: src/components/plugins-panel.tsx
+msgid "Add plugin marketplace"
+msgstr "Pridėti papildinių prekyvietę"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add server"
+msgstr "Pridėti serverį"
+
+#: src/chat-sidebar.tsx
+msgid "Add workspace file as context"
+msgstr "Pridėti darbo srities failą kaip kontekstą"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Adding…"
+msgstr "Pridedama…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Additional permissions"
+msgstr "Papildomi leidimai"
+
+#: src/components/settings-panel.tsx
+msgid "Adds a small footer under each reply."
+msgstr "Po kiekvienu atsakymu prideda nedidelę poraštę."
+
+#: src/components/perf-panel.tsx
+msgid "Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate."
+msgstr "Prideda prisijungimus prie jūsų sukonfigūruoto galinio taško, kad būtų išmatuotas DNS, TCP ir TLS laikas ir užfiksuotas pateiktas sertifikatas."
+
+#: src/components/settings-panel.tsx
+msgid "Agent account"
+msgstr "Agento paskyra"
+
+#: src/components/settings-panel.tsx
+msgid "Agent default (e.g. '%1')"
+msgstr "Agento numatytasis (pvz., „%1“)"
+
+#: notebook_intelligence/readiness.py
+msgid "Agent mode and every built-in tool need tool calling. The model may not support it, or a proxy in front of the endpoint may be stripping the tools field."
+msgstr "Agento režimui ir visiems integruotiems įrankiams reikia įrankių iškvietimo. Modelis gali jo nepalaikyti arba tarpinis serveris prieš galinį tašką gali šalinti laukelį tools."
+
+#: src/components/settings-panel.tsx
+msgid "Agent type"
+msgstr "Agento tipas"
+
+#: src/components/skills-panel.tsx
+msgid "Allowed tools"
+msgstr "Leidžiami įrankiai"
+
+#: src/components/perf-panel.tsx
+msgid "Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines."
+msgstr "Taip pat įrašyti kiekvieną ciklą JSON Lines formatu į našumo žurnalo katalogą, kad būtų galima rinkti duomenis iš kelių seansų ar kompiuterių."
+
+#: src/components/settings-panel.tsx
+msgid "Also classify with the chat model"
+msgstr "Taip pat klasifikuoti pokalbio modeliu"
+
+#: src/components/settings-panel.tsx
+msgid "Always confirm"
+msgstr "Visada klausti patvirtinimo"
+
+#: notebook_intelligence/claude.py
+msgid "Approve Bash tool to execute the command above?"
+msgstr "Leisti Bash įrankiui vykdyti aukščiau pateiktą komandą?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve running this command?"
+msgstr "Leisti vykdyti šią komandą?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve this %1 tool call?"
+msgstr "Patvirtinti šį %1 įrankio iškvietimą?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approving grants a lasting permission, not only this request."
+msgstr "Patvirtinus suteikiamas ilgalaikis leidimas, ne tik šiai užklausai."
+
+#: notebook_intelligence/claude.py
+msgid "Are you sure you want to call this tool?"
+msgstr "Ar tikrai norite iškviesti šį įrankį?"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Args (one per line)"
+msgstr "Argumentai (po vieną eilutėje)"
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence to generate Python code..."
+msgstr "Paprašykite Notebook Intelligence sugeneruoti Python kodą..."
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence..."
+msgstr "Klauskite Notebook Intelligence..."
+
+#: src/components/settings-panel.tsx
+msgid "Ask about cell outputs"
+msgstr "Klausti apie langelio išvestis"
+
+#: src/cell-output-toolbar.ts src/index.ts
+msgid "Ask about this output"
+msgstr "Klausti apie šią išvestį"
+
+#: src/components/settings-panel.tsx
+msgid "Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English."
+msgstr "Prašyti DI rašyti pokalbio atsakymus ir Chatbook langelių aprašus ta kalba, kuri nustatyta JupyterLab. Kodas, identifikatoriai ir failų turinys paliekami nepakeisti. Neturi poveikio, kai JupyterLab naudoja anglų kalbą."
+
+#: src/components/perf-panel.tsx
+msgid "Attribute detail"
+msgstr "Atributų detalumas"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (milliseconds)"
+msgstr "Automatinio užbaigimo delsa (milisekundėmis)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (ms)"
+msgstr "Automatinio užbaigimo delsa (ms)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete model"
+msgstr "Automatinio užbaigimo modelis"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run"
+msgstr "Automatinis vykdymas"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run when a static scan looks clean. Confirm when it flags a risk or cannot parse the cell. The scan is a speed bump, not a security boundary; false negatives are inevitable."
+msgstr "Vykdyti automatiškai, kai statinis skenavimas atrodo švarus. Klausti patvirtinimo, kai jis pažymi riziką arba negali išanalizuoti langelio. Skenavimas yra greičio slenkstis, o ne saugumo riba; klaidingai neigiami rezultatai neišvengiami."
+
+#: src/components/settings-panel.tsx
+msgid "Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
+msgstr "Automatiškai įkelti iš naujo bloknotų ir failų redaktoriaus skirtukus, kai išorinis procesas (terminalo komanda, sinchronizavimo klientas ar DI agentas) redaguoja failą. Praleidžiama, kai skirtuke yra neišsaugotų vietinių pakeitimų."
+
+#: src/components/skills-panel.tsx
+msgid "Back"
+msgstr "Atgal"
+
+#: src/components/settings-panel.tsx
+msgid "Backend kernel"
+msgstr "Vidinis branduolys"
+
+#: src/chat-sidebar.tsx
+msgid "Bad response"
+msgstr "Blogas atsakymas"
+
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
+msgid "Base URL"
+msgstr "Bazinis URL"
+
+#: src/components/perf-panel.tsx
+msgid "Below what local storage delivers. Worth comparing against a known-good node."
+msgstr "Mažiau, nei pasiekia vietinė saugykla. Verta palyginti su žinomai gerai veikiančiu mazgu."
+
+#: src/chat-sidebar.tsx
+msgid "Binary files cannot be attached as chat context."
+msgstr "Dvejetainių failų negalima pridėti kaip pokalbio konteksto."
+
+#: src/components/skills-panel.tsx
+msgid "Breadcrumb"
+msgstr "Naršymo kelias"
+
+#: src/chat-sidebar.tsx
+msgid "Built-in"
+msgstr "Integruoti"
+
+#: src/components/skills-panel.tsx
+msgid "Bundle contains %1 file; showing %2 only. Edit supporting files directly on disk."
+msgid_plural "Bundle contains %1 files; showing %2 only. Edit supporting files directly on disk."
+msgstr[0] "Rinkinyje yra %1 failas; rodomas tik %2. Pagalbinius failus redaguokite tiesiai diske."
+msgstr[1] "Rinkinyje yra %1 failai; rodomas tik %2. Pagalbinius failus redaguokite tiesiai diske."
+msgstr[2] "Rinkinyje yra %1 failų; rodomas tik %2. Pagalbinius failus redaguokite tiesiai diske."
+
+#: src/components/settings-panel.tsx
+msgid "By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs."
+msgstr "Pagal numatytuosius nustatymus agentas klausia prieš atlikdamas bet ką, kas viršija patikimas tik skaitymo komandas. Visiška prieiga leidžia jam redaguoti darbo srities failus ir vykdyti apvalkalo komandas neklausiant, smėlio dėžėje, kurioje prieiga prie tinklo pagal numatytuosius nustatymus išjungta. Viskas, ką smėlio dėžė blokuoja, nepavyksta, o ne prašo leidimo. Agento skaitomas turinys gali paveikti tai, ką jis vykdo."
+
+#: src/chat-sidebar.tsx
+msgid "By using Notebook Intelligence with GitHub Copilot subscription you agree to %1. Review the terms to understand about usage, limitations and ways to improve GitHub Copilot. Please review %2."
+msgstr "Naudodami Notebook Intelligence su GitHub Copilot prenumerata sutinkate su %1. Peržiūrėkite sąlygas, kad suprastumėte naudojimą, apribojimus ir būdus tobulinti GitHub Copilot. Taip pat peržiūrėkite %2."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions is active: tool calls run without confirmation"
+msgstr "Įjungtas leidimų apėjimas: įrankių iškvietimai vykdomi be patvirtinimo"
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions runs every tool call without asking for confirmation, with your full user account access. Content the agent reads can steer what it runs. Stays on until you switch modes or start a new session."
+msgstr "Leidimų apėjimas vykdo kiekvieną įrankio iškvietimą neprašydamas patvirtinimo, su visa jūsų naudotojo paskyros prieiga. Agento skaitomas turinys gali paveikti tai, ką jis vykdo. Lieka įjungtas, kol pakeisite režimą arba pradėsite naują seansą."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass permissions"
+msgstr "Apeiti leidimus"
+
+#: notebook_intelligence/claude.py
+msgid "Calling tool '%1'..."
+msgstr "Iškviečiamas įrankis „%1“..."
+
+#: src/chatbook-toolbar.ts
+msgid "Can't convert this notebook yet"
+msgstr "Šio bloknoto kol kas negalima konvertuoti"
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Cancel"
+msgstr "Atšaukti"
+
+#: src/chat-sidebar.tsx
+msgid "Cancel activation"
+msgstr "Atšaukti aktyvinimą"
+
+#: src/chat-sidebar.tsx
+msgid "Canceled"
+msgstr "Atšaukta"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for %1"
+msgstr "Negalima eksportuoti nepaleistų Chatbook langelių: nėra saugaus eilutės komentaro kalbai %1"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for the selected language"
+msgstr "Negalima eksportuoti nepaleistų Chatbook langelių: nėra saugaus eilutės komentaro pasirinktai kalbai"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1"
+msgstr "Langelis %1"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output"
+msgstr "Langelio %1 išvestis"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output (%2)"
+msgstr "Langelio %1 išvestis (%2)"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output"
+msgstr "Langelio išvestis"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output (%1)"
+msgstr "Langelio išvestis (%1)"
+
+#: src/components/settings-panel.tsx
+msgid "Cell output features"
+msgstr "Langelio išvesties funkcijos"
+
+#: src/chat-sidebar.tsx
+msgid "Change provider"
+msgstr "Keisti teikėją"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Characters that would not display are shown as \\u{XXXX}."
+msgstr "Simboliai, kurių nepavyktų parodyti, rodomi kaip \\u{XXXX}."
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent setting sources"
+msgstr "Pokalbio agento nustatymų šaltiniai"
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent tools"
+msgstr "Pokalbio agento įrankiai"
+
+#: src/chat-sidebar.tsx
+msgid "Chat is disabled as you don't have a model configured."
+msgstr "Pokalbis išjungtas, nes nesukonfigūravote modelio."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by ACP agent mode."
+msgstr "Pokalbį aptarnauja ACP agento režimas."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by Claude mode."
+msgstr "Pokalbį aptarnauja Claude režimas."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by the configured chat model provider."
+msgstr "Pokalbį aptarnauja sukonfigūruotas pokalbio modelio teikėjas."
+
+#: src/chat-sidebar.tsx
+msgid "Chat mode"
+msgstr "Pokalbio režimas"
+
+#: src/components/settings-panel.tsx
+msgid "Chat model"
+msgstr "Pokalbio modelis"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Chat model is not set!"
+msgstr "Pokalbio modelis nenustatytas!"
+
+#: src/components/readiness-card.tsx
+msgid "Chat path"
+msgstr "Pokalbio kelias"
+
+#: src/chat-sidebar.tsx
+msgid "Chat response image"
+msgstr "Pokalbio atsakymo vaizdas"
+
+#: src/chat-sidebar.tsx
+msgid "Chat transcript"
+msgstr "Pokalbio stenograma"
+
+#: src/index.ts
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook aprašas nepavyko"
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
+msgstr "Chatbook generuoja %1 kodą ir vykdo jį branduolyje %2. Tas procesas turi tokias pačias teises kaip bet kuris Jupyter branduolys: failai, tinklas, aplinkos kintamieji ir paketų diegimas."
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook is disabled by your administrator"
+msgstr "Chatbook išjungė jūsų administratorius"
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm every natural-language run."
+msgstr "Chatbook nustatytas klausti patvirtinimo kiekvieną kartą vykdant natūralia kalba."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm only when the scan flags a risk."
+msgstr "Chatbook nustatytas klausti patvirtinimo tik tada, kai skenavimas pažymi riziką."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to run generated code immediately."
+msgstr "Chatbook nustatytas iš karto vykdyti sugeneruotą kodą."
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
+msgstr "Chatbook lieka bloknoto branduoliu, tačiau sugeneruotas kodas vykdomas šiame Jupyter kernelspec. Kalba, sintaksės paryškinimas ir eksportas atitinka tą branduolį. Pakeitę iš naujo paleiskite atidarytus Chatbook bloknotus."
+
+#: src/components/perf-panel.tsx
+msgid "Check status: %1"
+msgstr "Patikrinti būseną: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key and Base URL for this provider in NBI Settings, and that the endpoint is reachable from the Jupyter server process."
+msgstr "NBI nustatymuose patikrinkite šio teikėjo API raktą ir bazinį URL bei ar galinis taškas pasiekiamas iš Jupyter serverio proceso."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key, the Base URL, and that the selected model id is one this endpoint serves. The server log carries the provider's own error text."
+msgstr "Patikrinkite API raktą, bazinį URL ir ar pasirinkto modelio ID yra vienas iš šio galinio taško teikiamų. Serverio žurnale yra paties teikėjo klaidos tekstas."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the Jupyter server log for the underlying error."
+msgstr "Pagrindinės klaidos ieškokite Jupyter serverio žurnale."
+
+#: src/components/readiness-card.tsx
+msgid "Checking configuration…"
+msgstr "Tikrinama konfigūracija…"
+
+#: src/components/readiness-card.tsx
+msgid "Checking…"
+msgstr "Tikrinama…"
+
+#: src/index.ts
+msgid "Choose start directory for %1"
+msgstr "Pasirinkite %1 pradžios katalogą"
+
+#: notebook_intelligence/extension.py
+msgid "Claude Code mode is not enabled"
+msgstr "Claude Code režimas neįjungtas"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Claude Code mode is still starting. Please try again in a moment."
+msgstr "Claude Code režimas dar paleidžiamas. Po akimirkos bandykite dar kartą."
+
+#: src/index.ts
+msgid "Claude Code terminal session"
+msgstr "Claude Code terminalo seansas"
+
+#: src/components/settings-panel.tsx
+msgid "Claude Code tools"
+msgstr "Claude Code įrankiai"
+
+#: notebook_intelligence/extension.py
+msgid "Claude MCP management is disabled by your administrator"
+msgstr "Claude MCP valdymą išjungė jūsų administratorius"
+
+#: src/components/settings-panel.tsx
+msgid "Claude account"
+msgstr "Claude paskyra"
+
+#: src/chat-sidebar.tsx src/components/readiness-card.tsx
+msgid "Claude mode"
+msgstr "Claude režimas"
+
+#: src/components/permission-mode-select.tsx
+msgid "Claude permission mode"
+msgstr "Claude leidimų režimas"
+
+#: notebook_intelligence/claude.py
+msgid "Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan."
+msgstr "Claude nori pereiti į planavimo režimą, kad ištirtų ir suprojektuotų įgyvendinimo būdą. Planavimo režimu Claude nuodugniai ištirs kodo bazę, nustatys esamus šablonus, suprojektuos įgyvendinimo strategiją ir pateiks planą jūsų patvirtinimui. Kodas nebus keičiamas, kol nepatvirtinsite plano."
+
+#: src/components/settings-panel.tsx
+msgid "Click to learn more about security implications"
+msgstr "Spustelėkite, kad sužinotumėte daugiau apie saugumo pasekmes"
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Close"
+msgstr "Uždaryti"
+
+#: src/chat-sidebar.tsx
+msgid "Close file picker"
+msgstr "Uždaryti failų parinkiklį"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Close notebook generation popover"
+msgstr "Uždaryti bloknoto generavimo iškylantįjį langą"
+
+#: src/chat-sidebar.tsx
+msgid "Close tools picker"
+msgstr "Uždaryti įrankių parinkiklį"
+
+#: src/chatbook.ts
+msgid "Code cell (%1): switch to natural language"
+msgstr "Kodo langelis (%1): perjungti į natūralią kalbą"
+
+#: src/chatbook.ts
+msgid "Code cell: switch to natural language"
+msgstr "Kodo langelis: perjungti į natūralią kalbą"
+
+#: src/components/perf-panel.tsx
+msgid "Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn."
+msgstr "Šaltajame paleidime čia dominuoja diegimo medžio skaitymas. Būtent šis skaičius kiekviename cikle virsta stulpeliu Paleidimas."
+
+#: notebook_intelligence/acp_agent.py src/components/claude-mcp-panel.tsx
+msgid "Command"
+msgstr "Komanda"
+
+#: src/components/perf-panel.tsx
+msgid "Compare %1 against %2: close together means the time is in the model or the gateway, far apart means it is local. Expand a row for that turn's phase breakdown."
+msgstr "Palyginkite %1 su %2: jei reikšmės artimos, laikas sunaudojamas modelyje arba šliuze, jei toli viena nuo kitos, priežastis vietinė. Išskleiskite eilutę, kad pamatytumėte to ciklo fazių suskirstymą."
+
+#: src/components/settings-panel.tsx
+msgid "Config file path"
+msgstr "Konfigūracijos failo kelias"
+
+#: src/chat-sidebar.tsx
+msgid "Configure models"
+msgstr "Konfigūruoti modelius"
+
+#: src/chat-sidebar.tsx
+msgid "Configure providers, API keys, MCP servers, and skills"
+msgstr "Konfigūruoti teikėjus, API raktus, MCP serverius ir įgūdžius"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools"
+msgstr "Konfigūruoti įrankius"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools (warning: irreversible tools selected)"
+msgstr "Konfigūruoti įrankius (įspėjimas: pasirinkti negrįžtami įrankiai)"
+
+#: src/components/perf-panel.tsx
+msgid "Configured endpoint"
+msgstr "Sukonfigūruotas galinis taškas"
+
+#: src/components/permission-mode-select.tsx
+msgid "Confirm Bypass Permissions"
+msgstr "Patvirtinti leidimų apėjimą"
+
+#: src/components/perf-panel.tsx
+msgid "Confirm and run"
+msgstr "Patvirtinti ir vykdyti"
+
+#: src/components/settings-panel.tsx
+msgid "Confirm if risky"
+msgstr "Patvirtinti, jei rizikinga"
+
+#: src/components/perf-panel.tsx
+msgid "Connect and spawn took %1. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up."
+msgstr "Prisijungimas ir paleidimas užtruko %1. Tai antrinio proceso ir CLI paleidimas, paprastai node ir rinkinio skaitymas, kur ir pasireiškia lėta saugykla."
+
+#: src/components/mcp-util.ts
+msgid "Connection failed. Reload MCP servers to retry."
+msgstr "Prisijungti nepavyko. Norėdami bandyti dar kartą, įkelkite MCP serverius iš naujo."
+
+#: src/components/perf-panel.tsx
+msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
+msgstr "Vien ryšio užmezgimas kainuoja tiek prieš prasidedant bet kokiam modelio darbui, ir kiekvienas šaltas prisijungimas prie šliuzo už tai moka."
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "Konteksto langas"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "Konteksto lango ilgis"
+
+#: src/components/settings-panel.tsx
+msgid "Conversation History"
+msgstr "Pokalbių istorija"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert"
+msgstr "Konvertuoti"
+
+#: src/index.ts
+msgid "Convert notebook to Chatbook"
+msgstr "Konvertuoti bloknotą į Chatbook"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert to Chatbook"
+msgstr "Konvertuoti į Chatbook"
+
+#: src/components/perf-panel.tsx
+msgid "Copied"
+msgstr "Nukopijuota"
+
+#: src/markdown-renderer.tsx
+msgid "Copy"
+msgstr "Kopijuoti"
+
+#: src/components/perf-panel.tsx
+msgid "Copy as JSON"
+msgstr "Kopijuoti kaip JSON"
+
+#: src/chat-sidebar.tsx
+msgid "Copy code %1 and enter at %2 to allow access to GitHub Copilot from this app. Activation could take up to a minute after you enter the code."
+msgstr "Nukopijuokite kodą %1 ir įveskite jį adresu %2, kad leistumėte šiai programai pasiekti GitHub Copilot. Įvedus kodą aktyvinimas gali užtrukti iki minutės."
+
+#: src/markdown-renderer.tsx
+msgid "Copy code to clipboard"
+msgstr "Kopijuoti kodą į iškarpinę"
+
+#: src/components/claude-session-picker.tsx
+msgid "Copy resume command"
+msgstr "Kopijuoti tęsimo komandą"
+
+#: src/chat-sidebar.tsx
+msgid "Could not attach: %1"
+msgstr "Nepavyko pridėti: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Could not convert to Chatbook: %1"
+msgstr "Nepavyko konvertuoti į Chatbook: %1"
+
+#: src/chatbook.ts
+msgid "Could not generate a description: %1"
+msgstr "Nepavyko sugeneruoti aprašo: %1"
+
+#: notebook_intelligence/extension.py
+msgid "Could not list workspace mentions"
+msgstr "Nepavyko pateikti darbo srities paminėjimų sąrašo"
+
+#: src/index.ts
+msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
+msgstr "Sukurti šio bloknoto Chatbook kopiją, originalą paliekant nepakeistą"
+
+#: src/chatbook-toolbar.ts
+msgid "Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments."
+msgstr "Sukurti naują %1 bloknotą iš šio Chatbook. Originalus Chatbook lieka nepakeistas. Nepaleisti langeliai tampa komentarais."
+
+#: src/index.ts
+msgid "Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged"
+msgstr "Sukurti naują bloknotą iš šio Chatbook naudojant sukonfigūruotą vidinį branduolį, originalą paliekant nepakeistą"
+
+#: src/index.ts
+msgid "Create a notebook whose cells are natural-language prompts"
+msgstr "Sukurti bloknotą, kurio langeliai yra raginimai natūralia kalba"
+
+#: src/markdown-renderer.tsx
+msgid "Create new file from code"
+msgstr "Sukurti naują failą iš kodo"
+
+#: src/markdown-renderer.tsx
+msgid "Create new notebook from code"
+msgstr "Sukurti naują bloknotą iš kodo"
+
+#: src/chatbook-toolbar.ts
+msgid "Created Chatbook copy: %1"
+msgstr "Sukurta Chatbook kopija: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Sukuria šio bloknoto Chatbook kopiją šalia jo ir ją atidaro, įskaitant visus neišsaugotus pakeitimus. Kodo langeliai tampa Chatbook kodo langeliais ir vykdomi tiksliai taip, kaip parašyti; išvestys ir Markdown išsaugomi. Originalas nekeičiamas. Jo kodas bus vykdomas branduolyje %1 (Chatbook vykdymo branduolys), o ne %2. Dabar modeliui nieko nesiunčiama. Pirmą kartą sėkmingai paleidus kiekvieną kodo langelį, jo kodas siunčiamas modeliui, kad būtų gautas vienos eilutės aprašas."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Sukuria šio bloknoto Chatbook kopiją šalia jo ir ją atidaro, įskaitant visus neišsaugotus pakeitimus. Kodo langeliai tampa Chatbook kodo langeliais ir vykdomi tiksliai taip, kaip parašyti; išvestys ir Markdown išsaugomi. Originalas nekeičiamas. Jo kodas bus vykdomas branduolyje %1 (Chatbook vykdymo branduolys). Dabar modeliui nieko nesiunčiama. Pirmą kartą sėkmingai paleidus kiekvieną kodo langelį, jo kodas siunčiamas modeliui, kad būtų gautas vienos eilutės aprašas."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Sukuria šio bloknoto Chatbook kopiją šalia jo ir ją atidaro, įskaitant visus neišsaugotus pakeitimus. Kodo langeliai tampa Chatbook kodo langeliais ir vykdomi tiksliai taip, kaip parašyti; išvestys ir Markdown išsaugomi. Originalas nekeičiamas. Dabar modeliui nieko nesiunčiama. Pirmą kartą sėkmingai paleidus kiekvieną kodo langelį, jo kodas siunčiamas modeliui, kad būtų gautas vienos eilutės aprašas."
+
+#: notebook_intelligence/readiness.py
+msgid "Credential present from %1."
+msgstr "Prisijungimo duomenys rasti šaltinyje %1."
+
+#: src/components/settings-panel.tsx
+msgid "Default (recommended)"
+msgstr "Numatytasis (rekomenduojama)"
+
+#: src/components/settings-panel.tsx
+msgid "Default chat mode"
+msgstr "Numatytasis pokalbio režimas"
+
+#: src/components/skills-panel.tsx
+msgid "Delete"
+msgstr "Ištrinti"
+
+#: src/components/skills-panel.tsx
+msgid "Delete file?"
+msgstr "Ištrinti failą?"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill"
+msgstr "Ištrinti įgūdį"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill?"
+msgstr "Ištrinti įgūdį?"
+
+#: src/components/skills-panel.tsx
+msgid "Deleted \"%1\""
+msgstr "Ištrinta: „%1“"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Denial recorded"
+msgstr "Atsisakymas įrašytas"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Describe how to update the active notebook..."
+msgstr "Aprašykite, kaip atnaujinti aktyvų bloknotą..."
+
+#: src/components/skills-panel.tsx
+msgid "Description"
+msgstr "Aprašas"
+
+#: src/components/skills-panel.tsx
+msgid "Description is required."
+msgstr "Aprašas privalomas."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Details from %1"
+msgstr "Išsami informacija iš %1"
+
+#: src/components/perf-panel.tsx
+msgid "Diagnostics"
+msgstr "Diagnostika"
+
+#: src/chat-sidebar.tsx
+msgid "Directories cannot be attached as chat context."
+msgstr "Katalogų negalima pridėti kaip pokalbio konteksto."
+
+#: src/components/plugins-panel.tsx
+msgid "Disable"
+msgstr "Išjungti"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disable for workspace"
+msgstr "Išjungti darbo sričiai"
+
+#: src/components/perf-panel.tsx
+msgid "Disabled by your administrator (%1)"
+msgstr "Išjungė jūsų administratorius (%1)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabled for workspace"
+msgstr "Išjungta darbo sričiai"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabling…"
+msgstr "Išjungiama…"
+
+#: src/components/skills-panel.tsx
+msgid "Discard"
+msgstr "Atmesti"
+
+#: src/components/skills-panel.tsx
+msgid "Discard unsaved changes?"
+msgstr "Atmesti neišsaugotus pakeitimus?"
+
+#: src/components/skills-panel.tsx
+msgid "Dismiss"
+msgstr "Užverti"
+
+#: notebook_intelligence/claude.py
+msgid "Do you want to confirm the plan above?"
+msgstr "Ar norite patvirtinti aukščiau pateiktą planą?"
+
+#: src/chat-sidebar.tsx
+msgid "Don't use as context"
+msgstr "Nenaudoti kaip konteksto"
+
+#: src/chat-sidebar.tsx
+msgid "Done"
+msgstr "Atlikta"
+
+#: src/chat-sidebar.tsx
+msgid "Drop files to attach as context"
+msgstr "Numeskite failus, kad pridėtumėte juos kaip kontekstą"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: @-mention"
+msgstr "Numetimo režimas: @ paminėjimas"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: raw path"
+msgstr "Numetimo režimas: neapdorotas kelias"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate"
+msgstr "Dubliuoti"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate skill"
+msgstr "Dubliuoti įgūdį"
+
+#: src/components/perf-panel.tsx
+msgid "Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local."
+msgstr "Trukmė, kurią SDK priskiria modelio API. Palyginkite su stulpeliu Aktyvus: jei reikšmės artimos, laikas sunaudojamas šliuze arba modelyje, jei toli viena nuo kitos, priežastis vietinė."
+
+#: src/components/skills-panel.tsx
+msgid "Edit"
+msgstr "Redaguoti"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit Python files using the JupyterLab file editor"
+msgstr "Redaguoti Python failus JupyterLab failų redaktoriumi"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit notebook using the JupyterLab notebook editor"
+msgstr "Redaguoti bloknotą JupyterLab bloknotų redaktoriumi"
+
+#: src/components/skills-panel.tsx
+msgid "Edit skill"
+msgstr "Redaguoti įgūdį"
+
+#: src/chat-sidebar.tsx
+msgid "Empty files do not provide useful context."
+msgstr "Tušti failai nesuteikia naudingo konteksto."
+
+#: src/components/plugins-panel.tsx
+msgid "Enable"
+msgstr "Įjungti"
+
+#: src/components/settings-panel.tsx
+msgid "Enable ACP mode"
+msgstr "Įjungti ACP režimą"
+
+#: src/components/settings-panel.tsx
+msgid "Enable Claude mode"
+msgstr "Įjungti Claude režimą"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enable for workspace"
+msgstr "Įjungti darbo sričiai"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enabling…"
+msgstr "Įjungiama…"
+
+#: notebook_intelligence/claude.py
+msgid "Enter Plan Mode"
+msgstr "Pereiti į planavimo režimą"
+
+#: src/components/plugins-panel.tsx
+msgid "Enter a plugin name or the plugin@marketplace shorthand."
+msgstr "Įveskite papildinio pavadinimą arba sutrumpinimą plugin@marketplace."
+
+#: notebook_intelligence/claude.py
+msgid "Entered plan mode"
+msgstr "Pereita į planavimo režimą"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Environment (KEY=value, one per line)"
+msgstr "Aplinka (KEY=value, po vieną eilutėje)"
+
+#: notebook_intelligence/claude.py
+msgid "Error communicating with Claude agent: %1"
+msgstr "Klaida bendraujant su Claude agentu: %1"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Execute shell commands using embedded terminal in Agent UI or JupyterLab terminal"
+msgstr "Vykdyti apvalkalo komandas agento sąsajos įterptajame terminale arba JupyterLab terminale"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgid "Execution kernel"
+msgstr "Vykdymo branduolys"
+
+#: src/components/settings-panel.tsx
+msgid "Execution mode"
+msgstr "Vykdymo režimas"
+
+#: notebook_intelligence/claude.py
+msgid "Exit plan mode"
+msgstr "Išeiti iš planavimo režimo"
+
+#: src/components/perf-panel.tsx
+msgid "Expand"
+msgstr "Išskleisti"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Expected at least one server entry."
+msgstr "Tikėtasi bent vieno serverio įrašo."
+
+#: src/components/settings-panel.tsx
+msgid "Experimental. Routes chat through an external coding agent over the %1. Requires a preinstalled %2 adapter (%3). See the %4. ACP mode and Claude mode are mutually exclusive: enabling one turns the other off."
+msgstr "Eksperimentinė funkcija. Nukreipia pokalbį per išorinį programavimo agentą naudojant %1. Reikalingas iš anksto įdiegtas %2 adapteris (%3). Žr. %4. ACP režimas ir Claude režimas yra vienas kitą išskiriantys: įjungus vieną, kitas išjungiamas."
+
+#: src/components/settings-panel.tsx
+msgid "Explain cell errors"
+msgstr "Paaiškinti langelio klaidas"
+
+#: src/index.ts
+msgid "Explain code"
+msgstr "Paaiškinti kodą"
+
+#: src/index.ts
+msgid "Explain output"
+msgstr "Paaiškinti išvestį"
+
+#: src/cell-output-toolbar.ts
+msgid "Explain this cell's output"
+msgstr "Paaiškinti šio langelio išvestį"
+
+#: src/chatbook-toolbar.ts
+msgid "Export"
+msgstr "Eksportuoti"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as %1 notebook"
+msgstr "Eksportuoti kaip %1 bloknotą"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as a notebook for the Chatbook backend kernel"
+msgstr "Eksportuoti kaip bloknotą Chatbook vidiniam branduoliui"
+
+#: src/index.ts
+msgid "Export as code notebook"
+msgstr "Eksportuoti kaip kodo bloknotą"
+
+#: src/chatbook-toolbar.ts
+msgid "Export failed: %1"
+msgstr "Eksportuoti nepavyko: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Exported %1"
+msgstr "Eksportuota: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Extension tools"
+msgstr "Plėtinių įrankiai"
+
+#: src/components/settings-panel.tsx
+msgid "External changes"
+msgstr "Išoriniai pakeitimai"
+
+#: src/index.ts
+msgid "Failed to access the notebook: %1"
+msgstr "Nepavyko pasiekti bloknoto: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach '%1'."
+msgstr "Nepavyko pridėti „%1“."
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach workspace file '%1'."
+msgstr "Nepavyko pridėti darbo srities failo „%1“."
+
+#: src/components/claude-session-picker.tsx
+msgid "Failed to copy resume command"
+msgstr "Nepavyko nukopijuoti tęsimo komandos"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to delete skill: %1"
+msgstr "Nepavyko ištrinti įgūdžio: %1"
+
+#: src/index.ts
+msgid "Failed to find active file"
+msgstr "Nepavyko rasti aktyvaus failo"
+
+#: src/index.ts
+msgid "Failed to find active notebook"
+msgstr "Nepavyko rasti aktyvaus bloknoto"
+
+#: src/index.ts
+msgid "Failed to find notebook: %1"
+msgstr "Nepavyko rasti bloknoto: %1"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get completions from GitHub Copilot: [%1]: %2"
+msgstr "Nepavyko gauti užbaigimų iš GitHub Copilot: [%1]: %2"
+
+#: notebook_intelligence/extension.py
+msgid "Failed to get device verification info from GitHub Copilot"
+msgstr "Nepavyko gauti įrenginio patvirtinimo informacijos iš GitHub Copilot"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get responses from GitHub Copilot: [%1]: %2"
+msgstr "Nepavyko gauti atsakymų iš GitHub Copilot: [%1]: %2"
+
+#: src/index.ts
+msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
+msgstr "Nepavyko įterpti žymeklio vietoje. Atidarykite bloknotą arba failą, kad įterptumėte kodą."
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to load plugins: %1"
+msgstr "Nepavyko įkelti papildinių: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Failed to load report: %1"
+msgstr "Nepavyko įkelti ataskaitos: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to load workspace files."
+msgstr "Nepavyko įkelti darbo srities failų."
+
+#: src/components/skills-panel.tsx
+msgid "Failed to read skill: %1"
+msgstr "Nepavyko perskaityti įgūdžio: %1"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Failed to remove: %1"
+msgstr "Nepavyko pašalinti: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to restore skill: %1"
+msgstr "Nepavyko atkurti įgūdžio: %1"
+
+#: src/index.ts
+msgid "Failed to save MCP config: %1"
+msgstr "Nepavyko išsaugoti MCP konfigūracijos: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to uninstall: %1"
+msgstr "Nepavyko pašalinti: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update marketplace: %1"
+msgstr "Nepavyko atnaujinti prekyvietės: %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Failed to update workspace state: %1"
+msgstr "Nepavyko atnaujinti darbo srities būsenos: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update: %1"
+msgstr "Nepavyko atnaujinti: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Fetching…"
+msgstr "Gaunama…"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "File '%1' created successfully"
+msgstr "Failas „%1“ sėkmingai sukurtas"
+
+#: notebook_intelligence/extension.py
+msgid "File exceeds %1 MB upload limit"
+msgstr "Failas viršija %1 MB įkėlimo ribą"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system read operations within Jupyter root directory"
+msgstr "Failų sistemos skaitymo operacijos Jupyter šakniniame kataloge"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system write operations within Jupyter root directory"
+msgstr "Failų sistemos rašymo operacijos Jupyter šakniniame kataloge"
+
+#: notebook_intelligence/acp_agent.py src/components/skills-panel.tsx
+msgid "Files"
+msgstr "Failai"
+
+#: src/components/launcher-picker.tsx
+msgid "Filter sessions..."
+msgstr "Filtruoti seansus..."
+
+#: src/components/perf-panel.tsx
+msgid "First content chunk to last. Excludes connect."
+msgstr "Nuo pirmos turinio dalies iki paskutinės. Neįskaitant prisijungimo."
+
+#: src/index.ts
+msgid "Fix code"
+msgstr "Taisyti kodą"
+
+#: src/index.ts
+msgid "Focus Notebook Intelligence chat input"
+msgstr "Perkelti fokusą į Notebook Intelligence pokalbio įvesties lauką"
+
+#: src/components/settings-panel.tsx
+msgid "Full access (run without asking)"
+msgstr "Visiška prieiga (vykdyti neklausiant)"
+
+#: src/components/perf-panel.tsx
+msgid "Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket."
+msgstr "Visas: failų baziniai vardai ir modelių, įrankių bei serverių pavadinimai įrašomi taip, kaip parašyti. Lengviau skaityti vietoje; patikrinkite prieš įklijuodami į palaikymo užklausą."
+
+#: src/components/perf-panel.tsx
+msgid "Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text."
+msgstr "Pertraukos tarp srauto dalių, ilgesnės už strigimo slenkstį. Kiekviena pažymėta pagal tai, ar buvo po įrankio naudojimo, ar po teksto."
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate"
+msgstr "Generuoti"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate (Enter)"
+msgstr "Generuoti (Enter)"
+
+#: src/components/settings-panel.tsx
+msgid "Generate and execute immediately, same as a normal notebook cell. Inspect generated code afterward if you need to."
+msgstr "Generuoti ir vykdyti iš karto, kaip įprastą bloknoto langelį. Jei reikia, sugeneruotą kodą peržiūrėkite vėliau."
+
+#: src/index.ts
+msgid "Generate code"
+msgstr "Generuoti kodą"
+
+#: src/index.ts
+msgid "Generated code"
+msgstr "Sugeneruotas kodas"
+
+#: src/chat-sidebar.tsx
+msgid "Generating"
+msgstr "Generuojama"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generating notebook…"
+msgstr "Generuojamas bloknotas…"
+
+#: src/chat-sidebar.tsx
+msgid "Generating response."
+msgstr "Generuojamas atsakymas."
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generation failed: %1"
+msgstr "Generuoti nepavyko: %1"
+
+#: src/index.ts
+msgid "GitHub Copilot Status"
+msgstr "GitHub Copilot būsena"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot chat terms"
+msgstr "GitHub Copilot pokalbių sąlygos"
+
+#: src/components/settings-panel.tsx
+msgid "GitHub Copilot login"
+msgstr "GitHub Copilot prisijungimas"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Logged in"
+msgstr "GitHub Copilot: prisijungta"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Not logged in"
+msgstr "GitHub Copilot: neprisijungta"
+
+#: notebook_intelligence/extension.py
+msgid "GitHub Skill import is disabled by configuration"
+msgstr "Įgūdžių importavimas iš GitHub išjungtas konfigūracijoje"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Terms for Additional Products and Features"
+msgstr "GitHub papildomų produktų ir funkcijų sąlygos"
+
+#: src/components/skills-panel.tsx
+msgid "GitHub repo URL"
+msgstr "GitHub saugyklos URL"
+
+#: src/components/plugins-panel.tsx
+msgid "GitHub-sourced marketplaces are disabled by your administrator. Use a non-GitHub URL or a local filesystem path."
+msgstr "Iš GitHub kilusias prekyvietes išjungė jūsų administratorius. Naudokite ne GitHub URL arba vietinės failų sistemos kelią."
+
+#: src/chat-sidebar.tsx
+msgid "Good response"
+msgstr "Geras atsakymas"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Headers (Name: value, one per line)"
+msgstr "Antraštės (Name: value, po vieną eilutėje)"
+
+#: src/components/tool-call-card.tsx
+msgid "Hide diff"
+msgstr "Slėpti skirtumus"
+
+#: src/components/perf-panel.tsx
+msgid "Hide raw output"
+msgstr "Slėpti neapdorotą išvestį"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)"
+msgstr "Paslėpti šį serverį nuo Claude dabartinėje Jupyter darbo srityje (kitoms darbo sritims įtakos neturi)"
+
+#: src/components/perf-panel.tsx
+msgid "Hide timeline for the turn at %1"
+msgstr "Slėpti ciklo %1 laiko juostą"
+
+#: src/components/perf-panel.tsx
+msgid "Host load average"
+msgstr "Pagrindinio kompiuterio vidutinė apkrova"
+
+#: notebook_intelligence/readiness.py
+msgid "If turns fail with a 401, sign in again from NBI Settings under GitHub Copilot."
+msgstr "Jei ciklai nepavyksta su klaida 401, vėl prisijunkite NBI nustatymų skiltyje GitHub Copilot."
+
+#: src/components/skills-panel.tsx
+msgid "Import"
+msgstr "Importuoti"
+
+#: src/components/skills-panel.tsx
+msgid "Import from GitHub"
+msgstr "Importuoti iš GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Import skill from GitHub"
+msgstr "Importuoti įgūdį iš GitHub"
+
+#: src/components/perf-panel.tsx
+msgid "Include network check"
+msgstr "Įtraukti tinklo patikrą"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from chat model"
+msgstr "Paveldėti iš pokalbio modelio"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from general settings"
+msgstr "Paveldėti iš bendrųjų nustatymų"
+
+#: src/index.ts
+msgid "Inline chat failed: %1"
+msgstr "Įterptinis pokalbis nepavyko: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Inline chat model"
+msgstr "Įterptinio pokalbio modelis"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Input"
+msgstr "Įvestis"
+
+#: src/chat-sidebar.tsx
+msgid "Input Parameters"
+msgstr "Įvesties parametrai"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Input mode"
+msgstr "Įvesties režimas"
+
+#: src/components/perf-panel.tsx
+msgid "Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them."
+msgstr "Įvesties žetonai, įskaitant podėlio skaitymus ir rašymus, sumuojami taip pat, kaip pokalbio naudojimo poraštėje."
+
+#: src/markdown-renderer.tsx
+msgid "Insert at cursor"
+msgstr "Įterpti žymeklio vietoje"
+
+#: src/markdown-renderer.tsx
+msgid "Insert code at cursor"
+msgstr "Įterpti kodą žymeklio vietoje"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Install"
+msgstr "Įdiegti"
+
+#: src/components/plugins-panel.tsx
+msgid "Install from"
+msgstr "Įdiegti iš"
+
+#: src/components/skills-panel.tsx
+msgid "Install into"
+msgstr "Įdiegti į"
+
+#: src/components/plugins-panel.tsx
+msgid "Install plugin"
+msgstr "Įdiegti papildinį"
+
+#: notebook_intelligence/readiness.py
+msgid "Install the Claude Code CLI and make sure it is on the PATH of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH to its absolute path and restart."
+msgstr "Įdiekite Claude Code CLI ir įsitikinkite, kad ji yra JupyterLab vykdančio proceso PATH, arba nustatykite NBI_CLAUDE_CLI_PATH į absoliutų jos kelią ir paleiskite iš naujo."
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Installing…"
+msgstr "Diegiama…"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Invalid JSON: %1"
+msgstr "Netinkamas JSON: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Invalid name. %1"
+msgstr "Netinkamas pavadinimas. %1"
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON is empty."
+msgstr "JSON tuščias."
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON must describe a server entry."
+msgstr "JSON turi aprašyti serverio įrašą."
+
+#: src/components/settings-panel.tsx
+msgid "Jupyter UI tools"
+msgstr "Jupyter sąsajos įrankiai"
+
+#: src/components/perf-panel.tsx
+msgid "Jupyter root directory"
+msgstr "Jupyter šakninis katalogas"
+
+#: src/components/skills-panel.tsx
+msgid "Keep editing"
+msgstr "Tęsti redagavimą"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Lasting rule"
+msgstr "Ilgalaikė taisyklė"
+
+#: src/components/skills-panel.tsx
+msgid "Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server."
+msgstr "Nuoroda į saugyklos šaknį, šaką arba pakatalogį, kuriame yra %1. Privačios saugyklos veikia, jei nustatytas %2 arba Jupyter serveryje sukonfigūruotas %3."
+
+#: notebook_intelligence/readiness.py
+msgid "Listing models failed (%1)."
+msgstr "Nepavyko gauti modelių sąrašo (%1)."
+
+#: src/components/readiness-card.tsx
+msgid "Live endpoint check"
+msgstr "Galinio taško tiesioginė patikra"
+
+#: src/components/plugins-panel.tsx
+msgid "Loading marketplace plugins..."
+msgstr "Įkeliami prekyvietės papildiniai..."
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Loading sessions…"
+msgstr "Įkeliami seansai…"
+
+#: src/components/skills-panel.tsx
+msgid "Loading skill…"
+msgstr "Įkeliamas įgūdis…"
+
+#: src/chat-sidebar.tsx
+msgid "Loading workspace files..."
+msgstr "Įkeliami darbo srities failai..."
+
+#: src/components/settings-panel.tsx
+msgid "Loading..."
+msgstr "Įkeliama..."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Loading…"
+msgstr "Įkeliama…"
+
+#: src/components/setting-lock.ts
+msgid "Locked by your administrator"
+msgstr "Užrakino jūsų administratorius"
+
+#: src/components/perf-panel.tsx
+msgid "Log to file"
+msgstr "Rašyti į failą"
+
+#: src/chat-sidebar.tsx
+msgid "Logged in"
+msgstr "Prisijungta"
+
+#: src/chat-sidebar.tsx
+msgid "Logging in..."
+msgstr "Prisijungiama..."
+
+#: src/chat-sidebar.tsx
+msgid "Login status: %1"
+msgstr "Prisijungimo būsena: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Login to GitHub Copilot"
+msgstr "Prisijungti prie GitHub Copilot"
+
+#: src/chat-sidebar.tsx
+msgid "Login using your GitHub account"
+msgstr "Prisijungti naudojant GitHub paskyrą"
+
+#: src/chat-sidebar.tsx
+msgid "Logout"
+msgstr "Atsijungti"
+
+#: src/chat-sidebar.tsx
+msgid "MCP Server Tools"
+msgstr "MCP serverio įrankiai"
+
+#: src/components/settings-panel.tsx
+msgid "MCP Servers"
+msgstr "MCP serveriai"
+
+#: notebook_intelligence/extension.py
+msgid "MCP server '%1' not found in %2 scope"
+msgstr "MCP serveris „%1“ nerastas srityje %2"
+
+#: src/components/skills-panel.tsx
+msgid "Managed by org manifest (%1)"
+msgstr "Valdoma organizacijos manifesto (%1)"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace"
+msgstr "Prekyvietė"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace picker"
+msgstr "Prekyvietės parinkiklis"
+
+#: src/components/perf-panel.tsx
+msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
+msgstr "Matuoja šį kompiuterį, o ne ciklą: konfigūracijos ir %1 katalogų failų sistemos delsą ir pralaidumą, interpretatoriaus ir CLI šaltojo paleidimo sąnaudas bei pagrindinio kompiuterio išteklių konkurenciją. Matuojamuose kataloguose jis rašo ir trina mažus laikinus failus."
+
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
+msgid "Model"
+msgstr "Modelis"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "Modelis (turi palaikyti srautinį perdavimą)"
+
+#: src/components/perf-panel.tsx
+msgid "Model name, hashed when attribute detail is set to redacted."
+msgstr "Modelio pavadinimas, maišomas, kai atributų detalumas nustatytas kaip slepiamas."
+
+#: src/components/readiness-card.tsx
+msgid "Model provider"
+msgstr "Modelio teikėjas"
+
+#: src/components/settings-panel.tsx
+msgid "Models"
+msgstr "Modeliai"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Multiple servers found; paste one entry at a time."
+msgstr "Rasti keli serveriai; įklijuokite po vieną įrašą."
+
+#: src/components/skills-panel.tsx
+msgid "Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars."
+msgstr "Gali būti tik mažosios raidės, skaitmenys arba brūkšneliai (turi prasidėti raide arba skaitmeniu), daugiausia 64 simboliai."
+
+#: src/chatbook-toolbar.ts src/chatbook.ts src/index.ts
+msgid "NBI Settings"
+msgstr "NBI nustatymai"
+
+#: src/components/perf-panel.tsx
+msgid "NBI config directory"
+msgstr "NBI konfigūracijos katalogas"
+
+#: src/components/claude-mcp-panel.tsx src/components/skills-panel.tsx
+msgid "Name"
+msgstr "Pavadinimas"
+
+#: src/components/skills-panel.tsx
+msgid "Name (optional override)"
+msgstr "Pavadinimas (nebūtinas perrašymas)"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to %1 code"
+msgstr "Natūralios kalbos langelis: perjungti į %1 kodą"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to code"
+msgstr "Natūralios kalbos langelis: perjungti į kodą"
+
+#: src/components/settings-panel.tsx
+msgid "Natural-language execution"
+msgstr "Vykdymas natūralia kalba"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Network access"
+msgstr "Prieiga prie tinklo"
+
+#: src/components/skills-panel.tsx
+msgid "New Skill"
+msgstr "Naujas įgūdis"
+
+#: src/chat-sidebar.tsx
+msgid "New chat session started."
+msgstr "Pradėtas naujas pokalbio seansas."
+
+#: src/markdown-renderer.tsx
+msgid "New file"
+msgstr "Naujas failas"
+
+#: src/components/skills-panel.tsx
+msgid "New name"
+msgstr "Naujas pavadinimas"
+
+#: src/markdown-renderer.tsx
+msgid "New notebook"
+msgstr "Naujas bloknotas"
+
+#: src/components/skills-panel.tsx
+msgid "New skill"
+msgstr "Naujas įgūdis"
+
+#: src/components/skills-panel.tsx
+msgid "Next"
+msgstr "Toliau"
+
+#: notebook_intelligence/readiness.py
+msgid "No API key is configured (%1 is unset)."
+msgstr "API raktas nesukonfigūruotas (%1 nenustatytas)."
+
+#: notebook_intelligence/readiness.py
+msgid "No Anthropic API key or auth token is visible to NBI."
+msgstr "NBI nemato jokio Anthropic API rakto ar autentifikavimo žetono."
+
+#: src/components/settings-panel.tsx
+msgid "No MCP servers found. Add MCP servers in the configuration file."
+msgstr "MCP serverių nerasta. Pridėkite MCP serverius konfigūracijos faile."
+
+#: src/components/settings-panel.tsx
+msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
+msgstr "Ollama modelių nerasta! Įsitikinkite, kad %1 veikia ir modeliai atsisiųsti į jūsų kompiuterį. Kai būsite pasiruošę, pasirinkite %2."
+
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligence nenustatytas pokalbio modelis"
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model is resolved, so there is nothing to call."
+msgstr "Pokalbio modelis nenustatytas, todėl nėra ko iškviesti."
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model provider is selected."
+msgstr "Nepasirinktas pokalbio modelio teikėjas."
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "No chat participant is available."
+msgstr "Nėra pasiekiamo pokalbio dalyvio."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Failai nepridėti: %1 failas jau pridėtas ir pasiekta %2 failų riba."
+msgstr[1] "Failai nepridėti: %1 failai jau pridėti ir pasiekta %2 failų riba."
+msgstr[2] "Failai nepridėti: %1 failų jau pridėta ir pasiekta %2 failų riba."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached."
+msgid_plural "No files added: %1 files are already attached."
+msgstr[0] "Failai nepridėti: %1 failas jau pridėtas."
+msgstr[1] "Failai nepridėti: %1 failai jau pridėti."
+msgstr[2] "Failai nepridėti: %1 failų jau pridėta."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: the limit of %1 file is reached."
+msgid_plural "No files added: the limit of %1 files is reached."
+msgstr[0] "Failai nepridėti: pasiekta %1 failo riba."
+msgstr[1] "Failai nepridėti: pasiekta %1 failų riba."
+msgstr[2] "Failai nepridėti: pasiekta %1 failų riba."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches kernel \"%1\"."
+msgstr "Joks įdiegtas Jupyter branduolys neatitinka branduolio „%1“."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches language \"%1\"."
+msgstr "Joks įdiegtas Jupyter branduolys neatitinka kalbos „%1“."
+
+#: notebook_intelligence/extension.py
+msgid "No managed-skills manifest configured (set %1, comma-separated for multiple manifests)."
+msgstr "Nesukonfigūruotas valdomų įgūdžių manifestas (nustatykite %1; kelis manifestus atskirkite kableliais)."
+
+#: src/components/plugins-panel.tsx
+msgid "No marketplaces configured. Add one to discover plugins."
+msgstr "Nesukonfigūruota jokių prekyviečių. Pridėkite vieną, kad rastumėte papildinių."
+
+#: src/chat-sidebar.tsx
+msgid "No matching files found."
+msgstr "Atitinkančių failų nerasta."
+
+#: notebook_intelligence/readiness.py
+msgid "No model name is set for this provider, so requests carry none."
+msgstr "Šiam teikėjui nenustatytas modelio pavadinimas, todėl užklausose jo nėra."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins in this scope."
+msgstr "Šioje srityje papildinių nėra."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins were found in this marketplace."
+msgstr "Šioje prekyvietėje papildinių nerasta."
+
+#: src/components/claude-session-picker.tsx
+msgid "No previous Claude sessions found for this working directory."
+msgstr "Šiam darbo katalogui ankstesnių Claude seansų nerasta."
+
+#: src/chat-sidebar.tsx
+msgid "No previous sessions found for this working directory."
+msgstr "Šiam darbo katalogui ankstesnių seansų nerasta."
+
+#: src/components/launcher-picker.tsx
+msgid "No previous sessions found."
+msgstr "Ankstesnių seansų nerasta."
+
+#: src/components/skills-panel.tsx
+msgid "No project skills. They live in %1."
+msgstr "Projekto įgūdžių nėra. Jie saugomi kataloge %1."
+
+#: notebook_intelligence/readiness.py
+msgid "No response within %1s."
+msgstr "Negauta atsakymo per %1 s."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "No servers in this scope."
+msgstr "Šioje srityje serverių nėra."
+
+#: src/components/launcher-picker.tsx
+msgid "No sessions match your filter."
+msgstr "Jūsų filtrą atitinkančių seansų nėra."
+
+#: src/components/perf-panel.tsx
+msgid "No spans recorded for this turn."
+msgstr "Šiam ciklui atkarpų neįrašyta."
+
+#: src/components/skills-panel.tsx
+msgid "No user skills. They live in %1."
+msgstr "Naudotojo įgūdžių nėra. Jie saugomi kataloge %1."
+
+#: src/chat-sidebar.tsx
+msgid "No workspace files available."
+msgstr "Darbo srities failų nėra."
+
+#: notebook_intelligence/readiness.py
+msgid "Not applicable: the agent owns the model call in %1 mode."
+msgstr "Netaikoma: %1 režimu modelį iškviečia agentas."
+
+#: notebook_intelligence/readiness.py
+msgid "Not determined: the request failed (%1) for a reason unrelated to tools."
+msgstr "Nenustatyta: užklausa nepavyko (%1) dėl su įrankiais nesusijusios priežasties."
+
+#: src/chat-sidebar.tsx
+msgid "Not logged in"
+msgstr "Neprisijungta"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %1: %2"
+msgstr "Neparuošta. %1: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %2: %3 (%1 more issue.)"
+msgid_plural "Not ready. %2: %3 (%1 more issues.)"
+msgstr[0] "Neparuošta. %2: %3 (dar %1 problema.)"
+msgstr[1] "Neparuošta. %2: %3 (dar %1 problemos.)"
+msgstr[2] "Neparuošta. %2: %3 (dar %1 problemų.)"
+
+#: notebook_intelligence/readiness.py
+msgid "Not signed in. The model list shown in Settings is a built-in fallback, not the models this account can use."
+msgstr "Neprisijungta. Nustatymuose rodomas modelių sąrašas yra integruotas atsarginis sąrašas, o ne modeliai, kuriuos gali naudoti ši paskyra."
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Notebook '%1' created and opened successfully"
+msgstr "Bloknotas „%1“ sėkmingai sukurtas ir atidarytas"
+
+#: src/index.ts
+msgid "Notebook Intelligence Settings"
+msgstr "Notebook Intelligence nustatymai"
+
+#: src/cell-output-toolbar.ts
+msgid "Notebook Intelligence cell actions"
+msgstr "Notebook Intelligence langelio veiksmai"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence neprisijungęs prie serverio, todėl užklausa neišsiųsta. Bandykite dar kartą po akimirkos."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence nesukūrė aprašo"
+
+#: src/chat-sidebar.tsx
+msgid "Notebook file"
+msgstr "Bloknoto failas"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Notebook generation complete"
+msgstr "Bloknoto generavimas baigtas"
+
+#: src/chat-sidebar.tsx
+msgid "Notice"
+msgstr "Pranešimas"
+
+#: src/components/perf-panel.tsx
+msgid "Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it."
+msgstr "Poslinkis nuo ciklo pradžios iki pirmos turinį turinčios dalies. Įrašoma kaip įvykis, todėl vietiniai eigos indikatoriai į jį neįskaičiuojami."
+
+#: notebook_intelligence/api.py
+msgid "Oops! Failed to find requested tool. Please try again with a different prompt."
+msgstr "Oi! Nepavyko rasti prašomo įrankio. Bandykite dar kartą su kitu raginimu."
+
+#: notebook_intelligence/api.py
+msgid "Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."
+msgstr "Oi! Atsiprašome, generuojant atsakymą su įrankiais kilo problema. Bandykite dar kartą. Daugiau informacijos rasite serverio žurnaluose."
+
+#: notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py
+msgid "Oops! There was a problem handling chat request. Please try again with a different prompt."
+msgstr "Oi! Apdorojant pokalbio užklausą kilo problema. Bandykite dar kartą su kitu raginimu."
+
+#: notebook_intelligence/extension.py
+msgid "Oops! There was a problem handling this request. Please try again. Check the server logs for details."
+msgstr "Oi! Apdorojant šią užklausą kilo problema. Bandykite dar kartą. Išsamesnės informacijos ieškokite serverio žurnaluose."
+
+#: src/chatbook-toolbar.ts
+msgid "Open Chatbook settings"
+msgstr "Atidaryti Chatbook nustatymus"
+
+#: src/index.ts
+msgid "Open MCP Config Editor"
+msgstr "Atidaryti MCP konfigūracijos redaktorių"
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and pick a provider and model under General, or enable Claude mode."
+msgstr "Atidarykite NBI nustatymus ir skiltyje Bendrieji pasirinkite teikėją bei modelį arba įjunkite Claude režimą."
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and set a model for this provider under General. The endpoint rejects a request with no model, so every turn fails until it is set."
+msgstr "Atidarykite NBI nustatymus ir skiltyje Bendrieji nustatykite šio teikėjo modelį. Galinis taškas atmeta užklausą be modelio, todėl kiekvienas ciklas nepavyks, kol jis nebus nustatytas."
+
+#: src/chat-sidebar.tsx
+msgid "Open Notebook Intelligence settings"
+msgstr "Atidaryti Notebook Intelligence nustatymus"
+
+#: src/index.ts
+msgid "Open a notebook to insert the code as new cell"
+msgstr "Atidarykite bloknotą, kad įterptumėte kodą kaip naują langelį"
+
+#: src/chat-sidebar.tsx
+msgid "Open notebook %1"
+msgstr "Atidaryti bloknotą %1"
+
+#: src/chat-sidebar.tsx
+msgid "Open slash commands"
+msgstr "Atidaryti pasvirojo brūkšnio komandas"
+
+#: src/chatbook.ts
+msgid "Open the Chatbook tab of Notebook Intelligence Settings"
+msgstr "Atidaryti Notebook Intelligence nustatymų skirtuką Chatbook"
+
+#: src/index.ts
+msgid "Open the NBI sidebar and move focus to the prompt textarea"
+msgstr "Atidaryti NBI šoninę juostą ir perkelti fokusą į raginimo teksto lauką"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Opened the settings dialog"
+msgstr "Atidarytas nustatymų dialogo langas"
+
+#: src/components/settings-panel.tsx
+msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
+msgstr "Neprivaloma papildoma patikra. Statinio skenavimo radinys visada laimi; modelis gali tik padidinti riziką. Klasifikatoriui nepavykus klausiama patvirtinimo, o ne vykdoma automatiškai."
+
+#: src/components/perf-panel.tsx
+msgid "Output tokens."
+msgstr "Išvesties žetonai."
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing project skill \"%1\""
+msgstr "Perrašyti esamą projekto įgūdį „%1“"
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing user skill \"%1\""
+msgstr "Perrašyti esamą naudotojo įgūdį „%1“"
+
+#: notebook_intelligence/claude.py
+msgid "Parameters"
+msgstr "Parametrai"
+
+#: src/components/skills-panel.tsx
+msgid "Path: %1"
+msgstr "Kelias: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Performance diagnostics are disabled. Enable them above to start collecting turn data."
+msgstr "Našumo diagnostika išjungta. Įjunkite ją aukščiau, kad pradėtumėte rinkti ciklų duomenis."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Permission granted"
+msgstr "Leidimas suteiktas"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: %1"
+msgstr "Leidimų režimas: %1"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: Bypass Permissions is active"
+msgstr "Leidimų režimas: įjungtas leidimų apėjimas"
+
+#: notebook_intelligence/readiness.py
+msgid "Pick a model from the dropdown in NBI Settings. A pinned NBI_CHAT_MODEL_ID that the endpoint no longer serves will fail on every turn."
+msgstr "NBI nustatymuose išskleidžiamajame sąraše pasirinkite modelį. Užfiksuotas NBI_CHAT_MODEL_ID, kurio galinis taškas nebeteikia, nepavyks kiekviename cikle."
+
+#: src/components/plugins-panel.tsx
+msgid "Plugin"
+msgstr "Papildinys"
+
+#: src/components/plugins-panel.tsx
+msgid "Plugins"
+msgstr "Papildiniai"
+
+#: notebook_intelligence/extension.py
+msgid "Plugins management is disabled by your administrator"
+msgstr "Papildinių valdymą išjungė jūsų administratorius"
+
+#: notebook_intelligence/readiness.py
+msgid "Preinstall the pinned adapter package %1 in a trusted location outside the workspace and put its absolute executable directory on PATH, or set NBI_ACP_AGENT_COMMAND to the absolute path of an installed adapter executable. Install its required interpreter on the adapter PATH; default discovery excludes workspace directories. Do not use a package runner such as npx. Relative commands are not supported."
+msgstr "Iš anksto įdiekite užfiksuotą adapterio paketą %1 patikimoje vietoje už darbo srities ribų ir įtraukite jo absoliutų vykdomųjų failų katalogą į PATH arba nustatykite NBI_ACP_AGENT_COMMAND į absoliutų įdiegto adapterio vykdomojo failo kelią. Jam reikalingą interpretatorių įdiekite adapterio PATH; numatytoji paieška neįtraukia darbo srities katalogų. Nenaudokite paketų paleidiklio, pvz., npx. Santykinės komandos nepalaikomos."
+
+#: notebook_intelligence/readiness.py
+msgid "Present."
+msgstr "Yra."
+
+#: src/chat-sidebar.tsx
+msgid "Privacy Statement"
+msgstr "Privatumo pareiškimas"
+
+#: src/chat-sidebar.tsx
+msgid "Privacy and terms"
+msgstr "Privatumas ir sąlygos"
+
+#: src/components/plugins-panel.tsx
+msgid "Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server."
+msgstr "Privatūs GitHub šaltiniai veikia, jei nustatytas %1 arba Jupyter serveryje sukonfigūruotas %2."
+
+#: src/components/perf-panel.tsx
+msgid "Probe failed: %1"
+msgstr "Zondavimas nepavyko: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Project (Jupyter root directory)"
+msgstr "Projektas (Jupyter šakninis katalogas)"
+
+#: src/components/skills-panel.tsx
+msgid "Project (this project only)"
+msgstr "Projektas (tik šis projektas)"
+
+#: src/components/mcp-util.ts
+msgid "Prompt refresh failed. Reload MCP servers to retry."
+msgstr "Nepavyko atnaujinti raginimų. Norėdami bandyti dar kartą, įkelkite MCP serverius iš naujo."
+
+#: src/components/settings-panel.tsx
+msgid "Prompts"
+msgstr "Raginimai"
+
+#: src/components/settings-panel.tsx
+msgid "Provider"
+msgstr "Teikėjas"
+
+#: notebook_intelligence/readiness.py
+msgid "Provider '%1' is selected but not registered."
+msgstr "Teikėjas „%1“ pasirinktas, bet neužregistruotas."
+
+#: src/components/perf-panel.tsx
+msgid "Python interpreter"
+msgstr "Python interpretatorius"
+
+#: src/components/skills-panel.tsx
+msgid "Quick-add pills cover common tools. Type patterns like %1 or %2 for finer-grained permissions."
+msgstr "Greito pridėjimo mygtukai apima dažnus įrankius. Tikslesniems leidimams įveskite šablonus, pvz., %1 arba %2."
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as bad"
+msgstr "Įvertinti atsakymą kaip blogą"
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as good"
+msgstr "Įvertinti atsakymą kaip gerą"
+
+#: src/components/readiness-card.tsx
+msgid "Re-check"
+msgstr "Tikrinti dar kartą"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-enable this server for the current Jupyter workspace"
+msgstr "Vėl įjungti šį serverį dabartinei Jupyter darbo sričiai"
+
+#: src/components/skills-panel.tsx
+msgid "Re-fetch every skill set to track upstream from GitHub"
+msgstr "Iš naujo gauti iš GitHub visus įgūdžius, kurie nustatyti sekti šaltinį"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-read Claude's MCP config from disk"
+msgstr "Iš naujo nuskaityti Claude MCP konfigūraciją iš disko"
+
+#: notebook_intelligence/readiness.py
+msgid "Re-run the endpoint test once the endpoint is answering again. A transient failure cannot tell us whether tool calling works."
+msgstr "Paleiskite galinio taško testą dar kartą, kai galinis taškas vėl atsakys. Iš laikino gedimo negalima nustatyti, ar veikia įrankių iškvietimas."
+
+#: src/components/readiness-card.tsx
+msgid "Readiness check failed: %1"
+msgstr "Parengties patikra nepavyko: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Reading the configuration failed (%1)."
+msgstr "Nepavyko nuskaityti konfigūracijos (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "Ready, with %1 warning. %2: %3"
+msgid_plural "Ready, with %1 warnings. %2: %3"
+msgstr[0] "Paruošta, %1 įspėjimas. %2: %3"
+msgstr[1] "Paruošta, %1 įspėjimai. %2: %3"
+msgstr[2] "Paruošta, %1 įspėjimų. %2: %3"
+
+#: notebook_intelligence/readiness.py
+msgid "Ready. Nothing needs configuring."
+msgstr "Paruošta. Nieko konfigūruoti nereikia."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Reason"
+msgstr "Priežastis"
+
+#: src/components/perf-panel.tsx
+msgid "Recent turns"
+msgstr "Naujausi ciklai"
+
+#: src/components/skills-panel.tsx
+msgid "Reconcile managed skills against the org manifest"
+msgstr "Suderinti valdomus įgūdžius su organizacijos manifestu"
+
+#: src/components/perf-panel.tsx
+msgid "Recording is on, but no turns have been captured yet. Run a chat turn, then press Refresh."
+msgstr "Įrašymas įjungtas, bet dar neužfiksuotas nė vienas ciklas. Paleiskite pokalbio ciklą, tada spustelėkite Atnaujinti."
+
+#: src/components/perf-panel.tsx
+msgid "Records where each chat turn spends its time, so a slow deployment can be told apart from a slow model. Off by default, and when off it costs one boolean check per instrumentation site. Prompts, responses, file contents, and hostnames are never recorded."
+msgstr "Įrašo, kur kiekvienas pokalbio ciklas sunaudoja laiką, kad lėtą diegimą būtų galima atskirti nuo lėto modelio. Pagal numatytuosius nustatymus išjungta, o išjungta kainuoja vieną loginės reikšmės patikrą kiekviename matavimo taške. Raginimai, atsakymai, failų turinys ir pagrindinių kompiuterių vardai niekada neįrašomi."
+
+#: src/components/perf-panel.tsx
+msgid "Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine."
+msgstr "Slepiamas: failų baziniai vardai ir modelių, įrankių bei serverių pavadinimai maišomi. Laikams ir skaičiams įtakos neturi. Palikite šį nustatymą, kai ataskaita paliks jūsų kompiuterį."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
+msgid "Refresh"
+msgstr "Atnaujinti"
+
+#: src/index.ts
+msgid "Refresh description"
+msgstr "Atnaujinti aprašą"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh file list"
+msgstr "Atnaujinti failų sąrašą"
+
+#: src/components/settings-panel.tsx
+msgid "Refresh open files when changed on disk"
+msgstr "Atnaujinti atidarytus failus, kai jie pasikeičia diske"
+
+#: src/components/plugins-panel.tsx
+msgid "Refresh this marketplace from its source"
+msgstr "Atnaujinti šią prekyvietę iš jos šaltinio"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh workspace file list"
+msgstr "Atnaujinti darbo srities failų sąrašą"
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx
+msgid "Refreshing…"
+msgstr "Atnaujinama…"
+
+#: src/index.ts
+msgid "Regenerate the description of this code cell"
+msgstr "Iš naujo sugeneruoti šio kodo langelio aprašą"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Rejecting records a lasting denial, not only for this request."
+msgstr "Atmetus įrašomas ilgalaikis atsisakymas, ne tik šiai užklausai."
+
+#: src/components/settings-panel.tsx
+msgid "Reload"
+msgstr "Įkelti iš naujo"
+
+#: src/components/settings-panel.tsx
+msgid "Remember conversation history"
+msgstr "Įsiminti pokalbių istoriją"
+
+#: src/components/settings-panel.tsx
+msgid "Remember my GitHub Copilot access token"
+msgstr "Įsiminti mano GitHub Copilot prieigos žetoną"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Remove"
+msgstr "Pašalinti"
+
+#: src/components/skills-panel.tsx
+msgid "Remove %1"
+msgstr "Pašalinti %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Remove MCP server?"
+msgstr "Pašalinti MCP serverį?"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file"
+msgstr "Pašalinti pridėtą failą"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file %1"
+msgstr "Pašalinti pridėtą failą %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Remove marketplace?"
+msgstr "Pašalinti prekyvietę?"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Removing…"
+msgstr "Šalinama…"
+
+#: src/components/skills-panel.tsx
+msgid "Rename"
+msgstr "Pervardyti"
+
+#: src/components/skills-panel.tsx
+msgid "Rename skill"
+msgstr "Pervardyti įgūdį"
+
+#: src/index.ts
+msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr "Iš naujo paleisti pirmojo paleidimo apžvalgą, kuri parodo pokalbio šoninės juostos galimybes"
+
+#: src/components/settings-panel.tsx
+msgid "Reply in my JupyterLab language"
+msgstr "Atsakyti mano JupyterLab kalba"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Request"
+msgstr "Užklausa"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Requested permissions"
+msgstr "Prašomi leidimai"
+
+#: src/components/skills-panel.tsx
+msgid "Required. Claude uses this to decide when to apply the skill."
+msgstr "Privaloma. Claude tai naudoja spręsdamas, kada taikyti įgūdį."
+
+#: src/chat-sidebar.tsx
+msgid "Response complete."
+msgstr "Atsakymas baigtas."
+
+#: src/components/settings-panel.tsx
+msgid "Restart the Chatbook kernel in open notebooks so they pick up %1."
+msgstr "Iš naujo paleiskite Chatbook branduolį atidarytuose bloknotuose, kad jie pritaikytų %1."
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume Claude session"
+msgstr "Tęsti Claude seansą"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a previous session"
+msgstr "Tęsti ankstesnį seansą"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a session you started earlier in this workspace"
+msgstr "Tęsti seansą, kurį anksčiau pradėjote šioje darbo srityje"
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume command copied"
+msgstr "Tęsimo komanda nukopijuota"
+
+#: src/index.ts
+msgid "Resume or start a Claude Code session"
+msgstr "Tęsti arba pradėti Claude Code seansą"
+
+#: src/chat-sidebar.tsx
+msgid "Resume session"
+msgstr "Tęsti seansą"
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1."
+msgstr "Tęsiamas Claude seansas %1."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1: %2."
+msgstr "Tęsiamas Claude seansas %1: %2."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1."
+msgstr "Tęsiamas seansas %1."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1: %2."
+msgstr "Tęsiamas seansas %1: %2."
+
+#: src/components/perf-panel.tsx
+msgid "Retry"
+msgstr "Bandyti dar kartą"
+
+#: src/chatbook.ts
+msgid "Review generated code before running it in this kernel."
+msgstr "Prieš vykdydami sugeneruotą kodą šiame branduolyje, jį peržiūrėkite."
+
+#: src/components/settings-panel.tsx
+msgid "Right-click a cell output to attach it to the chat"
+msgstr "Dešiniuoju pelės mygtuku spustelėkite langelio išvestį, kad pridėtumėte ją prie pokalbio"
+
+#: src/components/perf-panel.tsx
+msgid "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory."
+msgstr "Taisyklių ir įgūdžių aptikimas užtruko %1. Šį darbą riboja serverio namų katalogo failų sistema."
+
+#: notebook_intelligence/extension.py
+msgid "Rule not found"
+msgstr "Taisyklė nerasta"
+
+#: notebook_intelligence/extension.py
+msgid "Rule system not enabled"
+msgstr "Taisyklių sistema neįjungta"
+
+#: notebook_intelligence/readiness.py
+msgid "Run 'claude --version' in a terminal as the Jupyter user to see the underlying error."
+msgstr "Norėdami pamatyti pagrindinę klaidą, terminale kaip Jupyter naudotojas paleiskite 'claude --version'."
+
+#: src/components/readiness-card.tsx
+msgid "Run it"
+msgstr "Paleisti"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Run notebooks in JupyterLab UI"
+msgstr "Vykdyti bloknotus JupyterLab sąsajoje"
+
+#: src/components/perf-panel.tsx
+msgid "Run probe"
+msgstr "Paleisti zondavimą"
+
+#: src/chat-sidebar.tsx
+msgid "Running (%1 s)"
+msgstr "Vykdoma (%1 s)"
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other, plus the network check. This takes a few seconds, longer on a slow filesystem."
+msgstr "Failų sistemos, antrinių procesų ir išteklių konkurencijos patikros vykdomos po vieną, kad nematuotų viena kitos, ir papildomai tinklo patikra. Tai užtrunka kelias sekundes, lėtoje failų sistemoje ilgiau."
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other. This takes a few seconds, longer on a slow filesystem."
+msgstr "Failų sistemos, antrinių procesų ir išteklių konkurencijos patikros vykdomos po vieną, kad nematuotų viena kitos. Tai užtrunka kelias sekundes, lėtoje failų sistemoje ilgiau."
+
+#: src/components/perf-panel.tsx src/components/readiness-card.tsx
+msgid "Running…"
+msgstr "Vykdoma…"
+
+#: src/components/skills-panel.tsx
+msgid "Save"
+msgstr "Išsaugoti"
+
+#: src/components/skills-panel.tsx
+msgid "Saving…"
+msgstr "Išsaugoma…"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Scope"
+msgstr "Sritis"
+
+#: src/components/skills-panel.tsx
+msgid "Scope and name are set at creation and can't be changed. Delete and recreate to change them."
+msgstr "Sritis ir pavadinimas nustatomi kuriant ir negali būti pakeisti. Norėdami juos pakeisti, ištrinkite ir sukurkite iš naujo."
+
+#: src/components/confirmation-details.tsx
+msgid "Scroll to see all of this value."
+msgstr "Slinkite, kad pamatytumėte visą šią reikšmę."
+
+#: src/chat-sidebar.tsx
+msgid "Search files by path"
+msgstr "Ieškoti failų pagal kelią"
+
+#: src/chat-sidebar.tsx
+msgid "Send message"
+msgstr "Siųsti pranešimą"
+
+#: src/components/readiness-card.tsx
+msgid "Sends one short request to your configured model to verify streaming and tool support."
+msgstr "Siunčia vieną trumpą užklausą jūsų sukonfigūruotam modeliui, kad patikrintų srautinio perdavimo ir įrankių palaikymą."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server \"%1\" config must be an object."
+msgstr "Serverio „%1“ konfigūracija turi būti objektas."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server config must include \"command\" or \"url\"."
+msgstr "Serverio konfigūracijoje turi būti „command“ arba „url“."
+
+#: src/components/perf-panel.tsx
+msgid "Server process peak memory"
+msgstr "Serverio proceso didžiausia atmintis"
+
+#: src/components/settings-panel.tsx
+msgid "Settings sections"
+msgstr "Nustatymų skiltys"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Shell"
+msgstr "Apvalkalas"
+
+#: src/components/settings-panel.tsx
+msgid "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+msgstr "Rodyti nepavykusių langelių kontekstinio meniu elementą „Šalinti išvesties klaidas“"
+
+#: src/components/settings-panel.tsx
+msgid "Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons"
+msgstr "Rodyti virš langelių išvesčių užvedus pelę atsirandančią įrankių juostą su mygtukais Paaiškinti / Klausti / Šalinti triktis"
+
+#: src/components/tool-call-card.tsx
+msgid "Show diff"
+msgstr "Rodyti skirtumus"
+
+#: src/index.ts
+msgid "Show generated code"
+msgstr "Rodyti sugeneruotą kodą"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Show in chat"
+msgstr "Rodyti pokalbyje"
+
+#: src/components/settings-panel.tsx
+msgid "Show output toolbar"
+msgstr "Rodyti išvesties įrankių juostą"
+
+#: src/components/perf-panel.tsx
+msgid "Show raw output"
+msgstr "Rodyti neapdorotą išvestį"
+
+#: src/index.ts
+msgid "Show the hidden code generated for this Chatbook cell"
+msgstr "Rodyti šiam Chatbook langeliui sugeneruotą paslėptą kodą"
+
+#: src/components/perf-panel.tsx
+msgid "Show timeline for the turn at %1"
+msgstr "Rodyti ciklo %1 laiko juostą"
+
+#: src/components/settings-panel.tsx
+msgid "Show usage after each turn (time / tokens / cost)"
+msgstr "Rodyti naudojimą po kiekvieno ciklo (laikas / žetonai / kaina)"
+
+#: src/chat-sidebar.tsx
+msgid "Showing the first %1 file found in the workspace."
+msgid_plural "Showing the first %1 files found in the workspace."
+msgstr[0] "Rodomas pirmasis %1 darbo srityje rastas failas."
+msgstr[1] "Rodomi pirmieji %1 darbo srityje rasti failai."
+msgstr[2] "Rodoma pirmųjų %1 darbo srityje rastų failų."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign in from NBI Settings under GitHub Copilot. Until then every chat turn will fail with a 401."
+msgstr "Prisijunkite NBI nustatymų skiltyje GitHub Copilot. Iki tol kiekvienas pokalbio ciklas nepavyks su klaida 401."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign-in state could not be determined."
+msgstr "Nepavyko nustatyti prisijungimo būsenos."
+
+#: src/components/perf-panel.tsx
+msgid "Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod."
+msgstr "Vienaženklis MB/s greitis kartu su didele fsync delsa yra EFS pliūpsnio kreditų išsekimo požymis. Patvirtinkite tai pagal CloudWatch metriką BurstCreditBalance, o ne iš pod vidaus."
+
+#: notebook_intelligence/extension.py
+msgid "Skill '%1' not found in %2 scope"
+msgstr "Įgūdis „%1“ nerastas srityje %2"
+
+#: src/components/skills-panel.tsx
+msgid "Skills"
+msgstr "Įgūdžiai"
+
+#: src/components/skills-panel.tsx
+msgid "Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here."
+msgstr "Įgūdžius naudoja Claude Code. Norėdami naudoti čia sukurtus įgūdžius, Claude nustatymų skirtuke įjunkite Claude režimą."
+
+#: notebook_intelligence/extension.py
+msgid "Skills management is disabled by your administrator"
+msgstr "Įgūdžių valdymą išjungė jūsų administratorius"
+
+#: src/chat-sidebar.tsx
+msgid "Skills reloaded and applied to the current session."
+msgstr "Įgūdžiai įkelti iš naujo ir pritaikyti dabartiniam seansui."
+
+#: src/chat-sidebar.tsx
+msgid "Skip to message input"
+msgstr "Pereiti į pranešimo įvesties lauką"
+
+#: src/chat-sidebar.tsx
+msgid "Slash commands"
+msgstr "Pasvirojo brūkšnio komandos"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Source"
+msgstr "Šaltinis"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1"
+msgstr "Šaltinis: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1 · last sync: %2"
+msgstr "Šaltinis: %1 · paskutinis sinchronizavimas: %2"
+
+#: src/components/plugins-panel.tsx
+msgid "Specify manually"
+msgstr "Nurodyti rankiniu būdu"
+
+#: src/index.ts
+msgid "Start a GitHub Copilot CLI session in a Jupyter terminal"
+msgstr "Pradėti GitHub Copilot CLI seansą Jupyter terminale"
+
+#: src/index.ts
+msgid "Start a Pi session in a Jupyter terminal"
+msgstr "Pradėti Pi seansą Jupyter terminale"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session"
+msgstr "Pradėti naują pokalbio seansą"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (restarts the Claude client)"
+msgstr "Pradėti naują pokalbio seansą (paleidžia Claude klientą iš naujo)"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (starts a fresh agent session)"
+msgstr "Pradėti naują pokalbio seansą (pradeda naują agento seansą)"
+
+#: src/index.ts
+msgid "Start an OpenAI Codex CLI session in a Jupyter terminal"
+msgstr "Pradėti OpenAI Codex CLI seansą Jupyter terminale"
+
+#: src/index.ts
+msgid "Start an opencode session in a Jupyter terminal"
+msgstr "Pradėti opencode seansą Jupyter terminale"
+
+#: src/components/settings-panel.tsx
+msgid "Status"
+msgstr "Būsena"
+
+#: src/chat-sidebar.tsx
+msgid "Still working, server may be slow"
+msgstr "Vis dar dirbama, serveris gali būti lėtas"
+
+#: src/chat-sidebar.tsx
+msgid "Stop generating"
+msgstr "Stabdyti generavimą"
+
+#: src/chat-sidebar.tsx
+msgid "Stop using current file as context"
+msgstr "Nebenaudoti dabartinio failo kaip konteksto"
+
+#: src/components/perf-panel.tsx
+msgid "Stopped before completing, so these timings are partial."
+msgstr "Sustabdyta nebaigus, todėl šie laikai yra daliniai."
+
+#: src/chat-sidebar.tsx
+msgid "Stopped by you"
+msgstr "Sustabdėte jūs"
+
+#: src/components/perf-panel.tsx
+msgid "Sum of every tool span in the turn. Expand the row to see them individually."
+msgstr "Visų ciklo įrankių atkarpų suma. Išskleiskite eilutę, kad pamatytumėte jas atskirai."
+
+#: src/index.ts
+msgid "Switch all cells to code"
+msgstr "Perjungti visus langelius į kodą"
+
+#: src/index.ts
+msgid "Switch all cells to natural language"
+msgstr "Perjungti visus langelius į natūralią kalbą"
+
+#: src/index.ts
+msgid "Switch cell to code"
+msgstr "Perjungti langelį į kodą"
+
+#: src/index.ts
+msgid "Switch cell to natural language"
+msgstr "Perjungti langelį į natūralią kalbą"
+
+#: src/chatbook-toolbar.ts src/index.ts
+msgid "Switch every cell of this Chatbook between its prompt and its code"
+msgstr "Perjungti kiekvieną šio Chatbook langelį tarp raginimo ir kodo"
+
+#: src/index.ts
+msgid "Switch the active Chatbook cell between natural language and code"
+msgstr "Perjungti aktyvų Chatbook langelį tarp natūralios kalbos ir kodo"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed for \"%1\": %2"
+msgstr "Nepavyko sinchronizuoti „%1“: %2"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed: %1"
+msgstr "Sinchronizuoti nepavyko: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Sync from GitHub"
+msgstr "Sinchronizuoti iš GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Sync managed skills"
+msgstr "Sinchronizuoti valdomus įgūdžius"
+
+#: src/components/skills-panel.tsx
+msgid "Sync skill from GitHub"
+msgstr "Sinchronizuoti įgūdį iš GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Sync tracking skills"
+msgstr "Sinchronizuoti sekamus įgūdžius"
+
+#: src/components/skills-panel.tsx
+msgid "Synced \"%1\" to %2."
+msgstr "„%1“ sinchronizuotas iki %2."
+
+#: src/components/skills-panel.tsx
+msgid "Syncing…"
+msgstr "Sinchronizuojama…"
+
+#: src/components/skills-panel.tsx
+msgid "Target scope"
+msgstr "Paskirties sritis"
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop."
+msgstr "Numetus į terminalą įterpiami keliai su @ paminėjimu. Spustelėkite, kad perjungtumėte į neapdoroto kelio režimą. Norėdami vienam numetimui režimą sukeisti, numesdami laikykite nuspaudę Shift."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop."
+msgstr "Numetus į terminalą įterpiami neapdoroti, apvalkalui ekranuoti absoliutūs keliai. Spustelėkite, kad perjungtumėte į @ paminėjimo režimą. Norėdami vienam numetimui režimą sukeisti, numesdami laikykite nuspaudę Shift."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop skipped %1 path containing control or invisible formatting characters. Rename them before dropping."
+msgid_plural "Terminal drop skipped %1 paths containing control or invisible formatting characters. Rename them before dropping."
+msgstr[0] "Numetant į terminalą praleistas %1 kelias su valdymo ar nematomais formatavimo simboliais. Prieš numesdami jį pervadinkite."
+msgstr[1] "Numetant į terminalą praleisti %1 keliai su valdymo ar nematomais formatavimo simboliais. Prieš numesdami juos pervadinkite."
+msgstr[2] "Numetant į terminalą praleista %1 kelių su valdymo ar nematomais formatavimo simboliais. Prieš numesdami juos pervadinkite."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop upload failed for %1"
+msgstr "Numetus į terminalą nepavyko įkelti: %1"
+
+#: src/components/readiness-card.tsx
+msgid "Test the endpoint"
+msgstr "Testuoti galinį tašką"
+
+#: src/chat-sidebar.tsx
+msgid "Text file"
+msgstr "Tekstinis failas"
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI did not respond to --version within its budget."
+msgstr "CLI neatsakė į --version per skirtą laiką."
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI resolved but --version failed."
+msgstr "CLI rasta, bet --version nepavyko."
+
+#: src/components/perf-panel.tsx
+msgid "The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI."
+msgstr "SDK priskiria API %1 iš %2 aktyvaus laiko, todėl laikas sunaudojamas kitoje tinklo pusėje, o ne NBI."
+
+#: notebook_intelligence/readiness.py
+msgid "The binary resolves but does not start. On a network filesystem this is often the install tree being slow to read; otherwise check it runs from a terminal."
+msgstr "Vykdomasis failas randamas, bet nepasileidžia. Tinklo failų sistemoje dažna priežastis yra lėtas diegimo medžio skaitymas; kitu atveju patikrinkite, ar jis paleidžiamas iš terminalo."
+
+#: src/components/perf-panel.tsx
+msgid "The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding."
+msgstr "Patikra nebaigta per skirtą laiką. Tinklo failų sistemoje pakibęs stat atrodo būtent taip, ir tai pats savaime yra radinys."
+
+#: notebook_intelligence/readiness.py
+msgid "The claude CLI was not found."
+msgstr "claude CLI nerasta."
+
+#: notebook_intelligence/acp_agent.py
+msgid "The command contains non-ASCII characters, which can look like quotes or letters they are not."
+msgstr "Komandoje yra ne ASCII simbolių, kurie gali atrodyti kaip kabutės ar raidės, nors jomis nėra."
+
+#: src/components/perf-panel.tsx
+msgid "The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage."
+msgstr "Prisijungimo atkarpa: agento antrinio proceso ir CLI paleidimas. Didelės reikšmės paprastai reiškia node paleidimą ir rinkinio skaitymą iš lėtos saugyklos."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted a request carrying a tool schema."
+msgstr "Galinis taškas priėmė užklausą su įrankių schema."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the connection but did not answer. Check the Base URL and whether it is reachable from the Jupyter server process."
+msgstr "Galinis taškas priėmė ryšį, bet neatsakė. Patikrinkite bazinį URL ir ar jis pasiekiamas iš Jupyter serverio proceso."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the request but did not answer. Check the gateway and whether it is queueing behind a cold model."
+msgstr "Galinis taškas priėmė užklausą, bet neatsakė. Patikrinkite šliuzą ir ar jis nelaukia eilėje už šalto modelio."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint answered in one piece. Replies will appear only when the turn finishes rather than as they are generated; a proxy that buffers responses is the usual cause."
+msgstr "Galinis taškas atsakė vienu kartu. Atsakymai bus rodomi tik pasibaigus ciklui, o ne generuojant; dažniausia priežastis yra atsakymus buferizuojantis tarpinis serveris."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint rejected a request carrying a tool schema, but accepted the same request without one."
+msgstr "Galinis taškas atmetė užklausą su įrankių schema, bet priėmė tą pačią užklausą be jos."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint test could not run (%1)."
+msgstr "Nepavyko paleisti galinio taško testo (%1)."
+
+#: src/components/perf-panel.tsx
+msgid "The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses."
+msgstr "Sujungimas nebaigtas. Už perimančio tarpinio serverio tai paprastai reiškia, kad perėmimo sertifikato nėra šio proceso naudojamoje patikimų sertifikatų saugykloje."
+
+#: src/components/perf-panel.tsx
+msgid "The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor."
+msgstr "Pateiktas sertifikatas nepatvirtinamas pagal numatytąją patikimų sertifikatų saugyklą, o tai reiškia, kad TLS perimamas. Išdavėjo CN nurodo perėmėją."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider did not return a model list within %1s."
+msgstr "Teikėjas negrąžino modelių sąrašo per %1 s."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider may be disabled by an administrator (see disabled_providers) or supplied by an extension that is not installed. Pick a different provider in NBI Settings."
+msgstr "Teikėją galėjo išjungti administratorius (žr. disabled_providers) arba jį teikia neįdiegtas plėtinys. NBI nustatymuose pasirinkite kitą teikėją."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider returned no models."
+msgstr "Teikėjas negrąžino jokių modelių."
+
+#: notebook_intelligence/readiness.py
+msgid "The request failed (%1)."
+msgstr "Užklausa nepavyko (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "The request succeeded but nothing streamed."
+msgstr "Užklausa pavyko, bet nieko nebuvo perduota srautu."
+
+#: notebook_intelligence/readiness.py
+msgid "The stored configuration could not be read. Check %1 for invalid JSON, and the Jupyter server log for the underlying error."
+msgstr "Nepavyko nuskaityti išsaugotos konfigūracijos. Patikrinkite, ar faile %1 nėra netinkamo JSON, o pagrindinės klaidos ieškokite Jupyter serverio žurnale."
+
+#: src/components/perf-panel.tsx
+msgid "The turn ended in an error."
+msgstr "Ciklas baigėsi klaida."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab."
+msgstr "Tai paties Claude Code MCP serveriai (nuskaityti iš %1, projekto %2 ir naudotojo bei projekto bloko). Nepriklauso nuo NBI skirtuko MCP serveriai."
+
+#: src/chat-sidebar.tsx
+msgid "Thinking (%1 s)"
+msgstr "Mąstoma (%1 s)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py notebook_intelligence/mcp_manager.py
+msgid "Thinking…"
+msgstr "Mąstoma…"
+
+#: src/components/perf-panel.tsx
+msgid "This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network."
+msgstr "Šio konteinerio procesorių ribojo jo cgroup kvota, todėl vietinės fazės (konteksto paruošimas, paleidimas) gali atrodyti lėtos dėl priežasčių, nesusijusių su saugykla ar tinklu."
+
+#: notebook_intelligence/extension.py
+msgid "This feature is disabled by your administrator"
+msgstr "Šią funkciją išjungė jūsų administratorius"
+
+#: src/components/perf-panel.tsx
+msgid "This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows."
+msgstr "Šio pagrindinio kompiuterio ir galinio taško laikas skiriasi daugiau nei minute, o tai sutrikdo žetonų galiojimo pabaigą ir sertifikatų galiojimo laikotarpius."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the Claude CLI is signed in with a subscription login, or if the SDK resolves a credential of its own from a profile or custom headers. If chat turns fail with a 401, or Claude auto-complete produces nothing, add a key in NBI Settings under Claude or set ANTHROPIC_API_KEY before starting JupyterLab."
+msgstr "Tai gerai, jei Claude CLI prisijungusi naudojant prenumeratą arba jei SDK pati randa prisijungimo duomenis profilyje ar pasirinktinėse antraštėse. Jei pokalbio ciklai nepavyksta su klaida 401 arba Claude automatinis užbaigimas nieko nepateikia, pridėkite raktą NBI nustatymų skiltyje Claude arba prieš paleisdami JupyterLab nustatykite ANTHROPIC_API_KEY."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the agent is signed in with its own OAuth login. Otherwise set the key in NBI Settings under ACP."
+msgstr "Tai gerai, jei agentas prisijungęs savo OAuth prisijungimu. Kitu atveju nustatykite raktą NBI nustatymų skiltyje ACP."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3."
+msgstr "Šis bloknotas parašytas %1 kalba, bet Chatbook visą kodą vykdo branduolyje %2, todėl jo kodo langeliai nepavyktų. Nėra įdiegto %1 branduolio, kurį galėtų naudoti Chatbook. Įdiekite jį, tada pasirinkite nustatyme %3."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too."
+msgstr "Šis bloknotas parašytas %1 kalba, bet Chatbook visą kodą vykdo branduolyje %2, todėl jo kodo langeliai nepavyktų. Norėdami jį konvertuoti, nustatyme %3 pasirinkite %1 branduolį ir konvertuokite dar kartą. Šis nustatymas taikomas kiekvienam Chatbook, todėl jūsų esami Chatbook taip pat vykdytų %1 kodą."
+
+#: src/components/perf-panel.tsx
+msgid "This opens connections to %1 from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request."
+msgstr "Taip iš šio kompiuterio atidaromi ryšiai su %1: du neautentifikuoti TLS ryšiai sujungimo laikui išmatuoti ir sertifikatui patikrinti bei viena neautentifikuota HTTP užklausa."
+
+#: src/components/perf-panel.tsx
+msgid "This opens unauthenticated connections to your configured endpoint from this machine."
+msgstr "Taip iš šio kompiuterio atidaromi neautentifikuoti ryšiai su jūsų sukonfigūruotu galiniu tašku."
+
+#: src/components/settings-panel.tsx
+msgid "This requires a %1 account and %2 installed in your system."
+msgstr "Tam reikia %1 paskyros ir jūsų sistemoje įdiegtos %2."
+
+#: src/components/readiness-card.tsx
+msgid "This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls."
+msgstr "Taip jūsų sukonfigūruotam modeliui siunčiama viena trumpa užklausa. Ji kainuoja kelis žetonus ir yra vienintelis būdas patvirtinti, kad galinis taškas tikrai perduoda srautu ir tikrai priima įrankių iškvietimus."
+
+#: src/components/skills-panel.tsx
+msgid "This skill has unsaved changes. Discard them?"
+msgstr "Šiame įgūdyje yra neišsaugotų pakeitimų. Atmesti juos?"
+
+#: src/components/skills-panel.tsx
+msgid "This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync."
+msgstr "Šį įgūdį valdo organizacijos manifestas, todėl jis tik skaitomas. Pakeitimai bus perrašyti per kitą sinchronizavimą."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Tool call"
+msgstr "Įrankio iškvietimas"
+
+#: src/components/mcp-util.ts
+msgid "Tool refresh failed. Reload MCP servers to retry."
+msgstr "Nepavyko atnaujinti įrankių. Norėdami bandyti dar kartą, įkelkite MCP serverius iš naujo."
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection"
+msgstr "Įrankių pasirinkimas"
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection (%1)"
+msgstr "Įrankių pasirinkimas (%1)"
+
+#: src/chat-sidebar.tsx
+msgid ""
+"Tool selection can cause irreversible changes! Review each tool execution carefully.\n"
+"%1"
+msgstr ""
+"Pasirinkti įrankiai gali atlikti negrįžtamus pakeitimus! Atidžiai peržiūrėkite kiekvieną įrankio vykdymą.\n"
+"%1"
+
+#: src/components/settings-panel.tsx
+msgid "Tools"
+msgstr "Įrankiai"
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active."
+msgstr "Įrankiai sudarė %1 iš %2 aktyvaus laiko."
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active. Slowest: %3 at %4."
+msgstr "Įrankiai sudarė %1 iš %2 aktyvaus laiko. Lėčiausias: %3, %4."
+
+#: src/components/perf-panel.tsx
+msgid "Total minus time the turn spent blocked on your input. This is the number to judge performance by."
+msgstr "Bendras laikas, atėmus laiką, kurį ciklas laukė jūsų įvesties. Pagal šį skaičių ir reikia vertinti našumą."
+
+#: src/tour/tour-overlay.tsx
+msgid "Tour progress: step %1 of %2"
+msgstr "Apžvalgos eiga: %1 žingsnis iš %2"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream"
+msgstr "Sekti šaltinį"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream. Show a Sync button so I can re-pull this skill from GitHub later"
+msgstr "Sekti šaltinį. Rodyti mygtuką Sinchronizuoti, kad vėliau galėčiau iš naujo gauti šį įgūdį iš GitHub"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1"
+msgstr "Sekamas šaltinis %1"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1 (last sync: %2)"
+msgstr "Sekamas šaltinis %1 (paskutinis sinchronizavimas: %2)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Transport"
+msgstr "Transportas"
+
+#: src/index.ts
+msgid "Troubleshoot errors in output"
+msgstr "Šalinti išvesties klaidas"
+
+#: src/cell-output-toolbar.ts
+msgid "Troubleshoot the error in this cell"
+msgstr "Šalinti šio langelio klaidą"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "URL"
+msgstr "URL"
+
+#: src/components/skills-panel.tsx
+msgid "Undo"
+msgstr "Anuliuoti"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall"
+msgstr "Pašalinti"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall plugin?"
+msgstr "Pašalinti papildinį?"
+
+#: src/chat-sidebar.tsx
+msgid "Unknown"
+msgstr "Nežinoma"
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Unknown error"
+msgstr "Nežinoma klaida"
+
+#: src/components/skills-panel.tsx
+msgid "Unsaved changes"
+msgstr "Neišsaugoti pakeitimai"
+
+#: src/components/plugins-panel.tsx
+msgid "Update"
+msgstr "Naujinti"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Update active notebook"
+msgstr "Atnaujinti aktyvų bloknotą"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Update active notebook with AI"
+msgstr "Atnaujinti aktyvų bloknotą naudojant DI"
+
+#: src/components/plugins-panel.tsx
+msgid "Updating…"
+msgstr "Naujinama…"
+
+#: src/chat-sidebar.tsx
+msgid "Upload file from computer"
+msgstr "Įkelti failą iš kompiuterio"
+
+#: src/chat-sidebar.tsx
+msgid "Uploaded: %1"
+msgstr "Įkelta: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Uploading"
+msgstr "Įkeliama"
+
+#: src/components/settings-panel.tsx
+msgid "Usage footer"
+msgstr "Naudojimo poraštė"
+
+#: src/chat-sidebar.tsx
+msgid "Use as context"
+msgstr "Naudoti kaip kontekstą"
+
+#: src/chat-sidebar.tsx
+msgid "Use current file as context"
+msgstr "Naudoti dabartinį failą kaip kontekstą"
+
+#: src/chat-sidebar.tsx
+msgid "User"
+msgstr "Naudotojas"
+
+#: src/components/skills-panel.tsx
+msgid "User (available in all projects)"
+msgstr "Naudotojas (pasiekiama visuose projektuose)"
+
+#: notebook_intelligence/readiness.py
+msgid "Usually an expired or missing API key, or a Base URL that does not point at the provider's API root. For GitHub Copilot, sign in again from NBI Settings."
+msgstr "Paprastai tai pasibaigęs arba trūkstamas API raktas arba bazinis URL, kuris nenurodo į teikėjo API šaknį. GitHub Copilot atveju vėl prisijunkite NBI nustatymuose."
+
+#: src/components/skills-panel.tsx
+msgid "View (managed, read-only)"
+msgstr "Peržiūrėti (valdomas, tik skaitymui)"
+
+#: src/components/skills-panel.tsx
+msgid "View skill"
+msgstr "Peržiūrėti įgūdį"
+
+#: src/components/perf-panel.tsx
+msgid "Wall time from the request arriving to the response finishing, including any time spent waiting on you."
+msgstr "Realus laikas nuo užklausos gavimo iki atsakymo pabaigos, įskaitant laiką, kai buvo laukiama jūsų."
+
+#: src/chat-sidebar.tsx
+msgid "Welcome! How can I assist you today?"
+msgstr "Sveiki! Kuo galiu jums šiandien padėti?"
+
+#: src/components/skills-panel.tsx
+msgid "What this skill does, shown to Claude when deciding whether to use it"
+msgstr "Ką šis įgūdis daro; rodoma Claude sprendžiant, ar jį naudoti"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr "Kai įjungta, raginimas atidaro Notebook Intelligence pokalbio šoninę juostą. Išjunkite, kad pokalbis liktų paslėptas, o eiga būtų rodoma tik bloknoto įrankių juostoje."
+
+#: src/components/perf-panel.tsx
+msgid "When the turn started, in local time."
+msgstr "Kada ciklas prasidėjo, vietos laiku."
+
+#: src/components/perf-panel.tsx
+msgid "Which backend served the turn, and the surface it came from."
+msgstr "Kuri vidinė sistema aptarnavo ciklą ir iš kurios sąsajos dalies jis kilo."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Working directory"
+msgstr "Darbo katalogas"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Working…"
+msgstr "Dirbama…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Write access under"
+msgstr "Rašymo prieiga kataloge"
+
+#: src/chat-sidebar.tsx
+msgid "You are not logged in to GitHub Copilot. Please login now to activate chat."
+msgstr "Nesate prisijungę prie GitHub Copilot. Prisijunkite dabar, kad suaktyvintumėte pokalbį."
+
+#: src/chat-sidebar.tsx
+msgid "Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory."
+msgstr "Jūsų kodas ir duomenys pagal poreikį perduodami tiesiogiai GitHub Copilot, nesaugant jokių kopijų, išskyrus laikymą proceso atmintyje."
+
+#: src/components/claude-scope.ts
+msgid "available in all your projects"
+msgstr "pasiekiama visuose jūsų projektuose"
+
+#: src/components/perf-panel.tsx
+msgid "cgroup CPU throttling"
+msgstr "cgroup procesoriaus ribojimas"
+
+#: src/components/tool-call-card.tsx
+msgid "diff truncated"
+msgstr "skirtumai sutrumpinti"
+
+#: src/components/skills-panel.tsx
+msgid "e.g. %1"
+msgstr "pvz., %1"
+
+#: src/components/perf-panel.tsx
+msgid "failed (%1)"
+msgstr "nepavyko (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it."
+msgstr "Tokia fsync delsa yra tinklo failų sistemos požymis. Jei tai ~/.claude arba Jupyter namų katalogas, ją patiria kiekvienas agento paleidimas ir kiekvienas taisyklių skenavimas."
+
+#: src/components/skills-panel.tsx
+msgid "https://github.com/owner/repo or .../tree/main/path/to/skill"
+msgstr "https://github.com/owner/repo arba .../tree/main/path/to/skill"
+
+#: src/components/plugins-panel.tsx
+msgid "https://… or local path"
+msgstr "https://… arba vietinis kelias"
+
+#: src/components/plugins-panel.tsx
+msgid "no plugins"
+msgstr "papildinių nėra"
+
+#: src/components/perf-panel.tsx
+msgid "no projects/ or sessions/ directory"
+msgstr "nėra katalogo projects/ ar sessions/"
+
+#: src/components/perf-panel.tsx
+msgid "ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success."
+msgstr "ok, error arba cancelled. Atšauktas ciklas įrašomas kaip atšauktas, o ne kaip greita sėkmė."
+
+#: src/chat-sidebar.tsx
+msgid "open notebook"
+msgstr "atidaryti bloknotą"
+
+#: src/components/plugins-panel.tsx
+msgid "owner/repo, https://github.com/owner/repo, or local path"
+msgstr "owner/repo, https://github.com/owner/repo arba vietinis kelias"
+
+#: notebook_intelligence/acp_agent.py
+msgid "run by %1"
+msgstr "vykdo %1"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo"
+msgstr "bendrinama per projekto saugyklą"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo (%1)"
+msgstr "bendrinama per projekto saugyklą (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "skipped: %1"
+msgstr "praleista: %1"
+
+#: src/components/perf-panel.tsx
+msgid "stat %1, write+fsync %2 (median of %3)"
+msgstr "stat %1, write+fsync %2 (%3 matavimų mediana)"
+
+#: src/components/claude-scope.ts
+msgid "this project, this user only"
+msgstr "šis projektas, tik šis naudotojas"
+
+#: src/components/perf-panel.tsx
+msgid "timed out after %1s"
+msgstr "skirtasis laikas baigėsi po %1 s"
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"%1\" requires a \"url\" field."
+msgstr "transport: „%1“ reikalauja lauko „url“."
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"stdio\" requires a \"command\" field."
+msgstr "transport: „stdio“ reikalauja lauko „command“."
+
+#: src/components/perf-panel.tsx
+msgid "via proxy"
+msgstr "per tarpinį serverį"
+
+#: src/components/perf-panel.tsx
+msgid "write %1, read %2"
+msgstr "rašymas %1, skaitymas %2"
+
+#: src/index.ts
+msgid "＋ New Session"
+msgstr "＋ Naujas seansas"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP description: the link to the admin guide"
+msgid "administrator installation guide"
+msgstr "administratoriaus diegimo vadovą"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP settings section"
+msgid "Agent"
+msgstr "Agentas"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a code cell; at most 3 characters"
+msgid "Cd"
+msgstr "Kd"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a natural-language cell; at most 3 characters"
+msgid "NL"
+msgstr "NK"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Don't run"
+msgstr "Nevykdyti"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Run"
+msgstr "Vykdyti"
+
+#: src/components/settings-panel.tsx
+msgctxt "Chatbook mode description; %1 and %2 are the confirm bar buttons"
+msgid "Show the generated code and wait for %1 or %2 on every natural-language run."
+msgstr "Rodyti sugeneruotą kodą ir kiekvieną kartą vykdant natūralia kalba laukti, kol bus pasirinkta %1 arba %2."
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "LOCAL"
+msgstr "VIETINĖ"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "PROJECT"
+msgstr "PROJEKTAS"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "USER"
+msgstr "NAUDOTOJAS"
+
+#: src/components/claude-mcp-panel.tsx
+msgctxt "MCP server input mode"
+msgid "Form"
+msgstr "Forma"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connected"
+msgstr "prisijungta"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connecting"
+msgstr "jungiamasi"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "disconnecting"
+msgstr "atsijungiama"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "not connected"
+msgstr "neprisijungta"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated prompt list"
+msgstr "raginimų sąrašas atnaujintas"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated tool list"
+msgstr "įrankių sąrašas atnaujintas"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating prompt list"
+msgstr "atnaujinamas raginimų sąrašas"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating tool list"
+msgstr "atnaujinamas įrankių sąrašas"
+
+#: src/components/settings-panel.tsx
+msgctxt "Ollama hint: the button that retries listing models"
+msgid "Try again"
+msgstr "Bandyti dar kartą"
+
+#: src/components/perf-panel.tsx
+msgctxt "Python version on an operating system"
+msgid "%1 on %2"
+msgstr "%1 sistemoje %2"
+
+#: src/chatbook-toolbar.ts
+msgctxt "a settings path: %1 the settings window, %2 its tab, %3 the field"
+msgid "%1 > %2 > %3"
+msgstr "%1 > %2 > %3"
+
+#: src/components/perf-panel.tsx
+msgctxt "a value that was not recorded"
+msgid "n/a"
+msgstr "n.d."
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "an approval card detail: its label, then notes such as its size"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve"
+msgstr "Patvirtinti"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve for this request"
+msgstr "Patvirtinti šiai užklausai"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Cancel"
+msgstr "Atšaukti"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, continue planning"
+msgstr "Ne, tęsti planavimą"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, start implementing now"
+msgstr "Ne, pradėti įgyvendinti dabar"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval button"
+msgid "Reject"
+msgstr "Atmesti"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, approve plan"
+msgstr "Taip, patvirtinti planą"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, enter plan mode"
+msgstr "Taip, pereiti į planavimo režimą"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval card title"
+msgid "%1 tool call"
+msgstr "%1 įrankio iškvietimas"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "full"
+msgstr "visas"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "redacted"
+msgstr "slepiamas"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "between notes on an approval card detail"
+msgid ", "
+msgstr ", "
+
+#: src/components/perf-panel.tsx
+msgctxt "bytes"
+msgid "%1 B"
+msgstr "%1 B"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Ask"
+msgstr "Klausti"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Explain"
+msgstr "Paaiškinti"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Troubleshoot"
+msgstr "Šalinti triktis"
+
+#: src/components/perf-panel.tsx
+msgctxt "certificate issuer"
+msgid "unknown"
+msgstr "nežinomas"
+
+#: notebook_intelligence/ai_service_manager.py
+msgctxt "chat button"
+msgid "Configure"
+msgstr "Konfigūruoti"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Agent"
+msgstr "Agentas"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Ask"
+msgstr "Klausti"
+
+#: src/chatbook.ts
+msgctxt "confirm bar link that opens settings; %1 is the settings window name"
+msgid "Change in %1"
+msgstr "Keisti: %1"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected MCP server tools"
+msgid "%1 mcp"
+msgid_plural "%1 mcp"
+msgstr[0] "%1 mcp"
+msgstr[1] "%1 mcp"
+msgstr[2] "%1 mcp"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected extension tools"
+msgid "%1 ext"
+msgid_plural "%1 ext"
+msgstr[0] "%1 plėt."
+msgstr[1] "%1 plėt."
+msgstr[2] "%1 plėt."
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected tools"
+msgid "%1 built-in"
+msgid_plural "%1 built-in"
+msgstr[0] "%1 integr."
+msgstr[1] "%1 integr."
+msgstr[2] "%1 integr."
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "environment (%1)"
+msgstr "aplinka (%1)"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "settings"
+msgstr "nustatymai"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "added"
+msgstr "pridėta"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "removed"
+msgstr "pašalinta"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "mount"
+msgstr "prijungimo taškas"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "session tree size"
+msgstr "seansų medžio dydis"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "small-file latency"
+msgstr "mažų failų delsa"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "sustained throughput"
+msgstr "nuolatinis pralaidumas"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem type"
+msgid "not determined"
+msgstr "nenustatyta"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Add files from outside the workspace. They're saved to the workspace and attached to this chat."
+msgstr "Pridėkite failų iš už darbo srities ribų. Jie išsaugomi darbo srityje ir pridedami prie šio pokalbio."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Ask is read-only and only answers questions. Agent can also run tools, such as file edits and shell commands."
+msgstr "Režimas Klausti yra tik skaitymo ir tik atsako į klausimus. Režimas Agentas taip pat gali vykdyti įrankius, pvz., redaguoti failus ir vykdyti apvalkalo komandas."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Attach files as context"
+msgstr "Pridėti failus kaip kontekstą"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Back"
+msgstr "Atgal"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Begin a fresh session when context gets crowded or you want to switch tasks."
+msgstr "Pradėkite naują seansą, kai kontekstas tampa perpildytas arba norite pereiti prie kitos užduoties."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Configure providers, API keys, and extensions (MCP servers, skills, admin policies)."
+msgstr "Konfigūruokite teikėjus, API raktus ir plėtinius (MCP serverius, įgūdžius, administratoriaus politikas)."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Done"
+msgstr "Atlikta"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag and drop"
+msgstr "Vilkite ir numeskite"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag files from the JupyterLab file browser or your desktop onto the prompt. Keyboard users can attach the same files with the 'Attach files as context' and 'Upload from your computer' buttons."
+msgstr "Vilkite failus iš JupyterLab failų naršyklės arba darbalaukio ant raginimo. Klaviatūros naudotojai tuos pačius failus gali pridėti mygtukais „Pridėti failus kaip kontekstą“ ir „Įkelti iš kompiuterio“."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Next"
+msgstr "Toliau"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Open the menu for built-in commands and installed skills. Typing / at the start of the prompt does the same thing."
+msgstr "Atidarykite integruotų komandų ir įdiegtų įgūdžių meniu. Tą patį padaro / įvedimas raginimo pradžioje."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick a chat mode"
+msgstr "Pasirinkite pokalbio režimą"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick up where you left off"
+msgstr "Tęskite nuo ten, kur baigėte"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pin workspace files so the assistant can reference them. Typing @ in the prompt opens the same picker."
+msgstr "Prisekite darbo srities failus, kad asistentas galėtų juos naudoti. Raginime įvedus @ atidaromas tas pats parinkiklis."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Reopen an earlier Claude session from this workspace."
+msgstr "Vėl atidarykite ankstesnį Claude seansą iš šios darbo srities."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a coding agent in a terminal"
+msgstr "Paleiskite programavimo agentą terminale"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a slash command"
+msgstr "Vykdykite pasvirojo brūkšnio komandą"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Settings"
+msgstr "Nustatymai"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Show NBI tour"
+msgstr "Rodyti NBI apžvalgą"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Skip tour"
+msgstr "Praleisti apžvalgą"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Start a new chat"
+msgstr "Pradėkite naują pokalbį"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Try this: open a notebook and ask, 'Explain what this notebook does and suggest one improvement.' You can replay this tour anytime from the command palette."
+msgstr "Išbandykite: atidarykite bloknotą ir paklauskite: „Paaiškink, ką daro šis bloknotas, ir pasiūlyk vieną patobulinimą.“ Šią apžvalgą bet kada galite paleisti iš naujo iš komandų paletės."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Upload from your computer"
+msgstr "Įkelti iš kompiuterio"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Welcome to Notebook Intelligence"
+msgstr "Sveiki atvykę į Notebook Intelligence"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "You're ready"
+msgstr "Viskas paruošta"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Your AI assistant lives in this sidebar. Take a quick tour of the settings, attachments, and chat modes so you can use it confidently."
+msgstr "Jūsų DI asistentas yra šioje šoninėje juostoje. Greitai susipažinkite su nustatymais, priedais ir pokalbio režimais, kad galėtumėte juo užtikrintai naudotis."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a 'Coding Agent' section with tiles for {launchers}. Each tile opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "JupyterLab paleidiklyje yra skiltis „Coding Agent“ su plytelėmis {launchers}. Kiekviena plytelė atidaro CLI seansą Jupyter terminale šalia jūsų bloknoto."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a {launchers} tile in the 'Coding Agent' section. It opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "JupyterLab paleidiklio skiltyje „Coding Agent“ yra plytelė {launchers}. Ji atidaro CLI seansą Jupyter terminale šalia jūsų bloknoto."
+
+#: src/components/perf-panel.tsx
+msgctxt "gigabytes"
+msgid "%1 GB"
+msgstr "%1 GB"
+
+#: src/components/perf-panel.tsx
+msgctxt "kilobytes"
+msgid "%1 KB"
+msgstr "%1 KB"
+
+#: src/components/setting-lock.ts
+msgctxt "lock reason: %1 is an environment variable name"
+msgid "Locked by %1"
+msgstr "Užrakinta kintamuoju %1"
+
+#: src/components/perf-panel.tsx
+msgctxt "machine measurement"
+msgid "Probe"
+msgstr "Zondavimas"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes"
+msgid "%1 MB"
+msgstr "%1 MB"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes per second"
+msgid "%1 MB/s"
+msgstr "%1 MB/s"
+
+#: src/components/perf-panel.tsx
+msgctxt "milliseconds"
+msgid "%1 ms"
+msgstr "%1 ms"
+
+#: src/components/settings-panel.tsx
+msgctxt "model"
+msgid "None"
+msgstr "Nėra"
+
+#: src/components/perf-panel.tsx
+msgctxt "model name"
+msgid "unknown"
+msgstr "nežinomas"
+
+#: src/components/settings-panel.tsx
+msgctxt "model provider"
+msgid "None"
+msgstr "Nėra"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance diagnostics setting"
+msgid "Enabled"
+msgstr "Įjungta"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "API ms"
+msgstr "API ms"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Active"
+msgstr "Aktyvus"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "First token"
+msgstr "Pirmasis žetonas"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Mode"
+msgstr "Režimas"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Model"
+msgstr "Modelis"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Spawn"
+msgstr "Paleidimas"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stalls"
+msgstr "Strigimai"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Status"
+msgstr "Būsena"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stream"
+msgstr "Srautas"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Time"
+msgstr "Laikas"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens in"
+msgstr "Žetonai į"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens out"
+msgstr "Žetonai iš"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tools"
+msgstr "Įrankiai"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Total"
+msgstr "Iš viso"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Verdict"
+msgstr "Išvada"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Accept Edits"
+msgstr "Priimti pakeitimus"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Bypass Permissions"
+msgstr "Apeiti leidimus"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Default"
+msgstr "Numatytasis"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Plan"
+msgstr "Planas"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugin count, then the plugin names"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugins section heading"
+msgid "MARKETPLACES"
+msgstr "PREKYVIETĖS"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "bad"
+msgstr "blogai"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "error"
+msgstr "klaida"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "info"
+msgstr "info"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "ok"
+msgstr "gerai"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "skipped"
+msgstr "praleista"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "timed out"
+msgstr "baigėsi laikas"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "warn"
+msgstr "įspėjimas"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check: %1 is a directory, %2 what was measured"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Filesystem"
+msgstr "Failų sistema"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Network"
+msgstr "Tinklas"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Process and host"
+msgstr "Procesas ir pagrindinis kompiuteris"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Subprocess startup"
+msgstr "Antrinių procesų paleidimas"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Cancel"
+msgstr "Atšaukti"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Submit"
+msgstr "Pateikti"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "ACP agent"
+msgstr "ACP agentas"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Active chat path"
+msgstr "Aktyvus pokalbio kelias"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Adapter runtime"
+msgstr "Adapterio vykdymo aplinka"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Agent credentials"
+msgstr "Agento prisijungimo duomenys"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Anthropic credentials"
+msgstr "Anthropic prisijungimo duomenys"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model"
+msgstr "Pokalbio modelis"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model provider"
+msgstr "Pokalbio modelio teikėjas"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Claude Code CLI"
+msgstr "Claude Code CLI"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Configuration"
+msgstr "Konfigūracija"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "GitHub Copilot sign-in"
+msgstr "GitHub Copilot prisijungimas"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Live completion"
+msgstr "Tiesioginis užbaigimas"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model list"
+msgstr "Modelių sąrašas"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model name"
+msgstr "Modelio pavadinimas"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Selected model"
+msgstr "Pasirinktas modelis"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Tool schema"
+msgstr "Įrankių schema"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "blocked"
+msgstr "blokuota"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "ok"
+msgstr "gerai"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "skipped"
+msgstr "praleista"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "warn"
+msgstr "įspėjimas"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Checking…"
+msgstr "Tikrinama…"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Not ready"
+msgstr "Neparuošta"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready"
+msgstr "Paruošta"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready, with warnings"
+msgstr "Paruošta, su įspėjimais"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Unknown"
+msgstr "Nežinoma"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Output"
+msgstr "Išvestis"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Thought"
+msgstr "Mąstymas"
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "„%1“ bus pašalintas iš Claude vietinės srities konfigūracijos."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "„%1“ bus pašalintas iš Claude projekto srities konfigūracijos."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "„%1“ bus pašalintas iš Claude naudotojo srities konfigūracijos."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "„%1“ bus pašalintas iš Claude konfigūracijos (sritis %2)."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "„%1“ bus pašalintas iš Claude vietinės srities konfigūracijos."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "„%1“ bus pašalintas iš Claude projekto srities konfigūracijos."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "„%1“ bus pašalintas iš Claude naudotojo srities konfigūracijos."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "„%1“ bus pašalintas iš Claude konfigūracijos (sritis %2)."
+
+#: src/components/skills-panel.tsx
+msgctxt "scope heading, then the project name"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: src/components/claude-scope.ts
+msgctxt "scope picker option: %1 is the scope id, %2 what it means"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "seconds"
+msgid "%1s"
+msgstr "%1 s"
+
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgctxt "separator between list items"
+msgid ", "
+msgstr ", "
+
+#: src/components/settings-panel.tsx
+msgctxt "setting source"
+msgid "User"
+msgstr "Naudotojas"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings section"
+msgid "Language"
+msgstr "Kalba"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "General"
+msgstr "Bendrieji"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "MCP Servers"
+msgstr "MCP serveriai"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Performance"
+msgstr "Našumas"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Plugins"
+msgstr "Papildiniai"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Skills"
+msgstr "Įgūdžiai"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Managed"
+msgstr "Valdomas"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Tracking"
+msgstr "Sekamas"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "Project"
+msgstr "Projektas"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "User"
+msgstr "Naudotojas"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill sync result; %1 is a list of counts"
+msgid "Sync complete. %1."
+msgstr "Sinchronizavimas baigtas. %1."
+
+#: src/components/perf-panel.tsx
+msgctxt "skip reason"
+msgid "not applicable"
+msgstr "netaikoma"
+
+#: src/components/skills-panel.tsx
+msgctxt "stands in for the project folder name"
+msgid "<project>"
+msgstr "<projektas>"
+
+#: src/terminal-drag.ts
+msgctxt "terminal upload failure; %2 lists files, %1 counts the rest"
+msgid "Terminal drop upload failed for %2 (+%1 more)"
+msgid_plural "Terminal drop upload failed for %2 (+%1 more)"
+msgstr[0] "Numetus į terminalą nepavyko įkelti: %2 (ir dar %1)"
+msgstr[1] "Numetus į terminalą nepavyko įkelti: %2 (ir dar %1)"
+msgstr[2] "Numetus į terminalą nepavyko įkelti: %2 (ir dar %1)"
+
+#: src/i18n.ts
+msgctxt "text direction: translate as 'rtl' for a right-to-left language, otherwise 'ltr'"
+msgid "ltr"
+msgstr "ltr"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "cancelled"
+msgstr "atšaukta"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "completed"
+msgstr "baigta"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "failed"
+msgstr "nepavyko"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "in progress"
+msgstr "vykdoma"
+
+#: src/components/tool-call-group.tsx
+msgctxt "tool call summary: %1 is the call count, %2 the failed count"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: src/chat-sidebar.tsx
+msgctxt "tool selection"
+msgid "clear"
+msgstr "išvalyti"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Command execute"
+msgstr "Komandų vykdymas"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File edit"
+msgstr "Failų redagavimas"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File read"
+msgstr "Failų skaitymas"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook edit"
+msgstr "Bloknotų redagavimas"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook execute"
+msgstr "Bloknotų vykdymas"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Python file edit"
+msgstr "Python failų redagavimas"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "cancelled"
+msgstr "atšauktas"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "error"
+msgstr "klaida"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "ok"
+msgstr "gerai"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn timeline section"
+msgid "Events"
+msgstr "Įvykiai"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Agent cold start"
+msgstr "Agento šaltasis paleidimas"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Cancelled"
+msgstr "Atšauktas"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Context preparation"
+msgstr "Konteksto paruošimas"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Failed"
+msgstr "Nepavyko"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Mid-stream stalls"
+msgstr "Strigimai srauto viduryje"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Model or gateway"
+msgstr "Modelis arba šliuzas"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No single hotspot"
+msgstr "Nėra vienos probleminės vietos"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No timing recorded"
+msgstr "Laikas neįrašytas"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Tool execution"
+msgstr "Įrankių vykdymas"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "not valid JSON. %1"
+msgstr "netinkamas JSON. %1"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "the save failed for an unknown reason"
+msgstr "išsaugoti nepavyko dėl nežinomos priežasties"

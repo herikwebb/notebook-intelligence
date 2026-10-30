@@ -46,6 +46,7 @@ from notebook_intelligence.checks import (
     run_versioned,
     scrub,
 )
+from notebook_intelligence.i18n import TranslationBundle, english
 from notebook_intelligence.util import resolve_claude_cli_path
 
 SCHEMA_VERSION = 1
@@ -102,16 +103,20 @@ def _row(
     return row
 
 
-def _credential_source(settings_value: Any, env_var: str) -> Optional[str]:
+def _credential_source(
+    trans: TranslationBundle, settings_value: Any, *env_vars: str
+) -> Optional[str]:
     """Where a credential is coming from, or None if it is absent.
 
     Returns a source label rather than the value: this document is meant to
-    be pasted into a support ticket.
+    be pasted into a support ticket. More than one environment variable can
+    carry one, so they are checked in order once the settings field misses.
     """
     if isinstance(settings_value, str) and settings_value.strip():
-        return "settings"
-    if os.environ.get(env_var, "").strip():
-        return f"environment ({env_var})"
+        return trans._p("credential source", "settings")
+    for env_var in env_vars:
+        if os.environ.get(env_var, "").strip():
+            return trans._p("credential source", "environment (%1)", env_var)
     return None
 
 
@@ -120,17 +125,21 @@ def _credential_source(settings_value: Any, env_var: str) -> Optional[str]:
 # ---------------------------------------------------------------------------
 
 
-def _mode_rows(ai_service_manager: Any) -> tuple[list, str]:
+def _mode_rows(ai_service_manager: Any, trans: TranslationBundle) -> tuple[list, str]:
     """Which path is actually serving chat. Returns (rows, mode)."""
     try:
         mode = ai_service_manager.active_agent_mode
     except Exception:
         mode = None
 
-    label = {
-        "claude": "Claude mode",
-        "acp": "ACP agent mode",
-    }.get(mode, "the configured chat model provider")
+    # Whole sentences per mode rather than a label spliced into one, so a
+    # translator is never handed a fragment.
+    if mode == "claude":
+        detail = trans.__("Chat is served by Claude mode.")
+    elif mode == "acp":
+        detail = trans.__("Chat is served by ACP agent mode.")
+    else:
+        detail = trans.__("Chat is served by the configured chat model provider.")
 
     return (
         [
@@ -138,8 +147,8 @@ def _mode_rows(ai_service_manager: Any) -> tuple[list, str]:
                 "mode.active",
                 "mode",
                 LEVEL_OK,
-                "Active chat path",
-                f"Chat is served by {label}.",
+                trans._p("readiness check", "Active chat path"),
+                detail,
             )
         ],
         mode or "provider",
@@ -171,6 +180,33 @@ def _effective_model_name(models: list, configured_id: str) -> str:
     return configured_id
 
 
+def _required_model_property_is_blank(models: list) -> bool:
+    """True when the provider's model carries an empty required "model_id".
+
+    These providers send that property as the model name, so an empty value
+    means every turn goes out with no model at all. Nothing else notices:
+    `chat_model.model` still holds the class's constant placeholder id, so
+    the configuration looks complete from the outside.
+    """
+    if len(models) != 1:
+        return False
+    try:
+        prop = models[0].get_property("model_id")
+    except Exception:
+        return False
+    if prop is None or getattr(prop, "optional", False):
+        return False
+    value = getattr(prop, "value", None)
+    if value is None:
+        # What a hand-written config.json with `"value": null` leaves behind.
+        return True
+    if not isinstance(value, str):
+        # Any other shape this code does not recognize is not evidence of a
+        # blank, and this row escalates to blocked.
+        return False
+    return not value.strip()
+
+
 def _copilot_signed_in() -> Optional[bool]:
     """True/False for GitHub Copilot's login state, None if undeterminable.
 
@@ -189,7 +225,10 @@ def _copilot_signed_in() -> Optional[bool]:
 
 
 def _provider_rows(
-    nbi_config: Any, ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecutor
+    nbi_config: Any,
+    ai_service_manager: Any,
+    pool: concurrent.futures.ThreadPoolExecutor,
+    trans: TranslationBundle,
 ) -> list:
     rows = []
     chat_model = nbi_config.chat_model or {}
@@ -203,10 +242,11 @@ def _provider_rows(
                 "provider.configured",
                 "provider",
                 LEVEL_BLOCKED,
-                "Chat model",
-                "No chat model provider is selected.",
-                "Open NBI Settings and pick a provider and model under General, "
-                "or enable Claude mode.",
+                trans._p("readiness check", "Chat model"),
+                trans.__("No chat model provider is selected."),
+                trans.__(
+                    "Open NBI Settings and pick a provider and model under General, or enable Claude mode."
+                ),
             )
         )
         return rows
@@ -223,11 +263,11 @@ def _provider_rows(
                 "provider.configured",
                 "provider",
                 LEVEL_BLOCKED,
-                "Chat model provider",
-                f"Provider '{provider_id}' is selected but not registered.",
-                "The provider may be disabled by an administrator "
-                "(see disabled_providers) or supplied by an extension that is "
-                "not installed. Pick a different provider in NBI Settings.",
+                trans._p("readiness check", "Chat model provider"),
+                trans.__("Provider '%1' is selected but not registered.", provider_id),
+                trans.__(
+                    "The provider may be disabled by an administrator (see disabled_providers) or supplied by an extension that is not installed. Pick a different provider in NBI Settings."
+                ),
             )
         )
         return rows
@@ -254,11 +294,14 @@ def _provider_rows(
                 "provider.models",
                 "provider",
                 LEVEL_BLOCKED,
-                "Model list",
-                f"The provider did not return a model list within {PROVIDER_TIMEOUT_S:.0f}s.",
-                "The endpoint accepted the connection but did not answer. "
-                "Check the Base URL and whether it is reachable from the "
-                "Jupyter server process.",
+                trans._p("readiness check", "Model list"),
+                trans.__(
+                    "The provider did not return a model list within %1s.",
+                    f"{PROVIDER_TIMEOUT_S:.0f}",
+                ),
+                trans.__(
+                    "The endpoint accepted the connection but did not answer. Check the Base URL and whether it is reachable from the Jupyter server process."
+                ),
             )
         )
         return rows
@@ -268,11 +311,14 @@ def _provider_rows(
                 "provider.models",
                 "provider",
                 LEVEL_BLOCKED,
-                "Model list",
-                f"Listing models failed ({listed['detail'].get('exception_class', 'error')}).",
-                "Check the API key and Base URL for this provider in NBI "
-                "Settings, and that the endpoint is reachable from the "
-                "Jupyter server process.",
+                trans._p("readiness check", "Model list"),
+                trans.__(
+                    "Listing models failed (%1).",
+                    listed["detail"].get("exception_class", "error"),
+                ),
+                trans.__(
+                    "Check the API key and Base URL for this provider in NBI Settings, and that the endpoint is reachable from the Jupyter server process."
+                ),
             )
         )
         return rows
@@ -283,14 +329,18 @@ def _provider_rows(
     # typed lives in a "model_id" property. Reporting the placeholder tells a
     # support engineer nothing.
     effective_model = _effective_model_name(model_objects, model_id)
+    model_is_blank = _required_model_property_is_blank(model_objects)
     rows.append(
         _row(
             "provider.configured",
             "provider",
             LEVEL_OK,
-            "Chat model provider",
-            f"{provider_id}"
-            + (f", model '{effective_model}'" if effective_model else ", no model selected"),
+            trans._p("readiness check", "Chat model provider"),
+            (
+                trans.__("%1, model '%2'", provider_id, effective_model)
+                if effective_model and not model_is_blank
+                else trans.__("%1, no model selected", provider_id)
+            ),
         )
     )
 
@@ -300,11 +350,11 @@ def _provider_rows(
                 "provider.models",
                 "provider",
                 LEVEL_BLOCKED,
-                "Model list",
-                "The provider returned no models.",
-                "Usually an expired or missing API key, or a Base URL that "
-                "does not point at the provider's API root. For GitHub "
-                "Copilot, sign in again from NBI Settings.",
+                trans._p("readiness check", "Model list"),
+                trans.__("The provider returned no models."),
+                trans.__(
+                    "Usually an expired or missing API key, or a Base URL that does not point at the provider's API root. For GitHub Copilot, sign in again from NBI Settings."
+                ),
             )
         )
         return rows
@@ -317,11 +367,13 @@ def _provider_rows(
                     "provider.models",
                     "provider",
                     LEVEL_BLOCKED,
-                    "GitHub Copilot sign-in",
-                    "Not signed in. The model list shown in Settings is a "
-                    "built-in fallback, not the models this account can use.",
-                    "Sign in from NBI Settings under GitHub Copilot. Until "
-                    "then every chat turn will fail with a 401.",
+                    trans._p("readiness check", "GitHub Copilot sign-in"),
+                    trans.__(
+                        "Not signed in. The model list shown in Settings is a built-in fallback, not the models this account can use."
+                    ),
+                    trans.__(
+                        "Sign in from NBI Settings under GitHub Copilot. Until then every chat turn will fail with a 401."
+                    ),
                 )
             )
             return rows
@@ -331,10 +383,11 @@ def _provider_rows(
                     "provider.models",
                     "provider",
                     LEVEL_WARN,
-                    "GitHub Copilot sign-in",
-                    "Sign-in state could not be determined.",
-                    "If turns fail with a 401, sign in again from NBI "
-                    "Settings under GitHub Copilot.",
+                    trans._p("readiness check", "GitHub Copilot sign-in"),
+                    trans.__("Sign-in state could not be determined."),
+                    trans.__(
+                        "If turns fail with a 401, sign in again from NBI Settings under GitHub Copilot."
+                    ),
                 )
             )
             return rows
@@ -344,10 +397,29 @@ def _provider_rows(
             "provider.models",
             "provider",
             LEVEL_OK,
-            "Model list",
-            f"{len(models)} model(s) available.",
+            trans._p("readiness check", "Model list"),
+            trans._n("%1 model available.", "%1 models available.", len(models)),
         )
     )
+
+    if model_is_blank:
+        # Not necessarily because the field was cleared: a configured id this
+        # provider cannot resolve leaves the property empty too, and the
+        # stale-id warning below is what names that cause, so both rows run.
+        rows.append(
+            _row(
+                "provider.model_configured",
+                "provider",
+                LEVEL_BLOCKED,
+                trans._p("readiness check", "Model name"),
+                trans.__(
+                    "No model name is set for this provider, so requests carry none."
+                ),
+                trans.__(
+                    "Open NBI Settings and set a model for this provider under General. The endpoint rejects a request with no model, so every turn fails until it is set."
+                ),
+            )
+        )
 
     placeholder_id_provider = len(models) == 1 and effective_model != model_id
     if model_id and not placeholder_id_provider and model_id not in models:
@@ -356,11 +428,11 @@ def _provider_rows(
                 "provider.model_exists",
                 "provider",
                 LEVEL_WARN,
-                "Selected model",
-                f"'{model_id}' is not in the list this endpoint serves.",
-                "Pick a model from the dropdown in NBI Settings. A pinned "
-                "NBI_CHAT_MODEL_ID that the endpoint no longer serves will "
-                "fail on every turn.",
+                trans._p("readiness check", "Selected model"),
+                trans.__("'%1' is not in the list this endpoint serves.", model_id),
+                trans.__(
+                    "Pick a model from the dropdown in NBI Settings. A pinned NBI_CHAT_MODEL_ID that the endpoint no longer serves will fail on every turn."
+                ),
             )
         )
     return rows
@@ -371,7 +443,11 @@ def _provider_rows(
 # ---------------------------------------------------------------------------
 
 
-def _claude_rows(nbi_config: Any, pool: concurrent.futures.ThreadPoolExecutor) -> list:
+def _claude_rows(
+    nbi_config: Any,
+    pool: concurrent.futures.ThreadPoolExecutor,
+    trans: TranslationBundle,
+) -> list:
     rows = []
     settings = nbi_config.claude_settings or {}
 
@@ -382,11 +458,11 @@ def _claude_rows(nbi_config: Any, pool: concurrent.futures.ThreadPoolExecutor) -
                 "claude.cli",
                 "claude",
                 LEVEL_BLOCKED,
-                "Claude Code CLI",
-                "The claude CLI was not found.",
-                "Install the Claude Code CLI and make sure it is on the PATH "
-                "of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH "
-                "to its absolute path and restart.",
+                trans._p("readiness check", "Claude Code CLI"),
+                trans.__("The claude CLI was not found."),
+                trans.__(
+                    "Install the Claude Code CLI and make sure it is on the PATH of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH to its absolute path and restart."
+                ),
             )
         )
     else:
@@ -400,13 +476,15 @@ def _claude_rows(nbi_config: Any, pool: concurrent.futures.ThreadPoolExecutor) -
             lambda p=cli_path: run_versioned([p, "--version"]),
         )
         if result["status"] == "ok" and result["detail"].get("returncode") == 0:
+            # The CLI's own version banner is reported as is.
+            version = result["detail"].get("version")
             rows.append(
                 _row(
                     "claude.cli",
                     "claude",
                     LEVEL_OK,
-                    "Claude Code CLI",
-                    f"{result['detail'].get('version') or 'present'}.",
+                    trans._p("readiness check", "Claude Code CLI"),
+                    f"{version}." if version else trans.__("Present."),
                 )
             )
         elif result["status"] == "timed_out":
@@ -415,11 +493,11 @@ def _claude_rows(nbi_config: Any, pool: concurrent.futures.ThreadPoolExecutor) -
                     "claude.cli",
                     "claude",
                     LEVEL_BLOCKED,
-                    "Claude Code CLI",
-                    "The CLI did not respond to --version within its budget.",
-                    "The binary resolves but does not start. On a network "
-                    "filesystem this is often the install tree being slow to "
-                    "read; otherwise check it runs from a terminal.",
+                    trans._p("readiness check", "Claude Code CLI"),
+                    trans.__("The CLI did not respond to --version within its budget."),
+                    trans.__(
+                        "The binary resolves but does not start. On a network filesystem this is often the install tree being slow to read; otherwise check it runs from a terminal."
+                    ),
                 )
             )
         else:
@@ -428,37 +506,48 @@ def _claude_rows(nbi_config: Any, pool: concurrent.futures.ThreadPoolExecutor) -
                     "claude.cli",
                     "claude",
                     LEVEL_BLOCKED,
-                    "Claude Code CLI",
-                    "The CLI resolved but --version failed.",
-                    "Run 'claude --version' in a terminal as the Jupyter user "
-                    "to see the underlying error.",
+                    trans._p("readiness check", "Claude Code CLI"),
+                    trans.__("The CLI resolved but --version failed."),
+                    trans.__(
+                        "Run 'claude --version' in a terminal as the Jupyter user to see the underlying error."
+                    ),
                 )
             )
 
-    source = _credential_source(settings.get("api_key"), "ANTHROPIC_API_KEY")
+    # ANTHROPIC_AUTH_TOKEN authenticates the SDK just as an API key does, so
+    # reporting "no credential" for a server holding one is a false alarm.
+    source = _credential_source(
+        trans, settings.get("api_key"), "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN"
+    )
     if source:
         rows.append(
             _row(
                 "claude.credentials",
                 "claude",
                 LEVEL_OK,
-                "Anthropic credentials",
-                f"API key present from {source}.",
+                trans._p("readiness check", "Anthropic credentials"),
+                trans.__("Credential present from %1.", source),
             )
         )
     else:
         # Not blocked: the CLI may hold a subscription login of its own, which
-        # NBI cannot see and must not call broken.
+        # NBI cannot see and must not call broken. This row sees one settings
+        # field and two environment variables, while the SDK can also
+        # authenticate from a profile, the workload-identity variables, or an
+        # ANTHROPIC_CUSTOM_HEADERS header. Those leave this row reporting "not
+        # visible" while inline completions are in fact running, so it names
+        # the symptom to look for rather than asserting a feature is off
+        # (issue #425).
         rows.append(
             _row(
                 "claude.credentials",
                 "claude",
                 LEVEL_WARN,
-                "Anthropic credentials",
-                "No API key is configured in NBI.",
-                "This is fine if the Claude CLI is signed in with a "
-                "subscription login. If turns fail with a 401, add a key in "
-                "NBI Settings under Claude or set ANTHROPIC_API_KEY.",
+                trans._p("readiness check", "Anthropic credentials"),
+                trans.__("No Anthropic API key or auth token is visible to NBI."),
+                trans.__(
+                    "This is fine if the Claude CLI is signed in with a subscription login, or if the SDK resolves a credential of its own from a profile or custom headers. If chat turns fail with a 401, or Claude auto-complete produces nothing, add a key in NBI Settings under Claude or set ANTHROPIC_API_KEY before starting JupyterLab."
+                ),
             )
         )
     return rows
@@ -469,76 +558,88 @@ def _claude_rows(nbi_config: Any, pool: concurrent.futures.ThreadPoolExecutor) -
 # ---------------------------------------------------------------------------
 
 
-def _acp_rows(nbi_config: Any) -> list:
+def _acp_rows(nbi_config: Any, trans: TranslationBundle) -> list:
     from notebook_intelligence.acp_registry import (
+        acp_adapter_path,
         resolve_acp_agent,
         resolve_acp_agent_command,
     )
+    from notebook_intelligence.acp_runtime import validate_acp_adapter_runtime
+    from notebook_intelligence.util import get_jupyter_root_dir
 
     rows = []
     settings = nbi_config.acp_settings or {}
     spec = resolve_acp_agent(settings.get("agent"))
-    command = resolve_acp_agent_command(spec)
-
-    rows.append(
-        _row(
-            "acp.agent",
-            "acp",
-            LEVEL_OK,
-            "ACP agent",
-            f"{spec.label}, launched as: {' '.join(command)}",
+    try:
+        # Launch and readiness share the same absolute executable resolution.
+        # In particular, neither accepts a command relative to the server cwd.
+        workspace_root = get_jupyter_root_dir()
+        command = resolve_acp_agent_command(spec, workspace_root=workspace_root)
+        env_path = (
+            os.environ.get("PATH", os.defpath)
+            if "NBI_ACP_AGENT_COMMAND" in os.environ
+            else acp_adapter_path(workspace_root)
         )
-    )
-
-    # Whatever argv[0] is, it has to exist and be executable. Special-casing
-    # the literal "npx" would let an NBI_ACP_AGENT_COMMAND override point at a
-    # nonexistent binary and still report Ready.
-    if command:
-        binary = command[0]
-        from shutil import which
-
-        resolved = which(binary) if not os.path.sep in binary else (
-            binary if os.access(binary, os.X_OK) else None
+        validate_acp_adapter_runtime(
+            command, env_path=env_path, cwd=getattr(nbi_config, "nbi_user_dir", None),
+            workspace_root=workspace_root if "NBI_ACP_AGENT_COMMAND" not in os.environ else None,
         )
-        if resolved is None:
-            hint = (
-                "The default adapter is an npm package, so this usually means "
-                "Node.js is not installed in the environment running "
-                "JupyterLab. "
-                if binary == "npx"
-                else ""
+    except (ValueError, OSError, RuntimeError) as exc:
+        rows.append(
+            _row(
+                "acp.agent",
+                "acp",
+                LEVEL_OK,
+                trans._p("readiness check", "ACP agent"),
+                spec.label,
             )
-            rows.append(
-                _row(
-                    "acp.runtime",
-                    "acp",
-                    LEVEL_BLOCKED,
-                    "Adapter runtime",
-                    f"'{binary}' was not found or is not executable.",
-                    hint + "Install it, or set NBI_ACP_AGENT_COMMAND to a "
-                    "command that does exist.",
-                )
+        )
+        rows.append(
+            _row(
+                "acp.runtime",
+                "acp",
+                LEVEL_BLOCKED,
+                trans._p("readiness check", "Adapter runtime"),
+                # Raised by the launch-time validation, which also reports it
+                # elsewhere; left as the validator wrote it.
+                str(exc),
+                trans.__(
+                    "Preinstall the pinned adapter package %1 in a trusted location outside the workspace and put its absolute executable directory on PATH, or set NBI_ACP_AGENT_COMMAND to the absolute path of an installed adapter executable. Install its required interpreter on the adapter PATH; default discovery excludes workspace directories. Do not use a package runner such as npx. Relative commands are not supported.",
+                    spec.package,
+                ),
             )
-        else:
-            rows.append(
-                _row(
-                    "acp.runtime",
-                    "acp",
-                    LEVEL_OK,
-                    "Adapter runtime",
-                    f"'{binary}' is available.",
-                )
+        )
+    else:
+        rows.append(
+            _row(
+                "acp.agent",
+                "acp",
+                LEVEL_OK,
+                trans._p("readiness check", "ACP agent"),
+                trans.__("%1, launched as: %2", spec.label, " ".join(command)),
             )
+        )
+        rows.append(
+            _row(
+                "acp.runtime",
+                "acp",
+                LEVEL_OK,
+                trans._p("readiness check", "Adapter runtime"),
+                trans.__(
+                    "'%1' and its declared interpreter are available.", command[0]
+                ),
+            )
+        )
 
-    source = _credential_source(settings.get("api_key"), spec.api_key_env)
+    source = _credential_source(trans, settings.get("api_key"), spec.api_key_env)
     if source:
         rows.append(
             _row(
                 "acp.credentials",
                 "acp",
                 LEVEL_OK,
-                "Agent credentials",
-                f"API key present from {source}.",
+                trans._p("readiness check", "Agent credentials"),
+                trans.__("API key present from %1.", source),
             )
         )
     else:
@@ -547,10 +648,11 @@ def _acp_rows(nbi_config: Any) -> list:
                 "acp.credentials",
                 "acp",
                 LEVEL_WARN,
-                "Agent credentials",
-                f"No API key is configured ({spec.api_key_env} is unset).",
-                "This is fine if the agent is signed in with its own OAuth "
-                "login. Otherwise set the key in NBI Settings under ACP.",
+                trans._p("readiness check", "Agent credentials"),
+                trans.__("No API key is configured (%1 is unset).", spec.api_key_env),
+                trans.__(
+                    "This is fine if the agent is signed in with its own OAuth login. Otherwise set the key in NBI Settings under ACP."
+                ),
             )
         )
     return rows
@@ -672,7 +774,11 @@ def _live_completion(chat_model: Any) -> dict:
     }
 
 
-def _live_rows(ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecutor) -> list:
+def _live_rows(
+    ai_service_manager: Any,
+    pool: concurrent.futures.ThreadPoolExecutor,
+    trans: TranslationBundle,
+) -> list:
     chat_model = None
     try:
         chat_model = ai_service_manager.chat_model
@@ -685,8 +791,8 @@ def _live_rows(ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecu
                 "live.completion",
                 "live",
                 LEVEL_SKIPPED,
-                "Live completion",
-                "No chat model is resolved, so there is nothing to call.",
+                trans._p("readiness check", "Live completion"),
+                trans.__("No chat model is resolved, so there is nothing to call."),
             )
         ]
 
@@ -700,10 +806,11 @@ def _live_rows(ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecu
                 "live.completion",
                 "live",
                 LEVEL_BLOCKED,
-                "Live completion",
-                f"No response within {LIVE_TIMEOUT_S:.0f}s.",
-                "The endpoint accepted the request but did not answer. Check "
-                "the gateway and whether it is queueing behind a cold model.",
+                trans._p("readiness check", "Live completion"),
+                trans.__("No response within %1s.", f"{LIVE_TIMEOUT_S:.0f}"),
+                trans.__(
+                    "The endpoint accepted the request but did not answer. Check the gateway and whether it is queueing behind a cold model."
+                ),
             )
         ]
     if result["status"] != "ok":
@@ -712,26 +819,42 @@ def _live_rows(ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecu
                 "live.completion",
                 "live",
                 LEVEL_BLOCKED,
-                "Live completion",
-                f"The request failed ({result['detail'].get('exception_class', 'error')}).",
-                "Check the API key, the Base URL, and that the selected model "
-                "id is one this endpoint serves. The server log carries the "
-                "provider's own error text.",
+                trans._p("readiness check", "Live completion"),
+                trans.__(
+                    "The request failed (%1).",
+                    result["detail"].get("exception_class", "error"),
+                ),
+                trans.__(
+                    "Check the API key, the Base URL, and that the selected model id is one this endpoint serves. The server log carries the provider's own error text."
+                ),
             )
         ]
 
     detail = result["detail"]
     rows = []
     if detail["streamed"]:
+        if detail["ttfb_ms"] is not None:
+            timing = trans._n(
+                "%1 chunk, first at %2 ms, %3 ms total.",
+                "%1 chunks, first at %2 ms, %3 ms total.",
+                detail["chunks"],
+                detail["ttfb_ms"],
+                detail["total_ms"],
+            )
+        else:
+            timing = trans._n(
+                "%1 chunk, first at n/a ms, %2 ms total.",
+                "%1 chunks, first at n/a ms, %2 ms total.",
+                detail["chunks"],
+                detail["total_ms"],
+            )
         rows.append(
             _row(
                 "live.completion",
                 "live",
                 LEVEL_OK,
-                "Live completion",
-                f"{detail['chunks']} chunk(s), first at "
-                f"{detail['ttfb_ms'] if detail['ttfb_ms'] is not None else 'n/a'} ms, "
-                f"{detail['total_ms']} ms total.",
+                trans._p("readiness check", "Live completion"),
+                timing,
             )
         )
     else:
@@ -740,11 +863,11 @@ def _live_rows(ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecu
                 "live.completion",
                 "live",
                 LEVEL_WARN,
-                "Live completion",
-                "The request succeeded but nothing streamed.",
-                "The endpoint answered in one piece. Replies will appear only "
-                "when the turn finishes rather than as they are generated; a "
-                "proxy that buffers responses is the usual cause.",
+                trans._p("readiness check", "Live completion"),
+                trans.__("The request succeeded but nothing streamed."),
+                trans.__(
+                    "The endpoint answered in one piece. Replies will appear only when the turn finishes rather than as they are generated; a proxy that buffers responses is the usual cause."
+                ),
             )
         )
 
@@ -754,12 +877,14 @@ def _live_rows(ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecu
                 "live.tools",
                 "live",
                 LEVEL_WARN,
-                "Tool schema",
-                f"Not determined: the request failed ({detail.get('first_error') or 'error'}) "
-                "for a reason unrelated to tools.",
-                "Re-run the endpoint test once the endpoint is answering "
-                "again. A transient failure cannot tell us whether tool "
-                "calling works.",
+                trans._p("readiness check", "Tool schema"),
+                trans.__(
+                    "Not determined: the request failed (%1) for a reason unrelated to tools.",
+                    detail.get("first_error") or "error",
+                ),
+                trans.__(
+                    "Re-run the endpoint test once the endpoint is answering again. A transient failure cannot tell us whether tool calling works."
+                ),
             )
         )
     elif detail["tool_schema_accepted"]:
@@ -768,8 +893,8 @@ def _live_rows(ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecu
                 "live.tools",
                 "live",
                 LEVEL_OK,
-                "Tool schema",
-                "The endpoint accepted a request carrying a tool schema.",
+                trans._p("readiness check", "Tool schema"),
+                trans.__("The endpoint accepted a request carrying a tool schema."),
             )
         )
     else:
@@ -778,12 +903,13 @@ def _live_rows(ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecu
                 "live.tools",
                 "live",
                 LEVEL_BLOCKED,
-                "Tool schema",
-                "The endpoint rejected a request carrying a tool schema, but "
-                "accepted the same request without one.",
-                "Agent mode and every built-in tool need tool calling. The "
-                "model may not support it, or a proxy in front of the endpoint "
-                "may be stripping the tools field.",
+                trans._p("readiness check", "Tool schema"),
+                trans.__(
+                    "The endpoint rejected a request carrying a tool schema, but accepted the same request without one."
+                ),
+                trans.__(
+                    "Agent mode and every built-in tool need tool calling. The model may not support it, or a proxy in front of the endpoint may be stripping the tools field."
+                ),
             )
         )
     return rows
@@ -794,30 +920,54 @@ def _live_rows(ai_service_manager: Any, pool: concurrent.futures.ThreadPoolExecu
 # ---------------------------------------------------------------------------
 
 
-def _verdict(rows: list) -> tuple:
+def _verdict(rows: list, trans: Optional[TranslationBundle] = None) -> tuple:
     """Overall verdict plus the one-line headline a banner shows."""
+    if trans is None:
+        trans = english()
     blocked = [r for r in rows if r.get("level") == LEVEL_BLOCKED]
     warned = [r for r in rows if r.get("level") == LEVEL_WARN]
 
+    # The row title goes in as written: lowercasing it to fit mid-sentence
+    # only works in English.
     if blocked:
         first = blocked[0]
-        headline = f"Not ready: {first['title'].lower()}. {first['detail']}"
         if len(blocked) > 1:
-            headline += f" ({len(blocked) - 1} more issue(s).)"
+            headline = trans._n(
+                "Not ready. %2: %3 (%1 more issue.)",
+                "Not ready. %2: %3 (%1 more issues.)",
+                len(blocked) - 1,
+                first["title"],
+                first["detail"],
+            )
+        else:
+            headline = trans.__("Not ready. %1: %2", first["title"], first["detail"])
         return VERDICT_NOT_READY, headline
     if warned:
         first = warned[0]
         return (
             VERDICT_DEGRADED,
-            f"Ready, with {len(warned)} warning(s). {first['title']}: {first['detail']}",
+            trans._n(
+                "Ready, with %1 warning. %2: %3",
+                "Ready, with %1 warnings. %2: %3",
+                len(warned),
+                first["title"],
+                first["detail"],
+            ),
         )
-    return VERDICT_READY, "Ready. Nothing needs configuring."
+    return VERDICT_READY, trans.__("Ready. Nothing needs configuring.")
 
 
 def run_readiness(
-    nbi_config: Any, ai_service_manager: Any, include_live: bool = False
+    nbi_config: Any,
+    ai_service_manager: Any,
+    include_live: bool = False,
+    trans: Optional[TranslationBundle] = None,
 ) -> dict:
     """Evaluate configuration readiness and return a scrubbed document.
+
+    ``trans`` translates the text the document carries for the user (titles,
+    details, remedies, the headline); ids, groups and levels stay as they are.
+    English when omitted.
 
     Blocking: callers on an event loop must run this via
     ``loop.run_in_executor``. Never raises for a check-level failure; a check
@@ -826,9 +976,11 @@ def run_readiness(
     pool = concurrent.futures.ThreadPoolExecutor(
         max_workers=_POOL_SIZE, thread_name_prefix="nbi-readiness"
     )
+    if trans is None:
+        trans = english()
     rows: list = []
     try:
-        mode_rows, mode = _mode_rows(ai_service_manager)
+        mode_rows, mode = _mode_rows(ai_service_manager, trans)
         rows += mode_rows
 
         # Each group is guarded separately. Readiness is what a stuck user
@@ -837,22 +989,25 @@ def run_readiness(
         # the endpoint that exists to explain the breakage.
         try:
             if mode == "claude":
-                rows += _claude_rows(nbi_config, pool)
+                rows += _claude_rows(nbi_config, pool, trans)
             elif mode == "acp":
-                rows += _acp_rows(nbi_config)
+                rows += _acp_rows(nbi_config, trans)
             else:
-                rows += _provider_rows(nbi_config, ai_service_manager, pool)
+                rows += _provider_rows(nbi_config, ai_service_manager, pool, trans)
         except Exception as e:
             rows.append(
                 _row(
                     f"{mode}.unavailable",
                     mode if mode in ("claude", "acp") else "provider",
                     LEVEL_BLOCKED,
-                    "Configuration",
-                    f"Reading the configuration failed ({type(e).__name__}).",
-                    "The stored configuration could not be read. Check "
-                    "~/.jupyter/nbi/config.json for invalid JSON, and the "
-                    "Jupyter server log for the underlying error.",
+                    trans._p("readiness check", "Configuration"),
+                    trans.__(
+                        "Reading the configuration failed (%1).", type(e).__name__
+                    ),
+                    trans.__(
+                        "The stored configuration could not be read. Check %1 for invalid JSON, and the Jupyter server log for the underlying error.",
+                        "~/.jupyter/nbi/config.json",
+                    ),
                 )
             )
 
@@ -866,23 +1021,30 @@ def run_readiness(
                         "live.completion",
                         "live",
                         LEVEL_SKIPPED,
-                        "Live completion",
-                        f"Not applicable: the agent owns the model call in {mode} mode.",
+                        trans._p("readiness check", "Live completion"),
+                        trans.__(
+                            "Not applicable: the agent owns the model call in %1 mode.",
+                            mode,
+                        ),
                     )
                 )
             else:
                 try:
-                    rows += _live_rows(ai_service_manager, pool)
+                    rows += _live_rows(ai_service_manager, pool, trans)
                 except Exception as e:
                     rows.append(
                         _row(
                             "live.completion",
                             "live",
                             LEVEL_BLOCKED,
-                            "Live completion",
-                            f"The endpoint test could not run ({type(e).__name__}).",
-                            "Check the Jupyter server log for the underlying "
-                            "error.",
+                            trans._p("readiness check", "Live completion"),
+                            trans.__(
+                                "The endpoint test could not run (%1).",
+                                type(e).__name__,
+                            ),
+                            trans.__(
+                                "Check the Jupyter server log for the underlying error."
+                            ),
                         )
                     )
     finally:
@@ -891,7 +1053,7 @@ def run_readiness(
         # thread would defeat the budget that reported it.
         pool.shutdown(wait=False, cancel_futures=True)
 
-    verdict, headline = _verdict(rows)
+    verdict, headline = _verdict(rows, trans)
     # Scrubbed on the way out: a launch command or a CLI banner carries an
     # absolute home directory and therefore the login name, and this document
     # is meant to be pasted into a support ticket.

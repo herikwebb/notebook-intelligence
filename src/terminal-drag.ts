@@ -4,7 +4,14 @@ import { Notification } from '@jupyterlab/apputils';
 import { Widget } from '@lumino/widgets';
 
 import { NBIAPI } from './api';
-import { DragMode, formatForMode, invertMode } from './terminal-drag-format';
+import { getTrans } from './i18n';
+import {
+  DragMode,
+  formatForMode,
+  hasTerminalControlCharacters,
+  invertMode
+} from './terminal-drag-format';
+import { TranslationBundle } from '@jupyterlab/translation';
 
 export type { DragMode } from './terminal-drag-format';
 export { formatForMode, invertMode } from './terminal-drag-format';
@@ -108,8 +115,29 @@ function setupTerminal(
     if (widget.isDisposed) {
       return;
     }
+    // File-browser paths and uploaded server paths can carry terminal keys
+    // or misleading Unicode formatting. Reject paths at this shared boundary;
+    // removing individual characters would refer to a different file.
+    const controlFreePaths = paths.filter(
+      path => !hasTerminalControlCharacters(path)
+    );
+    const rejectedCount = paths.length - controlFreePaths.length;
+    if (rejectedCount > 0) {
+      // Keep untrusted filenames out of the notification too.
+      const trans = getTrans();
+      Notification.warning(
+        trans._n(
+          'Terminal drop skipped %1 path containing control or invisible formatting characters. Rename them before dropping.',
+          'Terminal drop skipped %1 paths containing control or invisible formatting characters. Rename them before dropping.',
+          rejectedCount
+        )
+      );
+    }
+    if (controlFreePaths.length === 0) {
+      return;
+    }
     const effectiveMode = invertMode(state.mode, shiftHeld);
-    widget.content.paste(`${formatForMode(paths, effectiveMode)} `);
+    widget.content.paste(`${formatForMode(controlFreePaths, effectiveMode)} `);
     // Activate the outer MainAreaWidget so the terminal also gets raised
     // if it's a background tab in a split. Otherwise the next keystroke
     // goes to the file-browser (Enter would "open the selected file") or
@@ -319,12 +347,7 @@ async function uploadAndInject(
     // Inline in the toast so the user sees both what failed and why
     // (e.g. 413 from the size cap). Truncated to 3 entries; rest collapsed
     // into a "+ N more" footer to fit JL's 140-char notification limit.
-    const head = failures
-      .slice(0, 3)
-      .map(f => `${f.name}: ${f.reason}`)
-      .join('; ');
-    const tail = failures.length > 3 ? ` (+${failures.length - 3} more)` : '';
-    Notification.error(`Terminal drop upload failed for ${head}${tail}`);
+    Notification.error(uploadFailureMessage(getTrans(), failures));
   }
   inject(paths, shiftHeld);
 }
@@ -369,14 +392,43 @@ class TerminalDragModeButton extends Widget {
     // aria-label carries the full mode + Shift-modifier explanation;
     // title is a short hover-tip so screen readers don't double-announce
     // the same string from both attributes.
+    const trans = getTrans();
     this._button.setAttribute(
       'aria-label',
       isMention
-        ? 'Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop.'
-        : 'Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop.'
+        ? trans.__(
+            'Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop.'
+          )
+        : trans.__(
+            'Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop.'
+          )
     );
     this._button.title = isMention
-      ? 'Drop mode: @-mention'
-      : 'Drop mode: raw path';
+      ? trans.__('Drop mode: @-mention')
+      : trans.__('Drop mode: raw path');
   }
+}
+
+/**
+ * The toast for files a terminal drop could not upload: the first three
+ * with their reasons, then a count of the rest, so the text fits
+ * JupyterLab's notification length.
+ */
+export function uploadFailureMessage(
+  trans: TranslationBundle,
+  failures: { name: string; reason: string }[]
+): string {
+  const head = failures
+    .slice(0, 3)
+    .map(f => `${f.name}: ${f.reason}`)
+    .join('; ');
+  return failures.length > 3
+    ? trans._np(
+        'terminal upload failure; %2 lists files, %1 counts the rest',
+        'Terminal drop upload failed for %2 (+%1 more)',
+        'Terminal drop upload failed for %2 (+%1 more)',
+        failures.length - 3,
+        head
+      )
+    : trans.__('Terminal drop upload failed for %1', head);
 }

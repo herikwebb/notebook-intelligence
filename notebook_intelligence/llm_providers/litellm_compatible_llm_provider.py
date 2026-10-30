@@ -1,8 +1,14 @@
 # Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
+import contextlib
 import json
 from typing import Any
 from notebook_intelligence.api import ChatModel, EmbeddingModel, InlineCompletionModel, LLMProvider, CancelToken, ChatResponse, CompletionContext, LLMProviderProperty
+from notebook_intelligence.inline_completion import (
+    chatbook_inline_prefix_hint,
+    extract_inline_completion,
+    is_chatbook_inline_language,
+)
 from notebook_intelligence.util import import_litellm
 
 DEFAULT_CONTEXT_WINDOW = 4096
@@ -64,22 +70,37 @@ class LiteLLMCompatibleChatModel(ChatModel):
         )
 
         if stream:
-            for chunk in litellm_resp:
-                if len(chunk.choices) == 0:
-                    continue
-                delta = chunk.choices[0].delta
-                reasoning = getattr(delta, 'reasoning_content', None) or getattr(delta, 'reasoning', None)
-                if reasoning is not None:
-                    reasoning = str(reasoning)
-                response.stream({
-                        "choices": [{
-                            "delta": {
-                                "role": delta.role,
-                                "content": delta.content,
-                                "reasoning_content": reasoning
-                            }
-                        }]
-                    })
+            try:
+                for chunk in litellm_resp:
+                    if cancel_token is not None and cancel_token.is_cancel_requested:
+                        break
+                    if len(chunk.choices) == 0:
+                        continue
+                    delta = chunk.choices[0].delta
+                    reasoning = getattr(delta, 'reasoning_content', None) or getattr(delta, 'reasoning', None)
+                    if reasoning is not None:
+                        reasoning = str(reasoning)
+                    response.stream({
+                            "choices": [{
+                                "delta": {
+                                    "role": delta.role,
+                                    "content": delta.content,
+                                    "reasoning_content": reasoning
+                                }
+                            }]
+                        })
+            finally:
+                # Breaking out of the iteration does not disconnect, so a
+                # stopped turn would keep generating on the provider's side.
+                # litellm's wrapper offers only an async close, so close the
+                # provider stream underneath it; `completion_stream` is what
+                # its own `aclose` reads.
+                inner_close = getattr(
+                    getattr(litellm_resp, "completion_stream", None), "close", None
+                )
+                if callable(inner_close):
+                    with contextlib.suppress(Exception):
+                        inner_close()
             response.finish()
             return
         else:
@@ -127,6 +148,8 @@ class LiteLLMCompatibleInlineCompletionModel(InlineCompletionModel):
         base_url = self.get_property("base_url").value
         api_key_prop = self.get_property("api_key")
         api_key = api_key_prop.value if api_key_prop is not None else None
+        if is_chatbook_inline_language(language):
+            prefix = chatbook_inline_prefix_hint() + prefix
         litellm_resp = litellm.completion(
             model=model_id,
             prompt=prefix,
@@ -136,7 +159,10 @@ class LiteLLMCompatibleInlineCompletionModel(InlineCompletionModel):
             api_key=api_key,
         )
 
-        return litellm_resp.choices[0].message.content
+        content = litellm_resp.choices[0].message.content
+        if is_chatbook_inline_language(language):
+            return extract_inline_completion(content or "", language)
+        return content
 
 class LiteLLMCompatibleLLMProvider(LLMProvider):
     def __init__(self):

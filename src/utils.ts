@@ -7,18 +7,12 @@ import { IDocumentManager } from '@jupyterlab/docmanager';
 import { FileDialog } from '@jupyterlab/filebrowser';
 import { encoding_for_model } from 'tiktoken';
 import { NotebookPanel } from '@jupyterlab/notebook';
+import stripAnsi from 'strip-ansi';
 
 import { shellSingleQuote } from './shell-utils';
+import { isControlOrBidiCodepoint } from './text-codepoints';
 
 const tiktoken_encoding = encoding_for_model('gpt-4o');
-
-export function removeAnsiChars(str: string): string {
-  return str.replace(
-    // eslint-disable-next-line no-control-regex
-    /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
-    ''
-  );
-}
 
 export async function waitForDuration(duration: number): Promise<void> {
   return new Promise(resolve => {
@@ -26,37 +20,6 @@ export async function waitForDuration(duration: number): Promise<void> {
       resolve();
     }, duration);
   });
-}
-
-export function moveCodeSectionBoundaryMarkersToNewLine(
-  source: string
-): string {
-  const existingLines = source.split('\n');
-  const newLines = [];
-  for (const line of existingLines) {
-    if (line.length > 3 && line.startsWith('```')) {
-      newLines.push('```');
-      let remaining = line.substring(3);
-      if (remaining.startsWith('python')) {
-        if (remaining.length === 6) {
-          continue;
-        }
-        remaining = remaining.substring(6);
-      }
-      if (remaining.endsWith('```')) {
-        newLines.push(remaining.substring(0, remaining.length - 3));
-        newLines.push('```');
-      } else {
-        newLines.push(remaining);
-      }
-    } else if (line.length > 3 && line.endsWith('```')) {
-      newLines.push(line.substring(0, line.length - 3));
-      newLines.push('```');
-    } else {
-      newLines.push(line);
-    }
-  }
-  return newLines.join('\n');
 }
 
 export function extractLLMGeneratedCode(code: string): string {
@@ -122,7 +85,7 @@ export function markdownToComment(source: string): string {
 export function formatJupyterError(output: any): string {
   const head = `${output.ename ?? 'Error'}: ${output.evalue ?? ''}`.trim();
   const tb = Array.isArray(output.traceback)
-    ? output.traceback.map((line: string) => removeAnsiChars(line)).join('\n')
+    ? output.traceback.map((line: string) => stripAnsi(line)).join('\n')
     : '';
   return tb ? `${head}\n${tb}` : head;
 }
@@ -315,25 +278,16 @@ function isDisallowedUriCodepoint(code: number): boolean {
   // can visually impersonate the URI in the title, so reject them too.
   // Ranges intentionally mirror the Python ``_DISALLOWED_URI_CODEPOINTS``
   // set so a URI rejected on one side is rejected on the other.
-  if (code <= 0x1f || code === 0x7f) {
+  if (isControlOrBidiCodepoint(code)) {
     return true;
   }
-  if (code >= 0x80 && code <= 0x9f) {
-    return true;
-  }
-  if (code === 0x0085 || code === 0x00a0) {
-    return true;
-  }
-  if (code === 0x2028 || code === 0x2029 || code === 0xfeff) {
+  if (code === 0x00a0 || code === 0xfeff) {
     return true;
   }
   if (code >= 0x200b && code <= 0x200f) {
     return true;
   }
-  if (code >= 0x202a && code <= 0x202e) {
-    return true;
-  }
-  if (code >= 0x2066 && code <= 0x206f) {
+  if (code >= 0x206a && code <= 0x206f) {
     return true;
   }
   return false;

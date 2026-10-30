@@ -1,0 +1,4256 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: notebook_intelligence\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already exists in this bundle."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already up to date at %2."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be deleted."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be permanently deleted."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "\"%1\" will be removed from Claude's plugin marketplaces."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "%1 (not installed)"
+msgstr ""
+
+#: src/components/setting-lock.ts
+msgid "%1 (optional)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "%1 (required)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 (scan truncated)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 MB peak since server start"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 active with no phase dominating."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "%1 added"
+msgid_plural "%1 added"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 and %2 were dropped by the per-turn caps, so this timeline is incomplete."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 attribute"
+msgid_plural "%1 attributes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/open-file-refresh-watcher.ts
+msgid "%1 changed on disk and was reloaded"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 character"
+msgid_plural "%1 characters"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at %2 ms, %3 ms total."
+msgid_plural "%1 chunks, first at %2 ms, %3 ms total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at n/a ms, %2 ms total."
+msgid_plural "%1 chunks, first at n/a ms, %2 ms total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 decides which tools to ask about, so some actions may run without a prompt."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "%1 duplicate skipped."
+msgid_plural "%1 duplicates skipped."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%1 error"
+msgid_plural "%1 errors"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/tool-call-group.tsx
+msgid "%1 failed"
+msgid_plural "%1 failed"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "%1 file skipped (limit of %2)."
+msgid_plural "%1 files skipped (limit of %2)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 gap during streaming. Each stall event below is tagged with what preceded it."
+msgid_plural "%1 gaps during streaming. Each stall event below is tagged with what preceded it."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/settings-panel.tsx
+msgid "%1 is required."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 line"
+msgid_plural "%1 lines"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1 model available."
+msgid_plural "%1 models available."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/plugins-panel.tsx
+msgid "%1 plugin"
+msgid_plural "%1 plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%1 removed"
+msgid_plural "%1 removed"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1 span"
+msgid_plural "%1 spans"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/tool-call-group.tsx
+msgid "%1 tool call"
+msgid_plural "%1 tool calls"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%1 unchanged"
+msgid_plural "%1 unchanged"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%1 updated"
+msgid_plural "%1 updated"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1, launched as: %2"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1, model '%2'"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "%1, no model selected"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1; TLS handshake failed (%2)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1; clock skew %2"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%1; issuer %2"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "%2 %1 file, %3"
+msgid_plural "%2 %1 files, %3"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/skills-panel.tsx
+msgid "%2 + %1 other"
+msgid_plural "%2 + %1 others"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/plugins-panel.tsx
+msgid "%2, +%1 more"
+msgid_plural "%2, +%1 more"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' and its declared interpreter are available."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "'%1' has no content to attach."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "'%1' is empty"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' is not in the list this endpoint serves."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "(disabled)"
+msgstr ""
+
+#: src/components/safe-anchor.tsx
+msgid "(link blocked)"
+msgstr ""
+
+#: src/components/safe-anchor.tsx
+msgid "(opens in new tab)"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "(unnamed)"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 agent error:** %2"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: it is too large to show in full for approval.**"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: its command contains hidden Unicode bidirectional controls (%2).**"
+msgstr ""
+
+#: notebook_intelligence/mcp_manager.py
+msgid "**%1** server tools:"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "**Bash command blocked: hidden Unicode bidirectional controls detected (%1).**"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "**Claude agent error:** %1"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/claude.py
+msgid "**Error:** %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "+ New project skill"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "+ New user skill"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "1m %1, 5m %2, 15m %3"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "A duplicate submission with this message ID was ignored; the original request is still running."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "A live endpoint test is already running."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "A one-line reading of where this turn's time went, derived from the columns to the left."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "A project skill named \"%1\" already exists."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "A user skill named \"%1\" already exists."
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "ACP agent"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "ACP mode"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode is not enabled"
+msgstr ""
+
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
+msgid "AI Assistant"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "API Key"
+msgstr ""
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "API key present from %1."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Accept"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Actions for %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Activating device..."
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Add"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Add / Edit"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add MCP server"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Add a marketplace to discover plugins, then install one to extend Claude Code with new commands, agents, and tool integrations."
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Add as new cell"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Add code as new cell"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Add file"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Add files as context"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Add marketplace"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Add plugin marketplace"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add server"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Add workspace file as context"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Adding…"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Additional permissions"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Adds a small footer under each reply."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Agent account"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Agent default (e.g. '%1')"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Agent mode and every built-in tool need tool calling. The model may not support it, or a proxy in front of the endpoint may be stripping the tools field."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Agent type"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Allowed tools"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Also classify with the chat model"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Always confirm"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Approve Bash tool to execute the command above?"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve running this command?"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve this %1 tool call?"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approving grants a lasting permission, not only this request."
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Are you sure you want to call this tool?"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Args (one per line)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence to generate Python code..."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence..."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Ask about cell outputs"
+msgstr ""
+
+#: src/cell-output-toolbar.ts src/index.ts
+msgid "Ask about this output"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Attribute detail"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (milliseconds)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (ms)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete model"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run when a static scan looks clean. Confirm when it flags a risk or cannot parse the cell. The scan is a speed bump, not a security boundary; false negatives are inevitable."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Back"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Backend kernel"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Bad response"
+msgstr ""
+
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
+msgid "Base URL"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Below what local storage delivers. Worth comparing against a known-good node."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Binary files cannot be attached as chat context."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Breadcrumb"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Built-in"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Bundle contains %1 file; showing %2 only. Edit supporting files directly on disk."
+msgid_plural "Bundle contains %1 files; showing %2 only. Edit supporting files directly on disk."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/components/settings-panel.tsx
+msgid "By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "By using Notebook Intelligence with GitHub Copilot subscription you agree to %1. Review the terms to understand about usage, limitations and ways to improve GitHub Copilot. Please review %2."
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions is active: tool calls run without confirmation"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions runs every tool call without asking for confirmation, with your full user account access. Content the agent reads can steer what it runs. Stays on until you switch modes or start a new session."
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass permissions"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Calling tool '%1'..."
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Can't convert this notebook yet"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Cancel"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cancel activation"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Canceled"
+msgstr ""
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for %1"
+msgstr ""
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for the selected language"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output (%2)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell output"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Cell output (%1)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Cell output features"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Change provider"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Characters that would not display are shown as \\u{XXXX}."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent setting sources"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent tools"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Chat is disabled as you don't have a model configured."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by ACP agent mode."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by Claude mode."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by the configured chat model provider."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Chat mode"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Chat model"
+msgstr ""
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Chat model is not set!"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Chat path"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Chat response image"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Chat transcript"
+msgstr ""
+
+#: src/index.ts
+msgid "Chatbook"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook is disabled by your administrator"
+msgstr ""
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm every natural-language run."
+msgstr ""
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm only when the scan flags a risk."
+msgstr ""
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to run generated code immediately."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Check status: %1"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key and Base URL for this provider in NBI Settings, and that the endpoint is reachable from the Jupyter server process."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key, the Base URL, and that the selected model id is one this endpoint serves. The server log carries the provider's own error text."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Check the Jupyter server log for the underlying error."
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Checking configuration…"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Checking…"
+msgstr ""
+
+#: src/index.ts
+msgid "Choose start directory for %1"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Claude Code mode is not enabled"
+msgstr ""
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Claude Code mode is still starting. Please try again in a moment."
+msgstr ""
+
+#: src/index.ts
+msgid "Claude Code terminal session"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Claude Code tools"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Claude MCP management is disabled by your administrator"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Claude account"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/components/readiness-card.tsx
+msgid "Claude mode"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Claude permission mode"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Click to learn more about security implications"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Close"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Close file picker"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Close notebook generation popover"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Close tools picker"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Code cell (%1): switch to natural language"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Code cell: switch to natural language"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py src/components/claude-mcp-panel.tsx
+msgid "Command"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Compare %1 against %2: close together means the time is in the model or the gateway, far apart means it is local. Expand a row for that turn's phase breakdown."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Config file path"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Configure models"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Configure providers, API keys, MCP servers, and skills"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools (warning: irreversible tools selected)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Configured endpoint"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Confirm Bypass Permissions"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Confirm and run"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Confirm if risky"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Connect and spawn took %1. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up."
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgid "Connection failed. Reload MCP servers to retry."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
+msgstr ""
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr ""
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Conversation History"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Convert"
+msgstr ""
+
+#: src/index.ts
+msgid "Convert notebook to Chatbook"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Convert to Chatbook"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Copied"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Copy"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Copy as JSON"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Copy code %1 and enter at %2 to allow access to GitHub Copilot from this app. Activation could take up to a minute after you enter the code."
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Copy code to clipboard"
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Copy resume command"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Could not attach: %1"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Could not convert to Chatbook: %1"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Could not generate a description: %1"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Could not list workspace mentions"
+msgstr ""
+
+#: src/index.ts
+msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments."
+msgstr ""
+
+#: src/index.ts
+msgid "Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged"
+msgstr ""
+
+#: src/index.ts
+msgid "Create a notebook whose cells are natural-language prompts"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Create new file from code"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Create new notebook from code"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Created Chatbook copy: %1"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Credential present from %1."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Default (recommended)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Default chat mode"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Delete"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Delete file?"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill?"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Deleted \"%1\""
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Denial recorded"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Describe how to update the active notebook..."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Description"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Description is required."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Details from %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Diagnostics"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Directories cannot be attached as chat context."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Disable"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disable for workspace"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Disabled by your administrator (%1)"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabled for workspace"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabling…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Discard"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Discard unsaved changes?"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Dismiss"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Do you want to confirm the plan above?"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Don't use as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Done"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Drop files to attach as context"
+msgstr ""
+
+#: src/terminal-drag.ts
+msgid "Drop mode: @-mention"
+msgstr ""
+
+#: src/terminal-drag.ts
+msgid "Drop mode: raw path"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate skill"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Edit"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit Python files using the JupyterLab file editor"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit notebook using the JupyterLab notebook editor"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Edit skill"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Empty files do not provide useful context."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Enable"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Enable ACP mode"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Enable Claude mode"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enable for workspace"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enabling…"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Enter Plan Mode"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Enter a plugin name or the plugin@marketplace shorthand."
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Entered plan mode"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Environment (KEY=value, one per line)"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Error communicating with Claude agent: %1"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Execute shell commands using embedded terminal in Agent UI or JupyterLab terminal"
+msgstr ""
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgid "Execution kernel"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Execution mode"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Exit plan mode"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Expand"
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "Expected at least one server entry."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Experimental. Routes chat through an external coding agent over the %1. Requires a preinstalled %2 adapter (%3). See the %4. ACP mode and Claude mode are mutually exclusive: enabling one turns the other off."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Explain cell errors"
+msgstr ""
+
+#: src/index.ts
+msgid "Explain code"
+msgstr ""
+
+#: src/index.ts
+msgid "Explain output"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgid "Explain this cell's output"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Export"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Export as %1 notebook"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Export as a notebook for the Chatbook backend kernel"
+msgstr ""
+
+#: src/index.ts
+msgid "Export as code notebook"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Export failed: %1"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Exported %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Extension tools"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "External changes"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to access the notebook: %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach '%1'."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach workspace file '%1'."
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Failed to copy resume command"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Failed to delete skill: %1"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to find active file"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to find active notebook"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to find notebook: %1"
+msgstr ""
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get completions from GitHub Copilot: [%1]: %2"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Failed to get device verification info from GitHub Copilot"
+msgstr ""
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get responses from GitHub Copilot: [%1]: %2"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to load plugins: %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Failed to load report: %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Failed to load workspace files."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Failed to read skill: %1"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Failed to remove: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Failed to restore skill: %1"
+msgstr ""
+
+#: src/index.ts
+msgid "Failed to save MCP config: %1"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to uninstall: %1"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update marketplace: %1"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Failed to update workspace state: %1"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Fetching…"
+msgstr ""
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "File '%1' created successfully"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "File exceeds %1 MB upload limit"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system read operations within Jupyter root directory"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system write operations within Jupyter root directory"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py src/components/skills-panel.tsx
+msgid "Files"
+msgstr ""
+
+#: src/components/launcher-picker.tsx
+msgid "Filter sessions..."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "First content chunk to last. Excludes connect."
+msgstr ""
+
+#: src/index.ts
+msgid "Fix code"
+msgstr ""
+
+#: src/index.ts
+msgid "Focus Notebook Intelligence chat input"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Full access (run without asking)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text."
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate (Enter)"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Generate and execute immediately, same as a normal notebook cell. Inspect generated code afterward if you need to."
+msgstr ""
+
+#: src/index.ts
+msgid "Generate code"
+msgstr ""
+
+#: src/index.ts
+msgid "Generated code"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Generating"
+msgstr ""
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generating notebook…"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Generating response."
+msgstr ""
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generation failed: %1"
+msgstr ""
+
+#: src/index.ts
+msgid "GitHub Copilot Status"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot chat terms"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "GitHub Copilot login"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Logged in"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Not logged in"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "GitHub Skill import is disabled by configuration"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Terms for Additional Products and Features"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "GitHub repo URL"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "GitHub-sourced marketplaces are disabled by your administrator. Use a non-GitHub URL or a local filesystem path."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Good response"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Headers (Name: value, one per line)"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgid "Hide diff"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Hide raw output"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Hide timeline for the turn at %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Host load average"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "If turns fail with a 401, sign in again from NBI Settings under GitHub Copilot."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Import"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Import from GitHub"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Import skill from GitHub"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Include network check"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from chat model"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from general settings"
+msgstr ""
+
+#: src/index.ts
+msgid "Inline chat failed: %1"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Inline chat model"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Input"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Input Parameters"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Input mode"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them."
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Insert at cursor"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "Insert code at cursor"
+msgstr ""
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Install"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Install from"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Install into"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Install plugin"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Install the Claude Code CLI and make sure it is on the PATH of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH to its absolute path and restart."
+msgstr ""
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Installing…"
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "Invalid JSON: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Invalid name. %1"
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON is empty."
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON must describe a server entry."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Jupyter UI tools"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Jupyter root directory"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Keep editing"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Lasting rule"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Listing models failed (%1)."
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Live endpoint check"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Loading marketplace plugins..."
+msgstr ""
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Loading sessions…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Loading skill…"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Loading workspace files..."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Loading..."
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Loading…"
+msgstr ""
+
+#: src/components/setting-lock.ts
+msgid "Locked by your administrator"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Log to file"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Logged in"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Logging in..."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Login status: %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Login to GitHub Copilot"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Login using your GitHub account"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Logout"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "MCP Server Tools"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "MCP Servers"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "MCP server '%1' not found in %2 scope"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Managed by org manifest (%1)"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace picker"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
+msgstr ""
+
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
+msgid "Model"
+msgstr ""
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Model name, hashed when attribute detail is set to redacted."
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Model provider"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Models"
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "Multiple servers found; paste one entry at a time."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars."
+msgstr ""
+
+#: src/chatbook-toolbar.ts src/chatbook.ts src/index.ts
+msgid "NBI Settings"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "NBI config directory"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/skills-panel.tsx
+msgid "Name"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Name (optional override)"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to %1 code"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to code"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Natural-language execution"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Network access"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "New Skill"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "New chat session started."
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "New file"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "New name"
+msgstr ""
+
+#: src/markdown-renderer.tsx
+msgid "New notebook"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "New skill"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Next"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No API key is configured (%1 is unset)."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No Anthropic API key or auth token is visible to NBI."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "No MCP servers found. Add MCP servers in the configuration file."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model is resolved, so there is nothing to call."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model provider is selected."
+msgstr ""
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "No chat participant is available."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached."
+msgid_plural "No files added: %1 files are already attached."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgid "No files added: the limit of %1 file is reached."
+msgid_plural "No files added: the limit of %1 files is reached."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches kernel \"%1\"."
+msgstr ""
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches language \"%1\"."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "No managed-skills manifest configured (set %1, comma-separated for multiple manifests)."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "No marketplaces configured. Add one to discover plugins."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "No matching files found."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No model name is set for this provider, so requests carry none."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins in this scope."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins were found in this marketplace."
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "No previous Claude sessions found for this working directory."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "No previous sessions found for this working directory."
+msgstr ""
+
+#: src/components/launcher-picker.tsx
+msgid "No previous sessions found."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "No project skills. They live in %1."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "No response within %1s."
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "No servers in this scope."
+msgstr ""
+
+#: src/components/launcher-picker.tsx
+msgid "No sessions match your filter."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "No spans recorded for this turn."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "No user skills. They live in %1."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "No workspace files available."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Not applicable: the agent owns the model call in %1 mode."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Not determined: the request failed (%1) for a reason unrelated to tools."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Not logged in"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %1: %2"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %2: %3 (%1 more issue.)"
+msgid_plural "Not ready. %2: %3 (%1 more issues.)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "Not signed in. The model list shown in Settings is a built-in fallback, not the models this account can use."
+msgstr ""
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Notebook '%1' created and opened successfully"
+msgstr ""
+
+#: src/index.ts
+msgid "Notebook Intelligence Settings"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgid "Notebook Intelligence cell actions"
+msgstr ""
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Notebook file"
+msgstr ""
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Notebook generation complete"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Notice"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it."
+msgstr ""
+
+#: notebook_intelligence/api.py
+msgid "Oops! Failed to find requested tool. Please try again with a different prompt."
+msgstr ""
+
+#: notebook_intelligence/api.py
+msgid "Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."
+msgstr ""
+
+#: notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py
+msgid "Oops! There was a problem handling chat request. Please try again with a different prompt."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Oops! There was a problem handling this request. Please try again. Check the server logs for details."
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "Open Chatbook settings"
+msgstr ""
+
+#: src/index.ts
+msgid "Open MCP Config Editor"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and pick a provider and model under General, or enable Claude mode."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and set a model for this provider under General. The endpoint rejects a request with no model, so every turn fails until it is set."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Open Notebook Intelligence settings"
+msgstr ""
+
+#: src/index.ts
+msgid "Open a notebook to insert the code as new cell"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Open notebook %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Open slash commands"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Open the Chatbook tab of Notebook Intelligence Settings"
+msgstr ""
+
+#: src/index.ts
+msgid "Open the NBI sidebar and move focus to the prompt textarea"
+msgstr ""
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Opened the settings dialog"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Output tokens."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing project skill \"%1\""
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing user skill \"%1\""
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgid "Parameters"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Path: %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Performance diagnostics are disabled. Enable them above to start collecting turn data."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Permission granted"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: %1"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: Bypass Permissions is active"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Pick a model from the dropdown in NBI Settings. A pinned NBI_CHAT_MODEL_ID that the endpoint no longer serves will fail on every turn."
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Plugin"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Plugins"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Plugins management is disabled by your administrator"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Preinstall the pinned adapter package %1 in a trusted location outside the workspace and put its absolute executable directory on PATH, or set NBI_ACP_AGENT_COMMAND to the absolute path of an installed adapter executable. Install its required interpreter on the adapter PATH; default discovery excludes workspace directories. Do not use a package runner such as npx. Relative commands are not supported."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Present."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Privacy Statement"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Privacy and terms"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Probe failed: %1"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Project (Jupyter root directory)"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Project (this project only)"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgid "Prompt refresh failed. Reload MCP servers to retry."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Prompts"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Provider"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Provider '%1' is selected but not registered."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Python interpreter"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Quick-add pills cover common tools. Type patterns like %1 or %2 for finer-grained permissions."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as bad"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as good"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Re-check"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-enable this server for the current Jupyter workspace"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Re-fetch every skill set to track upstream from GitHub"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-read Claude's MCP config from disk"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Re-run the endpoint test once the endpoint is answering again. A transient failure cannot tell us whether tool calling works."
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Readiness check failed: %1"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Reading the configuration failed (%1)."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Ready, with %1 warning. %2: %3"
+msgid_plural "Ready, with %1 warnings. %2: %3"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "Ready. Nothing needs configuring."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Reason"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Recent turns"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Reconcile managed skills against the org manifest"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Recording is on, but no turns have been captured yet. Run a chat turn, then press Refresh."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Records where each chat turn spends its time, so a slow deployment can be told apart from a slow model. Off by default, and when off it costs one boolean check per instrumentation site. Prompts, responses, file contents, and hostnames are never recorded."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine."
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
+msgid "Refresh"
+msgstr ""
+
+#: src/index.ts
+msgid "Refresh description"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Refresh file list"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Refresh open files when changed on disk"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Refresh this marketplace from its source"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Refresh workspace file list"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx
+msgid "Refreshing…"
+msgstr ""
+
+#: src/index.ts
+msgid "Regenerate the description of this code cell"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Rejecting records a lasting denial, not only for this request."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Reload"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Remember conversation history"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Remember my GitHub Copilot access token"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Remove"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Remove %1"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Remove MCP server?"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file %1"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Remove marketplace?"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Removing…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Rename"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Rename skill"
+msgstr ""
+
+#: src/index.ts
+msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Reply in my JupyterLab language"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Request"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Requested permissions"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Required. Claude uses this to decide when to apply the skill."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Response complete."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Restart the Chatbook kernel in open notebooks so they pick up %1."
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume Claude session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resume a previous session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resume a session you started earlier in this workspace"
+msgstr ""
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume command copied"
+msgstr ""
+
+#: src/index.ts
+msgid "Resume or start a Claude Code session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resume session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1: %2."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1: %2."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Retry"
+msgstr ""
+
+#: src/chatbook.ts
+msgid "Review generated code before running it in this kernel."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Right-click a cell output to attach it to the chat"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Rule not found"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Rule system not enabled"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Run 'claude --version' in a terminal as the Jupyter user to see the underlying error."
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Run it"
+msgstr ""
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Run notebooks in JupyterLab UI"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Run probe"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Running (%1 s)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other, plus the network check. This takes a few seconds, longer on a slow filesystem."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other. This takes a few seconds, longer on a slow filesystem."
+msgstr ""
+
+#: src/components/perf-panel.tsx src/components/readiness-card.tsx
+msgid "Running…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Save"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Saving…"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Scope"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Scope and name are set at creation and can't be changed. Delete and recreate to change them."
+msgstr ""
+
+#: src/components/confirmation-details.tsx
+msgid "Scroll to see all of this value."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Search files by path"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Send message"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Sends one short request to your configured model to verify streaming and tool support."
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server \"%1\" config must be an object."
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server config must include \"command\" or \"url\"."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Server process peak memory"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Settings sections"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Shell"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgid "Show diff"
+msgstr ""
+
+#: src/index.ts
+msgid "Show generated code"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Show in chat"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Show output toolbar"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Show raw output"
+msgstr ""
+
+#: src/index.ts
+msgid "Show the hidden code generated for this Chatbook cell"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Show timeline for the turn at %1"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Show usage after each turn (time / tokens / cost)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Showing the first %1 file found in the workspace."
+msgid_plural "Showing the first %1 files found in the workspace."
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgid "Sign in from NBI Settings under GitHub Copilot. Until then every chat turn will fail with a 401."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Sign-in state could not be determined."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Skill '%1' not found in %2 scope"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Skills"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "Skills management is disabled by your administrator"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Skills reloaded and applied to the current session."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Skip to message input"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Slash commands"
+msgstr ""
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Source"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1 · last sync: %2"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Specify manually"
+msgstr ""
+
+#: src/index.ts
+msgid "Start a GitHub Copilot CLI session in a Jupyter terminal"
+msgstr ""
+
+#: src/index.ts
+msgid "Start a Pi session in a Jupyter terminal"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (restarts the Claude client)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (starts a fresh agent session)"
+msgstr ""
+
+#: src/index.ts
+msgid "Start an OpenAI Codex CLI session in a Jupyter terminal"
+msgstr ""
+
+#: src/index.ts
+msgid "Start an opencode session in a Jupyter terminal"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Status"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Still working, server may be slow"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Stop generating"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Stop using current file as context"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Stopped before completing, so these timings are partial."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Stopped by you"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Sum of every tool span in the turn. Expand the row to see them individually."
+msgstr ""
+
+#: src/index.ts
+msgid "Switch all cells to code"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch all cells to natural language"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch cell to code"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch cell to natural language"
+msgstr ""
+
+#: src/chatbook-toolbar.ts src/index.ts
+msgid "Switch every cell of this Chatbook between its prompt and its code"
+msgstr ""
+
+#: src/index.ts
+msgid "Switch the active Chatbook cell between natural language and code"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed for \"%1\": %2"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed: %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync from GitHub"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync managed skills"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync skill from GitHub"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Sync tracking skills"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Synced \"%1\" to %2."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Syncing…"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Target scope"
+msgstr ""
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop."
+msgstr ""
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop."
+msgstr ""
+
+#: src/terminal-drag.ts
+msgid "Terminal drop skipped %1 path containing control or invisible formatting characters. Rename them before dropping."
+msgid_plural "Terminal drop skipped %1 paths containing control or invisible formatting characters. Rename them before dropping."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/terminal-drag.ts
+msgid "Terminal drop upload failed for %1"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "Test the endpoint"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Text file"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI did not respond to --version within its budget."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI resolved but --version failed."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The binary resolves but does not start. On a network filesystem this is often the install tree being slow to read; otherwise check it runs from a terminal."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The claude CLI was not found."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "The command contains non-ASCII characters, which can look like quotes or letters they are not."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted a request carrying a tool schema."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the connection but did not answer. Check the Base URL and whether it is reachable from the Jupyter server process."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the request but did not answer. Check the gateway and whether it is queueing behind a cold model."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint answered in one piece. Replies will appear only when the turn finishes rather than as they are generated; a proxy that buffers responses is the usual cause."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint rejected a request carrying a tool schema, but accepted the same request without one."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint test could not run (%1)."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The provider did not return a model list within %1s."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The provider may be disabled by an administrator (see disabled_providers) or supplied by an extension that is not installed. Pick a different provider in NBI Settings."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The provider returned no models."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The request failed (%1)."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The request succeeded but nothing streamed."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "The stored configuration could not be read. Check %1 for invalid JSON, and the Jupyter server log for the underlying error."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "The turn ended in an error."
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Thinking (%1 s)"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py notebook_intelligence/mcp_manager.py
+msgid "Thinking…"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network."
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgid "This feature is disabled by your administrator"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the Claude CLI is signed in with a subscription login, or if the SDK resolves a credential of its own from a profile or custom headers. If chat turns fail with a 401, or Claude auto-complete produces nothing, add a key in NBI Settings under Claude or set ANTHROPIC_API_KEY before starting JupyterLab."
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the agent is signed in with its own OAuth login. Otherwise set the key in NBI Settings under ACP."
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3."
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "This opens connections to %1 from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "This opens unauthenticated connections to your configured endpoint from this machine."
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "This requires a %1 account and %2 installed in your system."
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgid "This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "This skill has unsaved changes. Discard them?"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Tool call"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgid "Tool refresh failed. Reload MCP servers to retry."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection (%1)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid ""
+"Tool selection can cause irreversible changes! Review each tool execution carefully.\n"
+"%1"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Tools"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active. Slowest: %3 at %4."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Total minus time the turn spent blocked on your input. This is the number to judge performance by."
+msgstr ""
+
+#: src/tour/tour-overlay.tsx
+msgid "Tour progress: step %1 of %2"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream. Show a Sync button so I can re-pull this skill from GitHub later"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1 (last sync: %2)"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Transport"
+msgstr ""
+
+#: src/index.ts
+msgid "Troubleshoot errors in output"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgid "Troubleshoot the error in this cell"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgid "URL"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Undo"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall plugin?"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Unknown"
+msgstr ""
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Unknown error"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "Unsaved changes"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Update"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Update active notebook"
+msgstr ""
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Update active notebook with AI"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "Updating…"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Upload file from computer"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Uploaded: %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Uploading"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgid "Usage footer"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Use as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Use current file as context"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "User"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "User (available in all projects)"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgid "Usually an expired or missing API key, or a Base URL that does not point at the provider's API root. For GitHub Copilot, sign in again from NBI Settings."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "View (managed, read-only)"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "View skill"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Wall time from the request arriving to the response finishing, including any time spent waiting on you."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Welcome! How can I assist you today?"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "What this skill does, shown to Claude when deciding whether to use it"
+msgstr ""
+
+#: src/components/notebook-generation-popover.tsx
+msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "When the turn started, in local time."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "Which backend served the turn, and the surface it came from."
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Working directory"
+msgstr ""
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Working…"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "Write access under"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "You are not logged in to GitHub Copilot. Please login now to activate chat."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgid "available in all your projects"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "cgroup CPU throttling"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgid "diff truncated"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "e.g. %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "failed (%1)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgid "https://github.com/owner/repo or .../tree/main/path/to/skill"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "https://… or local path"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "no plugins"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "no projects/ or sessions/ directory"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success."
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgid "open notebook"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgid "owner/repo, https://github.com/owner/repo, or local path"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgid "run by %1"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo (%1)"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "skipped: %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "stat %1, write+fsync %2 (median of %3)"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgid "this project, this user only"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "timed out after %1s"
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"%1\" requires a \"url\" field."
+msgstr ""
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"stdio\" requires a \"command\" field."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "via proxy"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgid "write %1, read %2"
+msgstr ""
+
+#: src/index.ts
+msgid "＋ New Session"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP description: the link to the admin guide"
+msgid "administrator installation guide"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP settings section"
+msgid "Agent"
+msgstr ""
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a code cell; at most 3 characters"
+msgid "Cd"
+msgstr ""
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a natural-language cell; at most 3 characters"
+msgid "NL"
+msgstr ""
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Don't run"
+msgstr ""
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Run"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "Chatbook mode description; %1 and %2 are the confirm bar buttons"
+msgid "Show the generated code and wait for %1 or %2 on every natural-language run."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "LOCAL"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "PROJECT"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "USER"
+msgstr ""
+
+#: src/components/claude-mcp-panel.tsx
+msgctxt "MCP server input mode"
+msgid "Form"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connected"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connecting"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "disconnecting"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "not connected"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated prompt list"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated tool list"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating prompt list"
+msgstr ""
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating tool list"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "Ollama hint: the button that retries listing models"
+msgid "Try again"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "Python version on an operating system"
+msgid "%1 on %2"
+msgstr ""
+
+#: src/chatbook-toolbar.ts
+msgctxt "a settings path: %1 the settings window, %2 its tab, %3 the field"
+msgid "%1 > %2 > %3"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "a value that was not recorded"
+msgid "n/a"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "an approval card detail: its label, then notes such as its size"
+msgid "%1 (%2)"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve for this request"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Cancel"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, continue planning"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, start implementing now"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval button"
+msgid "Reject"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, approve plan"
+msgstr ""
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, enter plan mode"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval card title"
+msgid "%1 tool call"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "full"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "redacted"
+msgstr ""
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "between notes on an approval card detail"
+msgid ", "
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "bytes"
+msgid "%1 B"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Ask"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Explain"
+msgstr ""
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Troubleshoot"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "certificate issuer"
+msgid "unknown"
+msgstr ""
+
+#: notebook_intelligence/ai_service_manager.py
+msgctxt "chat button"
+msgid "Configure"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Agent"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Ask"
+msgstr ""
+
+#: src/chatbook.ts
+msgctxt "confirm bar link that opens settings; %1 is the settings window name"
+msgid "Change in %1"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected MCP server tools"
+msgid "%1 mcp"
+msgid_plural "%1 mcp"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected extension tools"
+msgid "%1 ext"
+msgid_plural "%1 ext"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected tools"
+msgid "%1 built-in"
+msgid_plural "%1 built-in"
+msgstr[0] ""
+msgstr[1] ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "environment (%1)"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "settings"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "added"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "removed"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "mount"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "session tree size"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "small-file latency"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "sustained throughput"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem type"
+msgid "not determined"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Add files from outside the workspace. They're saved to the workspace and attached to this chat."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Ask is read-only and only answers questions. Agent can also run tools, such as file edits and shell commands."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Attach files as context"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Back"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Begin a fresh session when context gets crowded or you want to switch tasks."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Configure providers, API keys, and extensions (MCP servers, skills, admin policies)."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Done"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag and drop"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag files from the JupyterLab file browser or your desktop onto the prompt. Keyboard users can attach the same files with the 'Attach files as context' and 'Upload from your computer' buttons."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Next"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Open the menu for built-in commands and installed skills. Typing / at the start of the prompt does the same thing."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick a chat mode"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick up where you left off"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pin workspace files so the assistant can reference them. Typing @ in the prompt opens the same picker."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Reopen an earlier Claude session from this workspace."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a coding agent in a terminal"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a slash command"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Settings"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Show NBI tour"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Skip tour"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Start a new chat"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Try this: open a notebook and ask, 'Explain what this notebook does and suggest one improvement.' You can replay this tour anytime from the command palette."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Upload from your computer"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Welcome to Notebook Intelligence"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "You're ready"
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Your AI assistant lives in this sidebar. Take a quick tour of the settings, attachments, and chat modes so you can use it confidently."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a 'Coding Agent' section with tiles for {launchers}. Each tile opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr ""
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a {launchers} tile in the 'Coding Agent' section. It opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "gigabytes"
+msgid "%1 GB"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "kilobytes"
+msgid "%1 KB"
+msgstr ""
+
+#: src/components/setting-lock.ts
+msgctxt "lock reason: %1 is an environment variable name"
+msgid "Locked by %1"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "machine measurement"
+msgid "Probe"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes"
+msgid "%1 MB"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes per second"
+msgid "%1 MB/s"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "milliseconds"
+msgid "%1 ms"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "model"
+msgid "None"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "model name"
+msgid "unknown"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "model provider"
+msgid "None"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance diagnostics setting"
+msgid "Enabled"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "API ms"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Active"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "First token"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Mode"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Model"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Spawn"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stalls"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Status"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stream"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Time"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens in"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens out"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tools"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Total"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Verdict"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Accept Edits"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Bypass Permissions"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Default"
+msgstr ""
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Plan"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugin count, then the plugin names"
+msgid "%1: %2"
+msgstr ""
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugins section heading"
+msgid "MARKETPLACES"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "bad"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "error"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "info"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "ok"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "skipped"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "timed out"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "warn"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check: %1 is a directory, %2 what was measured"
+msgid "%1: %2"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Filesystem"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Network"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Process and host"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Subprocess startup"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Cancel"
+msgstr ""
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Submit"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "ACP agent"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Active chat path"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Adapter runtime"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Agent credentials"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Anthropic credentials"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model provider"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Claude Code CLI"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Configuration"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "GitHub Copilot sign-in"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Live completion"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model list"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model name"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Selected model"
+msgstr ""
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Tool schema"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "blocked"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "ok"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "skipped"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "warn"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Checking…"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Not ready"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready, with warnings"
+msgstr ""
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Unknown"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Output"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Thought"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "scope heading, then the project name"
+msgid "%1 · %2"
+msgstr ""
+
+#: src/components/claude-scope.ts
+msgctxt "scope picker option: %1 is the scope id, %2 what it means"
+msgid "%1: %2"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "seconds"
+msgid "%1s"
+msgstr ""
+
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgctxt "separator between list items"
+msgid ", "
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "setting source"
+msgid "User"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings section"
+msgid "Language"
+msgstr ""
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Chatbook"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "General"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "MCP Servers"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Performance"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Plugins"
+msgstr ""
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Skills"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Managed"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Tracking"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "Project"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "User"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "skill sync result; %1 is a list of counts"
+msgid "Sync complete. %1."
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "skip reason"
+msgid "not applicable"
+msgstr ""
+
+#: src/components/skills-panel.tsx
+msgctxt "stands in for the project folder name"
+msgid "<project>"
+msgstr ""
+
+#: src/terminal-drag.ts
+msgctxt "terminal upload failure; %2 lists files, %1 counts the rest"
+msgid "Terminal drop upload failed for %2 (+%1 more)"
+msgid_plural "Terminal drop upload failed for %2 (+%1 more)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/i18n.ts
+msgctxt "text direction: translate as 'rtl' for a right-to-left language, otherwise 'ltr'"
+msgid "ltr"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "cancelled"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "completed"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "failed"
+msgstr ""
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "in progress"
+msgstr ""
+
+#: src/components/tool-call-group.tsx
+msgctxt "tool call summary: %1 is the call count, %2 the failed count"
+msgid "%1 (%2)"
+msgstr ""
+
+#: src/chat-sidebar.tsx
+msgctxt "tool selection"
+msgid "clear"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Command execute"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File edit"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File read"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook edit"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook execute"
+msgstr ""
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Python file edit"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "cancelled"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "error"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "ok"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn timeline section"
+msgid "Events"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Agent cold start"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Cancelled"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Context preparation"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Failed"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Mid-stream stalls"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Model or gateway"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No single hotspot"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No timing recorded"
+msgstr ""
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Tool execution"
+msgstr ""
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "not valid JSON. %1"
+msgstr ""
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "the save failed for an unknown reason"
+msgstr ""

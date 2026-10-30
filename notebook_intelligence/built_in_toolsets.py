@@ -6,6 +6,7 @@ from notebook_intelligence.api import ChatResponse, MarkdownPartData, Toolset
 import logging
 import notebook_intelligence.api as nbapi
 from notebook_intelligence.api import BuiltinToolset
+from notebook_intelligence.i18n import TranslationBundle
 from pathlib import Path
 import subprocess
 import shlex
@@ -1124,3 +1125,25 @@ built_in_toolsets: dict[BuiltinToolset, Toolset] = {
         instructions=COMMAND_EXECUTE_INSTRUCTIONS
     ),
 }
+
+
+def toolset_description(trans: TranslationBundle, toolset: Toolset) -> str:
+    """The description the chat UI shows for a built-in toolset, in the
+    user's language; src/builtin-toolset-labels.ts translates the names. The
+    model never sees either."""
+    if toolset.id == BuiltinToolset.NotebookEdit:
+        return trans.__("Edit notebook using the JupyterLab notebook editor")
+    if toolset.id == BuiltinToolset.NotebookExecute:
+        return trans.__("Run notebooks in JupyterLab UI")
+    if toolset.id == BuiltinToolset.PythonFileEdit:
+        return trans.__("Edit Python files using the JupyterLab file editor")
+    if toolset.id == BuiltinToolset.FileRead:
+        return trans.__("File system read operations within Jupyter root directory")
+    if toolset.id == BuiltinToolset.FileEdit:
+        return trans.__("File system write operations within Jupyter root directory")
+    if toolset.id == BuiltinToolset.CommandExecute:
+        return trans.__(
+            "Execute shell commands using embedded terminal in Agent UI or "
+            "JupyterLab terminal"
+        )
+    return toolset.description

@@ -6,6 +6,20 @@ Point the `NBI_TOUR_CONFIG_PATH` environment variable (or the
 `NotebookIntelligence.tour_config_path` traitlet) at a YAML or JSON file
 and Notebook Intelligence will overlay your copy on the built-in steps.
 
+## Turning the tour off
+
+Set `NBI_TOUR_DISABLED=1` (or `NotebookIntelligence.tour_disabled = True`)
+to stop the tour from opening on first run. The environment variable
+takes precedence over the traitlet. Users can still replay the tour from
+the command palette ("Show NBI tour"). Unlike disabling every step in an
+override file, this switch does not need updating when steps are added.
+
+The switch only stops the tour from opening on its own; it does not mark
+the tour as completed. If you remove it later, users who never finished
+the tour see it again on their next load. An unrecognized value (for
+example `NBI_TOUR_DISABLED=ture`) logs a warning and falls back to the
+traitlet instead of stopping the extension from loading.
+
 ## Where to put the file
 
 Anywhere readable by the Jupyter server process. A common pattern on
@@ -29,6 +43,13 @@ the tour is to copy that file, rename it to `.yaml` (YAML is a superset
 of JSON, so the same content parses unchanged), then trim it to only
 the keys you want to change. Anything you remove falls back to the
 built-in copy.
+
+The built-in copy is translated into the language each user picks for
+JupyterLab, but text you change is shown exactly as written, in every
+language, so write it in the language your users read. A key whose value
+is identical to the built-in English is ignored and stays translated.
+In the launcher step's templates, the `{launchers}` list is joined in
+the user's language ("Codex und opencode" for German).
 
 ## Schema
 
@@ -137,7 +158,7 @@ The loader logs WARN and falls back to defaults for:
 - File exceeds the 32 KB cap.
 - YAML/JSON parse error.
 - Top-level value is not a mapping.
-- Unknown top-level key (`steps`, `ui` are the only recognized ones).
+- Unknown top-level key (`steps`, `ui`, and `command` are the only recognized ones).
 - Unknown step id under `steps`.
 - Unknown field under a step (e.g. `placement: top`).
 - Type mismatch (`enabled: "true"` as a string, `title: 42` as an int).

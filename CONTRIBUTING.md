@@ -37,6 +37,9 @@ NBI has two halves:
   - `notebook_intelligence/rule_manager.py`, `rule_injector.py`, `ruleset.py` — ruleset discovery and prompt injection.
   - `notebook_intelligence/built_in_toolsets.py` — built-in tool implementations (`nbi-notebook-edit`, `nbi-command-execute`, etc.).
   - `notebook_intelligence/github_copilot.py` — GitHub Copilot device-flow auth and token storage.
+  - `notebook_intelligence/chatbook_kernel/` — the Chatbook kernel: `kernel.py` (the wrapper that proxies to a backend kernelspec), `codegen.py`, `execution.py` (execution modes), `danger.py` (the risk scan), and the shipped kernelspec.
+  - `notebook_intelligence/chatbook_generate.py` — the generate, summarize, and danger-scan endpoint behind Chatbook cells.
+  - `notebook_intelligence/acp_agent.py`, `acp_registry.py` — ACP agent mode: the protocol client, what NBI serves or refuses an agent, and adapter launch.
 - **Frontend extension** — TypeScript package `src/`. Compiled to a JupyterLab labextension. Key entry points:
   - `src/index.ts` — JupyterLab plugin registration.
   - `src/chat-sidebar.tsx` — chat sidebar React tree.
@@ -44,6 +47,7 @@ NBI has two halves:
   - `src/components/skills-panel.tsx` — Claude Skills management UI.
   - `src/api.ts` — high-level client for the server extension (chat WebSocket, capabilities, config).
   - `src/handler.ts` — thin wrapper over Jupyter's `ServerConnection.makeRequest`.
+  - `src/chatbook.ts`, `src/chatbook-core.ts` — Chatbook cell behavior: mode switching, the confirm bar, export, and the cell metadata format.
 
 The two halves communicate over the routes registered in `extension.py` (REST and WebSocket). All routes live under `/notebook-intelligence/`. See [`docs/admin-guide.md`](docs/admin-guide.md#http-api-surface) for the full list.
 
@@ -159,9 +163,10 @@ The `jupyter labextension develop` command leaves a symlink behind. Run `jupyter
 
 ## Running tests
 
-TypeScript unit tests:
+TypeScript type check and unit tests:
 
 ```bash
+jlpm tsc --noEmit
 jlpm test
 ```
 
@@ -172,7 +177,7 @@ pip install -e ".[test]"
 pytest tests/ -q
 ```
 
-CI runs both suites on every push, in that order. Every test is capped at 30 seconds by `pytest-timeout`, so a hung subprocess or pipe fails the run instead of stalling the job.
+CI runs both suites on every push, Python first, then TypeScript. Every test is capped at 30 seconds by `pytest-timeout`, so a hung subprocess or pipe fails the run instead of stalling the job.
 
 ## Linting
 
@@ -193,6 +198,65 @@ Two optional layers catch formatting drift before it reaches CI, so a common lin
 Both layers only run Prettier, which is safe to apply automatically; ESLint and Stylelint rule violations are still left for you and CI to surface. Neither layer changes what CI enforces; both just move the formatting fix earlier. `jlpm lint` remains the manual catch-all.
 
 If `jlpm install` produces unexpected lockfile changes, your local Yarn version probably differs from the one bundled with JupyterLab. `jlpm` ships with JupyterLab — use it directly instead of a system-wide `yarn`.
+
+If you work with a coding agent, [AGENTS.md](AGENTS.md) holds these `jlpm` and lockfile rules in a form agents pick up automatically.
+
+## Translations
+
+Translators: see [docs/translating.md](docs/translating.md). NBI's user interface is translated through JupyterLab's own translation system, so it follows the language a user picks under **Settings → Language** (which lists the JupyterLab language packs installed on the server). The gettext domain is `notebook_intelligence`. Catalogs live in the package:
+
+- `notebook_intelligence/locale/notebook_intelligence.pot` is the template of every translatable string. It is generated; do not edit it by hand.
+- `notebook_intelligence/locale/<locale>/LC_MESSAGES/notebook_intelligence.po` is one language, for example `de_DE`. These are the only catalog files translators edit.
+- The `.json` bundle the frontend loads and the `.mo` file the server reads are compiled from each `.po` when a wheel is built (`hatch_build.py`) and are not committed. The `jupyterlab.locale` entry point in `pyproject.toml` is how `jupyterlab_server` finds it.
+- Strings in `schema/plugin.json` stay English: `jupyterlab_server` translates settings schemas only from JupyterLab language packs, never from an extension's own catalog. Put user-visible text on the command instead (a toolbar button's tooltip falls back to its command's label and caption).
+
+### Writing translatable strings
+
+In TypeScript, take the bundle where the string is used and name the local `trans`, because the extractor only recognizes calls on a variable with that name:
+
+```ts
+import { getTrans, useTrans } from './i18n';
+
+const trans = getTrans(); // in a React component: const trans = useTrans();
+Notification.error(trans.__('Failed to save %1', path));
+trans._n('%1 file', '%1 files', count); // plurals; %1 is the count
+trans._p('toolbar', 'Run'); // a short label whose meaning depends on context
+```
+
+- Never build a sentence from pieces (`'Failed to ' + verb`) or with a template literal. Write the whole sentence with `%1`, `%2` placeholders so a translator can reorder it.
+- Never translate at module load (a top-level `const LABEL = trans.__(...)`): the bundle is bound when the plugin activates, so such a string stays English.
+- Keep markup out of translated strings. For a sentence with a link or other element inside it, use `interpolate` from `src/i18n.ts`, which translates the whole sentence and places the elements at its `%1`, `%2` placeholders, so a translator can reorder them.
+- Give short labels whose meaning depends on where they appear a context with `trans._p` (`trans._p('permission mode', 'Plan')`), so a translator can choose a different word for each use.
+- Pass string literals only. The extractor skips any other argument (a variable, a template literal), so the string would never be translated; a lint rule enforces this.
+- Leave in English anything that is not shown to the user as prose: prompts and instructions sent to a model, results that UI tools return to the model, log and console messages, telemetry, command ids, and configuration values. Product names (Notebook Intelligence, Claude Code, Codex) are not translated. Neither is text that styling or code matches on, such as the launcher category `Coding Agent`, which `style/base.css` pins to the top of the launcher.
+
+The server translates text it writes for the user (the readiness report, approval cards, chat status lines, built-in toolset descriptions, user-facing REST errors) from the same catalogs, in the language each request names: `src/handler.ts` adds an `nbi_locale` query parameter to REST calls and the chat WebSocket (`withLocale`). Not a header, which would need a CORS preflight that jupyter_server refuses. As in the frontend, a locale is translated only when a JupyterLab language pack for it is installed. The same rules apply, with a bundle from `notebook_intelligence/i18n.py`, again in a local named `trans`:
+
+```python
+from notebook_intelligence import i18n
+
+trans = i18n.request_bundle(self)  # in a REST handler
+trans = i18n.response_bundle(response)  # in chat code
+trans.__("Skill '%1' not found in %2 scope", name, scope)
+```
+
+`scripts/i18n.py` refuses a `trans` call whose msgid is not a string literal (an f-string, a variable), or one made through an attribute (`self.trans.__`). Text returned to the model or an agent CLI, log messages and exception text stay English.
+
+In Jest, `tests/ts/pseudo-translator.ts` provides a bundle that wraps every string in `[!! … !!]`. Bind it with `initTranslations(pseudoTranslator)`, or provide it to components through `TranslationContext`, to check that a string goes through `trans`.
+
+### Updating catalogs
+
+The tooling needs the `i18n` extra (`pip install -e ".[i18n]"`) and Node.js:
+
+```bash
+jlpm i18n:extract               # regenerate the .pot after changing strings
+jlpm i18n:update                # merge it into every .po
+jlpm i18n:update -l ca_ES       # start a new language
+jlpm i18n:compile               # build the .json bundles locally to try a catalog
+jlpm i18n:check                 # what CI runs: fails when the .pot is out of date
+```
+
+To try a catalog, compile it, reinstall the package (`pip install -e .`) so the entry point is registered, install the matching JupyterLab language pack (for example `pip install jupyterlab-language-pack-de-DE`), and choose the language under **Settings → Language**. A string missing from a catalog falls back to English.
 
 ## Packaging
 

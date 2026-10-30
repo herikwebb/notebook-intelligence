@@ -88,6 +88,8 @@ MCP stdio servers run as subprocesses of the user's Jupyter Server. If a server 
 3. For `npx -y` servers, confirm Node.js is installed (`node --version`).
 4. Use the **Reload MCP servers** action from NBI Settings → MCP after fixing the config — this re-runs discovery without restarting JupyterLab.
 
+If the configured command is not an MCP server at all, it never answers the MCP handshake. NBI gives up on it after 60 seconds (`NBI_MCP_CONNECT_TIMEOUT`), marks the server failed, and logs that the command may not be an MCP server. A command that writes non-JSON output in a loop would otherwise fill the log with one parse error per line, so those records are capped at a few per 10 seconds and the number withheld is reported with the failure.
+
 If the LLM is connected but tools aren't being called, confirm the model supports tool calling. All GitHub Copilot models do; for other providers, check the provider's docs.
 
 ## Where do logs live, and how do I turn on debug?
@@ -134,9 +136,35 @@ Pruning only happens when NBI knows the window. GitHub Copilot models report the
 
 Agent-mode tool loops are not budgeted; this applies to ask mode and the built-in generation commands.
 
+## Tab indents instead of accepting a suggestion
+
+Tab accepts an inline suggestion only while one is actually on screen; otherwise it indents, which is what Tab does everywhere else in a notebook. Earlier releases bound accept whenever the completer was active, so Tab could be swallowed in a cell with nothing to accept. If suggestions never appear at all, that is a different problem: see the two entries below.
+
+## Settings says "Ready" but every chat turn fails
+
+An OpenAI-compatible or LiteLLM-compatible provider needs an explicit **Model**. A blank field used to persist as an empty string, and the readiness card answered "Ready. Nothing needs configuring" while every turn went out with no model name and failed at the provider. Readiness now reports a blank required field as a blocking row naming the field. On an older release, check Settings for an empty Model box.
+
+## A file changed on disk but the open tab did not reload
+
+Two deliberate limits. A revert is skipped while that document's kernel is busy, so an agent edit made during a long-running cell appears when the cell finishes rather than mid-execution. And the reload notice is only shown for the document you are looking at, so files reverted in background tabs change without a message. Neither is an error; nothing is logged.
+
 ## Inline completion is too aggressive or too quiet
 
 Tune the debounce delay in NBI Settings → Inline completion. Lower delays mean more requests, which means higher cost on paid providers. The default balances responsiveness against cost.
+
+## Claude auto-complete suggests nothing
+
+Claude mode signs in through the Claude CLI, which accepts a subscription login. Auto-complete does not go through the CLI: it calls the Anthropic API directly, so it needs a credential of its own. When none is visible to the Jupyter server, NBI leaves Claude auto-complete off and logs one warning per server run rather than failing on every pause in your typing.
+
+Either give the server a credential or point auto-complete elsewhere:
+
+- Add an **API key** under NBI Settings → Claude. This takes effect on save; no restart is needed.
+- Or set `ANTHROPIC_API_KEY` (or `ANTHROPIC_AUTH_TOKEN`) in the JupyterLab process environment. A process environment is fixed at launch, so export it **before** starting JupyterLab; exporting it in another shell afterwards has no effect. On current Anthropic SDK releases an `ANTHROPIC_PROFILE` or config-dir profile, the workload-identity variables, and a credential passed through `ANTHROPIC_CUSTOM_HEADERS` count as well. A variable set to an empty or whitespace value does not count, which is worth checking if your deployment writes `ANTHROPIC_API_KEY=` into an env file.
+- Or set **Auto-complete model** to **None** to leave the feature off, or to **Inherit from general settings** to have your general inline-completion provider serve suggestions instead.
+
+If your administrator pins the auto-complete model, that dropdown is disabled and the only remedy is giving the server a credential.
+
+A misconfigured credential is a different case: an `ANTHROPIC_PROFILE` or `ANTHROPIC_CONFIG_DIR` pointing at files the Anthropic SDK cannot read logs `Could not create the Claude inline completion model` with the underlying error instead of the warning above. Fix the profile path rather than adding a key.
 
 ## Still stuck?
 

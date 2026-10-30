@@ -9,12 +9,15 @@ import {
   parseMcpJsonEntry,
   configToInput
 } from '../../src/components/claude-mcp-paste';
+import { nullTranslator } from '@jupyterlab/translation';
+
+const english = nullTranslator.load('notebook_intelligence');
 
 describe('parseMcpJsonEntry', () => {
   it('accepts a bare "key": {...} pair the user copied out of a config', () => {
     const raw =
       '"my-server": { "command": "uvx", "args": ["server-package@latest"] }';
-    const { name, config } = parseMcpJsonEntry(raw);
+    const { name, config } = parseMcpJsonEntry(english, raw);
     expect(name).toBe('my-server');
     expect(config.command).toBe('uvx');
     expect(config.args).toEqual(['server-package@latest']);
@@ -22,7 +25,7 @@ describe('parseMcpJsonEntry', () => {
 
   it('accepts a wrapped { "key": {...} } object', () => {
     const raw = '{ "my-server": { "command": "uvx" } }';
-    const { name, config } = parseMcpJsonEntry(raw);
+    const { name, config } = parseMcpJsonEntry(english, raw);
     expect(name).toBe('my-server');
     expect(config.command).toBe('uvx');
   });
@@ -33,24 +36,24 @@ describe('parseMcpJsonEntry', () => {
         "my-server": { "command": "uvx" }
       }
     }`;
-    const { name } = parseMcpJsonEntry(raw);
+    const { name } = parseMcpJsonEntry(english, raw);
     expect(name).toBe('my-server');
   });
 
   it('strips a stray leading comma (copy-from-larger-config artefact)', () => {
     const raw = ',"my-server": { "command": "uvx" }';
-    const { name } = parseMcpJsonEntry(raw);
+    const { name } = parseMcpJsonEntry(english, raw);
     expect(name).toBe('my-server');
   });
 
   it('strips a stray trailing comma too', () => {
     const raw = '"my-server": { "command": "uvx" },';
-    const { name } = parseMcpJsonEntry(raw);
+    const { name } = parseMcpJsonEntry(english, raw);
     expect(name).toBe('my-server');
   });
 
   it('rejects an mcpServers wrapper with no entries', () => {
-    expect(() => parseMcpJsonEntry('{ "mcpServers": {} }')).toThrow(
+    expect(() => parseMcpJsonEntry(english, '{ "mcpServers": {} }')).toThrow(
       /at least one server/i
     );
   });
@@ -58,34 +61,44 @@ describe('parseMcpJsonEntry', () => {
   it('rejects an mcpServers wrapper with multiple entries', () => {
     const raw =
       '{ "mcpServers": { "a": { "command": "x" }, "b": { "command": "y" } } }';
-    expect(() => parseMcpJsonEntry(raw)).toThrow(/one entry at a time/i);
+    expect(() => parseMcpJsonEntry(english, raw)).toThrow(
+      /one entry at a time/i
+    );
   });
 
   it('rejects empty input', () => {
-    expect(() => parseMcpJsonEntry('')).toThrow(/empty/i);
-    expect(() => parseMcpJsonEntry('   ')).toThrow(/empty/i);
+    expect(() => parseMcpJsonEntry(english, '')).toThrow(/empty/i);
+    expect(() => parseMcpJsonEntry(english, '   ')).toThrow(/empty/i);
   });
 
   it('rejects unparseable JSON', () => {
-    expect(() => parseMcpJsonEntry('not json')).toThrow(/Invalid JSON/i);
+    expect(() => parseMcpJsonEntry(english, 'not json')).toThrow(
+      /Invalid JSON/i
+    );
   });
 
   it('rejects arrays and primitives', () => {
-    expect(() => parseMcpJsonEntry('[1, 2]')).toThrow(/server entry/i);
-    expect(() => parseMcpJsonEntry('"just a string"')).toThrow(/server entry/i);
+    expect(() => parseMcpJsonEntry(english, '[1, 2]')).toThrow(/server entry/i);
+    expect(() => parseMcpJsonEntry(english, '"just a string"')).toThrow(
+      /server entry/i
+    );
   });
 
   it('rejects multi-server payloads with a guiding message', () => {
     const raw = '{ "a": { "command": "x" }, "b": { "command": "y" } }';
-    expect(() => parseMcpJsonEntry(raw)).toThrow(/one entry at a time/i);
+    expect(() => parseMcpJsonEntry(english, raw)).toThrow(
+      /one entry at a time/i
+    );
   });
 
   it('rejects an empty object', () => {
-    expect(() => parseMcpJsonEntry('{}')).toThrow(/at least one server/i);
+    expect(() => parseMcpJsonEntry(english, '{}')).toThrow(
+      /at least one server/i
+    );
   });
 
   it('rejects when the server value is not an object', () => {
-    expect(() => parseMcpJsonEntry('{"my-server": "uvx"}')).toThrow(
+    expect(() => parseMcpJsonEntry(english, '{"my-server": "uvx"}')).toThrow(
       /must be an object/i
     );
   });
@@ -94,6 +107,7 @@ describe('parseMcpJsonEntry', () => {
 describe('configToInput', () => {
   it('maps a stdio server config into IClaudeMCPAddInput', () => {
     const input = configToInput(
+      english,
       'my-server',
       {
         command: 'uvx',
@@ -115,6 +129,7 @@ describe('configToInput', () => {
 
   it('infers http transport from a url field', () => {
     const input = configToInput(
+      english,
       'remote',
       {
         url: 'https://example.com/mcp',
@@ -131,6 +146,7 @@ describe('configToInput', () => {
 
   it('respects an explicit transport: "sse" override on a url server', () => {
     const input = configToInput(
+      english,
       'remote',
       { url: 'https://example.com/mcp', transport: 'sse' },
       'user'
@@ -140,12 +156,13 @@ describe('configToInput', () => {
 
   it('rejects a config missing both command and url', () => {
     expect(() =>
-      configToInput('broken', { args: ['x'] } as any, 'user')
+      configToInput(english, 'broken', { args: ['x'] } as any, 'user')
     ).toThrow(/command.*or.*url/i);
   });
 
   it('stringifies non-string env / headers values', () => {
     const input = configToInput(
+      english,
       'srv',
       { command: 'x', env: { PORT: 8080, FLAG: true } },
       'user'
@@ -155,13 +172,19 @@ describe('configToInput', () => {
 
   it('rejects explicit transport: "http" on a stdio-only config', () => {
     expect(() =>
-      configToInput('srv', { command: 'uvx', transport: 'http' } as any, 'user')
+      configToInput(
+        english,
+        'srv',
+        { command: 'uvx', transport: 'http' } as any,
+        'user'
+      )
     ).toThrow(/url/i);
   });
 
   it('rejects explicit transport: "stdio" on a url-only config', () => {
     expect(() =>
       configToInput(
+        english,
         'srv',
         { url: 'https://example.com', transport: 'stdio' } as any,
         'user'
@@ -171,6 +194,7 @@ describe('configToInput', () => {
 
   it('ignores an unrecognized transport string and falls back to the shape', () => {
     const input = configToInput(
+      english,
       'srv',
       { url: 'https://example.com', transport: 'pigeon' } as any,
       'user'
@@ -180,6 +204,7 @@ describe('configToInput', () => {
 
   it('drops non-array args silently rather than crashing', () => {
     const input = configToInput(
+      english,
       'srv',
       { command: 'uvx', args: 'not-an-array' } as any,
       'user'
@@ -189,6 +214,7 @@ describe('configToInput', () => {
 
   it('returns empty env when env is a non-object', () => {
     const input = configToInput(
+      english,
       'srv',
       { command: 'uvx', env: 'BAD' } as any,
       'user'

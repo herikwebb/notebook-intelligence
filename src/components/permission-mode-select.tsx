@@ -9,21 +9,31 @@ import {
   VscShield,
   VscWarning
 } from '../icons';
+import { TranslationBundle } from '@jupyterlab/translation';
+import { getTextDirection, useTrans } from '../i18n';
 
 export const BYPASS_PERMISSIONS_MODE = 'bypassPermissions';
 
-const MODE_LABELS: ReadonlyArray<{ mode: string; label: string }> = [
-  { mode: 'default', label: 'Default' },
-  { mode: 'acceptEdits', label: 'Accept Edits' },
-  { mode: 'plan', label: 'Plan' }
+// The menu's modes in order, each with its label. Bypass is listed last and
+// offered only when policy allows it.
+const MODES: ReadonlyArray<{
+  mode: string;
+  label: (trans: TranslationBundle) => string;
+}> = [
+  { mode: 'default', label: trans => trans._p('permission mode', 'Default') },
+  {
+    mode: 'acceptEdits',
+    label: trans => trans._p('permission mode', 'Accept Edits')
+  },
+  { mode: 'plan', label: trans => trans._p('permission mode', 'Plan') },
+  {
+    mode: BYPASS_PERMISSIONS_MODE,
+    label: trans => trans._p('permission mode', 'Bypass Permissions')
+  }
 ];
 
-function labelFor(mode: string): string {
-  const found = MODE_LABELS.find(m => m.mode === mode);
-  if (found) {
-    return found.label;
-  }
-  return mode === BYPASS_PERMISSIONS_MODE ? 'Bypass Permissions' : 'Default';
+function labelFor(trans: TranslationBundle, mode: string): string {
+  return (MODES.find(m => m.mode === mode) ?? MODES[0]).label(trans);
 }
 
 /**
@@ -84,6 +94,7 @@ export interface IPermissionModeSelectProps {
 export function PermissionModeSelect(
   props: IPermissionModeSelectProps
 ): JSX.Element {
+  const trans = useTrans();
   const [open, setOpen] = useState(false);
   const [pendingBypass, setPendingBypass] = useState(false);
   const bypassActive = props.value === BYPASS_PERMISSIONS_MODE;
@@ -187,11 +198,9 @@ export function PermissionModeSelect(
   // from the menu before the sidebar resets it).
   const options =
     props.bypassAllowed || bypassActive
-      ? [
-          ...MODE_LABELS,
-          { mode: BYPASS_PERMISSIONS_MODE, label: 'Bypass Permissions' }
-        ]
-      : MODE_LABELS;
+      ? MODES.map(m => m.mode)
+      : MODES.map(m => m.mode).filter(mode => mode !== BYPASS_PERMISSIONS_MODE);
+  const currentLabel = labelFor(trans, props.value);
 
   return (
     <div className="permission-mode-container" ref={containerRef}>
@@ -199,11 +208,13 @@ export function PermissionModeSelect(
         createPortal(
           <div
             className="permission-mode-confirm"
+            // Portaled outside the sidebar, so it does not inherit its dir.
+            dir={getTextDirection()}
             style={confirmStyle}
             ref={confirmRef}
             role="alertdialog"
             aria-modal="true"
-            aria-label="Confirm Bypass Permissions"
+            aria-label={trans.__('Confirm Bypass Permissions')}
             aria-describedby="permission-mode-confirm-message"
             onKeyDown={event => {
               if (event.key === 'Escape') {
@@ -239,10 +250,9 @@ export function PermissionModeSelect(
               id="permission-mode-confirm-message"
               className="permission-mode-confirm-message"
             >
-              Bypass Permissions runs every tool call without asking for
-              confirmation, with your full user account access. Content the
-              agent reads can steer what it runs. Stays on until you switch
-              modes or start a new session.
+              {trans.__(
+                'Bypass Permissions runs every tool call without asking for confirmation, with your full user account access. Content the agent reads can steer what it runs. Stays on until you switch modes or start a new session.'
+              )}
             </div>
             <div className="permission-mode-confirm-buttons">
               <button
@@ -251,7 +261,7 @@ export function PermissionModeSelect(
                 ref={cancelRef}
                 onClick={dismissConfirm}
               >
-                Cancel
+                {trans.__('Cancel')}
               </button>
               <button
                 type="button"
@@ -262,7 +272,7 @@ export function PermissionModeSelect(
                   buttonRef.current?.focus();
                 }}
               >
-                Bypass permissions
+                {trans.__('Bypass permissions')}
               </button>
             </div>
           </div>,
@@ -273,7 +283,7 @@ export function PermissionModeSelect(
           className="permission-mode-menu"
           role="menu"
           ref={menuRef}
-          aria-label="Claude permission mode"
+          aria-label={trans.__('Claude permission mode')}
           onKeyDown={event => {
             if (event.key === 'Escape') {
               event.stopPropagation();
@@ -297,7 +307,8 @@ export function PermissionModeSelect(
             }
           }}
         >
-          {options.map(({ mode, label }) => {
+          {options.map(mode => {
+            const label = labelFor(trans, mode);
             const selected = props.value === mode;
             return (
               <button
@@ -337,13 +348,15 @@ export function PermissionModeSelect(
         aria-expanded={open}
         title={
           bypassActive
-            ? 'Bypass Permissions is active: tool calls run without confirmation'
-            : `Permission mode: ${labelFor(props.value)}`
+            ? trans.__(
+                'Bypass Permissions is active: tool calls run without confirmation'
+              )
+            : trans.__('Permission mode: %1', currentLabel)
         }
         aria-label={
           bypassActive
-            ? 'Permission mode: Bypass Permissions is active'
-            : `Permission mode: ${labelFor(props.value)}`
+            ? trans.__('Permission mode: Bypass Permissions is active')
+            : trans.__('Permission mode: %1', currentLabel)
         }
         onClick={() => setOpen(o => !o)}
       >

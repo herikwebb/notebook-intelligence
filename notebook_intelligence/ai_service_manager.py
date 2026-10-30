@@ -8,13 +8,14 @@ import sys
 import threading
 from typing import Dict, Optional
 import logging
+from notebook_intelligence import i18n
 from notebook_intelligence import github_copilot
 from notebook_intelligence import perf
-from notebook_intelligence.api import ButtonData, ChatModel, EmbeddingModel, InlineCompletionModel, LLMProvider, ChatParticipant, ChatRequest, ChatResponse, CompletionContext, ContextRequest, Host, CompletionContextProvider, MCPPrompt, MCPServer, MarkdownData, NotebookIntelligenceExtension, RegistrationError, TelemetryEvent, TelemetryListener, Tool, Toolset
+from notebook_intelligence.api import ButtonData, ChatModel, ChatbookContextProvider, ChatbookMentionProvider, EmbeddingModel, InlineCompletionModel, LLMProvider, ChatParticipant, ChatRequest, ChatResponse, CompletionContext, ContextRequest, Host, CompletionContextProvider, MCPPrompt, MCPServer, MarkdownData, NotebookIntelligenceExtension, RegistrationError, TelemetryEvent, TelemetryListener, Tool, Toolset
 from notebook_intelligence.base_chat_participant import BaseChatParticipant
 from notebook_intelligence.config import NBIConfig
 from notebook_intelligence.github_copilot_chat_participant import GithubCopilotChatParticipant
-from notebook_intelligence.claude import CLAUDE_CODE_CHAT_PARTICIPANT_ID, ClaudeCodeChatParticipant, ClaudeCodeInlineCompletionModel, fetch_claude_models, get_claude_models
+from notebook_intelligence.claude import CLAUDE_CODE_CHAT_PARTICIPANT_ID, ClaudeCodeChatParticipant, ClaudeCodeInlineCompletionModel, fetch_claude_models, get_claude_models, reset_inline_completion_credential_warning, warn_inline_completion_model_unavailable_once, warn_no_inline_completion_credential_once
 from notebook_intelligence.llm_providers.github_copilot_llm_provider import GitHubCopilotLLMProvider
 from notebook_intelligence.llm_providers.litellm_compatible_llm_provider import LiteLLMCompatibleLLMProvider
 from notebook_intelligence.llm_providers.ollama_llm_provider import OllamaLLMProvider
@@ -44,11 +45,42 @@ class PromptParts:
     mcp_prompt_name: str = ''
     mcp_arguments: dict = None
 
+GITHUB_COPILOT_PROVIDER_ID = "github-copilot"
+
+
+def github_copilot_serves_a_request(
+    agent_mode: Optional[str],
+    chat_model_provider: str,
+    inline_completion_model_provider: str,
+    claude_inline_completion_setting: str,
+) -> bool:
+    """Whether any surface will actually route a request to Copilot.
+
+    The configured provider fields alone do not answer this, because an agent
+    mode takes chat away from ``chat_model`` while leaving the configured
+    values in place, and both fields default to Copilot. Deciding from the
+    fields meant a Claude-only deployment logged in, refreshed a token, and
+    polled GitHub for the life of the server.
+    """
+    if agent_mode is None and chat_model_provider == GITHUB_COPILOT_PROVIDER_ID:
+        return True
+    if inline_completion_model_provider != GITHUB_COPILOT_PROVIDER_ID:
+        return False
+    # Claude mode replaces inline completion with its own model unless the
+    # user asked it to inherit; ACP mode does not touch inline completion at
+    # all, so the configured provider still serves it there.
+    if agent_mode == "claude":
+        return claude_inline_completion_setting == "inherit"
+    return True
+
+
 class AIServiceManager(Host):
     def __init__(self, options: Optional[dict] = None):
         self.llm_providers: Dict[str, LLMProvider] = {}
         self.chat_participants: Dict[str, ChatParticipant] = {}
         self.completion_context_providers: Dict[str, CompletionContextProvider] = {}
+        self.chatbook_context_providers: Dict[str, ChatbookContextProvider] = {}
+        self.chatbook_mention_providers: Dict[str, ChatbookMentionProvider] = {}
         self.telemetry_listeners: Dict[str, TelemetryListener] = {}
         self._extension_toolsets: Dict[str, list[Toolset]] = {}
         self._options = dict(options) if options is not None else {}
@@ -142,6 +174,7 @@ class AIServiceManager(Host):
         # Created lazily the first time ACP mode is active so the ACP SDK
         # import stays off the startup path (#378).
         self._acp_chat_participant = None
+        self._chatbook_acp_client = None
         self.register_llm_provider(GitHubCopilotLLMProvider())
         self.register_llm_provider(self._openai_compatible_llm_provider)
         self.register_llm_provider(self._litellm_compatible_llm_provider)
@@ -164,8 +197,19 @@ class AIServiceManager(Host):
 
     def update_models_from_config(self):
         using_github_copilot_service = self.nbi_config.using_github_copilot_service
+        # Configured-as-a-provider is not the same question as will-serve-a-
+        # request, and only the second one justifies logging in.
+        copilot_serves_a_request = github_copilot_serves_a_request(
+            self.active_agent_mode,
+            self.nbi_config.chat_model.get("provider", ""),
+            self.nbi_config.inline_completion_model.get("provider", ""),
+            self.nbi_config.claude_settings.get("inline_completion_model", ""),
+        )
         if using_github_copilot_service:
-            github_copilot.login_with_existing_credentials(self._nbi_config.store_github_access_token)
+            github_copilot.login_with_existing_credentials(
+                self._nbi_config.store_github_access_token,
+                allow_login=copilot_serves_a_request,
+            )
         github_copilot.enable_github_login_status_change_updater(using_github_copilot_service)
 
         chat_model_cfg = self.nbi_config.chat_model
@@ -204,7 +248,31 @@ class AIServiceManager(Host):
             if model_cfg == 'none':
                 self._inline_completion_model = None
             elif model_cfg != 'inherit':
-                self._inline_completion_model = ClaudeCodeInlineCompletionModel(model_cfg, claude_settings.get('api_key', None), claude_settings.get('base_url', None))
+                # Leaving the model unset when no credential is visible skips
+                # the completion request rather than failing once per keystroke
+                # inside the SDK (#425). Falling back to the general
+                # inline-completion model would serve another provider's
+                # suggestions under Claude's icon, so this disables Claude
+                # auto-complete outright.
+                #
+                # Construction can raise on its own: the SDK reads profile
+                # files while resolving credentials, so a bad
+                # ANTHROPIC_CONFIG_DIR throws here. This runs from the
+                # capabilities response, which must not fail wholesale over a
+                # credential problem in one feature.
+                self._inline_completion_model = None
+                try:
+                    inline_model = ClaudeCodeInlineCompletionModel(model_cfg, claude_settings.get('api_key', None), claude_settings.get('base_url', None))
+                except Exception:
+                    warn_inline_completion_model_unavailable_once()
+                else:
+                    if inline_model.can_authenticate:
+                        self._inline_completion_model = inline_model
+                        # The credential can go away again without a restart,
+                        # and that removal deserves its own log line.
+                        reset_inline_completion_credential_warning()
+                    else:
+                        warn_no_inline_completion_credential_once()
             # Populate the Claude model cache in the background so the
             # settings panel's chat-model dropdown has options to render
             # against the user's persisted ``claude_settings.chat_model``.
@@ -253,6 +321,22 @@ class AIServiceManager(Host):
         participant has never been created."""
         if self._acp_chat_participant is not None:
             self._acp_chat_participant.restart_client()
+        if self._chatbook_acp_client is not None:
+            self._chatbook_acp_client.shutdown()
+            self._chatbook_acp_client = None
+
+    def generate_chatbook_with_acp(
+        self, prompt: str, response: ChatResponse
+    ) -> Optional[str]:
+        """Run Chatbook generation through the active ACP agent."""
+        if not self.is_acp_mode:
+            return "ACP mode is not enabled"
+        if self._chatbook_acp_client is None:
+            from notebook_intelligence.acp_agent import AcpAgentClient
+            self._chatbook_acp_client = AcpAgentClient(
+                self, force_safe_mode=True
+            )
+        return self._chatbook_acp_client.query_isolated(prompt, response)
 
     def update_mcp_servers(self):
         self._mcp_manager.update_mcp_servers(self.nbi_config.mcp)
@@ -315,6 +399,44 @@ class AIServiceManager(Host):
         if provider.id in self.completion_context_providers:
             raise RegistrationError(f"Completion Context Provider ID '{provider.id}' is already in use!")
         self.completion_context_providers[provider.id] = provider
+
+    def register_chatbook_context_provider(
+        self, provider: ChatbookContextProvider
+    ) -> None:
+        if provider.id in self.chatbook_context_providers:
+            raise RegistrationError(
+                f"Chatbook Context Provider ID '{provider.id}' is already in use!"
+            )
+        self.chatbook_context_providers[provider.id] = provider
+
+    def register_chatbook_mention_provider(
+        self, provider: ChatbookMentionProvider
+    ) -> None:
+        provider_id = str(provider.id or '').strip()
+        if not provider_id or any(
+            char not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-'
+            for char in provider_id
+        ):
+            raise RegistrationError(
+                "Chatbook Mention Provider IDs may only contain letters, "
+                "numbers, '.', '_', and '-'"
+            )
+        if provider_id in self.chatbook_mention_providers:
+            raise RegistrationError(
+                f"Chatbook Mention Provider ID '{provider_id}' is already in use!"
+            )
+        self.chatbook_mention_providers[provider_id] = provider
+
+    def get_chatbook_context_providers(self) -> list[ChatbookContextProvider]:
+        return list(self.chatbook_context_providers.values())
+
+    def get_chatbook_mention_providers(self) -> list[ChatbookMentionProvider]:
+        return list(self.chatbook_mention_providers.values())
+
+    def get_chatbook_mention_provider(
+        self, provider_id: str
+    ) -> Optional[ChatbookMentionProvider]:
+        return self.chatbook_mention_providers.get(provider_id)
 
     def register_telemetry_listener(self, listener: TelemetryListener) -> None:
         if listener.name in self.telemetry_listeners:
@@ -385,6 +507,31 @@ class AIServiceManager(Host):
     @property
     def is_acp_mode(self) -> bool:
         return self.active_agent_mode == "acp"
+
+    @property
+    def perf_backend_label(self) -> str:
+        """Which backend serves a chat turn, for diagnostics.
+
+        The native path is named by the configured provider, because a report
+        that calls every non-agent turn "copilot" names a provider the user
+        may not have. Read from config rather than from the resolved model:
+        a model id the provider's current catalogue does not list leaves that
+        model None, and the turn would then be labelled as if no provider
+        were configured at all. "chat" covers only the case where none is.
+        """
+        if self.is_acp_mode:
+            return "acp"
+        if self.is_claude_code_mode:
+            return "claude"
+        # Tolerant of a hand-edited config: this runs on the chat path, and
+        # diagnostics must not be what fails a request that would otherwise
+        # degrade to "Chat model is not set!".
+        chat_model = self.nbi_config.chat_model
+        provider_id = chat_model.get("provider") if isinstance(chat_model, dict) else None
+        provider_id = provider_id.strip() if isinstance(provider_id, str) else ""
+        if provider_id in ("", "none"):
+            return "chat"
+        return provider_id
 
     @property
     def claude_models(self) -> list[dict]:
@@ -539,9 +686,14 @@ class AIServiceManager(Host):
     async def handle_chat_request(self, request: ChatRequest, response: ChatResponse, options: dict = {}) -> None:
         is_claude_code_mode = self.is_claude_code_mode
         is_acp_mode = self.is_acp_mode
+        # Read alongside the mode snapshot the participant is chosen from, so
+        # a settings save landing mid-request has a much smaller window to
+        # label the span with a backend this dispatch is not using.
+        dispatch_label = self.perf_backend_label
+        trans = i18n.response_bundle(response)
         if not is_claude_code_mode and not is_acp_mode and self.chat_model is None:
-            response.stream(MarkdownData("Chat model is not set!"))
-            response.stream(ButtonData("Configure", "notebook-intelligence:open-configuration-dialog"))
+            response.stream(MarkdownData(trans.__("Chat model is not set!")))
+            response.stream(ButtonData(trans._p("chat button", "Configure"), "notebook-intelligence:open-configuration-dialog"))
             response.finish()
             return
         request.host = self
@@ -559,7 +711,7 @@ class AIServiceManager(Host):
                 "Claude Code mode is enabled but its chat participant is not available"
             )
             response.stream(MarkdownData(
-                "Claude Code mode is still starting. Please try again in a moment."
+                trans.__("Claude Code mode is still starting. Please try again in a moment.")
             ))
             response.finish()
             return
@@ -593,7 +745,7 @@ class AIServiceManager(Host):
                 "No chat participant is available for request participant '%s'",
                 prompt_parts.participant,
             )
-            response.stream(MarkdownData("No chat participant is available."))
+            response.stream(MarkdownData(trans.__("No chat participant is available.")))
             response.finish()
             return
         response.participant_id = prompt_parts.participant
@@ -623,8 +775,7 @@ class AIServiceManager(Host):
         turn = perf.get_turn(_perf_message_id) if _perf_message_id else None
         if turn is None:
             return await participant.handle_chat_request(request, response, options)
-        provider = "acp" if is_acp_mode else ("claude" if is_claude_code_mode else "copilot")
-        with turn.span("dispatch", provider=provider):
+        with turn.span("dispatch", provider=dispatch_label):
             return await participant.handle_chat_request(request, response, options)
 
     async def get_completion_context(self, request: ContextRequest) -> CompletionContext:

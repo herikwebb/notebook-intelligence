@@ -34,7 +34,7 @@ priority: 10
 
 ### Mode-specific rules — apply only to a chat mode
 
-NBI has three chat modes: `ask` (Q&A), `agent` (autonomous tool use), and `inline-chat` (cell-level code generation and edit).
+NBI has four modes: `ask` (Q&A), `agent` (autonomous tool use), `inline-chat` (cell-level code generation and edit), and `chatbook` (natural-language Chatbook cells).
 
 Create `~/.jupyter/nbi/rules/modes/agent/01-testing.md`:
 
@@ -83,7 +83,7 @@ All `scope` fields are optional, and every one of them is an allowlist: a field 
 Two things worth knowing before you write a `scope`:
 
 - **`directory_patterns` are fnmatch patterns, not path prefixes.** `'/projects/ml'` matches only that exact string; to match everything underneath it, write `'*/projects/ml/*'`.
-- **`languages` and `kernel_names` are different things.** `languages` matches the notebook's language (`python`, `r`); `kernel_names` matches the installed kernelspec name (`python3`, `ir`). Pick whichever you actually mean. An earlier `scope.kernels` key conflated the two and was removed in 5.3.0: a rule that still uses it is rejected at load with an error naming the file, rather than being silently ignored.
+- **`languages` and `kernel_names` are different things.** `languages` matches the notebook's language (`python`, `r`); `kernel_names` matches the installed kernelspec name (`python3`, `ir`). Pick whichever you actually mean. Chatbook generation matches the backend kernelspec the notebook runs, not the `chatbook` wrapper it is open under, so scope a Chatbook rule to the kernel you actually execute in (or put it under `modes/chatbook/` to apply it to Chatbook regardless of kernel). An earlier `scope.kernels` key conflated the two and was removed in 5.3.0: a rule that still uses it is rejected at load with an error naming the file, rather than being silently ignored.
 
 **On `apply`:** the value is parsed, validated, and reported by the rules API, but it does not currently affect whether a rule is selected. Only `active` does. Treat `apply` as metadata until that changes; a rule you do not want applied needs `active: false`.
 
@@ -95,8 +95,11 @@ Two things worth knowing before you write a `scope`:
 └── modes/
     ├── ask/*.md                  # apply only in ask mode
     ├── agent/*.md                # apply only in agent mode
-    └── inline-chat/*.md          # apply only in inline-chat mode
+    ├── inline-chat/*.md          # apply only in inline-chat mode
+    └── chatbook/*.md             # apply only when generating Chatbook cells
 ```
+
+Chatbook uses global rules plus `modes/chatbook/`. Sidebar `ask` / `agent` / `inline-chat` rules do not apply to Chatbook generation. Scope Chatbook-only conventions with `modes/chatbook/`; keep shared coding standards as unscoped global rules. `AGENTS.md` is also injected into Chatbook's system prompt.
 
 ## Enabling, disabling, and managing rules
 
@@ -134,3 +137,4 @@ export NBI_RULES_AUTO_RELOAD=true    # default
 - Use `priority` to break ties when multiple rules cover the same topic. Lower number wins.
 - Keep individual rules short and focused. The LLM benefits more from five concise rules than one sprawling one.
 - Scope broadly and rely on `priority` for ordering, rather than writing many narrowly scoped rules. A rule that matches nothing is silent, so an over-tight `scope` is hard to notice.
+- Chatbook natural-language **execution** (confirm before running generated code) is a Settings → Chatbook control, not a rule. See [`chatbook.md`](chatbook.md).

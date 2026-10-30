@@ -1,6 +1,7 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import { ClaudeMCPScope, ClaudeMCPTransport, IClaudeMCPAddInput } from '../api';
+import { TranslationBundle } from '@jupyterlab/translation';
 
 const VALID_TRANSPORTS: ReadonlyArray<ClaudeMCPTransport> = [
   'stdio',
@@ -12,13 +13,16 @@ const VALID_TRANSPORTS: ReadonlyArray<ClaudeMCPTransport> = [
 //   "server-key": { ... }                          (bare key + object)
 //   { "server-key": { ... } }                      (wrapped, one entry)
 //   { "mcpServers": { "server-key": { ... } } }    (full mcp.json)
-export function parseMcpJsonEntry(raw: string): {
+export function parseMcpJsonEntry(
+  trans: TranslationBundle,
+  raw: string
+): {
   name: string;
   config: Record<string, any>;
 } {
   const trimmed = raw.trim().replace(/^,|,$/g, '');
   if (!trimmed) {
-    throw new Error('JSON is empty.');
+    throw new Error(trans.__('JSON is empty.'));
   }
 
   let parsed: any;
@@ -28,12 +32,12 @@ export function parseMcpJsonEntry(raw: string): {
     try {
       parsed = JSON.parse(`{${trimmed}}`);
     } catch (e) {
-      throw new Error(`Invalid JSON: ${(e as Error).message}`);
+      throw new Error(trans.__('Invalid JSON: %1', (e as Error).message));
     }
   }
 
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new Error('JSON must describe a server entry.');
+    throw new Error(trans.__('JSON must describe a server entry.'));
   }
   if (parsed.mcpServers && typeof parsed.mcpServers === 'object') {
     parsed = parsed.mcpServers;
@@ -41,20 +45,23 @@ export function parseMcpJsonEntry(raw: string): {
 
   const keys = Object.keys(parsed);
   if (keys.length === 0) {
-    throw new Error('Expected at least one server entry.');
+    throw new Error(trans.__('Expected at least one server entry.'));
   }
   if (keys.length > 1) {
-    throw new Error('Multiple servers found; paste one entry at a time.');
+    throw new Error(
+      trans.__('Multiple servers found; paste one entry at a time.')
+    );
   }
   const name = keys[0];
   const config = parsed[name];
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
-    throw new Error(`Server "${name}" config must be an object.`);
+    throw new Error(trans.__('Server "%1" config must be an object.', name));
   }
   return { name, config };
 }
 
 export function configToInput(
+  trans: TranslationBundle,
   name: string,
   config: Record<string, any>,
   scope: ClaudeMCPScope
@@ -63,7 +70,7 @@ export function configToInput(
   const command =
     typeof config.command === 'string' ? config.command.trim() : '';
   if (!url && !command) {
-    throw new Error('Server config must include "command" or "url".');
+    throw new Error(trans.__('Server config must include "command" or "url".'));
   }
 
   const explicitTransport =
@@ -77,11 +84,11 @@ export function configToInput(
   // `url`. A mismatch is more likely a typo than intent, and silently
   // downgrading to whatever shape we see is the footgun reviewers flagged.
   if (explicitTransport === 'stdio' && !command) {
-    throw new Error('transport: "stdio" requires a "command" field.');
+    throw new Error(trans.__('transport: "stdio" requires a "command" field.'));
   }
   if ((explicitTransport === 'http' || explicitTransport === 'sse') && !url) {
     throw new Error(
-      `transport: "${explicitTransport}" requires a "url" field.`
+      trans.__('transport: "%1" requires a "url" field.', explicitTransport)
     );
   }
 

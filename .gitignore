@@ -8,6 +8,8 @@ node_modules/
 .ipynb_checkpoints
 *.tsbuildinfo
 notebook_intelligence/labextension
+# Compiled translation bundles; only the .po sources are committed
+notebook_intelligence/locale/*/LC_MESSAGES/*.json
 # Version file is handled by hatchling
 notebook_intelligence/_version.py
 
@@ -70,6 +72,7 @@ coverage.xml
 # Translations
 *.mo
 *.pot
+!notebook_intelligence/locale/notebook_intelligence.pot
 
 # Scrapy stuff:
 .scrapy

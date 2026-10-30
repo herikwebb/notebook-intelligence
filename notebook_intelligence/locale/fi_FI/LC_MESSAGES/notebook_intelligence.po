@@ -1,0 +1,4269 @@
+# Notebook Intelligence translation catalog.
+# AI-drafted (Claude) from the English source; not yet reviewed by a
+# native speaker. A reviewer: replace this note and Last-Translator.
+# See docs/translating.md.
+msgid ""
+msgstr ""
+"Project-Id-Version: notebook_intelligence\n"
+"Report-Msgid-Bugs-To: https://github.com/plmbr/notebook-intelligence/issues\n"
+"POT-Creation-Date: 2026-10-26 07:14-0400\n"
+"PO-Revision-Date: 2026-10-24 22:00-0400\n"
+"Last-Translator: AI draft, not yet reviewed\n"
+"Language-Team: fi_FI\n"
+"Language: fi_FI\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already exists in this bundle."
+msgstr "”%1” on jo tässä paketissa."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" already up to date at %2."
+msgstr "”%1” on jo ajan tasalla versiossa %2."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be deleted."
+msgstr "”%1” poistetaan."
+
+#: src/components/skills-panel.tsx
+msgid "\"%1\" will be permanently deleted."
+msgstr "”%1” poistetaan pysyvästi."
+
+#: src/components/plugins-panel.tsx
+msgid "\"%1\" will be removed from Claude's plugin marketplaces."
+msgstr "”%1” poistetaan Clauden lisäosien markkinapaikoista."
+
+#: src/components/settings-panel.tsx
+msgid "%1 (not installed)"
+msgstr "%1 (ei asennettu)"
+
+#: src/components/setting-lock.ts
+msgid "%1 (optional)"
+msgstr "%1 (valinnainen)"
+
+#: src/chat-sidebar.tsx
+msgid "%1 (required)"
+msgstr "%1 (pakollinen)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 (scan truncated)"
+msgstr "%1 (tarkistus katkaistu)"
+
+#: src/components/perf-panel.tsx
+msgid "%1 MB peak since server start"
+msgstr "%1 Mt huippu palvelimen käynnistyksen jälkeen"
+
+#: src/components/perf-panel.tsx
+msgid "%1 active with no phase dominating."
+msgstr "%1 aktiivisena ilman hallitsevaa vaihetta."
+
+#: src/components/skills-panel.tsx
+msgid "%1 added"
+msgid_plural "%1 added"
+msgstr[0] "%1 lisätty"
+msgstr[1] "%1 lisätty"
+
+#: src/components/perf-panel.tsx
+msgid "%1 and %2 were dropped by the per-turn caps, so this timeline is incomplete."
+msgstr "%1 ja %2 jätettiin pois kierroskohtaisten rajojen vuoksi, joten tämä aikajana on puutteellinen."
+
+#: src/components/perf-panel.tsx
+msgid "%1 attribute"
+msgid_plural "%1 attributes"
+msgstr[0] "%1 attribuutti"
+msgstr[1] "%1 attribuuttia"
+
+#: src/open-file-refresh-watcher.ts
+msgid "%1 changed on disk and was reloaded"
+msgstr "%1 muuttui levyllä ja ladattiin uudelleen"
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 character"
+msgid_plural "%1 characters"
+msgstr[0] "%1 merkki"
+msgstr[1] "%1 merkkiä"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at %2 ms, %3 ms total."
+msgid_plural "%1 chunks, first at %2 ms, %3 ms total."
+msgstr[0] "%1 lohko, ensimmäinen %2 ms:n kohdalla, yhteensä %3 ms."
+msgstr[1] "%1 lohkoa, ensimmäinen %2 ms:n kohdalla, yhteensä %3 ms."
+
+#: notebook_intelligence/readiness.py
+msgid "%1 chunk, first at n/a ms, %2 ms total."
+msgid_plural "%1 chunks, first at n/a ms, %2 ms total."
+msgstr[0] "%1 lohko, ensimmäisen ajankohta ei tiedossa, yhteensä %2 ms."
+msgstr[1] "%1 lohkoa, ensimmäisen ajankohta ei tiedossa, yhteensä %2 ms."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 decides which tools to ask about, so some actions may run without a prompt."
+msgstr "%1 päättää, mistä työkaluista se kysyy, joten jotkin toiminnot voivat suorittua ilman kehotetta."
+
+#: src/chat-sidebar.tsx
+msgid "%1 duplicate skipped."
+msgid_plural "%1 duplicates skipped."
+msgstr[0] "%1 kaksoiskappale ohitettiin."
+msgstr[1] "%1 kaksoiskappaletta ohitettiin."
+
+#: src/components/skills-panel.tsx
+msgid "%1 error"
+msgid_plural "%1 errors"
+msgstr[0] "%1 virhe"
+msgstr[1] "%1 virhettä"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 failed"
+msgid_plural "%1 failed"
+msgstr[0] "%1 epäonnistui"
+msgstr[1] "%1 epäonnistui"
+
+#: src/chat-sidebar.tsx
+msgid "%1 file skipped (limit of %2)."
+msgid_plural "%1 files skipped (limit of %2)."
+msgstr[0] "%1 tiedosto ohitettiin (raja %2)."
+msgstr[1] "%1 tiedostoa ohitettiin (raja %2)."
+
+#: src/components/perf-panel.tsx
+msgid "%1 gap during streaming. Each stall event below is tagged with what preceded it."
+msgid_plural "%1 gaps during streaming. Each stall event below is tagged with what preceded it."
+msgstr[0] "%1 tauko suoratoiston aikana. Jokainen alla oleva pysähdystapahtuma on merkitty sitä edeltäneellä tapahtumalla."
+msgstr[1] "%1 taukoa suoratoiston aikana. Jokainen alla oleva pysähdystapahtuma on merkitty sitä edeltäneellä tapahtumalla."
+
+#: src/components/settings-panel.tsx
+msgid "%1 is required."
+msgstr "%1 on pakollinen."
+
+#: notebook_intelligence/acp_agent.py
+msgid "%1 line"
+msgid_plural "%1 lines"
+msgstr[0] "%1 rivi"
+msgstr[1] "%1 riviä"
+
+#: notebook_intelligence/readiness.py
+msgid "%1 model available."
+msgid_plural "%1 models available."
+msgstr[0] "%1 malli käytettävissä."
+msgstr[1] "%1 mallia käytettävissä."
+
+#: src/components/plugins-panel.tsx
+msgid "%1 plugin"
+msgid_plural "%1 plugins"
+msgstr[0] "%1 lisäosa"
+msgstr[1] "%1 lisäosaa"
+
+#: src/components/skills-panel.tsx
+msgid "%1 removed"
+msgid_plural "%1 removed"
+msgstr[0] "%1 poistettu"
+msgstr[1] "%1 poistettu"
+
+#: src/chat-sidebar.tsx
+msgid "%1 requires a subscription and it has a free tier. GitHub Copilot is subject to the %2."
+msgstr "%1 vaatii tilauksen, ja sillä on ilmainen taso. GitHub Copilotia koskevat %2."
+
+#: src/components/perf-panel.tsx
+msgid "%1 span"
+msgid_plural "%1 spans"
+msgstr[0] "%1 jakso"
+msgstr[1] "%1 jaksoa"
+
+#: src/components/tool-call-group.tsx
+msgid "%1 tool call"
+msgid_plural "%1 tool calls"
+msgstr[0] "%1 työkalukutsu"
+msgstr[1] "%1 työkalukutsua"
+
+#: src/components/skills-panel.tsx
+msgid "%1 unchanged"
+msgid_plural "%1 unchanged"
+msgstr[0] "%1 ennallaan"
+msgstr[1] "%1 ennallaan"
+
+#: src/components/skills-panel.tsx
+msgid "%1 updated"
+msgid_plural "%1 updated"
+msgstr[0] "%1 päivitetty"
+msgstr[1] "%1 päivitetty"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, launched as: %2"
+msgstr "%1, käynnistetty komennolla: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, model '%2'"
+msgstr "%1, malli ”%2”"
+
+#: notebook_intelligence/readiness.py
+msgid "%1, no model selected"
+msgstr "%1, mallia ei valittu"
+
+#: src/components/perf-panel.tsx
+msgid "%1; TLS handshake failed (%2)"
+msgstr "%1; TLS-kättely epäonnistui (%2)"
+
+#: src/components/perf-panel.tsx
+msgid "%1; clock skew %2"
+msgstr "%1; kellon poikkeama %2"
+
+#: src/components/perf-panel.tsx
+msgid "%1; issuer %2"
+msgstr "%1; myöntäjä %2"
+
+#: src/components/perf-panel.tsx
+msgid "%2 %1 file, %3"
+msgid_plural "%2 %1 files, %3"
+msgstr[0] "%2 %1 tiedosto, %3"
+msgstr[1] "%2 %1 tiedostoa, %3"
+
+#: src/components/skills-panel.tsx
+msgid "%2 + %1 other"
+msgid_plural "%2 + %1 others"
+msgstr[0] "%2 + %1 muu"
+msgstr[1] "%2 + %1 muuta"
+
+#: src/components/plugins-panel.tsx
+msgid "%2, +%1 more"
+msgid_plural "%2, +%1 more"
+msgstr[0] "%2, +%1 lisää"
+msgstr[1] "%2, +%1 lisää"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' and its declared interpreter are available."
+msgstr "”%1” ja sen ilmoittama tulkki ovat käytettävissä."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' has no content to attach."
+msgstr "Kohteessa ”%1” ei ole liitettävää sisältöä."
+
+#: src/chat-sidebar.tsx
+msgid "'%1' is empty"
+msgstr "”%1” on tyhjä"
+
+#: notebook_intelligence/readiness.py
+msgid "'%1' is not in the list this endpoint serves."
+msgstr "”%1” ei ole tämän päätepisteen tarjoamassa luettelossa."
+
+#: src/components/plugins-panel.tsx
+msgid "(disabled)"
+msgstr "(poistettu käytöstä)"
+
+#: src/components/safe-anchor.tsx
+msgid "(link blocked)"
+msgstr "(linkki estetty)"
+
+#: src/components/safe-anchor.tsx
+msgid "(opens in new tab)"
+msgstr "(avautuu uuteen välilehteen)"
+
+#: src/components/plugins-panel.tsx
+msgid "(unnamed)"
+msgstr "(nimetön)"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 agent error:** %2"
+msgstr "**Agentin %1 virhe:** %2"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: it is too large to show in full for approval.**"
+msgstr "**%1-työkalukutsu hylättiin: se on liian suuri näytettäväksi kokonaan hyväksyntää varten.**"
+
+#: notebook_intelligence/acp_agent.py
+msgid "**%1 tool call rejected: its command contains hidden Unicode bidirectional controls (%2).**"
+msgstr "**%1-työkalukutsu hylättiin: sen komento sisältää piilotettuja Unicoden kaksisuuntaisuuden ohjausmerkkejä (%2).**"
+
+#: notebook_intelligence/mcp_manager.py
+msgid "**%1** server tools:"
+msgstr "Palvelimen **%1** työkalut:"
+
+#: notebook_intelligence/claude.py
+msgid "**Bash command blocked: hidden Unicode bidirectional controls detected (%1).**"
+msgstr "**Bash-komento estettiin: havaittiin piilotettuja Unicoden kaksisuuntaisuuden ohjausmerkkejä (%1).**"
+
+#: notebook_intelligence/claude.py
+msgid "**Claude agent error:** %1"
+msgstr "**Claude-agentin virhe:** %1"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/claude.py
+msgid "**Error:** %1"
+msgstr "**Virhe:** %1"
+
+#: src/components/skills-panel.tsx
+msgid "+ New project skill"
+msgstr "+ Uusi projektitaito"
+
+#: src/components/skills-panel.tsx
+msgid "+ New user skill"
+msgstr "+ Uusi käyttäjätaito"
+
+#: src/components/perf-panel.tsx
+msgid "1m %1, 5m %2, 15m %3"
+msgstr "1 min %1, 5 min %2, 15 min %3"
+
+#: notebook_intelligence/extension.py
+msgid "A duplicate submission with this message ID was ignored; the original request is still running."
+msgstr "Kaksoislähetys samalla viestitunnuksella ohitettiin; alkuperäinen pyyntö on yhä käynnissä."
+
+#: src/components/perf-panel.tsx
+msgid "A large ~/.claude tree makes every agent start pay to walk it. On a network filesystem this is often most of the spawn cost."
+msgstr "Suuri ~/.claude-hakemistopuu pakottaa jokaisen agentin käynnistyksen käymään sen läpi. Verkkotiedostojärjestelmässä tämä on usein suurin osa käynnistyksen kustannuksesta."
+
+#: notebook_intelligence/extension.py
+msgid "A live endpoint test is already running."
+msgstr "Päätepisteen reaaliaikainen testi on jo käynnissä."
+
+#: src/components/perf-panel.tsx
+msgid "A network filesystem. Read every latency number in this group against that, and point NBI_PERF_LOG_DIR somewhere local."
+msgstr "Verkkotiedostojärjestelmä. Tulkitse kaikki tämän ryhmän viivelukemat sitä vasten, ja osoita NBI_PERF_LOG_DIR paikalliseen sijaintiin."
+
+#: src/components/perf-panel.tsx
+msgid "A one-line reading of where this turn's time went, derived from the columns to the left."
+msgstr "Yksirivinen tulkinta siitä, mihin tämän kierroksen aika kului, johdettu vasemmalla olevista sarakkeista."
+
+#: src/components/skills-panel.tsx
+msgid "A project skill named \"%1\" already exists."
+msgstr "Projektitaito nimeltä ”%1” on jo olemassa."
+
+#: src/components/skills-panel.tsx
+msgid "A user skill named \"%1\" already exists."
+msgstr "Käyttäjätaito nimeltä ”%1” on jo olemassa."
+
+#: src/components/readiness-card.tsx
+msgid "ACP agent"
+msgstr "ACP-agentti"
+
+#: src/chat-sidebar.tsx
+msgid "ACP mode"
+msgstr "ACP-tila"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode does not support Chatbook generation"
+msgstr "ACP-tila ei tue Chatbook-generointia"
+
+#: notebook_intelligence/extension.py
+msgid "ACP mode is not enabled"
+msgstr "ACP-tila ei ole käytössä"
+
+#: notebook_intelligence/extension.py src/chat-sidebar.tsx
+msgid "AI Assistant"
+msgstr "Tekoälyavustaja"
+
+#: src/components/settings-panel.tsx
+msgid "API Key"
+msgstr "API-avain"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "API key"
+msgstr "API-avain"
+
+#: notebook_intelligence/readiness.py
+msgid "API key present from %1."
+msgstr "API-avain löytyi lähteestä %1."
+
+#: src/chat-sidebar.tsx
+msgid "Accept"
+msgstr "Hyväksy"
+
+#: src/components/skills-panel.tsx
+msgid "Actions for %1"
+msgstr "Toiminnot: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Activating device..."
+msgstr "Aktivoidaan laitetta…"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Add"
+msgstr "Lisää"
+
+#: src/components/settings-panel.tsx
+msgid "Add / Edit"
+msgstr "Lisää / muokkaa"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add MCP server"
+msgstr "Lisää MCP-palvelin"
+
+#: src/components/plugins-panel.tsx
+msgid "Add a marketplace to discover plugins, then install one to extend Claude Code with new commands, agents, and tool integrations."
+msgstr "Lisää markkinapaikka löytääksesi lisäosia ja asenna sitten jokin niistä laajentaaksesi Claude Codea uusilla komennoilla, agenteilla ja työkaluintegraatioilla."
+
+#: src/markdown-renderer.tsx
+msgid "Add as new cell"
+msgstr "Lisää uutena soluna"
+
+#: src/markdown-renderer.tsx
+msgid "Add code as new cell"
+msgstr "Lisää koodi uutena soluna"
+
+#: src/components/skills-panel.tsx
+msgid "Add file"
+msgstr "Lisää tiedosto"
+
+#: src/chat-sidebar.tsx
+msgid "Add files as context"
+msgstr "Lisää tiedostoja kontekstiksi"
+
+#: src/components/plugins-panel.tsx
+msgid "Add marketplace"
+msgstr "Lisää markkinapaikka"
+
+#: src/components/plugins-panel.tsx
+msgid "Add plugin marketplace"
+msgstr "Lisää lisäosien markkinapaikka"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Add server"
+msgstr "Lisää palvelin"
+
+#: src/chat-sidebar.tsx
+msgid "Add workspace file as context"
+msgstr "Lisää työtilan tiedosto kontekstiksi"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Adding…"
+msgstr "Lisätään…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Additional permissions"
+msgstr "Lisäoikeudet"
+
+#: src/components/settings-panel.tsx
+msgid "Adds a small footer under each reply."
+msgstr "Lisää pienen alatunnisteen jokaisen vastauksen alle."
+
+#: src/components/perf-panel.tsx
+msgid "Adds connections to your configured endpoint to time DNS, TCP, and TLS and to capture the presented certificate."
+msgstr "Avaa yhteyksiä määritettyyn päätepisteeseen DNS:n, TCP:n ja TLS:n ajoituksen mittaamiseksi ja esitetyn varmenteen tallentamiseksi."
+
+#: src/components/settings-panel.tsx
+msgid "Agent account"
+msgstr "Agentin tili"
+
+#: src/components/settings-panel.tsx
+msgid "Agent default (e.g. '%1')"
+msgstr "Agentin oletus (esim. ”%1”)"
+
+#: notebook_intelligence/readiness.py
+msgid "Agent mode and every built-in tool need tool calling. The model may not support it, or a proxy in front of the endpoint may be stripping the tools field."
+msgstr "Agenttitila ja kaikki sisäänrakennetut työkalut edellyttävät työkalukutsuja. Malli ei ehkä tue niitä, tai päätepisteen edessä oleva välityspalvelin saattaa poistaa tools-kentän."
+
+#: src/components/settings-panel.tsx
+msgid "Agent type"
+msgstr "Agentin tyyppi"
+
+#: src/components/skills-panel.tsx
+msgid "Allowed tools"
+msgstr "Sallitut työkalut"
+
+#: src/components/perf-panel.tsx
+msgid "Also append each turn as JSON Lines under the perf log directory, for collecting across sessions or machines."
+msgstr "Lisää myös jokainen kierros JSON Lines -muodossa suorituskykylokien hakemistoon, jotta tietoja voi kerätä istunnoista tai koneista."
+
+#: src/components/settings-panel.tsx
+msgid "Also classify with the chat model"
+msgstr "Luokittele myös keskustelumallilla"
+
+#: src/components/settings-panel.tsx
+msgid "Always confirm"
+msgstr "Vahvista aina"
+
+#: notebook_intelligence/claude.py
+msgid "Approve Bash tool to execute the command above?"
+msgstr "Hyväksytäänkö, että Bash-työkalu suorittaa yllä olevan komennon?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve running this command?"
+msgstr "Hyväksytäänkö tämän komennon suorittaminen?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approve this %1 tool call?"
+msgstr "Hyväksytäänkö tämä %1-työkalukutsu?"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Approving grants a lasting permission, not only this request."
+msgstr "Hyväksyminen antaa pysyvän luvan, ei vain tälle pyynnölle."
+
+#: notebook_intelligence/claude.py
+msgid "Are you sure you want to call this tool?"
+msgstr "Haluatko varmasti kutsua tätä työkalua?"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Args (one per line)"
+msgstr "Argumentit (yksi riviä kohden)"
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence to generate Python code..."
+msgstr "Pyydä Notebook Intelligenceä luomaan Python-koodia…"
+
+#: src/chat-sidebar.tsx
+msgid "Ask Notebook Intelligence..."
+msgstr "Kysy Notebook Intelligenceltä…"
+
+#: src/components/settings-panel.tsx
+msgid "Ask about cell outputs"
+msgstr "Kysy solujen tulosteista"
+
+#: src/cell-output-toolbar.ts src/index.ts
+msgid "Ask about this output"
+msgstr "Kysy tästä tulosteesta"
+
+#: src/components/settings-panel.tsx
+msgid "Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English."
+msgstr "Pyydä tekoälyä kirjoittamaan keskusteluvastaukset ja Chatbook-solujen kuvaukset kielellä, joka JupyterLabiin on asetettu. Koodi, tunnisteet ja tiedostojen sisältö jätetään ennalleen. Ei vaikutusta, kun JupyterLab on englanninkielinen."
+
+#: src/components/perf-panel.tsx
+msgid "Attribute detail"
+msgstr "Attribuuttien tarkkuus"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (milliseconds)"
+msgstr "Automaattisen täydennyksen viive (millisekuntia)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete debouncer delay (ms)"
+msgstr "Automaattisen täydennyksen viive (ms)"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-complete model"
+msgstr "Automaattisen täydennyksen malli"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run"
+msgstr "Suorita automaattisesti"
+
+#: src/components/settings-panel.tsx
+msgid "Auto-run when a static scan looks clean. Confirm when it flags a risk or cannot parse the cell. The scan is a speed bump, not a security boundary; false negatives are inevitable."
+msgstr "Suorita automaattisesti, kun staattinen tarkistus näyttää puhtaalta. Pyydä vahvistus, kun se havaitsee riskin tai ei pysty jäsentämään solua. Tarkistus on hidaste, ei tietoturvaraja; vääriä negatiivisia tuloksia ei voi välttää."
+
+#: src/components/settings-panel.tsx
+msgid "Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
+msgstr "Lataa muistikirja- ja tiedostoeditorivälilehdet automaattisesti uudelleen, kun ulkoinen prosessi (päätteen komento, synkronointiohjelma tai tekoälyagentti) muokkaa tiedostoa. Ohitetaan, jos välilehdellä on tallentamattomia paikallisia muutoksia."
+
+#: src/components/skills-panel.tsx
+msgid "Back"
+msgstr "Takaisin"
+
+#: src/components/settings-panel.tsx
+msgid "Backend kernel"
+msgstr "Taustaydin"
+
+#: src/chat-sidebar.tsx
+msgid "Bad response"
+msgstr "Huono vastaus"
+
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
+msgid "Base URL"
+msgstr "Perus-URL"
+
+#: src/components/perf-panel.tsx
+msgid "Below what local storage delivers. Worth comparing against a known-good node."
+msgstr "Alle sen, mihin paikallinen tallennustila yltää. Kannattaa verrata tunnetusti hyvin toimivaan solmuun."
+
+#: src/chat-sidebar.tsx
+msgid "Binary files cannot be attached as chat context."
+msgstr "Binaaritiedostoja ei voi liittää keskustelun kontekstiksi."
+
+#: src/components/skills-panel.tsx
+msgid "Breadcrumb"
+msgstr "Murupolku"
+
+#: src/chat-sidebar.tsx
+msgid "Built-in"
+msgstr "Sisäänrakennettu"
+
+#: src/components/skills-panel.tsx
+msgid "Bundle contains %1 file; showing %2 only. Edit supporting files directly on disk."
+msgid_plural "Bundle contains %1 files; showing %2 only. Edit supporting files directly on disk."
+msgstr[0] "Paketissa on %1 tiedosto; vain %2 näytetään. Muokkaa tukitiedostoja suoraan levyllä."
+msgstr[1] "Paketissa on %1 tiedostoa; vain %2 näytetään. Muokkaa tukitiedostoja suoraan levyllä."
+
+#: src/components/settings-panel.tsx
+msgid "By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs."
+msgstr "Oletuksena agentti kysyy ennen kaikkea, mikä menee luotettujen vain luku -komentojen ulkopuolelle. Täysi käyttöoikeus antaa sen muokata työtilan tiedostoja ja suorittaa komentotulkin komentoja kysymättä hiekkalaatikossa, jossa verkkoyhteys on oletuksena pois päältä. Kaikki, minkä hiekkalaatikko estää, epäonnistuu kysymisen sijaan. Agentin lukema sisältö voi ohjata sitä, mitä se suorittaa."
+
+#: src/chat-sidebar.tsx
+msgid "By using Notebook Intelligence with GitHub Copilot subscription you agree to %1. Review the terms to understand about usage, limitations and ways to improve GitHub Copilot. Please review %2."
+msgstr "Käyttämällä Notebook Intelligenceä GitHub Copilot -tilauksen kanssa hyväksyt %1. Tutustu ehtoihin ymmärtääksesi käytön, rajoitukset ja tavat parantaa GitHub Copilotia. Tutustu myös: %2."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions is active: tool calls run without confirmation"
+msgstr "Ohita käyttöoikeudet on käytössä: työkalukutsut suoritetaan ilman vahvistusta"
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass Permissions runs every tool call without asking for confirmation, with your full user account access. Content the agent reads can steer what it runs. Stays on until you switch modes or start a new session."
+msgstr "Ohita käyttöoikeudet suorittaa jokaisen työkalukutsun kysymättä vahvistusta, käyttäjätilisi kaikilla oikeuksilla. Agentin lukema sisältö voi ohjata sitä, mitä se suorittaa. Pysyy päällä, kunnes vaihdat tilaa tai aloitat uuden istunnon."
+
+#: src/components/permission-mode-select.tsx
+msgid "Bypass permissions"
+msgstr "Ohita käyttöoikeudet"
+
+#: notebook_intelligence/claude.py
+msgid "Calling tool '%1'..."
+msgstr "Kutsutaan työkalua ”%1”…"
+
+#: src/chatbook-toolbar.ts
+msgid "Can't convert this notebook yet"
+msgstr "Tätä muistikirjaa ei voi vielä muuntaa"
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-mcp-panel.tsx src/components/form-dialog.tsx src/components/perf-panel.tsx src/components/permission-mode-select.tsx src/components/plugins-panel.tsx src/components/readiness-card.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: src/chat-sidebar.tsx
+msgid "Cancel activation"
+msgstr "Peruuta aktivointi"
+
+#: src/chat-sidebar.tsx
+msgid "Canceled"
+msgstr "Peruutettu"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for %1"
+msgstr "Suorittamattomia Chatbook-soluja ei voi viedä: kielelle %1 ei ole turvallista rivikommenttia"
+
+#: src/chatbook-core.ts
+msgid "Cannot export unrun Chatbook cells: no safe line comment for the selected language"
+msgstr "Suorittamattomia Chatbook-soluja ei voi viedä: valitulle kielelle ei ole turvallista rivikommenttia"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1"
+msgstr "Solu %1"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output"
+msgstr "Solun %1 tuloste"
+
+#: src/chat-sidebar.tsx
+msgid "Cell %1 output (%2)"
+msgstr "Solun %1 tuloste (%2)"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output"
+msgstr "Solun tuloste"
+
+#: src/chat-sidebar.tsx
+msgid "Cell output (%1)"
+msgstr "Solun tuloste (%1)"
+
+#: src/components/settings-panel.tsx
+msgid "Cell output features"
+msgstr "Solujen tulosteiden toiminnot"
+
+#: src/chat-sidebar.tsx
+msgid "Change provider"
+msgstr "Vaihda palveluntarjoajaa"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Characters that would not display are shown as \\u{XXXX}."
+msgstr "Merkit, joita ei voi näyttää, esitetään muodossa \\u{XXXX}."
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent setting sources"
+msgstr "Keskusteluagentin asetuslähteet"
+
+#: src/components/settings-panel.tsx
+msgid "Chat Agent tools"
+msgstr "Keskusteluagentin työkalut"
+
+#: src/chat-sidebar.tsx
+msgid "Chat is disabled as you don't have a model configured."
+msgstr "Keskustelu on poissa käytöstä, koska mallia ei ole määritetty."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by ACP agent mode."
+msgstr "Keskustelua palvelee ACP-agenttitila."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by Claude mode."
+msgstr "Keskustelua palvelee Claude-tila."
+
+#: notebook_intelligence/readiness.py
+msgid "Chat is served by the configured chat model provider."
+msgstr "Keskustelua palvelee määritetty keskustelumallin palveluntarjoaja."
+
+#: src/chat-sidebar.tsx
+msgid "Chat mode"
+msgstr "Keskustelutila"
+
+#: src/components/settings-panel.tsx
+msgid "Chat model"
+msgstr "Keskustelumalli"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Chat model is not set!"
+msgstr "Keskustelumallia ei ole asetettu!"
+
+#: src/components/readiness-card.tsx
+msgid "Chat path"
+msgstr "Keskustelureitti"
+
+#: src/chat-sidebar.tsx
+msgid "Chat response image"
+msgstr "Keskusteluvastauksen kuva"
+
+#: src/chat-sidebar.tsx
+msgid "Chat transcript"
+msgstr "Keskustelun tekstitallenne"
+
+#: src/index.ts
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook description failed"
+msgstr "Chatbook-kuvaus epäonnistui"
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs."
+msgstr "Chatbook tuottaa %1-koodia ja suorittaa sen ytimessä %2. Kyseisellä prosessilla on samat oikeudet kuin millä tahansa Jupyter-ytimellä: tiedostot, verkko, ympäristömuuttujat ja pakettien asennukset."
+
+#: notebook_intelligence/extension.py
+msgid "Chatbook is disabled by your administrator"
+msgstr "Järjestelmänvalvoja on poistanut Chatbookin käytöstä"
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm every natural-language run."
+msgstr "Chatbook on asetettu pyytämään vahvistus jokaiselle luonnollisen kielen suoritukselle."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to confirm only when the scan flags a risk."
+msgstr "Chatbook on asetettu pyytämään vahvistus vain, kun tarkistus havaitsee riskin."
+
+#: src/chatbook-core.ts
+msgid "Chatbook is set to run generated code immediately."
+msgstr "Chatbook on asetettu suorittamaan luotu koodi välittömästi."
+
+#: src/components/settings-panel.tsx
+msgid "Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it."
+msgstr "Chatbook pysyy muistikirjan ytimenä, mutta luotu koodi suoritetaan tässä Jupyter-ydinmäärityksessä. Kieli, syntaksin korostus ja vienti noudattavat tätä ydintä. Käynnistä avoimet Chatbook-muistikirjat uudelleen sen muuttamisen jälkeen."
+
+#: src/components/perf-panel.tsx
+msgid "Check status: %1"
+msgstr "Tarkistuksen tila: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key and Base URL for this provider in NBI Settings, and that the endpoint is reachable from the Jupyter server process."
+msgstr "Tarkista tämän palveluntarjoajan API-avain ja perus-URL NBI-asetuksista sekä se, että päätepiste on tavoitettavissa Jupyter-palvelinprosessista."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the API key, the Base URL, and that the selected model id is one this endpoint serves. The server log carries the provider's own error text."
+msgstr "Tarkista API-avain, perus-URL ja se, että valittu mallitunnus on tämän päätepisteen tarjoama. Palvelinlokissa on palveluntarjoajan oma virheteksti."
+
+#: notebook_intelligence/readiness.py
+msgid "Check the Jupyter server log for the underlying error."
+msgstr "Katso taustalla oleva virhe Jupyter-palvelimen lokista."
+
+#: src/components/readiness-card.tsx
+msgid "Checking configuration…"
+msgstr "Tarkistetaan määrityksiä…"
+
+#: src/components/readiness-card.tsx
+msgid "Checking…"
+msgstr "Tarkistetaan…"
+
+#: src/index.ts
+msgid "Choose start directory for %1"
+msgstr "Valitse aloitushakemisto: %1"
+
+#: notebook_intelligence/extension.py
+msgid "Claude Code mode is not enabled"
+msgstr "Claude Code -tila ei ole käytössä"
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "Claude Code mode is still starting. Please try again in a moment."
+msgstr "Claude Code -tila käynnistyy vielä. Yritä hetken kuluttua uudelleen."
+
+#: src/index.ts
+msgid "Claude Code terminal session"
+msgstr "Claude Code -pääteistunto"
+
+#: src/components/settings-panel.tsx
+msgid "Claude Code tools"
+msgstr "Claude Code -työkalut"
+
+#: notebook_intelligence/extension.py
+msgid "Claude MCP management is disabled by your administrator"
+msgstr "Järjestelmänvalvoja on poistanut Claude MCP:n hallinnan käytöstä"
+
+#: src/components/settings-panel.tsx
+msgid "Claude account"
+msgstr "Claude-tili"
+
+#: src/chat-sidebar.tsx src/components/readiness-card.tsx
+msgid "Claude mode"
+msgstr "Claude-tila"
+
+#: src/components/permission-mode-select.tsx
+msgid "Claude permission mode"
+msgstr "Clauden käyttöoikeustila"
+
+#: notebook_intelligence/claude.py
+msgid "Claude wants to enter plan mode to explore and design an implementation approach. In plan mode, Claude will explore the codebase thoroughly, identify existing patterns, design an implementation strategy, and present a plan for your approval. No code changes will be made until you approve the plan."
+msgstr "Claude haluaa siirtyä suunnittelutilaan tutkiakseen ja suunnitellakseen toteutustavan. Suunnittelutilassa Claude tutkii koodikannan perusteellisesti, tunnistaa olemassa olevat mallit, suunnittelee toteutusstrategian ja esittää suunnitelman hyväksyttäväksesi. Koodiin ei tehdä muutoksia ennen kuin hyväksyt suunnitelman."
+
+#: src/components/settings-panel.tsx
+msgid "Click to learn more about security implications"
+msgstr "Napsauta saadaksesi lisätietoja tietoturvavaikutuksista"
+
+#: src/chat-sidebar.tsx src/chatbook-toolbar.ts src/components/claude-session-picker.tsx src/components/notebook-generation-popover.tsx src/components/skills-panel.tsx src/index.ts
+msgid "Close"
+msgstr "Sulje"
+
+#: src/chat-sidebar.tsx
+msgid "Close file picker"
+msgstr "Sulje tiedostovalitsin"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Close notebook generation popover"
+msgstr "Sulje muistikirjan luonnin ponnahdusikkuna"
+
+#: src/chat-sidebar.tsx
+msgid "Close tools picker"
+msgstr "Sulje työkaluvalitsin"
+
+#: src/chatbook.ts
+msgid "Code cell (%1): switch to natural language"
+msgstr "Koodisolu (%1): vaihda luonnolliseen kieleen"
+
+#: src/chatbook.ts
+msgid "Code cell: switch to natural language"
+msgstr "Koodisolu: vaihda luonnolliseen kieleen"
+
+#: src/components/perf-panel.tsx
+msgid "Cold start here is dominated by reading the install tree. This is the number that turns into the Spawn column on every turn."
+msgstr "Kylmäkäynnistystä hallitsee tässä asennushakemiston lukeminen. Tämä luku näkyy Käynnistys-sarakkeessa jokaisella kierroksella."
+
+#: notebook_intelligence/acp_agent.py src/components/claude-mcp-panel.tsx
+msgid "Command"
+msgstr "Komento"
+
+#: src/components/perf-panel.tsx
+msgid "Compare %1 against %2: close together means the time is in the model or the gateway, far apart means it is local. Expand a row for that turn's phase breakdown."
+msgstr "Vertaa saraketta %1 sarakkeeseen %2: jos ne ovat lähellä toisiaan, aika kuluu mallissa tai yhdyskäytävässä; jos kaukana, aika kuluu paikallisesti. Laajenna rivi nähdäksesi kierroksen vaiheittaisen erittelyn."
+
+#: src/components/settings-panel.tsx
+msgid "Config file path"
+msgstr "Määritystiedoston polku"
+
+#: src/chat-sidebar.tsx
+msgid "Configure models"
+msgstr "Määritä mallit"
+
+#: src/chat-sidebar.tsx
+msgid "Configure providers, API keys, MCP servers, and skills"
+msgstr "Määritä palveluntarjoajat, API-avaimet, MCP-palvelimet ja taidot"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools"
+msgstr "Määritä työkalut"
+
+#: src/chat-sidebar.tsx
+msgid "Configure tools (warning: irreversible tools selected)"
+msgstr "Määritä työkalut (varoitus: peruuttamattomia työkaluja valittu)"
+
+#: src/components/perf-panel.tsx
+msgid "Configured endpoint"
+msgstr "Määritetty päätepiste"
+
+#: src/components/permission-mode-select.tsx
+msgid "Confirm Bypass Permissions"
+msgstr "Vahvista Ohita käyttöoikeudet"
+
+#: src/components/perf-panel.tsx
+msgid "Confirm and run"
+msgstr "Vahvista ja suorita"
+
+#: src/components/settings-panel.tsx
+msgid "Confirm if risky"
+msgstr "Vahvista, jos riskialtis"
+
+#: src/components/perf-panel.tsx
+msgid "Connect and spawn took %1. That is subprocess and CLI startup, usually node plus bundle reads, which is where slow storage shows up."
+msgstr "Yhdistäminen ja käynnistys kesti %1. Se on aliprosessin ja CLI:n käynnistys, yleensä node ja pakettien lukeminen, ja siinä hidas tallennustila näkyy."
+
+#: src/components/mcp-util.ts
+msgid "Connection failed. Reload MCP servers to retry."
+msgstr "Yhteys epäonnistui. Yritä uudelleen lataamalla MCP-palvelimet uudelleen."
+
+#: src/components/perf-panel.tsx
+msgid "Connection setup alone costs this much before any model work starts, and every cold connection to the gateway pays it."
+msgstr "Pelkkä yhteyden muodostaminen maksaa näin paljon ennen kuin mallin työ alkaa, ja jokainen kylmä yhteys yhdyskäytävään maksaa sen."
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window"
+msgstr "Kontekstiikkuna"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Context window length"
+msgstr "Kontekstiikkunan pituus"
+
+#: src/components/settings-panel.tsx
+msgid "Conversation History"
+msgstr "Keskusteluhistoria"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert"
+msgstr "Muunna"
+
+#: src/index.ts
+msgid "Convert notebook to Chatbook"
+msgstr "Muunna muistikirja Chatbookiksi"
+
+#: src/chatbook-toolbar.ts
+msgid "Convert to Chatbook"
+msgstr "Muunna Chatbookiksi"
+
+#: src/components/perf-panel.tsx
+msgid "Copied"
+msgstr "Kopioitu"
+
+#: src/markdown-renderer.tsx
+msgid "Copy"
+msgstr "Kopioi"
+
+#: src/components/perf-panel.tsx
+msgid "Copy as JSON"
+msgstr "Kopioi JSON-muodossa"
+
+#: src/chat-sidebar.tsx
+msgid "Copy code %1 and enter at %2 to allow access to GitHub Copilot from this app. Activation could take up to a minute after you enter the code."
+msgstr "Kopioi koodi %1 ja syötä se osoitteessa %2, jotta tämä sovellus saa käyttää GitHub Copilotia. Aktivointi voi kestää enintään minuutin koodin syöttämisen jälkeen."
+
+#: src/markdown-renderer.tsx
+msgid "Copy code to clipboard"
+msgstr "Kopioi koodi leikepöydälle"
+
+#: src/components/claude-session-picker.tsx
+msgid "Copy resume command"
+msgstr "Kopioi jatkamiskomento"
+
+#: src/chat-sidebar.tsx
+msgid "Could not attach: %1"
+msgstr "Liittäminen epäonnistui: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Could not convert to Chatbook: %1"
+msgstr "Chatbookiksi muuntaminen epäonnistui: %1"
+
+#: src/chatbook.ts
+msgid "Could not generate a description: %1"
+msgstr "Kuvauksen luominen epäonnistui: %1"
+
+#: notebook_intelligence/extension.py
+msgid "Could not list workspace mentions"
+msgstr "Työtilan mainintoja ei voitu luetella"
+
+#: src/index.ts
+msgid "Create a Chatbook copy of this notebook, leaving the original unchanged"
+msgstr "Luo tästä muistikirjasta Chatbook-kopio ja jätä alkuperäinen ennalleen"
+
+#: src/chatbook-toolbar.ts
+msgid "Create a new %1 notebook from this Chatbook. The original Chatbook is left unchanged. Cells that have not been run become comments."
+msgstr "Luo tästä Chatbookista uusi %1-muistikirja. Alkuperäinen Chatbook jää ennalleen. Suorittamattomista soluista tulee kommentteja."
+
+#: src/index.ts
+msgid "Create a new notebook from this Chatbook using the configured backend kernel, leaving the original unchanged"
+msgstr "Luo tästä Chatbookista uusi muistikirja käyttäen määritettyä taustaydintä ja jätä alkuperäinen ennalleen"
+
+#: src/index.ts
+msgid "Create a notebook whose cells are natural-language prompts"
+msgstr "Luo muistikirja, jonka solut ovat luonnollisen kielen kehotteita"
+
+#: src/markdown-renderer.tsx
+msgid "Create new file from code"
+msgstr "Luo uusi tiedosto koodista"
+
+#: src/markdown-renderer.tsx
+msgid "Create new notebook from code"
+msgstr "Luo uusi muistikirja koodista"
+
+#: src/chatbook-toolbar.ts
+msgid "Created Chatbook copy: %1"
+msgstr "Chatbook-kopio luotu: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel, instead of %2. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Luo tästä muistikirjasta Chatbook-kopion sen viereen ja avaa sen, tallentamattomat muutokset mukaan lukien. Koodisoluista tulee Chatbook-koodisoluja, jotka suoritetaan täsmälleen kirjoitetussa muodossa; tulosteet ja markdown säilytetään. Alkuperäistä ei muuteta. Sen koodi suoritetaan Chatbookin suoritusytimessä %1 ytimen %2 sijaan. Malliin ei lähetetä nyt mitään. Kun kukin koodisolu suoritetaan ensimmäisen kerran onnistuneesti, sen koodi lähetetään mallille yksirivistä kuvausta varten."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Its code will run in %1, the Chatbook execution kernel. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Luo tästä muistikirjasta Chatbook-kopion sen viereen ja avaa sen, tallentamattomat muutokset mukaan lukien. Koodisoluista tulee Chatbook-koodisoluja, jotka suoritetaan täsmälleen kirjoitetussa muodossa; tulosteet ja markdown säilytetään. Alkuperäistä ei muuteta. Sen koodi suoritetaan Chatbookin suoritusytimessä %1. Malliin ei lähetetä nyt mitään. Kun kukin koodisolu suoritetaan ensimmäisen kerran onnistuneesti, sen koodi lähetetään mallille yksirivistä kuvausta varten."
+
+#: src/chatbook-toolbar.ts
+msgid "Creates a Chatbook copy of this notebook next to it and opens it, including any unsaved changes. Code cells become Chatbook code cells and run exactly as written; outputs and markdown are kept. The original is not changed. Nothing is sent to the model now. The first time each code cell runs successfully, its code is sent to the model for a one-line description."
+msgstr "Luo tästä muistikirjasta Chatbook-kopion sen viereen ja avaa sen, tallentamattomat muutokset mukaan lukien. Koodisoluista tulee Chatbook-koodisoluja, jotka suoritetaan täsmälleen kirjoitetussa muodossa; tulosteet ja markdown säilytetään. Alkuperäistä ei muuteta. Malliin ei lähetetä nyt mitään. Kun kukin koodisolu suoritetaan ensimmäisen kerran onnistuneesti, sen koodi lähetetään mallille yksirivistä kuvausta varten."
+
+#: notebook_intelligence/readiness.py
+msgid "Credential present from %1."
+msgstr "Tunnistetiedot löytyivät lähteestä %1."
+
+#: src/components/settings-panel.tsx
+msgid "Default (recommended)"
+msgstr "Oletus (suositeltu)"
+
+#: src/components/settings-panel.tsx
+msgid "Default chat mode"
+msgstr "Oletuskeskustelutila"
+
+#: src/components/skills-panel.tsx
+msgid "Delete"
+msgstr "Poista"
+
+#: src/components/skills-panel.tsx
+msgid "Delete file?"
+msgstr "Poistetaanko tiedosto?"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill"
+msgstr "Poista taito"
+
+#: src/components/skills-panel.tsx
+msgid "Delete skill?"
+msgstr "Poistetaanko taito?"
+
+#: src/components/skills-panel.tsx
+msgid "Deleted \"%1\""
+msgstr "”%1” poistettu"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Denial recorded"
+msgstr "Epääminen tallennettu"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Describe how to update the active notebook..."
+msgstr "Kuvaile, miten aktiivista muistikirjaa päivitetään…"
+
+#: src/components/skills-panel.tsx
+msgid "Description"
+msgstr "Kuvaus"
+
+#: src/components/skills-panel.tsx
+msgid "Description is required."
+msgstr "Kuvaus on pakollinen."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Details from %1"
+msgstr "Tiedot lähteestä %1"
+
+#: src/components/perf-panel.tsx
+msgid "Diagnostics"
+msgstr "Diagnostiikka"
+
+#: src/chat-sidebar.tsx
+msgid "Directories cannot be attached as chat context."
+msgstr "Hakemistoja ei voi liittää keskustelun kontekstiksi."
+
+#: src/components/plugins-panel.tsx
+msgid "Disable"
+msgstr "Poista käytöstä"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disable for workspace"
+msgstr "Poista käytöstä tässä työtilassa"
+
+#: src/components/perf-panel.tsx
+msgid "Disabled by your administrator (%1)"
+msgstr "Järjestelmänvalvoja on poistanut käytöstä (%1)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabled for workspace"
+msgstr "Poistettu käytöstä tässä työtilassa"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Disabling…"
+msgstr "Poistetaan käytöstä…"
+
+#: src/components/skills-panel.tsx
+msgid "Discard"
+msgstr "Hylkää muutokset"
+
+#: src/components/skills-panel.tsx
+msgid "Discard unsaved changes?"
+msgstr "Hylätäänkö tallentamattomat muutokset?"
+
+#: src/components/skills-panel.tsx
+msgid "Dismiss"
+msgstr "Hylkää"
+
+#: notebook_intelligence/claude.py
+msgid "Do you want to confirm the plan above?"
+msgstr "Haluatko vahvistaa yllä olevan suunnitelman?"
+
+#: src/chat-sidebar.tsx
+msgid "Don't use as context"
+msgstr "Älä käytä kontekstina"
+
+#: src/chat-sidebar.tsx
+msgid "Done"
+msgstr "Valmis"
+
+#: src/chat-sidebar.tsx
+msgid "Drop files to attach as context"
+msgstr "Pudota tiedostot liittääksesi ne kontekstiksi"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: @-mention"
+msgstr "Pudotustila: @-maininta"
+
+#: src/terminal-drag.ts
+msgid "Drop mode: raw path"
+msgstr "Pudotustila: raaka polku"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate"
+msgstr "Monista"
+
+#: src/components/skills-panel.tsx
+msgid "Duplicate skill"
+msgstr "Monista taito"
+
+#: src/components/perf-panel.tsx
+msgid "Duration the SDK attributes to the model API. Compare against Active: close together means the time is in the gateway or the model, far apart means it is local."
+msgstr "Kesto, jonka SDK kohdistaa mallin API:lle. Vertaa sarakkeeseen Aktiivinen: jos ne ovat lähellä toisiaan, aika kuluu yhdyskäytävässä tai mallissa; jos kaukana, aika kuluu paikallisesti."
+
+#: src/components/skills-panel.tsx
+msgid "Edit"
+msgstr "Muokkaa"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit Python files using the JupyterLab file editor"
+msgstr "Muokkaa Python-tiedostoja JupyterLabin tiedostoeditorilla"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Edit notebook using the JupyterLab notebook editor"
+msgstr "Muokkaa muistikirjaa JupyterLabin muistikirjaeditorilla"
+
+#: src/components/skills-panel.tsx
+msgid "Edit skill"
+msgstr "Muokkaa taitoa"
+
+#: src/chat-sidebar.tsx
+msgid "Empty files do not provide useful context."
+msgstr "Tyhjät tiedostot eivät anna hyödyllistä kontekstia."
+
+#: src/components/plugins-panel.tsx
+msgid "Enable"
+msgstr "Ota käyttöön"
+
+#: src/components/settings-panel.tsx
+msgid "Enable ACP mode"
+msgstr "Ota ACP-tila käyttöön"
+
+#: src/components/settings-panel.tsx
+msgid "Enable Claude mode"
+msgstr "Ota Claude-tila käyttöön"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enable for workspace"
+msgstr "Ota käyttöön tässä työtilassa"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Enabling…"
+msgstr "Otetaan käyttöön…"
+
+#: notebook_intelligence/claude.py
+msgid "Enter Plan Mode"
+msgstr "Siirry suunnittelutilaan"
+
+#: src/components/plugins-panel.tsx
+msgid "Enter a plugin name or the plugin@marketplace shorthand."
+msgstr "Anna lisäosan nimi tai lyhennemuoto plugin@marketplace."
+
+#: notebook_intelligence/claude.py
+msgid "Entered plan mode"
+msgstr "Siirrytty suunnittelutilaan"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Environment (KEY=value, one per line)"
+msgstr "Ympäristö (KEY=value, yksi riviä kohden)"
+
+#: notebook_intelligence/claude.py
+msgid "Error communicating with Claude agent: %1"
+msgstr "Virhe viestinnässä Claude-agentin kanssa: %1"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Execute shell commands using embedded terminal in Agent UI or JupyterLab terminal"
+msgstr "Suorita komentotulkin komentoja agentin käyttöliittymän upotetussa päätteessä tai JupyterLabin päätteessä"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgid "Execution kernel"
+msgstr "Suoritusydin"
+
+#: src/components/settings-panel.tsx
+msgid "Execution mode"
+msgstr "Suoritustila"
+
+#: notebook_intelligence/claude.py
+msgid "Exit plan mode"
+msgstr "Poistu suunnittelutilasta"
+
+#: src/components/perf-panel.tsx
+msgid "Expand"
+msgstr "Laajenna"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Expected at least one server entry."
+msgstr "Odotettiin vähintään yhtä palvelinmerkintää."
+
+#: src/components/settings-panel.tsx
+msgid "Experimental. Routes chat through an external coding agent over the %1. Requires a preinstalled %2 adapter (%3). See the %4. ACP mode and Claude mode are mutually exclusive: enabling one turns the other off."
+msgstr "Kokeellinen. Ohjaa keskustelun ulkoiselle koodausagentille protokollan %1 kautta. Vaatii esiasennetun %2-sovittimen (%3). Katso %4. ACP-tila ja Claude-tila ovat toisensa poissulkevia: toisen ottaminen käyttöön poistaa toisen käytöstä."
+
+#: src/components/settings-panel.tsx
+msgid "Explain cell errors"
+msgstr "Selitä solujen virheet"
+
+#: src/index.ts
+msgid "Explain code"
+msgstr "Selitä koodi"
+
+#: src/index.ts
+msgid "Explain output"
+msgstr "Selitä tuloste"
+
+#: src/cell-output-toolbar.ts
+msgid "Explain this cell's output"
+msgstr "Selitä tämän solun tuloste"
+
+#: src/chatbook-toolbar.ts
+msgid "Export"
+msgstr "Vie"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as %1 notebook"
+msgstr "Vie %1-muistikirjana"
+
+#: src/chatbook-toolbar.ts
+msgid "Export as a notebook for the Chatbook backend kernel"
+msgstr "Vie muistikirjana Chatbookin taustaytimelle"
+
+#: src/index.ts
+msgid "Export as code notebook"
+msgstr "Vie koodimuistikirjana"
+
+#: src/chatbook-toolbar.ts
+msgid "Export failed: %1"
+msgstr "Vienti epäonnistui: %1"
+
+#: src/chatbook-toolbar.ts
+msgid "Exported %1"
+msgstr "Viety: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Extension tools"
+msgstr "Laajennusten työkalut"
+
+#: src/components/settings-panel.tsx
+msgid "External changes"
+msgstr "Ulkoiset muutokset"
+
+#: src/index.ts
+msgid "Failed to access the notebook: %1"
+msgstr "Muistikirjan käyttö epäonnistui: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach '%1'."
+msgstr "Kohteen ”%1” liittäminen epäonnistui."
+
+#: src/chat-sidebar.tsx
+msgid "Failed to attach workspace file '%1'."
+msgstr "Työtilan tiedoston ”%1” liittäminen epäonnistui."
+
+#: src/components/claude-session-picker.tsx
+msgid "Failed to copy resume command"
+msgstr "Jatkamiskomennon kopiointi epäonnistui"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to delete skill: %1"
+msgstr "Taidon poistaminen epäonnistui: %1"
+
+#: src/index.ts
+msgid "Failed to find active file"
+msgstr "Aktiivista tiedostoa ei löytynyt"
+
+#: src/index.ts
+msgid "Failed to find active notebook"
+msgstr "Aktiivista muistikirjaa ei löytynyt"
+
+#: src/index.ts
+msgid "Failed to find notebook: %1"
+msgstr "Muistikirjaa ei löytynyt: %1"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get completions from GitHub Copilot: [%1]: %2"
+msgstr "Täydennysten hakeminen GitHub Copilotista epäonnistui: [%1]: %2"
+
+#: notebook_intelligence/extension.py
+msgid "Failed to get device verification info from GitHub Copilot"
+msgstr "Laitteen vahvistustietojen hakeminen GitHub Copilotista epäonnistui"
+
+#: notebook_intelligence/github_copilot.py
+msgid "Failed to get responses from GitHub Copilot: [%1]: %2"
+msgstr "Vastausten hakeminen GitHub Copilotista epäonnistui: [%1]: %2"
+
+#: src/index.ts
+msgid "Failed to insert at cursor. Open a notebook or file to insert the code."
+msgstr "Lisääminen kohdistimen kohtaan epäonnistui. Avaa muistikirja tai tiedosto lisätäksesi koodin."
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to load plugins: %1"
+msgstr "Lisäosien lataaminen epäonnistui: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Failed to load report: %1"
+msgstr "Raportin lataaminen epäonnistui: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Failed to load workspace files."
+msgstr "Työtilan tiedostojen lataaminen epäonnistui."
+
+#: src/components/skills-panel.tsx
+msgid "Failed to read skill: %1"
+msgstr "Taidon lukeminen epäonnistui: %1"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Failed to remove: %1"
+msgstr "Poistaminen epäonnistui: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Failed to restore skill: %1"
+msgstr "Taidon palauttaminen epäonnistui: %1"
+
+#: src/index.ts
+msgid "Failed to save MCP config: %1"
+msgstr "MCP-määritysten tallentaminen epäonnistui: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to uninstall: %1"
+msgstr "Asennuksen poistaminen epäonnistui: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update marketplace: %1"
+msgstr "Markkinapaikan päivittäminen epäonnistui: %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Failed to update workspace state: %1"
+msgstr "Työtilan tilan päivittäminen epäonnistui: %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Failed to update: %1"
+msgstr "Päivittäminen epäonnistui: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Fetching…"
+msgstr "Haetaan…"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "File '%1' created successfully"
+msgstr "Tiedosto ”%1” luotiin onnistuneesti"
+
+#: notebook_intelligence/extension.py
+msgid "File exceeds %1 MB upload limit"
+msgstr "Tiedosto ylittää %1 Mt:n latausrajan"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system read operations within Jupyter root directory"
+msgstr "Tiedostojärjestelmän lukutoiminnot Jupyterin juurihakemistossa"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "File system write operations within Jupyter root directory"
+msgstr "Tiedostojärjestelmän kirjoitustoiminnot Jupyterin juurihakemistossa"
+
+#: notebook_intelligence/acp_agent.py src/components/skills-panel.tsx
+msgid "Files"
+msgstr "Tiedostot"
+
+#: src/components/launcher-picker.tsx
+msgid "Filter sessions..."
+msgstr "Suodata istuntoja…"
+
+#: src/components/perf-panel.tsx
+msgid "First content chunk to last. Excludes connect."
+msgstr "Ensimmäisestä sisältölohkosta viimeiseen. Ei sisällä yhdistämistä."
+
+#: src/index.ts
+msgid "Fix code"
+msgstr "Korjaa koodi"
+
+#: src/index.ts
+msgid "Focus Notebook Intelligence chat input"
+msgstr "Kohdista Notebook Intelligencen keskustelukenttään"
+
+#: src/components/settings-panel.tsx
+msgid "Full access (run without asking)"
+msgstr "Täysi käyttöoikeus (suorita kysymättä)"
+
+#: src/components/perf-panel.tsx
+msgid "Full: file basenames and model, tool, and server names are recorded as written. Easier to read locally; check it before pasting into a ticket."
+msgstr "Täysi: tiedostojen perusnimet sekä mallien, työkalujen ja palvelinten nimet tallennetaan sellaisinaan. Helpompi lukea paikallisesti; tarkista ennen kuin liität sen tikettiin."
+
+#: src/components/perf-panel.tsx
+msgid "Gaps between stream chunks longer than the stall threshold. Each is tagged with whether it followed tool use or text."
+msgstr "Suoratoistolohkojen väliset tauot, jotka ovat pysähdysrajaa pidempiä. Jokaiseen on merkitty, seurasiko se työkalun käyttöä vai tekstiä."
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate"
+msgstr "Luo"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Generate (Enter)"
+msgstr "Luo (Enter)"
+
+#: src/components/settings-panel.tsx
+msgid "Generate and execute immediately, same as a normal notebook cell. Inspect generated code afterward if you need to."
+msgstr "Luo ja suorita välittömästi, kuten tavallinen muistikirjan solu. Tarkastele luotua koodia jälkikäteen tarvittaessa."
+
+#: src/index.ts
+msgid "Generate code"
+msgstr "Luo koodia"
+
+#: src/index.ts
+msgid "Generated code"
+msgstr "Luotu koodi"
+
+#: src/chat-sidebar.tsx
+msgid "Generating"
+msgstr "Luodaan"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generating notebook…"
+msgstr "Luodaan muistikirjaa…"
+
+#: src/chat-sidebar.tsx
+msgid "Generating response."
+msgstr "Luodaan vastausta."
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Generation failed: %1"
+msgstr "Luonti epäonnistui: %1"
+
+#: src/index.ts
+msgid "GitHub Copilot Status"
+msgstr "GitHub Copilotin tila"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot chat terms"
+msgstr "GitHub Copilot -keskustelun ehdot"
+
+#: src/components/settings-panel.tsx
+msgid "GitHub Copilot login"
+msgstr "GitHub Copilot -kirjautuminen"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Logged in"
+msgstr "GitHub Copilot: Kirjautunut"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Copilot: Not logged in"
+msgstr "GitHub Copilot: Ei kirjautunut"
+
+#: notebook_intelligence/extension.py
+msgid "GitHub Skill import is disabled by configuration"
+msgstr "Taitojen tuonti GitHubista on poistettu käytöstä määrityksissä"
+
+#: src/chat-sidebar.tsx
+msgid "GitHub Terms for Additional Products and Features"
+msgstr "GitHubin lisätuotteiden ja -ominaisuuksien ehdot"
+
+#: src/components/skills-panel.tsx
+msgid "GitHub repo URL"
+msgstr "GitHub-repositorion URL"
+
+#: src/components/plugins-panel.tsx
+msgid "GitHub-sourced marketplaces are disabled by your administrator. Use a non-GitHub URL or a local filesystem path."
+msgstr "Järjestelmänvalvoja on poistanut GitHub-lähteiset markkinapaikat käytöstä. Käytä muuta kuin GitHub-URL-osoitetta tai paikallista tiedostojärjestelmän polkua."
+
+#: src/chat-sidebar.tsx
+msgid "Good response"
+msgstr "Hyvä vastaus"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Headers (Name: value, one per line)"
+msgstr "Otsakkeet (Name: value, yksi riviä kohden)"
+
+#: src/components/tool-call-card.tsx
+msgid "Hide diff"
+msgstr "Piilota erot"
+
+#: src/components/perf-panel.tsx
+msgid "Hide raw output"
+msgstr "Piilota raakatuloste"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Hide this server from Claude in the current Jupyter workspace (other workspaces unaffected)"
+msgstr "Piilota tämä palvelin Claudelta nykyisessä Jupyter-työtilassa (ei vaikuta muihin työtiloihin)"
+
+#: src/components/perf-panel.tsx
+msgid "Hide timeline for the turn at %1"
+msgstr "Piilota kello %1 alkaneen kierroksen aikajana"
+
+#: src/components/perf-panel.tsx
+msgid "Host load average"
+msgstr "Isäntäkoneen kuormituskeskiarvo"
+
+#: notebook_intelligence/readiness.py
+msgid "If turns fail with a 401, sign in again from NBI Settings under GitHub Copilot."
+msgstr "Jos kierrokset epäonnistuvat virheellä 401, kirjaudu uudelleen NBI-asetusten kohdassa GitHub Copilot."
+
+#: src/components/skills-panel.tsx
+msgid "Import"
+msgstr "Tuo"
+
+#: src/components/skills-panel.tsx
+msgid "Import from GitHub"
+msgstr "Tuo GitHubista"
+
+#: src/components/skills-panel.tsx
+msgid "Import skill from GitHub"
+msgstr "Tuo taito GitHubista"
+
+#: src/components/perf-panel.tsx
+msgid "Include network check"
+msgstr "Sisällytä verkkotarkistus"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from chat model"
+msgstr "Peri keskustelumallista"
+
+#: src/components/settings-panel.tsx
+msgid "Inherit from general settings"
+msgstr "Peri yleisistä asetuksista"
+
+#: src/index.ts
+msgid "Inline chat failed: %1"
+msgstr "Rivinsisäinen keskustelu epäonnistui: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Inline chat model"
+msgstr "Rivinsisäisen keskustelun malli"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Input"
+msgstr "Syöte"
+
+#: src/chat-sidebar.tsx
+msgid "Input Parameters"
+msgstr "Syöteparametrit"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Input mode"
+msgstr "Syöttötila"
+
+#: src/components/perf-panel.tsx
+msgid "Input tokens including cache reads and cache writes, summed the same way the chat usage footer sums them."
+msgstr "Syötetokenit mukaan lukien välimuistin luvut ja kirjoitukset, laskettuna yhteen samalla tavalla kuin keskustelun käyttöalatunniste ne laskee."
+
+#: src/markdown-renderer.tsx
+msgid "Insert at cursor"
+msgstr "Lisää kohdistimen kohtaan"
+
+#: src/markdown-renderer.tsx
+msgid "Insert code at cursor"
+msgstr "Lisää koodi kohdistimen kohtaan"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Install"
+msgstr "Asenna"
+
+#: src/components/plugins-panel.tsx
+msgid "Install from"
+msgstr "Asenna lähteestä"
+
+#: src/components/skills-panel.tsx
+msgid "Install into"
+msgstr "Asenna kohteeseen"
+
+#: src/components/plugins-panel.tsx
+msgid "Install plugin"
+msgstr "Asenna lisäosa"
+
+#: notebook_intelligence/readiness.py
+msgid "Install the Claude Code CLI and make sure it is on the PATH of the process running JupyterLab, or set NBI_CLAUDE_CLI_PATH to its absolute path and restart."
+msgstr "Asenna Claude Code CLI ja varmista, että se on JupyterLabia suorittavan prosessin PATH-polussa, tai aseta NBI_CLAUDE_CLI_PATH sen absoluuttiseen polkuun ja käynnistä uudelleen."
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Installing…"
+msgstr "Asennetaan…"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Invalid JSON: %1"
+msgstr "Virheellinen JSON: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Invalid name. %1"
+msgstr "Virheellinen nimi. %1"
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON is empty."
+msgstr "JSON on tyhjä."
+
+#: src/components/claude-mcp-paste.ts
+msgid "JSON must describe a server entry."
+msgstr "JSONin on kuvattava palvelinmerkintä."
+
+#: src/components/settings-panel.tsx
+msgid "Jupyter UI tools"
+msgstr "Jupyter-käyttöliittymän työkalut"
+
+#: src/components/perf-panel.tsx
+msgid "Jupyter root directory"
+msgstr "Jupyterin juurihakemisto"
+
+#: src/components/skills-panel.tsx
+msgid "Keep editing"
+msgstr "Jatka muokkaamista"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Lasting rule"
+msgstr "Pysyvä sääntö"
+
+#: src/components/skills-panel.tsx
+msgid "Link to the repo root, a branch, or a subdirectory containing %1. Private repos work if %2 is set or %3 is configured on the Jupyter server."
+msgstr "Linkitä repositorion juureen, haaraan tai alihakemistoon, joka sisältää tiedoston %1. Yksityiset repositoriot toimivat, jos %2 on asetettu tai %3 on määritetty Jupyter-palvelimelle."
+
+#: notebook_intelligence/readiness.py
+msgid "Listing models failed (%1)."
+msgstr "Mallien luettelointi epäonnistui (%1)."
+
+#: src/components/readiness-card.tsx
+msgid "Live endpoint check"
+msgstr "Päätepisteen reaaliaikainen tarkistus"
+
+#: src/components/plugins-panel.tsx
+msgid "Loading marketplace plugins..."
+msgstr "Ladataan markkinapaikan lisäosia…"
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Loading sessions…"
+msgstr "Ladataan istuntoja…"
+
+#: src/components/skills-panel.tsx
+msgid "Loading skill…"
+msgstr "Ladataan taitoa…"
+
+#: src/chat-sidebar.tsx
+msgid "Loading workspace files..."
+msgstr "Ladataan työtilan tiedostoja…"
+
+#: src/components/settings-panel.tsx
+msgid "Loading..."
+msgstr "Ladataan…"
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Loading…"
+msgstr "Ladataan…"
+
+#: src/components/setting-lock.ts
+msgid "Locked by your administrator"
+msgstr "Järjestelmänvalvojasi lukitsema"
+
+#: src/components/perf-panel.tsx
+msgid "Log to file"
+msgstr "Kirjaa lokitiedostoon"
+
+#: src/chat-sidebar.tsx
+msgid "Logged in"
+msgstr "Kirjautunut"
+
+#: src/chat-sidebar.tsx
+msgid "Logging in..."
+msgstr "Kirjaudutaan…"
+
+#: src/chat-sidebar.tsx
+msgid "Login status: %1"
+msgstr "Kirjautumisen tila: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Login to GitHub Copilot"
+msgstr "Kirjaudu GitHub Copilotiin"
+
+#: src/chat-sidebar.tsx
+msgid "Login using your GitHub account"
+msgstr "Kirjaudu GitHub-tililläsi"
+
+#: src/chat-sidebar.tsx
+msgid "Logout"
+msgstr "Kirjaudu ulos"
+
+#: src/chat-sidebar.tsx
+msgid "MCP Server Tools"
+msgstr "MCP-palvelinten työkalut"
+
+#: src/components/settings-panel.tsx
+msgid "MCP Servers"
+msgstr "MCP-palvelimet"
+
+#: notebook_intelligence/extension.py
+msgid "MCP server '%1' not found in %2 scope"
+msgstr "MCP-palvelinta ”%1” ei löytynyt laajuudesta %2"
+
+#: src/components/skills-panel.tsx
+msgid "Managed by org manifest (%1)"
+msgstr "Organisaation manifestin hallinnoima (%1)"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace"
+msgstr "Markkinapaikka"
+
+#: src/components/plugins-panel.tsx
+msgid "Marketplace picker"
+msgstr "Markkinapaikan valitsin"
+
+#: src/components/perf-panel.tsx
+msgid "Measures this machine rather than a turn: filesystem latency and throughput for the config and %1 directories, interpreter and CLI cold-start cost, and host contention. It writes and deletes small temporary files in the directories it measures."
+msgstr "Mittaa tätä konetta kierroksen sijaan: tiedostojärjestelmän viive ja läpäisykyky määrityshakemistolle ja %1-hakemistolle, tulkin ja CLI:n kylmäkäynnistyksen kustannus sekä isäntäkoneen resurssikilpailu. Se kirjoittaa ja poistaa pieniä väliaikaisia tiedostoja mittaamiinsa hakemistoihin."
+
+#: notebook_intelligence/llm_providers/property_labels.py src/components/settings-panel.tsx
+msgid "Model"
+msgstr "Malli"
+
+#: notebook_intelligence/llm_providers/property_labels.py
+msgid "Model (must support streaming)"
+msgstr "Malli (tuettava suoratoistoa)"
+
+#: src/components/perf-panel.tsx
+msgid "Model name, hashed when attribute detail is set to redacted."
+msgstr "Mallin nimi, tiivistetty, kun attribuuttien tarkkuudeksi on asetettu peitetty."
+
+#: src/components/readiness-card.tsx
+msgid "Model provider"
+msgstr "Mallin palveluntarjoaja"
+
+#: src/components/settings-panel.tsx
+msgid "Models"
+msgstr "Mallit"
+
+#: src/components/claude-mcp-paste.ts
+msgid "Multiple servers found; paste one entry at a time."
+msgstr "Löytyi useita palvelimia; liitä yksi merkintä kerrallaan."
+
+#: src/components/skills-panel.tsx
+msgid "Must be lowercase letters, digits, or hyphens (starting with a letter or digit), max 64 chars."
+msgstr "Saa sisältää vain pieniä kirjaimia, numeroita tai yhdysmerkkejä (alussa kirjain tai numero), enintään 64 merkkiä."
+
+#: src/chatbook-toolbar.ts src/chatbook.ts src/index.ts
+msgid "NBI Settings"
+msgstr "NBI-asetukset"
+
+#: src/components/perf-panel.tsx
+msgid "NBI config directory"
+msgstr "NBI:n määrityshakemisto"
+
+#: src/components/claude-mcp-panel.tsx src/components/skills-panel.tsx
+msgid "Name"
+msgstr "Nimi"
+
+#: src/components/skills-panel.tsx
+msgid "Name (optional override)"
+msgstr "Nimi (valinnainen ohitus)"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to %1 code"
+msgstr "Luonnollisen kielen solu: vaihda %1-koodiin"
+
+#: src/chatbook.ts
+msgid "Natural-language cell: switch to code"
+msgstr "Luonnollisen kielen solu: vaihda koodiin"
+
+#: src/components/settings-panel.tsx
+msgid "Natural-language execution"
+msgstr "Luonnollisen kielen suoritus"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Network access"
+msgstr "Verkkoyhteys"
+
+#: src/components/skills-panel.tsx
+msgid "New Skill"
+msgstr "Uusi taito"
+
+#: src/chat-sidebar.tsx
+msgid "New chat session started."
+msgstr "Uusi keskusteluistunto aloitettu."
+
+#: src/markdown-renderer.tsx
+msgid "New file"
+msgstr "Uusi tiedosto"
+
+#: src/components/skills-panel.tsx
+msgid "New name"
+msgstr "Uusi nimi"
+
+#: src/markdown-renderer.tsx
+msgid "New notebook"
+msgstr "Uusi muistikirja"
+
+#: src/components/skills-panel.tsx
+msgid "New skill"
+msgstr "Uusi taito"
+
+#: src/components/skills-panel.tsx
+msgid "Next"
+msgstr "Seuraava"
+
+#: notebook_intelligence/readiness.py
+msgid "No API key is configured (%1 is unset)."
+msgstr "API-avainta ei ole määritetty (%1 ei ole asetettu)."
+
+#: notebook_intelligence/readiness.py
+msgid "No Anthropic API key or auth token is visible to NBI."
+msgstr "NBI ei näe Anthropicin API-avainta tai todennustunnusta."
+
+#: src/components/settings-panel.tsx
+msgid "No MCP servers found. Add MCP servers in the configuration file."
+msgstr "MCP-palvelimia ei löytynyt. Lisää MCP-palvelimia määritystiedostoon."
+
+#: src/components/settings-panel.tsx
+msgid "No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready."
+msgstr "Ollama-malleja ei löytynyt! Varmista, että %1 on käynnissä ja mallit on ladattu tietokoneellesi. %2, kun olet valmis."
+
+#: notebook_intelligence/extension.py
+msgid "No chat model configured in Notebook Intelligence"
+msgstr "Notebook Intelligenceen ei ole määritetty keskustelumallia"
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model is resolved, so there is nothing to call."
+msgstr "Keskustelumallia ei ole selvitetty, joten kutsuttavaa ei ole."
+
+#: notebook_intelligence/readiness.py
+msgid "No chat model provider is selected."
+msgstr "Keskustelumallin palveluntarjoajaa ei ole valittu."
+
+#: notebook_intelligence/ai_service_manager.py
+msgid "No chat participant is available."
+msgstr "Keskusteluosallistujaa ei ole käytettävissä."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached, and the limit of %2 files is reached."
+msgid_plural "No files added: %1 files are already attached, and the limit of %2 files is reached."
+msgstr[0] "Tiedostoja ei lisätty: %1 tiedosto on jo liitetty, ja %2 tiedoston raja on saavutettu."
+msgstr[1] "Tiedostoja ei lisätty: %1 tiedostoa on jo liitetty, ja %2 tiedoston raja on saavutettu."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: %1 file is already attached."
+msgid_plural "No files added: %1 files are already attached."
+msgstr[0] "Tiedostoja ei lisätty: %1 tiedosto on jo liitetty."
+msgstr[1] "Tiedostoja ei lisätty: %1 tiedostoa on jo liitetty."
+
+#: src/chat-sidebar.tsx
+msgid "No files added: the limit of %1 file is reached."
+msgid_plural "No files added: the limit of %1 files is reached."
+msgstr[0] "Tiedostoja ei lisätty: %1 tiedoston raja on saavutettu."
+msgstr[1] "Tiedostoja ei lisätty: %1 tiedoston raja on saavutettu."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches kernel \"%1\"."
+msgstr "Mikään asennettu Jupyter-ydin ei vastaa ydintä ”%1”."
+
+#: src/notebook-kernels.ts
+msgid "No installed Jupyter kernel matches language \"%1\"."
+msgstr "Mikään asennettu Jupyter-ydin ei vastaa kieltä ”%1”."
+
+#: notebook_intelligence/extension.py
+msgid "No managed-skills manifest configured (set %1, comma-separated for multiple manifests)."
+msgstr "Hallinnoitujen taitojen manifestia ei ole määritetty (aseta %1, useita manifesteja pilkuilla erotettuina)."
+
+#: src/components/plugins-panel.tsx
+msgid "No marketplaces configured. Add one to discover plugins."
+msgstr "Markkinapaikkoja ei ole määritetty. Lisää markkinapaikka löytääksesi lisäosia."
+
+#: src/chat-sidebar.tsx
+msgid "No matching files found."
+msgstr "Vastaavia tiedostoja ei löytynyt."
+
+#: notebook_intelligence/readiness.py
+msgid "No model name is set for this provider, so requests carry none."
+msgstr "Tälle palveluntarjoajalle ei ole asetettu mallin nimeä, joten pyynnöissä ei ole sitä."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins in this scope."
+msgstr "Tässä laajuudessa ei ole lisäosia."
+
+#: src/components/plugins-panel.tsx
+msgid "No plugins were found in this marketplace."
+msgstr "Tästä markkinapaikasta ei löytynyt lisäosia."
+
+#: src/components/claude-session-picker.tsx
+msgid "No previous Claude sessions found for this working directory."
+msgstr "Tälle työhakemistolle ei löytynyt aiempia Claude-istuntoja."
+
+#: src/chat-sidebar.tsx
+msgid "No previous sessions found for this working directory."
+msgstr "Tälle työhakemistolle ei löytynyt aiempia istuntoja."
+
+#: src/components/launcher-picker.tsx
+msgid "No previous sessions found."
+msgstr "Aiempia istuntoja ei löytynyt."
+
+#: src/components/skills-panel.tsx
+msgid "No project skills. They live in %1."
+msgstr "Ei projektitaitoja. Ne sijaitsevat hakemistossa %1."
+
+#: notebook_intelligence/readiness.py
+msgid "No response within %1s."
+msgstr "Ei vastausta %1 sekunnin kuluessa."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "No servers in this scope."
+msgstr "Tässä laajuudessa ei ole palvelimia."
+
+#: src/components/launcher-picker.tsx
+msgid "No sessions match your filter."
+msgstr "Mikään istunto ei vastaa suodatinta."
+
+#: src/components/perf-panel.tsx
+msgid "No spans recorded for this turn."
+msgstr "Tälle kierrokselle ei tallennettu jaksoja."
+
+#: src/components/skills-panel.tsx
+msgid "No user skills. They live in %1."
+msgstr "Ei käyttäjätaitoja. Ne sijaitsevat hakemistossa %1."
+
+#: src/chat-sidebar.tsx
+msgid "No workspace files available."
+msgstr "Työtilan tiedostoja ei ole saatavilla."
+
+#: notebook_intelligence/readiness.py
+msgid "Not applicable: the agent owns the model call in %1 mode."
+msgstr "Ei sovellu: agentti hoitaa mallikutsun tilassa %1."
+
+#: notebook_intelligence/readiness.py
+msgid "Not determined: the request failed (%1) for a reason unrelated to tools."
+msgstr "Ei määritetty: pyyntö epäonnistui (%1) syystä, joka ei liity työkaluihin."
+
+#: src/chat-sidebar.tsx
+msgid "Not logged in"
+msgstr "Ei kirjautunut"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %1: %2"
+msgstr "Ei valmis. %1: %2"
+
+#: notebook_intelligence/readiness.py
+msgid "Not ready. %2: %3 (%1 more issue.)"
+msgid_plural "Not ready. %2: %3 (%1 more issues.)"
+msgstr[0] "Ei valmis. %2: %3 (%1 muu ongelma.)"
+msgstr[1] "Ei valmis. %2: %3 (%1 muuta ongelmaa.)"
+
+#: notebook_intelligence/readiness.py
+msgid "Not signed in. The model list shown in Settings is a built-in fallback, not the models this account can use."
+msgstr "Ei kirjautunut. Asetuksissa näkyvä malliluettelo on sisäänrakennettu varaluettelo, ei tämän tilin käytettävissä olevat mallit."
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Notebook '%1' created and opened successfully"
+msgstr "Muistikirja ”%1” luotiin ja avattiin onnistuneesti"
+
+#: src/index.ts
+msgid "Notebook Intelligence Settings"
+msgstr "Notebook Intelligencen asetukset"
+
+#: src/cell-output-toolbar.ts
+msgid "Notebook Intelligence cell actions"
+msgstr "Notebook Intelligencen solutoiminnot"
+
+#: src/api.ts
+msgid "Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment."
+msgstr "Notebook Intelligence ei ole yhteydessä palvelimeen, joten pyyntöä ei lähetetty. Yritä hetken kuluttua uudelleen."
+
+#: notebook_intelligence/extension.py
+msgid "Notebook Intelligence produced no description"
+msgstr "Notebook Intelligence ei tuottanut kuvausta"
+
+#: src/chat-sidebar.tsx
+msgid "Notebook file"
+msgstr "Muistikirjatiedosto"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Notebook generation complete"
+msgstr "Muistikirjan luonti valmis"
+
+#: src/chat-sidebar.tsx
+msgid "Notice"
+msgstr "Huomautus"
+
+#: src/components/perf-panel.tsx
+msgid "Offset from the start of the turn to the first content-bearing chunk. Recorded as an event, so local progress spinners do not count toward it."
+msgstr "Aika kierroksen alusta ensimmäiseen sisältöä kantavaan lohkoon. Tallennetaan tapahtumana, joten paikalliset edistymisilmaisimet eivät vaikuta siihen."
+
+#: notebook_intelligence/api.py
+msgid "Oops! Failed to find requested tool. Please try again with a different prompt."
+msgstr "Hups! Pyydettyä työkalua ei löytynyt. Yritä uudelleen eri kehotteella."
+
+#: notebook_intelligence/api.py
+msgid "Oops! I am sorry, there was a problem generating response with tools. Please try again. You can check server logs for more details."
+msgstr "Hups! Valitettavasti vastauksen luomisessa työkaluilla oli ongelma. Yritä uudelleen. Voit katsoa lisätietoja palvelinlokeista."
+
+#: notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py
+msgid "Oops! There was a problem handling chat request. Please try again with a different prompt."
+msgstr "Hups! Keskustelupyynnön käsittelyssä oli ongelma. Yritä uudelleen eri kehotteella."
+
+#: notebook_intelligence/extension.py
+msgid "Oops! There was a problem handling this request. Please try again. Check the server logs for details."
+msgstr "Hups! Tämän pyynnön käsittelyssä oli ongelma. Yritä uudelleen. Katso lisätietoja palvelinlokeista."
+
+#: src/chatbook-toolbar.ts
+msgid "Open Chatbook settings"
+msgstr "Avaa Chatbook-asetukset"
+
+#: src/index.ts
+msgid "Open MCP Config Editor"
+msgstr "Avaa MCP-määritysten editori"
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and pick a provider and model under General, or enable Claude mode."
+msgstr "Avaa NBI-asetukset ja valitse palveluntarjoaja ja malli välilehdellä Yleiset, tai ota Claude-tila käyttöön."
+
+#: notebook_intelligence/readiness.py
+msgid "Open NBI Settings and set a model for this provider under General. The endpoint rejects a request with no model, so every turn fails until it is set."
+msgstr "Avaa NBI-asetukset ja aseta tälle palveluntarjoajalle malli välilehdellä Yleiset. Päätepiste hylkää pyynnön, jossa ei ole mallia, joten jokainen kierros epäonnistuu, kunnes malli on asetettu."
+
+#: src/chat-sidebar.tsx
+msgid "Open Notebook Intelligence settings"
+msgstr "Avaa Notebook Intelligencen asetukset"
+
+#: src/index.ts
+msgid "Open a notebook to insert the code as new cell"
+msgstr "Avaa muistikirja lisätäksesi koodin uutena soluna"
+
+#: src/chat-sidebar.tsx
+msgid "Open notebook %1"
+msgstr "Avaa muistikirja %1"
+
+#: src/chat-sidebar.tsx
+msgid "Open slash commands"
+msgstr "Avaa vinoviivakomennot"
+
+#: src/chatbook.ts
+msgid "Open the Chatbook tab of Notebook Intelligence Settings"
+msgstr "Avaa Notebook Intelligencen asetusten Chatbook-välilehti"
+
+#: src/index.ts
+msgid "Open the NBI sidebar and move focus to the prompt textarea"
+msgstr "Avaa NBI-sivupalkki ja siirrä kohdistus kehotteen tekstikenttään"
+
+#: notebook_intelligence/base_chat_participant.py
+msgid "Opened the settings dialog"
+msgstr "Asetusikkuna avattiin"
+
+#: src/components/settings-panel.tsx
+msgid "Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running."
+msgstr "Valinnainen lisätarkistus. Staattisen tarkistuksen osuma voittaa aina; malli voi vain nostaa riskiä. Jos luokittelu epäonnistuu, pyydetään vahvistus automaattisen suorituksen sijaan."
+
+#: src/components/perf-panel.tsx
+msgid "Output tokens."
+msgstr "Tulostetokenit."
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing project skill \"%1\""
+msgstr "Korvaa olemassa oleva projektitaito ”%1”"
+
+#: src/components/skills-panel.tsx
+msgid "Overwrite existing user skill \"%1\""
+msgstr "Korvaa olemassa oleva käyttäjätaito ”%1”"
+
+#: notebook_intelligence/claude.py
+msgid "Parameters"
+msgstr "Parametrit"
+
+#: src/components/skills-panel.tsx
+msgid "Path: %1"
+msgstr "Polku: %1"
+
+#: src/components/perf-panel.tsx
+msgid "Performance diagnostics are disabled. Enable them above to start collecting turn data."
+msgstr "Suorituskyvyn diagnostiikka on poissa käytöstä. Ota se käyttöön yllä aloittaaksesi kierrostietojen keräämisen."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Permission granted"
+msgstr "Lupa myönnetty"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: %1"
+msgstr "Käyttöoikeustila: %1"
+
+#: src/components/permission-mode-select.tsx
+msgid "Permission mode: Bypass Permissions is active"
+msgstr "Käyttöoikeustila: Ohita käyttöoikeudet on käytössä"
+
+#: notebook_intelligence/readiness.py
+msgid "Pick a model from the dropdown in NBI Settings. A pinned NBI_CHAT_MODEL_ID that the endpoint no longer serves will fail on every turn."
+msgstr "Valitse malli NBI-asetusten pudotusvalikosta. Kiinnitetty NBI_CHAT_MODEL_ID, jota päätepiste ei enää tarjoa, epäonnistuu jokaisella kierroksella."
+
+#: src/components/plugins-panel.tsx
+msgid "Plugin"
+msgstr "Lisäosa"
+
+#: src/components/plugins-panel.tsx
+msgid "Plugins"
+msgstr "Lisäosat"
+
+#: notebook_intelligence/extension.py
+msgid "Plugins management is disabled by your administrator"
+msgstr "Järjestelmänvalvoja on poistanut lisäosien hallinnan käytöstä"
+
+#: notebook_intelligence/readiness.py
+msgid "Preinstall the pinned adapter package %1 in a trusted location outside the workspace and put its absolute executable directory on PATH, or set NBI_ACP_AGENT_COMMAND to the absolute path of an installed adapter executable. Install its required interpreter on the adapter PATH; default discovery excludes workspace directories. Do not use a package runner such as npx. Relative commands are not supported."
+msgstr "Esiasenna kiinnitetty sovitinpaketti %1 luotettuun sijaintiin työtilan ulkopuolelle ja lisää sen suoritettavan tiedoston absoluuttinen hakemisto PATH-polkuun, tai aseta NBI_ACP_AGENT_COMMAND asennetun sovittimen suoritettavan tiedoston absoluuttiseen polkuun. Asenna sen vaatima tulkki sovittimen PATH-polkuun; oletushaku jättää työtilan hakemistot pois. Älä käytä paketinsuorittajaa, kuten npx:ää. Suhteellisia komentoja ei tueta."
+
+#: notebook_intelligence/readiness.py
+msgid "Present."
+msgstr "Löytyy."
+
+#: src/chat-sidebar.tsx
+msgid "Privacy Statement"
+msgstr "Tietosuojaseloste"
+
+#: src/chat-sidebar.tsx
+msgid "Privacy and terms"
+msgstr "Tietosuoja ja ehdot"
+
+#: src/components/plugins-panel.tsx
+msgid "Private GitHub sources work if %1 is set or %2 is configured on the Jupyter server."
+msgstr "Yksityiset GitHub-lähteet toimivat, jos %1 on asetettu tai %2 on määritetty Jupyter-palvelimelle."
+
+#: src/components/perf-panel.tsx
+msgid "Probe failed: %1"
+msgstr "Mittaus epäonnistui: %1"
+
+#: src/components/settings-panel.tsx
+msgid "Project (Jupyter root directory)"
+msgstr "Projekti (Jupyterin juurihakemisto)"
+
+#: src/components/skills-panel.tsx
+msgid "Project (this project only)"
+msgstr "Projekti (vain tämä projekti)"
+
+#: src/components/mcp-util.ts
+msgid "Prompt refresh failed. Reload MCP servers to retry."
+msgstr "Kehotteiden päivitys epäonnistui. Yritä uudelleen lataamalla MCP-palvelimet uudelleen."
+
+#: src/components/settings-panel.tsx
+msgid "Prompts"
+msgstr "Kehotteet"
+
+#: src/components/settings-panel.tsx
+msgid "Provider"
+msgstr "Palveluntarjoaja"
+
+#: notebook_intelligence/readiness.py
+msgid "Provider '%1' is selected but not registered."
+msgstr "Palveluntarjoaja ”%1” on valittu, mutta sitä ei ole rekisteröity."
+
+#: src/components/perf-panel.tsx
+msgid "Python interpreter"
+msgstr "Python-tulkki"
+
+#: src/components/skills-panel.tsx
+msgid "Quick-add pills cover common tools. Type patterns like %1 or %2 for finer-grained permissions."
+msgstr "Pikalisäyspainikkeet kattavat yleiset työkalut. Kirjoita kuvioita, kuten %1 tai %2, tarkempia käyttöoikeuksia varten."
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as bad"
+msgstr "Arvioi vastaus huonoksi"
+
+#: src/chat-sidebar.tsx
+msgid "Rate response as good"
+msgstr "Arvioi vastaus hyväksi"
+
+#: src/components/readiness-card.tsx
+msgid "Re-check"
+msgstr "Tarkista uudelleen"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-enable this server for the current Jupyter workspace"
+msgstr "Ota tämä palvelin uudelleen käyttöön nykyisessä Jupyter-työtilassa"
+
+#: src/components/skills-panel.tsx
+msgid "Re-fetch every skill set to track upstream from GitHub"
+msgstr "Hae uudelleen GitHubista kaikki taidot, jotka on asetettu seuraamaan lähdettä"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Re-read Claude's MCP config from disk"
+msgstr "Lue Clauden MCP-määritykset uudelleen levyltä"
+
+#: notebook_intelligence/readiness.py
+msgid "Re-run the endpoint test once the endpoint is answering again. A transient failure cannot tell us whether tool calling works."
+msgstr "Suorita päätepisteen testi uudelleen, kun päätepiste vastaa taas. Tilapäisestä virheestä ei voi päätellä, toimivatko työkalukutsut."
+
+#: src/components/readiness-card.tsx
+msgid "Readiness check failed: %1"
+msgstr "Valmiustarkistus epäonnistui: %1"
+
+#: notebook_intelligence/readiness.py
+msgid "Reading the configuration failed (%1)."
+msgstr "Määritysten lukeminen epäonnistui (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "Ready, with %1 warning. %2: %3"
+msgid_plural "Ready, with %1 warnings. %2: %3"
+msgstr[0] "Valmis, %1 varoitus. %2: %3"
+msgstr[1] "Valmis, %1 varoitusta. %2: %3"
+
+#: notebook_intelligence/readiness.py
+msgid "Ready. Nothing needs configuring."
+msgstr "Valmis. Mitään ei tarvitse määrittää."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Reason"
+msgstr "Syy"
+
+#: src/components/perf-panel.tsx
+msgid "Recent turns"
+msgstr "Viimeisimmät kierrokset"
+
+#: src/components/skills-panel.tsx
+msgid "Reconcile managed skills against the org manifest"
+msgstr "Täsmäytä hallinnoidut taidot organisaation manifestiin"
+
+#: src/components/perf-panel.tsx
+msgid "Recording is on, but no turns have been captured yet. Run a chat turn, then press Refresh."
+msgstr "Tallennus on päällä, mutta kierroksia ei ole vielä tallennettu. Suorita keskustelukierros ja paina sitten Päivitä."
+
+#: src/components/perf-panel.tsx
+msgid "Records where each chat turn spends its time, so a slow deployment can be told apart from a slow model. Off by default, and when off it costs one boolean check per instrumentation site. Prompts, responses, file contents, and hostnames are never recorded."
+msgstr "Tallentaa, mihin kukin keskustelukierros käyttää aikansa, jotta hidas käyttöönotto voidaan erottaa hitaasta mallista. Oletuksena pois päältä, ja pois päältä ollessaan se maksaa yhden totuusarvotarkistuksen mittauskohtaa kohden. Kehotteita, vastauksia, tiedostojen sisältöä ja isäntänimiä ei koskaan tallenneta."
+
+#: src/components/perf-panel.tsx
+msgid "Redacted: file basenames and model, tool, and server names are hashed. Timings and counts are unaffected. Keep this when the report will leave your machine."
+msgstr "Peitetty: tiedostojen perusnimet sekä mallien, työkalujen ja palvelinten nimet tiivistetään. Ajoitukset ja lukumäärät eivät muutu. Pidä tämä valittuna, kun raportti lähtee koneeltasi."
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx src/components/settings-panel.tsx
+msgid "Refresh"
+msgstr "Päivitä"
+
+#: src/index.ts
+msgid "Refresh description"
+msgstr "Päivitä kuvaus"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh file list"
+msgstr "Päivitä tiedostoluettelo"
+
+#: src/components/settings-panel.tsx
+msgid "Refresh open files when changed on disk"
+msgstr "Päivitä avoimet tiedostot, kun ne muuttuvat levyllä"
+
+#: src/components/plugins-panel.tsx
+msgid "Refresh this marketplace from its source"
+msgstr "Päivitä tämä markkinapaikka sen lähteestä"
+
+#: src/chat-sidebar.tsx
+msgid "Refresh workspace file list"
+msgstr "Päivitä työtilan tiedostoluettelo"
+
+#: src/components/claude-mcp-panel.tsx src/components/perf-panel.tsx src/components/plugins-panel.tsx
+msgid "Refreshing…"
+msgstr "Päivitetään…"
+
+#: src/index.ts
+msgid "Regenerate the description of this code cell"
+msgstr "Luo tämän koodisolun kuvaus uudelleen"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Rejecting records a lasting denial, not only for this request."
+msgstr "Hylkääminen tallentaa pysyvän epäämisen, ei vain tälle pyynnölle."
+
+#: src/components/settings-panel.tsx
+msgid "Reload"
+msgstr "Lataa uudelleen"
+
+#: src/components/settings-panel.tsx
+msgid "Remember conversation history"
+msgstr "Muista keskusteluhistoria"
+
+#: src/components/settings-panel.tsx
+msgid "Remember my GitHub Copilot access token"
+msgstr "Muista GitHub Copilot -käyttötunnukseni"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Remove"
+msgstr "Poista"
+
+#: src/components/skills-panel.tsx
+msgid "Remove %1"
+msgstr "Poista %1"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Remove MCP server?"
+msgstr "Poistetaanko MCP-palvelin?"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file"
+msgstr "Poista liitetty tiedosto"
+
+#: src/chat-sidebar.tsx
+msgid "Remove attached file %1"
+msgstr "Poista liitetty tiedosto %1"
+
+#: src/components/plugins-panel.tsx
+msgid "Remove marketplace?"
+msgstr "Poistetaanko markkinapaikka?"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx
+msgid "Removing…"
+msgstr "Poistetaan…"
+
+#: src/components/skills-panel.tsx
+msgid "Rename"
+msgstr "Nimeä uudelleen"
+
+#: src/components/skills-panel.tsx
+msgid "Rename skill"
+msgstr "Nimeä taito uudelleen"
+
+#: src/index.ts
+msgid "Replay the first-run tour highlighting the chat sidebar affordances"
+msgstr "Toista ensikäynnistyksen esittely, joka esittelee keskustelusivupalkin toiminnot"
+
+#: src/components/settings-panel.tsx
+msgid "Reply in my JupyterLab language"
+msgstr "Vastaa JupyterLabini kielellä"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Request"
+msgstr "Pyyntö"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Requested permissions"
+msgstr "Pyydetyt käyttöoikeudet"
+
+#: src/components/skills-panel.tsx
+msgid "Required. Claude uses this to decide when to apply the skill."
+msgstr "Pakollinen. Claude käyttää tätä päättääkseen, milloin taitoa käytetään."
+
+#: src/chat-sidebar.tsx
+msgid "Response complete."
+msgstr "Vastaus valmis."
+
+#: src/components/settings-panel.tsx
+msgid "Restart the Chatbook kernel in open notebooks so they pick up %1."
+msgstr "Käynnistä Chatbook-ydin uudelleen avoimissa muistikirjoissa, jotta ne ottavat käyttöön ytimen %1."
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume Claude session"
+msgstr "Jatka Claude-istuntoa"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a previous session"
+msgstr "Jatka aiempaa istuntoa"
+
+#: src/chat-sidebar.tsx
+msgid "Resume a session you started earlier in this workspace"
+msgstr "Jatka istuntoa, jonka aloitit aiemmin tässä työtilassa"
+
+#: src/components/claude-session-picker.tsx
+msgid "Resume command copied"
+msgstr "Jatkamiskomento kopioitu"
+
+#: src/index.ts
+msgid "Resume or start a Claude Code session"
+msgstr "Jatka Claude Code -istuntoa tai aloita uusi"
+
+#: src/chat-sidebar.tsx
+msgid "Resume session"
+msgstr "Jatka istuntoa"
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1."
+msgstr "Claude-istuntoa %1 jatkettiin."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed Claude session %1: %2."
+msgstr "Claude-istuntoa %1 jatkettiin: %2."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1."
+msgstr "Istuntoa %1 jatkettiin."
+
+#: src/chat-sidebar.tsx
+msgid "Resumed session %1: %2."
+msgstr "Istuntoa %1 jatkettiin: %2."
+
+#: src/components/perf-panel.tsx
+msgid "Retry"
+msgstr "Yritä uudelleen"
+
+#: src/chatbook.ts
+msgid "Review generated code before running it in this kernel."
+msgstr "Tarkista luotu koodi ennen kuin suoritat sen tässä ytimessä."
+
+#: src/components/settings-panel.tsx
+msgid "Right-click a cell output to attach it to the chat"
+msgstr "Napsauta solun tulostetta hiiren kakkospainikkeella liittääksesi sen keskusteluun"
+
+#: src/components/perf-panel.tsx
+msgid "Rule and skill discovery took %1. That work is filesystem-bound on the server's home directory."
+msgstr "Sääntöjen ja taitojen etsiminen kesti %1. Työn nopeuden määrää palvelimen kotihakemiston tiedostojärjestelmä."
+
+#: notebook_intelligence/extension.py
+msgid "Rule not found"
+msgstr "Sääntöä ei löytynyt"
+
+#: notebook_intelligence/extension.py
+msgid "Rule system not enabled"
+msgstr "Sääntöjärjestelmä ei ole käytössä"
+
+#: notebook_intelligence/readiness.py
+msgid "Run 'claude --version' in a terminal as the Jupyter user to see the underlying error."
+msgstr "Suorita ”claude --version” päätteessä Jupyter-käyttäjänä nähdäksesi taustalla olevan virheen."
+
+#: src/components/readiness-card.tsx
+msgid "Run it"
+msgstr "Suorita"
+
+#: notebook_intelligence/built_in_toolsets.py
+msgid "Run notebooks in JupyterLab UI"
+msgstr "Suorita muistikirjoja JupyterLabin käyttöliittymässä"
+
+#: src/components/perf-panel.tsx
+msgid "Run probe"
+msgstr "Suorita mittaus"
+
+#: src/chat-sidebar.tsx
+msgid "Running (%1 s)"
+msgstr "Käynnissä (%1 s)"
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other, plus the network check. This takes a few seconds, longer on a slow filesystem."
+msgstr "Suoritetaan tiedostojärjestelmän, aliprosessien ja resurssikilpailun tarkistukset yksi kerrallaan, jotta ne eivät mittaa toisiaan, sekä verkkotarkistus. Tämä kestää muutaman sekunnin, hitaalla tiedostojärjestelmällä pidempään."
+
+#: src/components/perf-panel.tsx
+msgid "Running the filesystem, subprocess, and contention checks one at a time so they do not measure each other. This takes a few seconds, longer on a slow filesystem."
+msgstr "Suoritetaan tiedostojärjestelmän, aliprosessien ja resurssikilpailun tarkistukset yksi kerrallaan, jotta ne eivät mittaa toisiaan. Tämä kestää muutaman sekunnin, hitaalla tiedostojärjestelmällä pidempään."
+
+#: src/components/perf-panel.tsx src/components/readiness-card.tsx
+msgid "Running…"
+msgstr "Käynnissä…"
+
+#: src/components/skills-panel.tsx
+msgid "Save"
+msgstr "Tallenna"
+
+#: src/components/skills-panel.tsx
+msgid "Saving…"
+msgstr "Tallennetaan…"
+
+#: src/components/claude-mcp-panel.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Scope"
+msgstr "Laajuus"
+
+#: src/components/skills-panel.tsx
+msgid "Scope and name are set at creation and can't be changed. Delete and recreate to change them."
+msgstr "Laajuus ja nimi asetetaan luotaessa, eikä niitä voi muuttaa. Muuta niitä poistamalla ja luomalla uudelleen."
+
+#: src/components/confirmation-details.tsx
+msgid "Scroll to see all of this value."
+msgstr "Vieritä nähdäksesi koko arvon."
+
+#: src/chat-sidebar.tsx
+msgid "Search files by path"
+msgstr "Hae tiedostoja polun perusteella"
+
+#: src/chat-sidebar.tsx
+msgid "Send message"
+msgstr "Lähetä viesti"
+
+#: src/components/readiness-card.tsx
+msgid "Sends one short request to your configured model to verify streaming and tool support."
+msgstr "Lähettää yhden lyhyen pyynnön määritetylle mallille suoratoiston ja työkalutuen varmistamiseksi."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server \"%1\" config must be an object."
+msgstr "Palvelimen ”%1” määritysten on oltava objekti."
+
+#: src/components/claude-mcp-paste.ts
+msgid "Server config must include \"command\" or \"url\"."
+msgstr "Palvelinmääritysten on sisällettävä ”command” tai ”url”."
+
+#: src/components/perf-panel.tsx
+msgid "Server process peak memory"
+msgstr "Palvelinprosessin muistin huippukäyttö"
+
+#: src/components/settings-panel.tsx
+msgid "Settings sections"
+msgstr "Asetusten osiot"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Shell"
+msgstr "Komentotulkki"
+
+#: src/components/settings-panel.tsx
+msgid "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+msgstr "Näytä epäonnistuneissa soluissa pikavalikon kohta ”Tee vianmääritys tulosteen virheille”"
+
+#: src/components/settings-panel.tsx
+msgid "Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons"
+msgstr "Näytä solujen tulosteiden päällä leijuva työkalupalkki, jossa on Selitä- / Kysy- / Vianmääritys-painikkeet"
+
+#: src/components/tool-call-card.tsx
+msgid "Show diff"
+msgstr "Näytä erot"
+
+#: src/index.ts
+msgid "Show generated code"
+msgstr "Näytä luotu koodi"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Show in chat"
+msgstr "Näytä keskustelussa"
+
+#: src/components/settings-panel.tsx
+msgid "Show output toolbar"
+msgstr "Näytä tulosteen työkalupalkki"
+
+#: src/components/perf-panel.tsx
+msgid "Show raw output"
+msgstr "Näytä raakatuloste"
+
+#: src/index.ts
+msgid "Show the hidden code generated for this Chatbook cell"
+msgstr "Näytä tälle Chatbook-solulle luotu piilotettu koodi"
+
+#: src/components/perf-panel.tsx
+msgid "Show timeline for the turn at %1"
+msgstr "Näytä kello %1 alkaneen kierroksen aikajana"
+
+#: src/components/settings-panel.tsx
+msgid "Show usage after each turn (time / tokens / cost)"
+msgstr "Näytä käyttö jokaisen kierroksen jälkeen (aika / tokenit / hinta)"
+
+#: src/chat-sidebar.tsx
+msgid "Showing the first %1 file found in the workspace."
+msgid_plural "Showing the first %1 files found in the workspace."
+msgstr[0] "Näytetään ensimmäinen %1 työtilasta löytynyt tiedosto."
+msgstr[1] "Näytetään ensimmäiset %1 työtilasta löytynyttä tiedostoa."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign in from NBI Settings under GitHub Copilot. Until then every chat turn will fail with a 401."
+msgstr "Kirjaudu sisään NBI-asetusten kohdassa GitHub Copilot. Siihen asti jokainen keskustelukierros epäonnistuu virheellä 401."
+
+#: notebook_intelligence/readiness.py
+msgid "Sign-in state could not be determined."
+msgstr "Kirjautumisen tilaa ei voitu määrittää."
+
+#: src/components/perf-panel.tsx
+msgid "Single-digit MB/s alongside high fsync latency is the EFS burst-credit-exhaustion signature. Confirm from CloudWatch BurstCreditBalance rather than from inside the pod."
+msgstr "Yksinumeroinen Mt/s yhdessä suuren fsync-viiveen kanssa on tunnusmerkki EFS:n purskehyvitysten loppumisesta. Vahvista asia CloudWatchin BurstCreditBalance-arvosta podin sisältä tarkistamisen sijaan."
+
+#: notebook_intelligence/extension.py
+msgid "Skill '%1' not found in %2 scope"
+msgstr "Taitoa ”%1” ei löytynyt laajuudesta %2"
+
+#: src/components/skills-panel.tsx
+msgid "Skills"
+msgstr "Taidot"
+
+#: src/components/skills-panel.tsx
+msgid "Skills are consumed by Claude Code. Enable Claude mode in the Claude settings tab to use skills you author here."
+msgstr "Taitoja käyttää Claude Code. Ota Claude-tila käyttöön asetusten Claude-välilehdellä, jotta voit käyttää täällä luomiasi taitoja."
+
+#: notebook_intelligence/extension.py
+msgid "Skills management is disabled by your administrator"
+msgstr "Järjestelmänvalvoja on poistanut taitojen hallinnan käytöstä"
+
+#: src/chat-sidebar.tsx
+msgid "Skills reloaded and applied to the current session."
+msgstr "Taidot ladattiin uudelleen ja otettiin käyttöön nykyisessä istunnossa."
+
+#: src/chat-sidebar.tsx
+msgid "Skip to message input"
+msgstr "Siirry viestikenttään"
+
+#: src/chat-sidebar.tsx
+msgid "Slash commands"
+msgstr "Vinoviivakomennot"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Source"
+msgstr "Lähde"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1"
+msgstr "Lähde: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Source: %1 · last sync: %2"
+msgstr "Lähde: %1 · viimeisin synkronointi: %2"
+
+#: src/components/plugins-panel.tsx
+msgid "Specify manually"
+msgstr "Määritä manuaalisesti"
+
+#: src/index.ts
+msgid "Start a GitHub Copilot CLI session in a Jupyter terminal"
+msgstr "Aloita GitHub Copilot CLI -istunto Jupyter-päätteessä"
+
+#: src/index.ts
+msgid "Start a Pi session in a Jupyter terminal"
+msgstr "Aloita Pi-istunto Jupyter-päätteessä"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session"
+msgstr "Aloita uusi keskusteluistunto"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (restarts the Claude client)"
+msgstr "Aloita uusi keskusteluistunto (käynnistää Claude-asiakkaan uudelleen)"
+
+#: src/chat-sidebar.tsx
+msgid "Start a new chat session (starts a fresh agent session)"
+msgstr "Aloita uusi keskusteluistunto (aloittaa uuden agentti-istunnon)"
+
+#: src/index.ts
+msgid "Start an OpenAI Codex CLI session in a Jupyter terminal"
+msgstr "Aloita OpenAI Codex CLI -istunto Jupyter-päätteessä"
+
+#: src/index.ts
+msgid "Start an opencode session in a Jupyter terminal"
+msgstr "Aloita opencode-istunto Jupyter-päätteessä"
+
+#: src/components/settings-panel.tsx
+msgid "Status"
+msgstr "Tila"
+
+#: src/chat-sidebar.tsx
+msgid "Still working, server may be slow"
+msgstr "Työ on yhä käynnissä, palvelin voi olla hidas"
+
+#: src/chat-sidebar.tsx
+msgid "Stop generating"
+msgstr "Lopeta luominen"
+
+#: src/chat-sidebar.tsx
+msgid "Stop using current file as context"
+msgstr "Lopeta nykyisen tiedoston käyttö kontekstina"
+
+#: src/components/perf-panel.tsx
+msgid "Stopped before completing, so these timings are partial."
+msgstr "Pysäytettiin ennen valmistumista, joten nämä ajoitukset ovat osittaisia."
+
+#: src/chat-sidebar.tsx
+msgid "Stopped by you"
+msgstr "Pysäytit tämän"
+
+#: src/components/perf-panel.tsx
+msgid "Sum of every tool span in the turn. Expand the row to see them individually."
+msgstr "Kierroksen kaikkien työkalujaksojen summa. Laajenna rivi nähdäksesi ne erikseen."
+
+#: src/index.ts
+msgid "Switch all cells to code"
+msgstr "Vaihda kaikki solut koodiksi"
+
+#: src/index.ts
+msgid "Switch all cells to natural language"
+msgstr "Vaihda kaikki solut luonnolliseksi kieleksi"
+
+#: src/index.ts
+msgid "Switch cell to code"
+msgstr "Vaihda solu koodiksi"
+
+#: src/index.ts
+msgid "Switch cell to natural language"
+msgstr "Vaihda solu luonnolliseksi kieleksi"
+
+#: src/chatbook-toolbar.ts src/index.ts
+msgid "Switch every cell of this Chatbook between its prompt and its code"
+msgstr "Vaihda tämän Chatbookin jokainen solu kehotteen ja koodin välillä"
+
+#: src/index.ts
+msgid "Switch the active Chatbook cell between natural language and code"
+msgstr "Vaihda aktiivinen Chatbook-solu luonnollisen kielen ja koodin välillä"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed for \"%1\": %2"
+msgstr "Synkronointi epäonnistui kohteelle ”%1”: %2"
+
+#: src/components/skills-panel.tsx
+msgid "Sync failed: %1"
+msgstr "Synkronointi epäonnistui: %1"
+
+#: src/components/skills-panel.tsx
+msgid "Sync from GitHub"
+msgstr "Synkronoi GitHubista"
+
+#: src/components/skills-panel.tsx
+msgid "Sync managed skills"
+msgstr "Synkronoi hallinnoidut taidot"
+
+#: src/components/skills-panel.tsx
+msgid "Sync skill from GitHub"
+msgstr "Synkronoi taito GitHubista"
+
+#: src/components/skills-panel.tsx
+msgid "Sync tracking skills"
+msgstr "Synkronoi lähdettä seuraavat taidot"
+
+#: src/components/skills-panel.tsx
+msgid "Synced \"%1\" to %2."
+msgstr "”%1” synkronoitiin versioon %2."
+
+#: src/components/skills-panel.tsx
+msgid "Syncing…"
+msgstr "Synkronoidaan…"
+
+#: src/components/skills-panel.tsx
+msgid "Target scope"
+msgstr "Kohdelaajuus"
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts @-mention paths. Click to switch to raw path mode. Hold Shift while dropping to invert for one drop."
+msgstr "Päätteeseen pudottaminen lisää @-mainintapolkuja. Napsauta vaihtaaksesi raakapolkutilaan. Pidä vaihtonäppäintä (Shift) painettuna pudottaessasi vaihtaaksesi tilan yhden pudotuksen ajaksi."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop inserts raw, shell-escaped absolute paths. Click to switch to @-mention mode. Hold Shift while dropping to invert for one drop."
+msgstr "Päätteeseen pudottaminen lisää raakoja, komentotulkkia varten koodinvaihdettuja absoluuttisia polkuja. Napsauta vaihtaaksesi @-mainintatilaan. Pidä vaihtonäppäintä (Shift) painettuna pudottaessasi vaihtaaksesi tilan yhden pudotuksen ajaksi."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop skipped %1 path containing control or invisible formatting characters. Rename them before dropping."
+msgid_plural "Terminal drop skipped %1 paths containing control or invisible formatting characters. Rename them before dropping."
+msgstr[0] "Päätteeseen pudotuksesta ohitettiin %1 polku, joka sisältää ohjausmerkkejä tai näkymättömiä muotoilumerkkejä. Nimeä se uudelleen ennen pudottamista."
+msgstr[1] "Päätteeseen pudotuksesta ohitettiin %1 polkua, jotka sisältävät ohjausmerkkejä tai näkymättömiä muotoilumerkkejä. Nimeä ne uudelleen ennen pudottamista."
+
+#: src/terminal-drag.ts
+msgid "Terminal drop upload failed for %1"
+msgstr "Päätteeseen pudotetun tiedoston lataus epäonnistui: %1"
+
+#: src/components/readiness-card.tsx
+msgid "Test the endpoint"
+msgstr "Testaa päätepiste"
+
+#: src/chat-sidebar.tsx
+msgid "Text file"
+msgstr "Tekstitiedosto"
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI did not respond to --version within its budget."
+msgstr "CLI ei vastannut --version-komentoon sille varatussa ajassa."
+
+#: notebook_intelligence/readiness.py
+msgid "The CLI resolved but --version failed."
+msgstr "CLI löytyi, mutta --version epäonnistui."
+
+#: src/components/perf-panel.tsx
+msgid "The SDK attributes %1 to the API against %2 active, so the time is on the far side of the network rather than in NBI."
+msgstr "SDK kohdistaa API:lle %1 aktiivisesta ajasta %2, joten aika kuluu verkon toisella puolella eikä NBI:ssä."
+
+#: notebook_intelligence/readiness.py
+msgid "The binary resolves but does not start. On a network filesystem this is often the install tree being slow to read; otherwise check it runs from a terminal."
+msgstr "Suoritettava tiedosto löytyy, mutta se ei käynnisty. Verkkotiedostojärjestelmässä syynä on usein asennushakemiston hidas lukeminen; muussa tapauksessa tarkista, että se toimii päätteestä."
+
+#: src/components/perf-panel.tsx
+msgid "The check did not return within its budget. A hung stat on a network filesystem looks exactly like this, and is itself the finding."
+msgstr "Tarkistus ei palautunut sille varatussa ajassa. Verkkotiedostojärjestelmään jumittunut stat-kutsu näyttää juuri tältä, ja se on itsessään löydös."
+
+#: notebook_intelligence/readiness.py
+msgid "The claude CLI was not found."
+msgstr "claude-CLI:tä ei löytynyt."
+
+#: notebook_intelligence/acp_agent.py
+msgid "The command contains non-ASCII characters, which can look like quotes or letters they are not."
+msgstr "Komento sisältää muita kuin ASCII-merkkejä, jotka voivat näyttää lainausmerkeiltä tai kirjaimilta, joita ne eivät ole."
+
+#: src/components/perf-panel.tsx
+msgid "The connect span: agent subprocess and CLI startup. Large values usually mean node startup plus bundle reads on slow storage."
+msgstr "Yhdistämisjakso: agentin aliprosessin ja CLI:n käynnistys. Suuret arvot tarkoittavat yleensä noden käynnistystä ja pakettien lukemista hitaalta tallennustilalta."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted a request carrying a tool schema."
+msgstr "Päätepiste hyväksyi pyynnön, jossa oli työkaluskeema."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the connection but did not answer. Check the Base URL and whether it is reachable from the Jupyter server process."
+msgstr "Päätepiste hyväksyi yhteyden, mutta ei vastannut. Tarkista perus-URL ja se, onko se tavoitettavissa Jupyter-palvelinprosessista."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint accepted the request but did not answer. Check the gateway and whether it is queueing behind a cold model."
+msgstr "Päätepiste hyväksyi pyynnön, mutta ei vastannut. Tarkista yhdyskäytävä ja se, onko se jonossa kylmän mallin takana."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint answered in one piece. Replies will appear only when the turn finishes rather than as they are generated; a proxy that buffers responses is the usual cause."
+msgstr "Päätepiste vastasi yhtenä kappaleena. Vastaukset näkyvät vasta kierroksen päätyttyä eivätkä sitä mukaa kuin niitä luodaan; tavallinen syy on vastauksia puskuroiva välityspalvelin."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint rejected a request carrying a tool schema, but accepted the same request without one."
+msgstr "Päätepiste hylkäsi pyynnön, jossa oli työkaluskeema, mutta hyväksyi saman pyynnön ilman sitä."
+
+#: notebook_intelligence/readiness.py
+msgid "The endpoint test could not run (%1)."
+msgstr "Päätepisteen testiä ei voitu suorittaa (%1)."
+
+#: src/components/perf-panel.tsx
+msgid "The handshake did not complete. Behind an intercepting proxy this usually means the interception certificate is not in the trust store this process uses."
+msgstr "Kättely ei valmistunut. Sieppaavan välityspalvelimen takana tämä tarkoittaa yleensä, että sieppausvarmenne ei ole tämän prosessin käyttämässä luottamussäilössä."
+
+#: src/components/perf-panel.tsx
+msgid "The presented certificate does not verify against the default trust store, which means TLS is being intercepted. The issuer CN names the interceptor."
+msgstr "Esitettyä varmennetta ei voi vahvistaa oletusluottamussäilöä vasten, mikä tarkoittaa, että TLS-liikennettä siepataan. Myöntäjän CN nimeää sieppaajan."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider did not return a model list within %1s."
+msgstr "Palveluntarjoaja ei palauttanut malliluetteloa %1 sekunnin kuluessa."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider may be disabled by an administrator (see disabled_providers) or supplied by an extension that is not installed. Pick a different provider in NBI Settings."
+msgstr "Järjestelmänvalvoja on ehkä poistanut palveluntarjoajan käytöstä (katso disabled_providers), tai sen tarjoaa laajennus, jota ei ole asennettu. Valitse toinen palveluntarjoaja NBI-asetuksista."
+
+#: notebook_intelligence/readiness.py
+msgid "The provider returned no models."
+msgstr "Palveluntarjoaja ei palauttanut malleja."
+
+#: notebook_intelligence/readiness.py
+msgid "The request failed (%1)."
+msgstr "Pyyntö epäonnistui (%1)."
+
+#: notebook_intelligence/readiness.py
+msgid "The request succeeded but nothing streamed."
+msgstr "Pyyntö onnistui, mutta mitään ei suoratoistettu."
+
+#: notebook_intelligence/readiness.py
+msgid "The stored configuration could not be read. Check %1 for invalid JSON, and the Jupyter server log for the underlying error."
+msgstr "Tallennettuja määrityksiä ei voitu lukea. Tarkista, onko tiedostossa %1 virheellistä JSONia, ja katso taustalla oleva virhe Jupyter-palvelimen lokista."
+
+#: src/components/perf-panel.tsx
+msgid "The turn ended in an error."
+msgstr "Kierros päättyi virheeseen."
+
+#: src/components/claude-mcp-panel.tsx
+msgid "These are Claude Code's own MCP servers (read from %1, project %2, and the per-user-per-project block). Independent of the NBI MCP Servers tab."
+msgstr "Nämä ovat Claude Coden omat MCP-palvelimet (luettu tiedostosta %1, projektin tiedostosta %2 sekä käyttäjä- ja projektikohtaisesta lohkosta). Riippumattomia NBI:n MCP-palvelimet-välilehdestä."
+
+#: src/chat-sidebar.tsx
+msgid "Thinking (%1 s)"
+msgstr "Ajatellaan (%1 s)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/base_chat_participant.py notebook_intelligence/claude.py notebook_intelligence/mcp_manager.py
+msgid "Thinking…"
+msgstr "Ajatellaan…"
+
+#: src/components/perf-panel.tsx
+msgid "This container has been CPU-throttled by its cgroup quota, so local phases (context preparation, spawn) can look slow for reasons unrelated to storage or the network."
+msgstr "Tämän säilön suoritinkäyttöä on rajoitettu sen cgroup-kiintiöllä, joten paikalliset vaiheet (kontekstin valmistelu, käynnistys) voivat näyttää hitailta syistä, jotka eivät liity tallennustilaan tai verkkoon."
+
+#: notebook_intelligence/extension.py
+msgid "This feature is disabled by your administrator"
+msgstr "Järjestelmänvalvoja on poistanut tämän ominaisuuden käytöstä"
+
+#: src/components/perf-panel.tsx
+msgid "This host disagrees with the endpoint about the time by more than a minute, which breaks token expiry and certificate validity windows."
+msgstr "Tämän isäntäkoneen ja päätepisteen kellonajat eroavat yli minuutin, mikä rikkoo tunnusten vanhenemisen ja varmenteiden voimassaoloajat."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the Claude CLI is signed in with a subscription login, or if the SDK resolves a credential of its own from a profile or custom headers. If chat turns fail with a 401, or Claude auto-complete produces nothing, add a key in NBI Settings under Claude or set ANTHROPIC_API_KEY before starting JupyterLab."
+msgstr "Tämä on kunnossa, jos Claude CLI on kirjautunut tilauksella tai jos SDK selvittää omat tunnistetietonsa profiilista tai mukautetuista otsakkeista. Jos keskustelukierrokset epäonnistuvat virheellä 401 tai Clauden automaattinen täydennys ei tuota mitään, lisää avain NBI-asetusten kohdassa Claude tai aseta ANTHROPIC_API_KEY ennen JupyterLabin käynnistämistä."
+
+#: notebook_intelligence/readiness.py
+msgid "This is fine if the agent is signed in with its own OAuth login. Otherwise set the key in NBI Settings under ACP."
+msgstr "Tämä on kunnossa, jos agentti on kirjautunut omalla OAuth-kirjautumisellaan. Muussa tapauksessa aseta avain NBI-asetusten kohdassa ACP."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. No %1 kernel is installed for Chatbook to use. Install one, then choose it in %3."
+msgstr "Tämä muistikirja on kirjoitettu kielellä %1, mutta Chatbook suorittaa kaiken koodin ytimessä %2, joten sen koodisolut epäonnistuisivat. Chatbookin käytettävissä ei ole asennettua %1-ydintä. Asenna sellainen ja valitse se sitten kohdassa %3."
+
+#: src/chatbook-toolbar.ts
+msgid "This notebook is written in %1, but Chatbook runs all code in %2, so its code cells would fail. To convert it, set %3 to a kernel for %1, then convert again. That setting applies to every Chatbook, so your existing Chatbooks would run %1 too."
+msgstr "Tämä muistikirja on kirjoitettu kielellä %1, mutta Chatbook suorittaa kaiken koodin ytimessä %2, joten sen koodisolut epäonnistuisivat. Muunna se asettamalla %3 kielen %1 ytimeksi ja muuntamalla sitten uudelleen. Asetus koskee kaikkia Chatbookeja, joten myös olemassa olevat Chatbookisi suorittaisivat kieltä %1."
+
+#: src/components/perf-panel.tsx
+msgid "This opens connections to %1 from this machine: two unauthenticated TLS connections to time the handshake and check the certificate, and one unauthenticated HTTP request."
+msgstr "Tämä avaa yhteyksiä kohteeseen %1 tältä koneelta: kaksi todentamatonta TLS-yhteyttä kättelyn ajoittamiseksi ja varmenteen tarkistamiseksi sekä yhden todentamattoman HTTP-pyynnön."
+
+#: src/components/perf-panel.tsx
+msgid "This opens unauthenticated connections to your configured endpoint from this machine."
+msgstr "Tämä avaa todentamattomia yhteyksiä määritettyyn päätepisteeseen tältä koneelta."
+
+#: src/components/settings-panel.tsx
+msgid "This requires a %1 account and %2 installed in your system."
+msgstr "Tämä edellyttää %1-tiliä ja että %2 on asennettu järjestelmääsi."
+
+#: src/components/readiness-card.tsx
+msgid "This sends one short request to your configured model. It costs a few tokens and is the only way to confirm the endpoint really streams and really accepts tool calls."
+msgstr "Tämä lähettää yhden lyhyen pyynnön määritetylle mallille. Se maksaa muutaman tokenin ja on ainoa tapa varmistaa, että päätepiste todella suoratoistaa ja todella hyväksyy työkalukutsut."
+
+#: src/components/skills-panel.tsx
+msgid "This skill has unsaved changes. Discard them?"
+msgstr "Tässä taidossa on tallentamattomia muutoksia. Hylätäänkö ne?"
+
+#: src/components/skills-panel.tsx
+msgid "This skill is managed by the organization manifest and is read-only. Changes will be overwritten on the next sync."
+msgstr "Tätä taitoa hallinnoi organisaation manifesti, ja se on vain luku -tilassa. Muutokset korvataan seuraavassa synkronoinnissa."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Tool call"
+msgstr "Työkalukutsu"
+
+#: src/components/mcp-util.ts
+msgid "Tool refresh failed. Reload MCP servers to retry."
+msgstr "Työkalujen päivitys epäonnistui. Yritä uudelleen lataamalla MCP-palvelimet uudelleen."
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection"
+msgstr "Työkalujen valinta"
+
+#: src/chat-sidebar.tsx
+msgid "Tool selection (%1)"
+msgstr "Työkalujen valinta (%1)"
+
+#: src/chat-sidebar.tsx
+msgid ""
+"Tool selection can cause irreversible changes! Review each tool execution carefully.\n"
+"%1"
+msgstr ""
+"Työkalujen valinta voi aiheuttaa peruuttamattomia muutoksia! Tarkista jokainen työkalun suoritus huolellisesti.\n"
+"%1"
+
+#: src/components/settings-panel.tsx
+msgid "Tools"
+msgstr "Työkalut"
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active."
+msgstr "Työkalujen osuus oli %1 aktiivisesta ajasta %2."
+
+#: src/components/perf-panel.tsx
+msgid "Tools accounted for %1 of %2 active. Slowest: %3 at %4."
+msgstr "Työkalujen osuus oli %1 aktiivisesta ajasta %2. Hitain: %3, %4."
+
+#: src/components/perf-panel.tsx
+msgid "Total minus time the turn spent blocked on your input. This is the number to judge performance by."
+msgstr "Kokonaisaika, josta on vähennetty aika, jonka kierros odotti syötettäsi. Tämän luvun perusteella suorituskykyä kannattaa arvioida."
+
+#: src/tour/tour-overlay.tsx
+msgid "Tour progress: step %1 of %2"
+msgstr "Esittelyn edistyminen: vaihe %1/%2"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream"
+msgstr "Seuraa lähdettä"
+
+#: src/components/skills-panel.tsx
+msgid "Track upstream. Show a Sync button so I can re-pull this skill from GitHub later"
+msgstr "Seuraa lähdettä. Näytä Synkronoi-painike, jotta voin hakea tämän taidon GitHubista uudelleen myöhemmin"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1"
+msgstr "Seurataan lähdettä %1"
+
+#: src/components/skills-panel.tsx
+msgid "Tracking upstream from %1 (last sync: %2)"
+msgstr "Seurataan lähdettä %1 (viimeisin synkronointi: %2)"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "Transport"
+msgstr "Siirtotapa"
+
+#: src/index.ts
+msgid "Troubleshoot errors in output"
+msgstr "Tee vianmääritys tulosteen virheille"
+
+#: src/cell-output-toolbar.ts
+msgid "Troubleshoot the error in this cell"
+msgstr "Tee vianmääritys tämän solun virheelle"
+
+#: src/components/claude-mcp-panel.tsx
+msgid "URL"
+msgstr "URL"
+
+#: src/components/skills-panel.tsx
+msgid "Undo"
+msgstr "Kumoa"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall"
+msgstr "Poista asennus"
+
+#: src/components/plugins-panel.tsx
+msgid "Uninstall plugin?"
+msgstr "Poistetaanko lisäosan asennus?"
+
+#: src/chat-sidebar.tsx
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: src/components/claude-session-picker.tsx src/components/launcher-picker.tsx
+msgid "Unknown error"
+msgstr "Tuntematon virhe"
+
+#: src/components/skills-panel.tsx
+msgid "Unsaved changes"
+msgstr "Tallentamattomia muutoksia"
+
+#: src/components/plugins-panel.tsx
+msgid "Update"
+msgstr "Päivitä"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "Update active notebook"
+msgstr "Päivitä aktiivinen muistikirja"
+
+#: src/notebook-generation-toolbar.tsx
+msgid "Update active notebook with AI"
+msgstr "Päivitä aktiivinen muistikirja tekoälyllä"
+
+#: src/components/plugins-panel.tsx
+msgid "Updating…"
+msgstr "Päivitetään…"
+
+#: src/chat-sidebar.tsx
+msgid "Upload file from computer"
+msgstr "Lataa tiedosto tietokoneelta"
+
+#: src/chat-sidebar.tsx
+msgid "Uploaded: %1"
+msgstr "Ladattu palvelimelle: %1"
+
+#: src/chat-sidebar.tsx
+msgid "Uploading"
+msgstr "Ladataan palvelimelle"
+
+#: src/components/settings-panel.tsx
+msgid "Usage footer"
+msgstr "Käyttöalatunniste"
+
+#: src/chat-sidebar.tsx
+msgid "Use as context"
+msgstr "Käytä kontekstina"
+
+#: src/chat-sidebar.tsx
+msgid "Use current file as context"
+msgstr "Käytä nykyistä tiedostoa kontekstina"
+
+#: src/chat-sidebar.tsx
+msgid "User"
+msgstr "Käyttäjä"
+
+#: src/components/skills-panel.tsx
+msgid "User (available in all projects)"
+msgstr "Käyttäjä (käytettävissä kaikissa projekteissa)"
+
+#: notebook_intelligence/readiness.py
+msgid "Usually an expired or missing API key, or a Base URL that does not point at the provider's API root. For GitHub Copilot, sign in again from NBI Settings."
+msgstr "Yleensä vanhentunut tai puuttuva API-avain tai perus-URL, joka ei osoita palveluntarjoajan API-juureen. GitHub Copilotin kohdalla kirjaudu uudelleen NBI-asetuksista."
+
+#: src/components/skills-panel.tsx
+msgid "View (managed, read-only)"
+msgstr "Näytä (hallinnoitu, vain luku)"
+
+#: src/components/skills-panel.tsx
+msgid "View skill"
+msgstr "Näytä taito"
+
+#: src/components/perf-panel.tsx
+msgid "Wall time from the request arriving to the response finishing, including any time spent waiting on you."
+msgstr "Todellinen kulunut aika pyynnön saapumisesta vastauksen valmistumiseen, mukaan lukien sinua odottamiseen kulunut aika."
+
+#: src/chat-sidebar.tsx
+msgid "Welcome! How can I assist you today?"
+msgstr "Tervetuloa! Miten voin auttaa sinua tänään?"
+
+#: src/components/skills-panel.tsx
+msgid "What this skill does, shown to Claude when deciding whether to use it"
+msgstr "Mitä tämä taito tekee; näytetään Claudelle, kun se päättää, käyttääkö taitoa"
+
+#: src/components/notebook-generation-popover.tsx
+msgid "When enabled, the prompt opens the Notebook Intelligence chat sidebar. Disable to keep the chat hidden and only show progress on the notebook toolbar."
+msgstr "Kun tämä on käytössä, kehote avaa Notebook Intelligencen keskustelusivupalkin. Poista käytöstä, jos haluat pitää keskustelun piilossa ja näyttää edistymisen vain muistikirjan työkalupalkissa."
+
+#: src/components/perf-panel.tsx
+msgid "When the turn started, in local time."
+msgstr "Kierroksen alkamisaika paikallista aikaa."
+
+#: src/components/perf-panel.tsx
+msgid "Which backend served the turn, and the surface it came from."
+msgstr "Mikä taustajärjestelmä palveli kierrosta ja mistä käyttöliittymän osasta se tuli."
+
+#: notebook_intelligence/acp_agent.py
+msgid "Working directory"
+msgstr "Työhakemisto"
+
+#: src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgid "Working…"
+msgstr "Työskennellään…"
+
+#: notebook_intelligence/acp_agent.py
+msgid "Write access under"
+msgstr "Kirjoitusoikeus polussa"
+
+#: src/chat-sidebar.tsx
+msgid "You are not logged in to GitHub Copilot. Please login now to activate chat."
+msgstr "Et ole kirjautunut GitHub Copilotiin. Kirjaudu nyt ottaaksesi keskustelun käyttöön."
+
+#: src/chat-sidebar.tsx
+msgid "Your code and data are directly transferred to GitHub Copilot as needed without storing any copies other than keeping in the process memory."
+msgstr "Koodisi ja tietosi siirretään tarvittaessa suoraan GitHub Copilotiin, eikä niistä tallenneta kopioita prosessin muistissa pitämisen lisäksi."
+
+#: src/components/claude-scope.ts
+msgid "available in all your projects"
+msgstr "käytettävissä kaikissa projekteissasi"
+
+#: src/components/perf-panel.tsx
+msgid "cgroup CPU throttling"
+msgstr "cgroupin suoritinrajoitus"
+
+#: src/components/tool-call-card.tsx
+msgid "diff truncated"
+msgstr "erot katkaistu"
+
+#: src/components/skills-panel.tsx
+msgid "e.g. %1"
+msgstr "esim. %1"
+
+#: src/components/perf-panel.tsx
+msgid "failed (%1)"
+msgstr "epäonnistui (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "fsync latency in this range is the signature of a network filesystem. If this is ~/.claude or the Jupyter home, every agent start and every rule scan pays it."
+msgstr "Tämän suuruinen fsync-viive on verkkotiedostojärjestelmän tunnusmerkki. Jos tämä on ~/.claude tai Jupyterin kotihakemisto, jokainen agentin käynnistys ja jokainen sääntöjen tarkistus maksaa sen."
+
+#: src/components/skills-panel.tsx
+msgid "https://github.com/owner/repo or .../tree/main/path/to/skill"
+msgstr "https://github.com/owner/repo tai .../tree/main/path/to/skill"
+
+#: src/components/plugins-panel.tsx
+msgid "https://… or local path"
+msgstr "https://… tai paikallinen polku"
+
+#: src/components/plugins-panel.tsx
+msgid "no plugins"
+msgstr "ei lisäosia"
+
+#: src/components/perf-panel.tsx
+msgid "no projects/ or sessions/ directory"
+msgstr "ei projects/- tai sessions/-hakemistoa"
+
+#: src/components/perf-panel.tsx
+msgid "ok, error, or cancelled. A cancelled turn is recorded as cancelled rather than as a fast success."
+msgstr "ok, virhe tai peruutettu. Peruutettu kierros tallennetaan peruutetuksi eikä nopeaksi onnistumiseksi."
+
+#: src/chat-sidebar.tsx
+msgid "open notebook"
+msgstr "avaa muistikirja"
+
+#: src/components/plugins-panel.tsx
+msgid "owner/repo, https://github.com/owner/repo, or local path"
+msgstr "owner/repo, https://github.com/owner/repo tai paikallinen polku"
+
+#: notebook_intelligence/acp_agent.py
+msgid "run by %1"
+msgstr "suorittaja: %1"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo"
+msgstr "jaettu projektin repositorion kautta"
+
+#: src/components/claude-scope.ts
+msgid "shared via the project repo (%1)"
+msgstr "jaettu projektin repositorion kautta (%1)"
+
+#: src/components/perf-panel.tsx
+msgid "skipped: %1"
+msgstr "ohitettu: %1"
+
+#: src/components/perf-panel.tsx
+msgid "stat %1, write+fsync %2 (median of %3)"
+msgstr "stat %1, write+fsync %2 (mediaani %3 kerrasta)"
+
+#: src/components/claude-scope.ts
+msgid "this project, this user only"
+msgstr "tämä projekti, vain tämä käyttäjä"
+
+#: src/components/perf-panel.tsx
+msgid "timed out after %1s"
+msgstr "aikakatkaisu %1 sekunnin jälkeen"
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"%1\" requires a \"url\" field."
+msgstr "transport: ”%1” vaatii ”url”-kentän."
+
+#: src/components/claude-mcp-paste.ts
+msgid "transport: \"stdio\" requires a \"command\" field."
+msgstr "transport: ”stdio” vaatii ”command”-kentän."
+
+#: src/components/perf-panel.tsx
+msgid "via proxy"
+msgstr "välityspalvelimen kautta"
+
+#: src/components/perf-panel.tsx
+msgid "write %1, read %2"
+msgstr "kirjoitus %1, luku %2"
+
+#: src/index.ts
+msgid "＋ New Session"
+msgstr "＋ Uusi istunto"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP description: the link to the admin guide"
+msgid "administrator installation guide"
+msgstr "järjestelmänvalvojan asennusopas"
+
+#: src/components/settings-panel.tsx
+msgctxt "ACP settings section"
+msgid "Agent"
+msgstr "Agentti"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a code cell; at most 3 characters"
+msgid "Cd"
+msgstr "Ko"
+
+#: src/chatbook.ts
+msgctxt "Chatbook cell badge for a natural-language cell; at most 3 characters"
+msgid "NL"
+msgstr "LK"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Don't run"
+msgstr "Älä suorita"
+
+#: src/chatbook.ts src/components/settings-panel.tsx
+msgctxt "Chatbook confirm bar"
+msgid "Run"
+msgstr "Suorita"
+
+#: src/components/settings-panel.tsx
+msgctxt "Chatbook mode description; %1 and %2 are the confirm bar buttons"
+msgid "Show the generated code and wait for %1 or %2 on every natural-language run."
+msgstr "Näytä luotu koodi ja odota valintaa %1 tai %2 jokaisessa luonnollisen kielen suorituksessa."
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "LOCAL"
+msgstr "PAIKALLINEN"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "PROJECT"
+msgstr "PROJEKTI"
+
+#: src/components/claude-scope.ts
+msgctxt "Claude config scope heading"
+msgid "USER"
+msgstr "KÄYTTÄJÄ"
+
+#: src/components/claude-mcp-panel.tsx
+msgctxt "MCP server input mode"
+msgid "Form"
+msgstr "Lomake"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connected"
+msgstr "yhdistetty"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "connecting"
+msgstr "yhdistetään"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "disconnecting"
+msgstr "katkaistaan yhteyttä"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "not connected"
+msgstr "ei yhdistetty"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated prompt list"
+msgstr "kehoteluettelo päivitetty"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updated tool list"
+msgstr "työkaluluettelo päivitetty"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating prompt list"
+msgstr "päivitetään kehoteluetteloa"
+
+#: src/components/mcp-util.ts
+msgctxt "MCP server status"
+msgid "updating tool list"
+msgstr "päivitetään työkaluluetteloa"
+
+#: src/components/settings-panel.tsx
+msgctxt "Ollama hint: the button that retries listing models"
+msgid "Try again"
+msgstr "Yritä uudelleen"
+
+#: src/components/perf-panel.tsx
+msgctxt "Python version on an operating system"
+msgid "%1 on %2"
+msgstr "%1 järjestelmässä %2"
+
+#: src/chatbook-toolbar.ts
+msgctxt "a settings path: %1 the settings window, %2 its tab, %3 the field"
+msgid "%1 > %2 > %3"
+msgstr "%1 > %2 > %3"
+
+#: src/components/perf-panel.tsx
+msgctxt "a value that was not recorded"
+msgid "n/a"
+msgstr "–"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "an approval card detail: its label, then notes such as its size"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: notebook_intelligence/acp_agent.py notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve"
+msgstr "Hyväksy"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Approve for this request"
+msgstr "Hyväksy tälle pyynnölle"
+
+#: notebook_intelligence/extension.py
+msgctxt "approval button"
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, continue planning"
+msgstr "Ei, jatka suunnittelua"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "No, start implementing now"
+msgstr "Ei, aloita toteutus nyt"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval button"
+msgid "Reject"
+msgstr "Hylkää"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, approve plan"
+msgstr "Kyllä, hyväksy suunnitelma"
+
+#: notebook_intelligence/claude.py
+msgctxt "approval button"
+msgid "Yes, enter plan mode"
+msgstr "Kyllä, siirry suunnittelutilaan"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "approval card title"
+msgid "%1 tool call"
+msgstr "%1-työkalukutsu"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "full"
+msgstr "täysi"
+
+#: src/components/perf-panel.tsx
+msgctxt "attribute detail"
+msgid "redacted"
+msgstr "peitetty"
+
+#: notebook_intelligence/acp_agent.py
+msgctxt "between notes on an approval card detail"
+msgid ", "
+msgstr ", "
+
+#: src/components/perf-panel.tsx
+msgctxt "bytes"
+msgid "%1 B"
+msgstr "%1 t"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Ask"
+msgstr "Kysy"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Explain"
+msgstr "Selitä"
+
+#: src/cell-output-toolbar.ts
+msgctxt "cell output toolbar"
+msgid "Troubleshoot"
+msgstr "Vianmääritys"
+
+#: src/components/perf-panel.tsx
+msgctxt "certificate issuer"
+msgid "unknown"
+msgstr "tuntematon"
+
+#: notebook_intelligence/ai_service_manager.py
+msgctxt "chat button"
+msgid "Configure"
+msgstr "Määritä"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Agent"
+msgstr "Agentti"
+
+#: src/chat-sidebar.tsx src/components/settings-panel.tsx
+msgctxt "chat mode"
+msgid "Ask"
+msgstr "Kysy"
+
+#: src/chatbook.ts
+msgctxt "confirm bar link that opens settings; %1 is the settings window name"
+msgid "Change in %1"
+msgstr "Muuta kohdassa %1"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected MCP server tools"
+msgid "%1 mcp"
+msgid_plural "%1 mcp"
+msgstr[0] "%1 mcp"
+msgstr[1] "%1 mcp"
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected extension tools"
+msgid "%1 ext"
+msgid_plural "%1 ext"
+msgstr[0] "%1 laaj."
+msgstr[1] "%1 laaj."
+
+#: src/chat-sidebar.tsx
+msgctxt "count of selected tools"
+msgid "%1 built-in"
+msgid_plural "%1 built-in"
+msgstr[0] "%1 sisäänrak."
+msgstr[1] "%1 sisäänrak."
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "environment (%1)"
+msgstr "ympäristö (%1)"
+
+#: notebook_intelligence/readiness.py
+msgctxt "credential source"
+msgid "settings"
+msgstr "asetukset"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "added"
+msgstr "lisätty"
+
+#: src/components/tool-call-card.tsx
+msgctxt "diff line"
+msgid "removed"
+msgstr "poistettu"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "mount"
+msgstr "liitos"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "session tree size"
+msgstr "istuntohakemiston koko"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "small-file latency"
+msgstr "pienten tiedostojen viive"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem check"
+msgid "sustained throughput"
+msgstr "jatkuva läpäisykyky"
+
+#: src/components/perf-panel.tsx
+msgctxt "filesystem type"
+msgid "not determined"
+msgstr "ei määritetty"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Add files from outside the workspace. They're saved to the workspace and attached to this chat."
+msgstr "Lisää tiedostoja työtilan ulkopuolelta. Ne tallennetaan työtilaan ja liitetään tähän keskusteluun."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Ask is read-only and only answers questions. Agent can also run tools, such as file edits and shell commands."
+msgstr "Kysy-tila on vain luku -tila, joka ainoastaan vastaa kysymyksiin. Agentti-tila voi myös suorittaa työkaluja, kuten tiedostojen muokkauksia ja komentotulkin komentoja."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Attach files as context"
+msgstr "Liitä tiedostoja kontekstiksi"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Back"
+msgstr "Takaisin"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Begin a fresh session when context gets crowded or you want to switch tasks."
+msgstr "Aloita uusi istunto, kun konteksti alkaa täyttyä tai haluat vaihtaa tehtävää."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Configure providers, API keys, and extensions (MCP servers, skills, admin policies)."
+msgstr "Määritä palveluntarjoajat, API-avaimet ja laajennukset (MCP-palvelimet, taidot, järjestelmänvalvojan käytännöt)."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Done"
+msgstr "Valmis"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag and drop"
+msgstr "Vedä ja pudota"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Drag files from the JupyterLab file browser or your desktop onto the prompt. Keyboard users can attach the same files with the 'Attach files as context' and 'Upload from your computer' buttons."
+msgstr "Vedä tiedostoja JupyterLabin tiedostoselaimesta tai työpöydältä kehotteeseen. Näppäimistön käyttäjät voivat liittää samat tiedostot painikkeilla ”Liitä tiedostoja kontekstiksi” ja ”Lataa tietokoneelta”."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Next"
+msgstr "Seuraava"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Open the menu for built-in commands and installed skills. Typing / at the start of the prompt does the same thing."
+msgstr "Avaa sisäänrakennettujen komentojen ja asennettujen taitojen valikko. Saman saa aikaan kirjoittamalla / kehotteen alkuun."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick a chat mode"
+msgstr "Valitse keskustelutila"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pick up where you left off"
+msgstr "Jatka siitä, mihin jäit"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Pin workspace files so the assistant can reference them. Typing @ in the prompt opens the same picker."
+msgstr "Kiinnitä työtilan tiedostoja, jotta avustaja voi viitata niihin. Kun kirjoitat @ kehotteeseen, avautuu sama valitsin."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Reopen an earlier Claude session from this workspace."
+msgstr "Avaa aiempi Claude-istunto tästä työtilasta uudelleen."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a coding agent in a terminal"
+msgstr "Suorita koodausagenttia päätteessä"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Run a slash command"
+msgstr "Suorita vinoviivakomento"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Settings"
+msgstr "Asetukset"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Show NBI tour"
+msgstr "Näytä NBI-esittely"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Skip tour"
+msgstr "Ohita esittely"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Start a new chat"
+msgstr "Aloita uusi keskustelu"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Try this: open a notebook and ask, 'Explain what this notebook does and suggest one improvement.' You can replay this tour anytime from the command palette."
+msgstr "Kokeile tätä: avaa muistikirja ja kysy: ”Selitä, mitä tämä muistikirja tekee, ja ehdota yhtä parannusta.” Voit toistaa tämän esittelyn milloin tahansa komentopaletista."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Upload from your computer"
+msgstr "Lataa tietokoneelta"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Welcome to Notebook Intelligence"
+msgstr "Tervetuloa Notebook Intelligenceen"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "You're ready"
+msgstr "Olet valmis"
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour"
+msgid "Your AI assistant lives in this sidebar. Take a quick tour of the settings, attachments, and chat modes so you can use it confidently."
+msgstr "Tekoälyavustajasi asuu tässä sivupalkissa. Tutustu nopeasti asetuksiin, liitteisiin ja keskustelutiloihin, jotta voit käyttää sitä varmasti."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a 'Coding Agent' section with tiles for {launchers}. Each tile opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "JupyterLabin Aloitusnäkymässä on ”Coding Agent” -osio, jossa on ruudut kohteille {launchers}. Jokainen ruutu avaa CLI-istunnon Jupyter-päätteessä muistikirjasi vieressä."
+
+#: src/tour/tour-defaults.json
+msgctxt "first-run tour; keep {launchers} as written, and 'Coding Agent' as JupyterLab's Launcher names it"
+msgid "The JupyterLab Launcher has a {launchers} tile in the 'Coding Agent' section. It opens a CLI session in a Jupyter terminal next to your notebook."
+msgstr "JupyterLabin Aloitusnäkymän ”Coding Agent” -osiossa on ruutu {launchers}. Se avaa CLI-istunnon Jupyter-päätteessä muistikirjasi vieressä."
+
+#: src/components/perf-panel.tsx
+msgctxt "gigabytes"
+msgid "%1 GB"
+msgstr "%1 Gt"
+
+#: src/components/perf-panel.tsx
+msgctxt "kilobytes"
+msgid "%1 KB"
+msgstr "%1 kt"
+
+#: src/components/setting-lock.ts
+msgctxt "lock reason: %1 is an environment variable name"
+msgid "Locked by %1"
+msgstr "Lukinnut: %1"
+
+#: src/components/perf-panel.tsx
+msgctxt "machine measurement"
+msgid "Probe"
+msgstr "Mittaus"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes"
+msgid "%1 MB"
+msgstr "%1 Mt"
+
+#: src/components/perf-panel.tsx
+msgctxt "megabytes per second"
+msgid "%1 MB/s"
+msgstr "%1 Mt/s"
+
+#: src/components/perf-panel.tsx
+msgctxt "milliseconds"
+msgid "%1 ms"
+msgstr "%1 ms"
+
+#: src/components/settings-panel.tsx
+msgctxt "model"
+msgid "None"
+msgstr "Ei mitään"
+
+#: src/components/perf-panel.tsx
+msgctxt "model name"
+msgid "unknown"
+msgstr "tuntematon"
+
+#: src/components/settings-panel.tsx
+msgctxt "model provider"
+msgid "None"
+msgstr "Ei mitään"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance diagnostics setting"
+msgid "Enabled"
+msgstr "Käytössä"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "API ms"
+msgstr "API ms"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Active"
+msgstr "Aktiivinen"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "First token"
+msgstr "Ensimmäinen token"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Mode"
+msgstr "Toimintatila"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Model"
+msgstr "Malli"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Spawn"
+msgstr "Käynnistys"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stalls"
+msgstr "Pysähdykset"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Status"
+msgstr "Tila"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Stream"
+msgstr "Suoratoisto"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Time"
+msgstr "Aika"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens in"
+msgstr "Tokenit sisään"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tokens out"
+msgstr "Tokenit ulos"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Tools"
+msgstr "Työkalut"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Total"
+msgstr "Yhteensä"
+
+#: src/components/perf-panel.tsx
+msgctxt "performance table column"
+msgid "Verdict"
+msgstr "Arvio"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Accept Edits"
+msgstr "Hyväksy muokkaukset"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Bypass Permissions"
+msgstr "Ohita käyttöoikeudet"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Default"
+msgstr "Oletus"
+
+#: src/components/permission-mode-select.tsx
+msgctxt "permission mode"
+msgid "Plan"
+msgstr "Suunnittelu"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugin count, then the plugin names"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/plugins-panel.tsx
+msgctxt "plugins section heading"
+msgid "MARKETPLACES"
+msgstr "MARKKINAPAIKAT"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "bad"
+msgstr "huono"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "error"
+msgstr "virhe"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "info"
+msgstr "tieto"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "skipped"
+msgstr "ohitettu"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "timed out"
+msgstr "aikakatkaisu"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check badge"
+msgid "warn"
+msgstr "varoitus"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe check: %1 is a directory, %2 what was measured"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Filesystem"
+msgstr "Tiedostojärjestelmä"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Network"
+msgstr "Verkko"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Process and host"
+msgstr "Prosessi ja isäntäkone"
+
+#: src/components/perf-panel.tsx
+msgctxt "probe group"
+msgid "Subprocess startup"
+msgstr "Aliprosessien käynnistys"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: notebook_intelligence/extension.py
+msgctxt "question card button"
+msgid "Submit"
+msgstr "Lähetä"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "ACP agent"
+msgstr "ACP-agentti"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Active chat path"
+msgstr "Aktiivinen keskustelureitti"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Adapter runtime"
+msgstr "Sovittimen suoritusympäristö"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Agent credentials"
+msgstr "Agentin tunnistetiedot"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Anthropic credentials"
+msgstr "Anthropicin tunnistetiedot"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model"
+msgstr "Keskustelumalli"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Chat model provider"
+msgstr "Keskustelumallin palveluntarjoaja"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Claude Code CLI"
+msgstr "Claude Code CLI"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Configuration"
+msgstr "Määritykset"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "GitHub Copilot sign-in"
+msgstr "GitHub Copilot -kirjautuminen"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Live completion"
+msgstr "Reaaliaikainen täydennys"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model list"
+msgstr "Malliluettelo"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Model name"
+msgstr "Mallin nimi"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Selected model"
+msgstr "Valittu malli"
+
+#: notebook_intelligence/readiness.py
+msgctxt "readiness check"
+msgid "Tool schema"
+msgstr "Työkaluskeema"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "blocked"
+msgstr "estetty"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "skipped"
+msgstr "ohitettu"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness check level"
+msgid "warn"
+msgstr "varoitus"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Checking…"
+msgstr "Tarkistetaan…"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Not ready"
+msgstr "Ei valmis"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready"
+msgstr "Valmis"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Ready, with warnings"
+msgstr "Valmis, varoituksia"
+
+#: src/components/readiness-card.tsx
+msgctxt "readiness verdict"
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Output"
+msgstr "Tuloste"
+
+#: src/chat-sidebar.tsx
+msgctxt "reasoning"
+msgid "Thought"
+msgstr "Ajatukset"
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "”%1” poistetaan Clauden paikallisen laajuuden määrityksistä."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "”%1” poistetaan Clauden projektilaajuuden määrityksistä."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "”%1” poistetaan Clauden käyttäjälaajuuden määrityksistä."
+
+#: src/components/claude-scope.ts
+msgctxt "removing a plugin; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "”%1” poistetaan Clauden laajuuden %2 määrityksistä."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's local-scope config."
+msgstr "”%1” poistetaan Clauden paikallisen laajuuden määrityksistä."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's project-scope config."
+msgstr "”%1” poistetaan Clauden projektilaajuuden määrityksistä."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server"
+msgid "\"%1\" will be removed from Claude's user-scope config."
+msgstr "”%1” poistetaan Clauden käyttäjälaajuuden määrityksistä."
+
+#: src/components/claude-scope.ts
+msgctxt "removing an MCP server; %2 is a scope name"
+msgid "\"%1\" will be removed from Claude's %2-scope config."
+msgstr "”%1” poistetaan Clauden laajuuden %2 määrityksistä."
+
+#: src/components/skills-panel.tsx
+msgctxt "scope heading, then the project name"
+msgid "%1 · %2"
+msgstr "%1 · %2"
+
+#: src/components/claude-scope.ts
+msgctxt "scope picker option: %1 is the scope id, %2 what it means"
+msgid "%1: %2"
+msgstr "%1: %2"
+
+#: src/components/perf-panel.tsx
+msgctxt "seconds"
+msgid "%1s"
+msgstr "%1 s"
+
+#: src/chat-sidebar.tsx src/components/plugins-panel.tsx src/components/skills-panel.tsx
+msgctxt "separator between list items"
+msgid ", "
+msgstr ", "
+
+#: src/components/settings-panel.tsx
+msgctxt "setting source"
+msgid "User"
+msgstr "Käyttäjä"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings section"
+msgid "Language"
+msgstr "Kieli"
+
+#: src/chatbook-toolbar.ts src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Chatbook"
+msgstr "Chatbook"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "General"
+msgstr "Yleiset"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "MCP Servers"
+msgstr "MCP-palvelimet"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Performance"
+msgstr "Suorituskyky"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Plugins"
+msgstr "Lisäosat"
+
+#: src/components/settings-panel.tsx
+msgctxt "settings tab"
+msgid "Skills"
+msgstr "Taidot"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Managed"
+msgstr "Hallinnoitu"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill badge"
+msgid "Tracking"
+msgstr "Seurataan"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "Project"
+msgstr "Projekti"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill scope"
+msgid "User"
+msgstr "Käyttäjä"
+
+#: src/components/skills-panel.tsx
+msgctxt "skill sync result; %1 is a list of counts"
+msgid "Sync complete. %1."
+msgstr "Synkronointi valmis. %1."
+
+#: src/components/perf-panel.tsx
+msgctxt "skip reason"
+msgid "not applicable"
+msgstr "ei sovellu"
+
+#: src/components/skills-panel.tsx
+msgctxt "stands in for the project folder name"
+msgid "<project>"
+msgstr "<projekti>"
+
+#: src/terminal-drag.ts
+msgctxt "terminal upload failure; %2 lists files, %1 counts the rest"
+msgid "Terminal drop upload failed for %2 (+%1 more)"
+msgid_plural "Terminal drop upload failed for %2 (+%1 more)"
+msgstr[0] "Päätteeseen pudotettujen tiedostojen lataus epäonnistui: %2 (+%1 muu)"
+msgstr[1] "Päätteeseen pudotettujen tiedostojen lataus epäonnistui: %2 (+%1 muuta)"
+
+#: src/i18n.ts
+msgctxt "text direction: translate as 'rtl' for a right-to-left language, otherwise 'ltr'"
+msgid "ltr"
+msgstr "ltr"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "cancelled"
+msgstr "peruutettu"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "completed"
+msgstr "valmis"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "failed"
+msgstr "epäonnistui"
+
+#: src/components/tool-call-card.tsx
+msgctxt "tool call status"
+msgid "in progress"
+msgstr "käynnissä"
+
+#: src/components/tool-call-group.tsx
+msgctxt "tool call summary: %1 is the call count, %2 the failed count"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: src/chat-sidebar.tsx
+msgctxt "tool selection"
+msgid "clear"
+msgstr "tyhjennä"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Command execute"
+msgstr "Komentojen suoritus"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File edit"
+msgstr "Tiedostojen muokkaus"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "File read"
+msgstr "Tiedostojen luku"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook edit"
+msgstr "Muistikirjan muokkaus"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Notebook execute"
+msgstr "Muistikirjan suoritus"
+
+#: src/builtin-toolset-labels.ts
+msgctxt "toolset"
+msgid "Python file edit"
+msgstr "Python-tiedostojen muokkaus"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "cancelled"
+msgstr "peruutettu"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "error"
+msgstr "virhe"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn status"
+msgid "ok"
+msgstr "ok"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn timeline section"
+msgid "Events"
+msgstr "Tapahtumat"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Agent cold start"
+msgstr "Agentin kylmäkäynnistys"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Cancelled"
+msgstr "Peruutettu"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Context preparation"
+msgstr "Kontekstin valmistelu"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Failed"
+msgstr "Epäonnistui"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Mid-stream stalls"
+msgstr "Pysähdykset kesken suoratoiston"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Model or gateway"
+msgstr "Malli tai yhdyskäytävä"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No single hotspot"
+msgstr "Ei yksittäistä pullonkaulaa"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "No timing recorded"
+msgstr "Ajoitusta ei tallennettu"
+
+#: src/components/perf-panel.tsx
+msgctxt "turn verdict"
+msgid "Tool execution"
+msgstr "Työkalujen suoritus"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "not valid JSON. %1"
+msgstr "virheellinen JSON. %1"
+
+#: src/mcp-config-save.ts
+msgctxt "why an MCP config save failed, after \"Failed to save MCP config: \""
+msgid "the save failed for an unknown reason"
+msgstr "tallennus epäonnistui tuntemattomasta syystä"

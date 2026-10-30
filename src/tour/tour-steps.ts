@@ -29,6 +29,9 @@ import {
 } from './tour-config';
 import { TOUR_ANCHOR } from './tour-anchors';
 import defaultsJson from './tour-defaults.json';
+import { TranslationBundle } from '@jupyterlab/translation';
+import { getLanguageCode } from '../i18n';
+import { tourText } from './tour-text';
 
 export type TourPlacement = 'top' | 'bottom' | 'left' | 'right' | 'center';
 
@@ -39,7 +42,7 @@ export interface ITourStep {
   // step list is built. The thunk form lets a step adapt its copy to
   // the deployment (e.g. the launcher-tiles step lists only the CLIs
   // that are actually installed on this machine).
-  description: string | (() => string);
+  description: string | ((trans: TranslationBundle) => string);
   // Element selector: tour anchors to `[data-tour-id="<anchorId>"]`.
   // null means a centered modal step (welcome / completion).
   anchorId: string | null;
@@ -118,31 +121,44 @@ function visibleCodingAgentLaunchers(): string[] {
   ).map(l => l.label);
 }
 
-function formatLauncherList(names: string[]): string {
-  if (names.length === 0) {
-    return '';
+/** "A, B, and C" in the user's language. */
+export function formatLauncherList(names: string[], locale: string): string {
+  // Intl.ListFormat is newer than this project's TypeScript lib target.
+  const ListFormat = (Intl as any).ListFormat;
+  if (ListFormat) {
+    return new ListFormat(locale, {
+      style: 'long',
+      type: 'conjunction'
+    }).format(names);
   }
-  if (names.length === 1) {
-    return names[0];
-  }
-  if (names.length === 2) {
-    return `${names[0]} and ${names[1]}`;
+  if (names.length <= 2) {
+    return names.join(' and ');
   }
   return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
 
-function launcherTilesDescription(): string {
+function launcherTilesDescription(trans: TranslationBundle): string {
   const names = visibleCodingAgentLaunchers();
-  const list = formatLauncherList(names);
   // Admin overrides win; defaults supply the fallback templates.
   const overrideTemplates = launcherTileTemplates(
-    NBIAPI.config.tourOverrides as ITourOverrides
+    withoutDefaultCopies(NBIAPI.config.tourOverrides as ITourOverrides)
   );
   const defaultStep = TOUR_DEFAULTS.steps?.['launcher-tiles'];
-  const template =
-    names.length === 1
-      ? (overrideTemplates.singular ?? defaultStep?.description_singular)
-      : (overrideTemplates.plural ?? defaultStep?.description_plural);
+  const override =
+    names.length === 1 ? overrideTemplates.singular : overrideTemplates.plural;
+  const source =
+    (names.length === 1
+      ? defaultStep?.description_singular
+      : defaultStep?.description_plural) ?? '';
+  const template = override ?? tourText(trans, source);
+  // The list joins in the language of the sentence around it: the user's
+  // for a translated default or an admin's template (written for them, see
+  // docs/admin-tour-config.md), English for a default not translated yet.
+  const sentenceLanguage =
+    override !== undefined || template !== source
+      ? (getLanguageCode() ?? 'en')
+      : 'en';
+  const list = formatLauncherList(names, sentenceLanguage);
   return template ? template.replace(/\{launchers\}/g, list) : '';
 }
 
@@ -230,9 +246,8 @@ export const ALL_TOUR_STEPS: readonly ITourStep[] = Object.freeze([
     // Dynamic description so the step only mentions the CLI tools the
     // user actually has installed. Skipped entirely when zero are
     // available (see the requires predicate below). Both the default
-    // templates and admin overrides flow through this thunk so the
-    // {launchers} placeholder gets substituted with the same
-    // comma-joined list either way.
+    // templates and admin overrides flow through this thunk, which fills
+    // in the {launchers} list.
     description: launcherTilesDescription,
     anchorId: null,
     placement: 'center',
@@ -257,7 +272,40 @@ export type IResolvedTourStep = Omit<ITourStep, 'description'> & {
   description: string;
 };
 
-export function activeTourSteps(): IResolvedTourStep[] {
+/**
+ * Drop override values identical to the bundled English default. An admin
+ * who copies tour-defaults.json and leaves keys unchanged did not mean to
+ * pin them to English; without this they would never be translated.
+ */
+export function withoutDefaultCopies(
+  overrides: ITourOverrides | undefined
+): ITourOverrides | undefined {
+  if (!overrides) {
+    return overrides;
+  }
+  const same = (value: unknown, fallback: unknown) =>
+    typeof value === 'string' && value === fallback;
+  const steps: ITourOverrides['steps'] = {};
+  for (const [id, step] of Object.entries(overrides.steps ?? {})) {
+    const defaults = TOUR_DEFAULTS.steps?.[id] ?? {};
+    steps[id] = Object.fromEntries(
+      Object.entries(step ?? {}).filter(
+        ([key, value]) => !same(value, (defaults as any)[key])
+      )
+    );
+  }
+  const ui = Object.fromEntries(
+    Object.entries(overrides.ui ?? {}).filter(
+      ([key, value]) => !same(value, (TOUR_DEFAULTS.ui as any)?.[key])
+    )
+  );
+  const command = same(overrides.command?.label, TOUR_DEFAULTS.command?.label)
+    ? {}
+    : overrides.command;
+  return { ...overrides, steps, ui, command };
+}
+
+export function activeTourSteps(trans: TranslationBundle): IResolvedTourStep[] {
   // Pipeline:
   //   1. Apply admin overrides (title/description rewrites, per-step
   //      enabled:false drops). The default-overrides path returns a
@@ -270,14 +318,26 @@ export function activeTourSteps(): IResolvedTourStep[] {
   //      than at render time) matches the "snapshot on mount"
   //      semantics: a capability change mid-tour doesn't reshape step
   //      copy under the user.
-  const overrides = NBIAPI.config.tourOverrides as ITourOverrides;
-  return applyTourOverrides(ALL_TOUR_STEPS, overrides)
+  // The defaults are translated first, so an admin override, applied next,
+  // replaces them as written.
+  const overrides = withoutDefaultCopies(
+    NBIAPI.config.tourOverrides as ITourOverrides
+  );
+  const translated = ALL_TOUR_STEPS.map(step => ({
+    ...step,
+    title: tourText(trans, step.title),
+    description:
+      typeof step.description === 'function'
+        ? step.description
+        : tourText(trans, step.description)
+  }));
+  return applyTourOverrides(translated, overrides)
     .filter(step => (step.requires ? step.requires() : true))
     .map(step => ({
       ...step,
       description:
         typeof step.description === 'function'
-          ? step.description()
+          ? step.description(trans)
           : step.description
     }));
 }

@@ -3,6 +3,7 @@
 import os
 from typing import Union
 import json
+from notebook_intelligence import i18n
 from notebook_intelligence.api import ChatCommand, ChatParticipant, ChatRequest, ChatResponse, MarkdownData, ProgressData, Tool, ToolPreInvokeResponse
 from notebook_intelligence.prompts import Prompts
 import base64
@@ -489,7 +490,7 @@ class BaseChatParticipant(ChatParticipant):
         chat_model = request.host.chat_model
         messages = request.chat_history.copy()
         messages.pop()
-        messages.insert(0, {"role": "system", "content": f"You are an assistant that explains the provided code using markdown. Don't include any code, just narrative markdown text. Keep it concise, only generate few lines. First create a title that suits the code and then explain the code briefly. You should return the markdown directly, without wrapping it inside ```."})
+        messages.insert(0, {"role": "system", "content": i18n.with_reply_language(f"You are an assistant that explains the provided code using markdown. Don't include any code, just narrative markdown text. Keep it concise, only generate few lines. First create a title that suits the code and then explain the code briefly. You should return the markdown directly, without wrapping it inside ```.", request.reply_language)})
         messages.append({"role": "user", "content": f"Generate markdown that explains this code: {code}"})
         messages = budget_chat_messages(
             messages,
@@ -507,7 +508,7 @@ class BaseChatParticipant(ChatParticipant):
         if request.chat_mode.id == "ask":
             return await self.handle_ask_mode_chat_request(request, response, options)
         elif request.chat_mode.id == "agent":
-            system_prompt = None
+            system_prompt = ""
             if len(self.tools) > 0:
                 system_prompt = "Try to answer the question with a tool first. If the tool you use has default values for parameters and user didn't provide a value for those, make sure to set the default value for the parameter.\n\n"
 
@@ -528,8 +529,8 @@ class BaseChatParticipant(ChatParticipant):
             else:
                 # Even if no system prompt, we might have rules to inject
                 system_prompt = self._inject_rules_into_system_prompt("", request)
-                if system_prompt == "":
-                    system_prompt = None
+            if system_prompt == "":
+                system_prompt = None
             
             options = options.copy()
             options["system_prompt"] = system_prompt
@@ -544,6 +545,7 @@ class BaseChatParticipant(ChatParticipant):
 
     async def handle_ask_mode_chat_request(self, request: ChatRequest, response: ChatResponse, options: dict = {}) -> None:
         chat_model = request.host.chat_model
+        trans = i18n.response_bundle(response)
         if request.command == 'newNotebook':
             language = request.language or 'python'
             kernel_name = request.kernel_name or ''
@@ -564,7 +566,7 @@ class BaseChatParticipant(ChatParticipant):
             ui_cmd_response = await response.run_ui_command('notebook-intelligence:add-markdown-cell-to-notebook', {'markdown': markdown, 'path': file_path})
             ui_cmd_response = await response.run_ui_command('notebook-intelligence:add-code-cell-to-notebook', {'code': code, 'path': file_path})
 
-            response.stream(MarkdownData(f"Notebook '{file_path}' created and opened successfully"))
+            response.stream(MarkdownData(trans.__("Notebook '%1' created and opened successfully", file_path)))
             response.finish()
             return
         elif request.command == 'newPythonFile':
@@ -584,18 +586,21 @@ class BaseChatParticipant(ChatParticipant):
             code = extract_llm_generated_code(code)
             ui_cmd_response = await response.run_ui_command('notebook-intelligence:create-new-file', {'code': code })
             file_path = ui_cmd_response['path']
-            response.stream(MarkdownData(f"File '{file_path}' created successfully"))
+            response.stream(MarkdownData(trans.__("File '%1' created successfully", file_path)))
             response.finish()
             return
         elif request.command == 'settings':
             ui_cmd_response = await response.run_ui_command('notebook-intelligence:open-configuration-dialog')
-            response.stream(MarkdownData(f"Opened the settings dialog"))
+            response.stream(MarkdownData(trans.__("Opened the settings dialog")))
             response.finish()
             return
 
         # Inject rules into system prompt
         base_system_prompt = options.get("system_prompt", self.chat_prompt(chat_model.provider.name, chat_model.name))
-        enhanced_system_prompt = self._inject_rules_into_system_prompt(base_system_prompt, request)
+        enhanced_system_prompt = i18n.with_reply_language(
+            self._inject_rules_into_system_prompt(base_system_prompt, request),
+            request.reply_language,
+        )
         
         messages = [
             {"role": "system", "content": enhanced_system_prompt},
@@ -609,11 +614,11 @@ class BaseChatParticipant(ChatParticipant):
 
         try:
             if chat_model.provider.id != "github-copilot":
-                response.stream(ProgressData("Thinking…"))
+                response.stream(ProgressData(trans.__("Thinking…")))
             chat_model.completions(messages, response=response, cancel_token=request.cancel_token)
         except Exception as e:
             log.error(f"Error while handling chat request!\n{e}")
-            response.stream(MarkdownData(f"Oops! There was a problem handling chat request. Please try again with a different prompt."))
+            response.stream(MarkdownData(trans.__("Oops! There was a problem handling chat request. Please try again with a different prompt.")))
             response.finish()
 
     @staticmethod

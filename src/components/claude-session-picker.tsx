@@ -11,6 +11,7 @@ import { VscCheck, VscClose, VscCopy, VscHistory } from '../icons';
 
 import { IClaudeSessionInfo, IClaudeSessionList, NBIAPI } from '../api';
 import { buildResumeCommand, writeTextToClipboard } from '../utils';
+import { getLanguageCode, useTrans } from '../i18n';
 
 export interface IClaudeSessionPickerProps {
   onResume: (session: IClaudeSessionInfo) => void;
@@ -34,18 +35,18 @@ function formatTimestamp(epochSeconds: number): string {
   if (Number.isNaN(date.getTime())) {
     return '';
   }
-  return date.toLocaleString();
+  return date.toLocaleString(getLanguageCode());
 }
-
-const COPY_LABELS: Record<'copied' | 'failed' | 'idle', string> = {
-  idle: 'Copy resume command',
-  copied: 'Resume command copied',
-  failed: 'Failed to copy resume command'
-};
 
 export function ClaudeSessionPicker(
   props: IClaudeSessionPickerProps
 ): JSX.Element {
+  const trans = useTrans();
+  const copyLabels: Record<'copied' | 'failed' | 'idle', string> = {
+    idle: trans.__('Copy resume command'),
+    copied: trans.__('Resume command copied'),
+    failed: trans.__('Failed to copy resume command')
+  };
   const [sessions, setSessions] = useState<IClaudeSessionInfo[]>([]);
   const [currentCwd, setCurrentCwd] = useState('');
   const [loading, setLoading] = useState(true);
@@ -82,7 +83,9 @@ export function ClaudeSessionPicker(
         if (cancelled) {
           return;
         }
-        setError(String(reason?.message ?? reason ?? 'Unknown error'));
+        setError(
+          String(reason?.message ?? reason ?? trans.__('Unknown error'))
+        );
         setLoading(false);
       });
     return () => {
@@ -133,7 +136,11 @@ export function ClaudeSessionPicker(
       }
       props.onResume(session);
     } catch (reason) {
-      setError(String((reason as Error)?.message ?? reason ?? 'Unknown error'));
+      setError(
+        String(
+          (reason as Error)?.message ?? reason ?? trans.__('Unknown error')
+        )
+      );
       setResuming(false);
     }
   };
@@ -156,12 +163,12 @@ export function ClaudeSessionPicker(
           <VscHistory />
         </div>
         <div className="mode-tools-popover-title">
-          {props.title ?? 'Resume Claude session'}
+          {props.title ?? trans.__('Resume Claude session')}
         </div>
         <div style={{ flexGrow: 1 }}></div>
         <div
           className="mode-tools-popover-button mode-tools-popover-close-button"
-          title="Close"
+          title={trans.__('Close')}
           onClick={props.onClose}
         >
           <VscClose />
@@ -173,12 +180,14 @@ export function ClaudeSessionPicker(
         )}
         {loading ? (
           <div className="workspace-file-popover-status">
-            Loading sessions&#8230;
+            {trans.__('Loading sessions…')}
           </div>
         ) : sessions.length === 0 ? (
           <div className="workspace-file-popover-status">
             {props.emptyMessage ??
-              'No previous Claude sessions found for this working directory.'}
+              trans.__(
+                'No previous Claude sessions found for this working directory.'
+              )}
           </div>
         ) : (
           <ul className="claude-session-picker-list">
@@ -187,7 +196,7 @@ export function ClaudeSessionPicker(
                 copyFeedback && copyFeedback.sessionId === session.session_id
                   ? copyFeedback.status
                   : null;
-              const buttonLabel = COPY_LABELS[feedback ?? 'idle'];
+              const buttonLabel = copyLabels[feedback ?? 'idle'];
               return (
                 <li
                   key={session.session_id}

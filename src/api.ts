@@ -1,9 +1,17 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import { ServerConnection } from '@jupyterlab/services';
-import { requestAPI } from './handler';
+import { requestAPI, withLocale } from './handler';
+import { getTrans } from './i18n';
 import { URLExt } from '@jupyterlab/coreutils';
 import { Signal } from '@lumino/signaling';
+import {
+  clampChatbookExecutionMode,
+  DEFAULT_CHATBOOK_EXECUTION_MODE,
+  DEFAULT_CHATBOOK_MAX_EXECUTION_MODE,
+  parseChatbookExecutionMode,
+  type ChatbookExecutionMode
+} from './chatbook-core';
 import {
   GITHUB_COPILOT_PROVIDER_ID,
   IChatCompletionResponseEmitter,
@@ -281,7 +289,8 @@ export type FeaturePolicyName =
   | 'claude_bypass_permissions'
   | 'terminal_drag_drop'
   | 'refresh_open_files_on_disk_change'
-  | 'perf_diagnostics';
+  | 'perf_diagnostics'
+  | 'chatbook';
 
 export type IFeaturePolicies = Record<
   FeaturePolicyName,
@@ -477,6 +486,49 @@ export class NBIConfig {
     return this.capabilities.chat_feedback_always_visible === true;
   }
 
+  get chatbookHasContextProviders(): boolean {
+    // Fail safe before the first capabilities response: skipping one cache hit
+    // is cheaper than bypassing an extension provider with stale code.
+    return this.capabilities.chatbook_has_context_providers !== false;
+  }
+
+  get chatbookHasGuidelines(): boolean {
+    return this.capabilities.chatbook_has_guidelines !== false;
+  }
+
+  get chatbookExecutionMode(): ChatbookExecutionMode {
+    return clampChatbookExecutionMode(
+      this.capabilities.chatbook_execution_mode ||
+        DEFAULT_CHATBOOK_EXECUTION_MODE,
+      this.chatbookMaxExecutionMode
+    );
+  }
+
+  get chatbookLlmDangerScan(): boolean {
+    return this.capabilities.chatbook_llm_danger_scan === true;
+  }
+
+  get replyInUserLanguage(): boolean {
+    return this.capabilities.reply_in_user_language === true;
+  }
+
+  get chatbookBackendKernel(): string {
+    return String(this.capabilities.chatbook_backend_kernel || '').trim();
+  }
+
+  get chatbookMaxExecutionMode(): ChatbookExecutionMode {
+    return parseChatbookExecutionMode(
+      this.capabilities.chatbook_max_execution_mode,
+      DEFAULT_CHATBOOK_MAX_EXECUTION_MODE
+    );
+  }
+
+  get chatbookEnabled(): boolean {
+    // Admins turn it off with NBI_CHATBOOK_POLICY=force-off. Default-open in
+    // featurePolicies, so a backend without the policy keeps Chatbook visible.
+    return this.featurePolicies.chatbook.enabled;
+  }
+
   // Admin-supplied tour-copy overrides, served from the capabilities
   // response after server-side validation. Returns the raw dict; the
   // tour module decides how to apply it. Defaults to a shared frozen
@@ -487,6 +539,13 @@ export class NBIConfig {
   get tourOverrides(): Record<string, any> {
     const v = this.capabilities.tour_overrides;
     return v && typeof v === 'object' ? v : EMPTY_TOUR_OVERRIDES;
+  }
+
+  // True when an admin has suppressed the first-run auto-show
+  // (NBI_TOUR_DISABLED). Replaying the tour from the command palette
+  // still works.
+  get tourDisabled(): boolean {
+    return this.capabilities.tour_disabled === true;
   }
 
   get allowGithubSkillImport(): boolean {
@@ -544,7 +603,8 @@ export class NBIConfig {
       'claude_bypass_permissions',
       'terminal_drag_drop',
       'refresh_open_files_on_disk_change',
-      'perf_diagnostics'
+      'perf_diagnostics',
+      'chatbook'
     ];
     // Policies that default *open* when the capability field is missing,
     // covering two cases: admin-only management gates (no user toggle) where
@@ -557,6 +617,7 @@ export class NBIConfig {
       'skills_management',
       'claude_mcp_management',
       'claude_plugins_management',
+      'chatbook',
       'refresh_open_files_on_disk_change'
     ]);
     const result = {} as IFeaturePolicies;
@@ -612,6 +673,13 @@ export class NBIConfig {
   changed = new Signal<this, void>(this);
 }
 
+// Requests whose caller waits for a StreamEnd (_subscribeUntilStreamEnd).
+const STREAMED_REQUEST_TYPES: Set<string> = new Set([
+  RequestDataType.ChatRequest,
+  RequestDataType.GenerateCode,
+  RequestDataType.InlineCompletionRequest
+]);
+
 export class NBIAPI {
   static _loginStatus = GitHubCopilotLoginStatus.NotLoggedIn;
   static _deviceVerificationInfo: IDeviceVerificationInfo = {
@@ -619,6 +687,11 @@ export class NBIAPI {
     userCode: ''
   };
   static _webSocket: WebSocket;
+  // Messages sent while the socket is still connecting (right after page
+  // load, or during a reconnect), when WebSocket.send throws. They belong to
+  // that socket: if it closes before opening they are not sent (a new
+  // connection has none of its server-side state) and are ended locally.
+  static _pendingMessages: { id: string; type: string; text: string }[] = [];
   static _messageReceived = new Signal<unknown, any>(this);
   static config = new NBIConfig();
   static configChanged = this.config.changed;
@@ -673,28 +746,113 @@ export class NBIAPI {
 
   static async initializeWebsocket() {
     const serverSettings = ServerConnection.makeSettings();
-    const wsUrl = URLExt.join(
-      serverSettings.wsUrl,
-      'notebook-intelligence',
-      'copilot'
+    const wsUrl = withLocale(
+      URLExt.join(serverSettings.wsUrl, 'notebook-intelligence', 'copilot')
     );
 
-    this._webSocket = new serverSettings.WebSocket(wsUrl);
-    this._webSocket.onmessage = msg => {
-      this._messageReceived.emit(msg.data);
+    const previous = this._webSocket;
+    const socket = new serverSettings.WebSocket(wsUrl);
+    this._webSocket = socket;
+    this._endUnsent(this._pendingMessages.splice(0));
+    // A socket being replaced is closed, so it cannot keep delivering.
+    if (previous && previous.readyState <= WebSocket.OPEN) {
+      previous.close();
+    }
+    socket.onopen = () => {
+      if (socket === this._webSocket) {
+        this._flushPending();
+      }
+    };
+    socket.onmessage = msg => {
+      if (socket === this._webSocket) {
+        this._messageReceived.emit(msg.data);
+      }
     };
 
-    this._webSocket.onerror = msg => {
+    // Handlers act on the socket that raised the event, which a reconnect
+    // may already have replaced.
+    socket.onerror = msg => {
       console.error(`Websocket error: ${msg}. Closing...`);
-      this._webSocket.close();
+      socket.close();
     };
 
-    this._webSocket.onclose = msg => {
+    socket.onclose = msg => {
+      if (socket !== this._webSocket) {
+        return;
+      }
+      // What was waiting for this connection belongs to it.
+      this._endUnsent(this._pendingMessages.splice(0));
       console.log(`Websocket is closed: ${msg.reason}. Reconnecting...`);
       setTimeout(() => {
         NBIAPI.initializeWebsocket();
       }, 1000);
     };
+  }
+
+  /** Send what was queued while the socket was connecting, in order. */
+  static _flushPending(): void {
+    for (const pending of this._pendingMessages.splice(0)) {
+      this._webSocket.send(pending.text);
+    }
+  }
+
+  /**
+   * End requests that never reached the server, so their callers stop
+   * waiting for a reply that cannot come. A chat or generation request gets
+   * the reason as its reply, marked as a failure the way the server marks
+   * an interrupted stream (nbi_stream_error), so the chat shows it and
+   * inline chat reports it instead of inserting it. A background inline
+   * completion would read a message as completion text, so it only ends.
+   */
+  static _endUnsent(messages: { id: string; type: string }[]): void {
+    const requests = messages.filter(m => STREAMED_REQUEST_TYPES.has(m.type));
+    if (requests.length === 0) {
+      return;
+    }
+    const trans = getTrans();
+    const reason = trans.__(
+      'Notebook Intelligence is not connected to the server, so the request was not sent. Try again in a moment.'
+    );
+    for (const request of requests) {
+      if (request.type !== RequestDataType.InlineCompletionRequest) {
+        this._messageReceived.emit(
+          JSON.stringify({
+            id: request.id,
+            type: BackendMessageType.StreamMessage,
+            data: {
+              choices: [{ delta: { role: 'assistant', content: reason } }],
+              nbi_stream_error: reason
+            },
+            created: new Date().toISOString()
+          })
+        );
+      }
+      this._messageReceived.emit(
+        JSON.stringify({
+          id: request.id,
+          type: BackendMessageType.StreamEnd,
+          data: {}
+        })
+      );
+    }
+  }
+
+  /**
+   * Send now if the socket is open, or once it opens if it is connecting.
+   * With no usable socket (closed, or between reconnects) the message is not
+   * sent, as before, and a request is ended locally rather than left
+   * waiting.
+   */
+  static _send(message: { id: string; type: string; data?: any }): void {
+    const text = JSON.stringify(message);
+    const state = this._webSocket?.readyState;
+    if (state === WebSocket.OPEN) {
+      this._webSocket.send(text);
+    } else if (state === WebSocket.CONNECTING) {
+      this._pendingMessages.push({ id: message.id, type: message.type, text });
+    } else {
+      this._endUnsent([message]);
+    }
   }
 
   static getLoginStatus(): GitHubCopilotLoginStatus {
@@ -1305,25 +1463,23 @@ export class NBIAPI {
     permissionMode: string = 'default'
   ) {
     this._subscribeUntilStreamEnd(messageId, responseEmitter);
-    this._webSocket.send(
-      JSON.stringify({
-        id: messageId,
-        type: RequestDataType.ChatRequest,
-        data: {
-          chatId,
-          prompt,
-          language,
-          kernelName,
-          kernelDisplayName,
-          currentDirectory,
-          filename,
-          additionalContext,
-          chatMode,
-          toolSelections,
-          permissionMode
-        }
-      })
-    );
+    this._send({
+      id: messageId,
+      type: RequestDataType.ChatRequest,
+      data: {
+        chatId,
+        prompt,
+        language,
+        kernelName,
+        kernelDisplayName,
+        currentDirectory,
+        filename,
+        additionalContext,
+        chatMode,
+        toolSelections,
+        permissionMode
+      }
+    });
   }
 
   static async reloadMCPServers(): Promise<any> {
@@ -1340,6 +1496,67 @@ export class NBIAPI {
     });
   }
 
+  static async generateChatbookCell(prompt: string): Promise<string> {
+    const data = await requestAPI<{ generatedCode?: string; error?: string }>(
+      'chatbook/generate',
+      {
+        method: 'POST',
+        body: JSON.stringify({ prompt })
+      }
+    );
+    const code = (data?.generatedCode || '').trim();
+    if (!code) {
+      throw new Error(
+        data?.error || 'Chatbook code generation produced no cell'
+      );
+    }
+    return code;
+  }
+
+  static async summarizeChatbookCell(code: string): Promise<string> {
+    const data = await requestAPI<{ prompt?: string; error?: string }>(
+      'chatbook/generate',
+      {
+        method: 'POST',
+        body: JSON.stringify({ operation: 'summarize', code })
+      }
+    );
+    const prompt = (data?.prompt || '').trim();
+    if (!prompt) {
+      throw new Error(
+        data?.error || 'Chatbook summary produced no description'
+      );
+    }
+    return prompt;
+  }
+
+  static async listChatbookMentions(
+    parent = '',
+    query = '',
+    limit = 100,
+    notebookPath = '',
+    signal?: AbortSignal
+  ): Promise<{
+    items: Array<{
+      label: string;
+      value: string;
+      kind: 'root' | 'file' | 'dir';
+      hasChildren: boolean;
+    }>;
+    breadcrumbs: Array<{ label: string; value: string }>;
+  }> {
+    const params = [
+      `parent=${encodeURIComponent(parent)}`,
+      `query=${encodeURIComponent(query)}`,
+      `limit=${encodeURIComponent(String(limit))}`,
+      `notebookPath=${encodeURIComponent(notebookPath)}`
+    ].join('&');
+    return requestAPI(`chatbook/mentions?${params}`, {
+      method: 'GET',
+      signal
+    });
+  }
+
   static async generateCode(
     messageId: string,
     chatId: string,
@@ -1353,32 +1570,28 @@ export class NBIAPI {
     responseEmitter: IChatCompletionResponseEmitter
   ) {
     this._subscribeUntilStreamEnd(messageId, responseEmitter);
-    this._webSocket.send(
-      JSON.stringify({
-        id: messageId,
-        type: RequestDataType.GenerateCode,
-        data: {
-          chatId,
-          prompt,
-          prefix,
-          suffix,
-          existingCode,
-          language,
-          kernelName,
-          filename
-        }
-      })
-    );
+    this._send({
+      id: messageId,
+      type: RequestDataType.GenerateCode,
+      data: {
+        chatId,
+        prompt,
+        prefix,
+        suffix,
+        existingCode,
+        language,
+        kernelName,
+        filename
+      }
+    });
   }
 
   static async sendChatUserInput(messageId: string, data: any) {
-    this._webSocket.send(
-      JSON.stringify({
-        id: messageId,
-        type: RequestDataType.ChatUserInput,
-        data
-      })
-    );
+    this._send({
+      id: messageId,
+      type: RequestDataType.ChatUserInput,
+      data
+    });
   }
 
   static async sendWebSocketMessage(
@@ -1386,9 +1599,7 @@ export class NBIAPI {
     messageType: RequestDataType,
     data: any
   ) {
-    this._webSocket.send(
-      JSON.stringify({ id: messageId, type: messageType, data })
-    );
+    this._send({ id: messageId, type: messageType, data });
   }
 
   static async inlineCompletionsRequest(
@@ -1401,19 +1612,17 @@ export class NBIAPI {
     responseEmitter: IChatCompletionResponseEmitter
   ) {
     this._subscribeUntilStreamEnd(messageId, responseEmitter);
-    this._webSocket.send(
-      JSON.stringify({
-        id: messageId,
-        type: RequestDataType.InlineCompletionRequest,
-        data: {
-          chatId,
-          prefix,
-          suffix,
-          language,
-          filename
-        }
-      })
-    );
+    this._send({
+      id: messageId,
+      type: RequestDataType.InlineCompletionRequest,
+      data: {
+        chatId,
+        prefix,
+        suffix,
+        language,
+        filename
+      }
+    });
   }
 
   static async uploadFile(

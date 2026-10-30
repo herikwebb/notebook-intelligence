@@ -12,11 +12,15 @@ import { createPortal } from 'react-dom';
 import {
   TourPlacement,
   IResolvedTourStep,
-  activeTourSteps
+  TOUR_DEFAULTS,
+  activeTourSteps,
+  withoutDefaultCopies
 } from './tour-steps';
 import { markTourCompleted } from './tour-state';
 import { NBIAPI } from '../api';
 import { uiLabel } from './tour-config';
+import { formatNumber, getTextDirection, useTrans } from '../i18n';
+import { tourText } from './tour-text';
 
 const TOOLTIP_GAP_PX = 12;
 const TOOLTIP_WIDTH_PX = 320;
@@ -95,16 +99,32 @@ export function TourOverlay(props: ITourOverlayProps): JSX.Element | null {
   // Compute the list of steps once. Capabilities can change at runtime
   // (e.g. user switches Claude mode mid-tour) but recomputing the list
   // mid-flight would change indices under the user; freeze on mount.
-  const steps = useMemo<IResolvedTourStep[]>(() => activeTourSteps(), []);
+  const trans = useTrans();
+  const steps = useMemo<IResolvedTourStep[]>(() => activeTourSteps(trans), []);
   // Freeze the admin overrides snapshot at mount, alongside `steps`, so
   // a config push mid-tour doesn't relabel the active overlay's buttons.
   const labels = useMemo(() => {
-    const overrides = NBIAPI.config.tourOverrides;
+    const overrides = withoutDefaultCopies(NBIAPI.config.tourOverrides);
+    const defaults = TOUR_DEFAULTS.ui ?? {};
     return {
-      skip: uiLabel(overrides, 'skip', 'Skip tour'),
-      next: uiLabel(overrides, 'next', 'Next'),
-      back: uiLabel(overrides, 'back', 'Back'),
-      done: uiLabel(overrides, 'done', 'Done')
+      // The literal is a last resort should tour-defaults.json lose a key,
+      // so a button is never left without a name.
+      skip: uiLabel(
+        overrides,
+        'skip',
+        tourText(trans, defaults.skip ?? 'Skip tour')
+      ),
+      next: uiLabel(
+        overrides,
+        'next',
+        tourText(trans, defaults.next ?? 'Next')
+      ),
+      back: uiLabel(
+        overrides,
+        'back',
+        tourText(trans, defaults.back ?? 'Back')
+      ),
+      done: uiLabel(overrides, 'done', tourText(trans, defaults.done ?? 'Done'))
     };
   }, []);
   const [index, setIndex] = useState(0);
@@ -264,13 +284,17 @@ export function TourOverlay(props: ITourOverlayProps): JSX.Element | null {
       if (inEditable) {
         return;
       }
+      // Next sits on the left when the tour is laid out right to left.
+      const rtl = getTextDirection() === 'rtl';
+      const forward = rtl ? 'ArrowLeft' : 'ArrowRight';
+      const backward = rtl ? 'ArrowRight' : 'ArrowLeft';
       if (e.key === 'Escape') {
         e.preventDefault();
         finishRef.current();
-      } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
+      } else if (e.key === forward || e.key === 'Enter') {
         e.preventDefault();
         advanceRef.current();
-      } else if (e.key === 'ArrowLeft') {
+      } else if (e.key === backward) {
         e.preventDefault();
         backRef.current();
       }
@@ -395,6 +419,7 @@ export function TourOverlay(props: ITourOverlayProps): JSX.Element | null {
     <div
       ref={rootRef}
       className="nbi-tour-root"
+      dir={getTextDirection()}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
@@ -422,7 +447,11 @@ export function TourOverlay(props: ITourOverlayProps): JSX.Element | null {
           aria-valuemin={1}
           aria-valuemax={steps.length}
           aria-valuenow={index + 1}
-          aria-label={`Tour progress: step ${index + 1} of ${steps.length}`}
+          aria-label={trans.__(
+            'Tour progress: step %1 of %2',
+            formatNumber(index + 1, 0),
+            formatNumber(steps.length, 0)
+          )}
         >
           <div
             className="nbi-tour-progress-bar"

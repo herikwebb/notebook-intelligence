@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactWidget } from '@jupyterlab/apputils';
+import { ISignal, Signal } from '@lumino/signaling';
 import { VscTriangleDown, VscTriangleRight, VscWarning } from '../icons';
 import * as path from 'path';
 
@@ -15,6 +16,13 @@ import {
   IClaudeModelInfo,
   NBIAPI
 } from '../api';
+import { TranslationBundle } from '@jupyterlab/translation';
+import { getTextDirection, interpolate, useTrans } from '../i18n';
+import {
+  lockedByEnvironmentTip,
+  lockedTip,
+  optionalLabel
+} from './setting-lock';
 import { CheckBoxItem } from './checkbox';
 import { ReadinessCard } from './readiness-card';
 import { PillItem } from './pill';
@@ -27,9 +35,17 @@ import { SettingsPanelComponentClaudeMCP } from './claude-mcp-panel';
 import { SettingsPanelComponentPlugins } from './plugins-panel';
 import { SettingsPanelComponentPerf } from './perf-panel';
 import { writeTextToClipboard } from '../utils';
-
-const lockedTip = (locked: boolean): string =>
-  locked ? 'Locked by your administrator' : '';
+import {
+  CHATBOOK_EXECUTION_MODES,
+  clampChatbookExecutionMode,
+  type ChatbookExecutionMode
+} from '../chatbook-core';
+import {
+  listChatbookBackendProfiles,
+  resolveChatbookBackendProfile,
+  sharedKernelSpecManager,
+  type INotebookKernelProfile
+} from '../notebook-kernels';
 
 // Stable id helper so the tab and its panel agree on aria-controls /
 // aria-labelledby without scattering string concatenation through the
@@ -100,6 +116,113 @@ function useNbiPolicies() {
 }
 
 const OPENAI_COMPATIBLE_CHAT_MODEL_ID = 'openai-compatible-chat-model';
+
+/**
+ * A required provider property left empty. The value persists as an empty
+ * string and requests then go out with that field blank, which the endpoint
+ * rejects, so the field has to say so rather than looking saved.
+ */
+export function isBlankRequiredProperty(property: {
+  optional?: boolean;
+  value?: string;
+}): boolean {
+  return !property.optional && !(property.value || '').trim();
+}
+
+/**
+ * One provider property input. The required-field error waits for the user to
+ * touch the field: these start empty whenever a provider is first selected,
+ * and painting errors on fields nobody has typed in yet reads as broken
+ * rather than as guidance.
+ */
+/**
+ * The provider property inputs for one model.
+ *
+ * Keyed by provider, model and property id rather than by position: the
+ * providers order their properties differently, so a positional key would
+ * carry one field's state onto whatever field lands in that slot next.
+ */
+export function ModelPropertyList(props: {
+  properties: {
+    id: string;
+    name: string;
+    description: string;
+    value: string;
+    optional?: boolean;
+  }[];
+  providerId: string;
+  modelId: string;
+  inputName: string;
+  onPropertyChange: (propertyId: string, value: string) => void;
+}): JSX.Element {
+  return (
+    <>
+      {props.properties.map(property => (
+        <ModelPropertyField
+          key={`${props.providerId}:${props.modelId}:${property.id}`}
+          property={property}
+          inputName={props.inputName}
+          onChange={value => props.onPropertyChange(property.id, value)}
+        />
+      ))}
+    </>
+  );
+}
+
+/**
+ * What config.json keeps of a model's settings: the server reads back only
+ * id and value, and the labels arrive in the user's language, which a saved
+ * file should not record.
+ */
+function savedProperties(
+  properties: { id: string; value: string }[]
+): { id: string; value: string }[] {
+  return properties.map(({ id, value }) => ({ id, value }));
+}
+
+export function ModelPropertyField(props: {
+  property: {
+    id: string;
+    name: string;
+    description: string;
+    value: string;
+    optional?: boolean;
+  };
+  inputName: string;
+  onChange: (value: string) => void;
+}): JSX.Element {
+  const trans = useTrans();
+  const { property, inputName, onChange } = props;
+  const [touched, setTouched] = useState(false);
+  const showError = touched && isBlankRequiredProperty(property);
+  return (
+    <div className="form-field-row">
+      <div className="form-field-description">
+        {property.optional
+          ? optionalLabel(trans, property.name)
+          : property.name}
+      </div>
+      <input
+        name={inputName}
+        placeholder={property.description}
+        className="jp-mod-styled"
+        spellCheck={false}
+        value={property.value}
+        aria-invalid={showError ? true : undefined}
+        onChange={event => {
+          setTouched(true);
+          onChange(event.target.value);
+        }}
+        onBlur={() => setTouched(true)}
+      />
+      {showError && (
+        <div className="nbi-form-field-error">
+          {trans.__('%1 is required.', property.name)}
+        </div>
+      )}
+    </div>
+  );
+}
 const LITELLM_COMPATIBLE_CHAT_MODEL_ID = 'litellm-compatible-chat-model';
 const OPENAI_COMPATIBLE_INLINE_COMPLETION_MODEL_ID =
   'openai-compatible-inline-completion-model';
@@ -110,11 +233,22 @@ export class SettingsPanel extends ReactWidget {
   constructor(options: {
     onSave: () => void;
     onEditMCPConfigClicked: () => void;
+    initialTab?: string;
   }) {
     super();
 
     this._onSave = options.onSave;
     this._onEditMCPConfigClicked = options.onEditMCPConfigClicked;
+    this._activeTab = options.initialTab ?? 'general';
+  }
+
+  /**
+   * Deep link into a section. The signal covers a panel that is already
+   * mounted; `_activeTab` covers one that mounts right after this call.
+   */
+  selectTab(tab: string): void {
+    this._activeTab = tab;
+    this._tabRequested.emit(tab);
   }
 
   render(): JSX.Element {
@@ -122,12 +256,16 @@ export class SettingsPanel extends ReactWidget {
       <SettingsPanelComponent
         onSave={this._onSave}
         onEditMCPConfigClicked={this._onEditMCPConfigClicked}
+        initialTab={this._activeTab}
+        tabRequested={this._tabRequested}
       />
     );
   }
 
   private _onSave: () => void;
   private _onEditMCPConfigClicked: () => void;
+  private _activeTab: string;
+  private _tabRequested = new Signal<this, string>(this);
 }
 
 // Tab declaration. Adding a new tab is one entry here plus an icon
@@ -136,7 +274,9 @@ export class SettingsPanel extends ReactWidget {
 // propagate through the registry without wiring extra props.
 type TabSpec = {
   id: string;
-  label: string;
+  // A function, so the label is translated when the panel renders rather
+  // than when this module loads.
+  label: (trans: TranslationBundle) => string;
   icon?: () => JSX.Element;
   visible: (ctx: TabVisibilityContext) => boolean;
   render: (props: any) => JSX.Element;
@@ -145,12 +285,13 @@ type TabVisibilityContext = {
   featurePolicies: import('../api').IFeaturePolicies;
   isInClaudeCodeMode: boolean;
   isClaudeCliAvailable: boolean;
+  chatbookEnabled: boolean;
 };
 
-const TABS: TabSpec[] = [
+export const SETTINGS_TABS: TabSpec[] = [
   {
     id: 'general',
-    label: 'General',
+    label: trans => trans._p('settings tab', 'General'),
     visible: () => true,
     render: props => (
       <SettingsPanelComponentGeneral
@@ -160,8 +301,15 @@ const TABS: TabSpec[] = [
     )
   },
   {
+    id: 'chatbook',
+    label: trans => trans._p('settings tab', 'Chatbook'),
+    visible: ctx => ctx.chatbookEnabled,
+    render: () => <SettingsPanelComponentChatbook />
+  },
+  {
     id: 'claude',
-    label: 'Claude',
+    // Product names are not translated.
+    label: () => 'Claude',
     icon: () => (
       <span
         className="claude-icon"
@@ -177,7 +325,7 @@ const TABS: TabSpec[] = [
   },
   {
     id: 'acp',
-    label: 'ACP',
+    label: () => 'ACP',
     icon: () => (
       <span
         className="acp-agent-icon"
@@ -193,7 +341,7 @@ const TABS: TabSpec[] = [
   },
   {
     id: 'mcp-servers',
-    label: 'MCP Servers',
+    label: trans => trans._p('settings tab', 'MCP Servers'),
     visible: ctx => !ctx.isInClaudeCodeMode,
     render: props => (
       <SettingsPanelComponentMCPServers
@@ -203,7 +351,7 @@ const TABS: TabSpec[] = [
   },
   {
     id: 'claude-mcp',
-    label: 'Claude MCP',
+    label: () => 'Claude MCP',
     visible: ctx =>
       ctx.featurePolicies.claude_mcp_management.enabled &&
       ctx.isInClaudeCodeMode &&
@@ -212,7 +360,7 @@ const TABS: TabSpec[] = [
   },
   {
     id: 'plugins',
-    label: 'Plugins',
+    label: trans => trans._p('settings tab', 'Plugins'),
     visible: ctx =>
       ctx.featurePolicies.claude_plugins_management.enabled &&
       ctx.isInClaudeCodeMode &&
@@ -221,13 +369,13 @@ const TABS: TabSpec[] = [
   },
   {
     id: 'skills',
-    label: 'Skills',
+    label: trans => trans._p('settings tab', 'Skills'),
     visible: ctx => ctx.featurePolicies.skills_management.enabled,
     render: () => <SettingsPanelComponentSkills />
   },
   {
     id: 'perf',
-    label: 'Performance',
+    label: trans => trans._p('settings tab', 'Performance'),
     // Not gated on `enabled`, which is the user's own toggle and is off by
     // default: gating on it would hide the tab that contains the toggle.
     // Hidden only under force-off, where both perf endpoints 404 and there
@@ -241,7 +389,7 @@ const TABS: TabSpec[] = [
 ];
 
 function SettingsPanelComponent(props: any) {
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState(props.initialTab || 'general');
   const { featurePolicies } = useNbiPolicies();
   const [isInClaudeCodeMode, setIsInClaudeCodeMode] = useState(
     NBIAPI.config.isInClaudeCodeMode
@@ -249,11 +397,15 @@ function SettingsPanelComponent(props: any) {
   const [isClaudeCliAvailable, setIsClaudeCliAvailable] = useState(
     NBIAPI.config.isClaudeCliAvailable
   );
+  const [chatbookEnabled, setChatbookEnabled] = useState(
+    NBIAPI.config.chatbookEnabled
+  );
 
   useEffect(() => {
     const handler = () => {
       setIsInClaudeCodeMode(NBIAPI.config.isInClaudeCodeMode);
       setIsClaudeCliAvailable(NBIAPI.config.isClaudeCliAvailable);
+      setChatbookEnabled(NBIAPI.config.chatbookEnabled);
     };
     NBIAPI.configChanged.connect(handler);
     return () => {
@@ -261,12 +413,27 @@ function SettingsPanelComponent(props: any) {
     };
   }, []);
 
+  useEffect(() => {
+    const requested: ISignal<unknown, string> | undefined = props.tabRequested;
+    if (!requested) {
+      return;
+    }
+    const handler = (_sender: unknown, tab: string) => {
+      setActiveTab(tab);
+    };
+    requested.connect(handler);
+    return () => {
+      requested.disconnect(handler);
+    };
+  }, [props.tabRequested]);
+
   const ctx: TabVisibilityContext = {
     featurePolicies,
     isInClaudeCodeMode,
-    isClaudeCliAvailable
+    isClaudeCliAvailable,
+    chatbookEnabled
   };
-  const visibleTabs = TABS.filter(t => t.visible(ctx));
+  const visibleTabs = SETTINGS_TABS.filter(t => t.visible(ctx));
   const activeTabSpec = visibleTabs.find(t => t.id === activeTab);
 
   // Bounce off a tab that just disappeared (admin policy flip, mode toggle).
@@ -277,7 +444,7 @@ function SettingsPanelComponent(props: any) {
   }, [activeTabSpec]);
 
   return (
-    <div className="nbi-settings-panel">
+    <div className="nbi-settings-panel" dir={getTextDirection()}>
       <SettingsPanelTabsComponent
         tabs={visibleTabs}
         activeTab={activeTab}
@@ -295,11 +462,12 @@ function SettingsPanelComponent(props: any) {
   );
 }
 
-function SettingsPanelTabsComponent(props: {
+export function SettingsPanelTabsComponent(props: {
   tabs: TabSpec[];
   activeTab: string;
   onTabSelected: (tab: string) => void;
 }) {
+  const trans = useTrans();
   const onKeyDown = useTablistArrowKeys(
     props.tabs,
     props.activeTab,
@@ -313,7 +481,7 @@ function SettingsPanelTabsComponent(props: {
       className="nbi-settings-panel-tabs"
       role="tablist"
       aria-orientation="vertical"
-      aria-label="Settings sections"
+      aria-label={trans.__('Settings sections')}
       onKeyDown={onKeyDown}
     >
       {props.tabs.map(tab => {
@@ -330,8 +498,15 @@ function SettingsPanelTabsComponent(props: {
             tabIndex={selected ? 0 : -1}
             onClick={() => props.onTabSelected(tab.id)}
           >
-            {tab.icon && tab.icon()}
-            {tab.label}
+            {tab.icon && (
+              // The icon is decoration: the label beside it is the name. Left
+              // exposed, the svg is an unnamed image node inside the tab,
+              // which some screen readers voice as "image", and accessible
+              // name computations disagree about whether it suppresses the
+              // name entirely. Hiding it settles both.
+              <span aria-hidden="true">{tab.icon()}</span>
+            )}
+            {tab.label(trans)}
           </button>
         );
       })}
@@ -340,6 +515,7 @@ function SettingsPanelTabsComponent(props: {
 }
 
 function SettingsPanelComponentGeneral(props: any) {
+  const trans = useTrans();
   const nbiConfig = NBIAPI.config;
   const llmProviders = nbiConfig.llmProviders;
   const [chatModels, setChatModels] = useState([]);
@@ -352,12 +528,12 @@ function SettingsPanelComponentGeneral(props: any) {
       chat_model: {
         provider: chatModelProvider,
         model: chatModel,
-        properties: chatModelProperties
+        properties: savedProperties(chatModelProperties)
       },
       inline_completion_model: {
         provider: inlineCompletionModelProvider,
         model: inlineCompletionModel,
-        properties: inlineCompletionModelProperties
+        properties: savedProperties(inlineCompletionModelProperties)
       },
       inline_completion_debouncer_delay: inlineCompletionDebouncerDelay
     };
@@ -416,6 +592,14 @@ function SettingsPanelComponentGeneral(props: any) {
   const toggleOutputToolbar = () => {
     NBIAPI.setConfig({
       enable_output_toolbar: !featurePolicies.output_toolbar.enabled
+    });
+  };
+
+  // Like the other toggles here, the box follows the saved config (through
+  // configChanged) rather than flipping before the server has it.
+  const toggleReplyInUserLanguage = () => {
+    NBIAPI.setConfig({
+      reply_in_user_language: !NBIAPI.config.replyInUserLanguage
     });
   };
 
@@ -523,14 +707,18 @@ function SettingsPanelComponentGeneral(props: any) {
     <div className="config-dialog">
       <div className="config-dialog-body">
         <div className="model-config-section">
-          <div className="model-config-section-header">Status</div>
+          <div className="model-config-section-header">
+            {trans.__('Status')}
+          </div>
           <div className="model-config-section-body">
             <ReadinessCard />
           </div>
         </div>
         {!isInClaudeCodeMode && (
           <div className="model-config-section">
-            <div className="model-config-section-header">Default chat mode</div>
+            <div className="model-config-section-header">
+              {trans.__('Default chat mode')}
+            </div>
             <div className="model-config-section-body">
               <div className="model-config-section-row">
                 <div className="model-config-section-column">
@@ -540,8 +728,12 @@ function SettingsPanelComponentGeneral(props: any) {
                       value={defaultChatMode}
                       onChange={event => setDefaultChatMode(event.target.value)}
                     >
-                      <option value="ask">Ask</option>
-                      <option value="agent">Agent</option>
+                      <option value="ask">
+                        {trans._p('chat mode', 'Ask')}
+                      </option>
+                      <option value="agent">
+                        {trans._p('chat mode', 'Agent')}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -553,13 +745,18 @@ function SettingsPanelComponentGeneral(props: any) {
 
         {!isInClaudeCodeMode && (
           <div className="model-config-section">
-            <div className="model-config-section-header">Chat model</div>
+            <div className="model-config-section-header">
+              {trans.__('Chat model')}
+            </div>
             <div className="model-config-section-body">
               <div className="model-config-section-row">
                 <div className="model-config-section-column">
-                  <div>Provider</div>
+                  <div>{trans.__('Provider')}</div>
                   <div
-                    title={lockedTip(settingLocks.chat_model_provider.locked)}
+                    title={lockedTip(
+                      trans,
+                      settingLocks.chat_model_provider.locked
+                    )}
                   >
                     <select
                       className="jp-mod-styled"
@@ -590,7 +787,7 @@ function SettingsPanelComponentGeneral(props: any) {
                           )
                         }
                       >
-                        None
+                        {trans._p('model provider', 'None')}
                       </option>
                     </select>
                   </div>
@@ -600,14 +797,17 @@ function SettingsPanelComponentGeneral(props: any) {
                 ) &&
                   chatModels.length > 0 && (
                     <div className="model-config-section-column">
-                      <div>Model</div>
+                      <div>{trans.__('Model')}</div>
                       {![
                         OPENAI_COMPATIBLE_CHAT_MODEL_ID,
                         LITELLM_COMPATIBLE_CHAT_MODEL_ID
                       ].includes(chatModel) &&
                         chatModels.length > 0 && (
                           <div
-                            title={lockedTip(settingLocks.chat_model_id.locked)}
+                            title={lockedTip(
+                              trans,
+                              settingLocks.chat_model_id.locked
+                            )}
                           >
                             <select
                               className="jp-mod-styled"
@@ -637,19 +837,27 @@ function SettingsPanelComponentGeneral(props: any) {
                   {chatModelProvider === 'ollama' &&
                     chatModels.length === 0 && (
                       <div className="ollama-warning-message">
-                        No Ollama models found! Make sure{' '}
-                        <a href="https://ollama.com/" target="_blank">
-                          Ollama
-                        </a>{' '}
-                        is running and models are downloaded to your computer.{' '}
-                        <button
-                          type="button"
-                          className="link-button"
-                          onClick={handleRefreshOllamaModelListClick}
-                        >
-                          Try again
-                        </button>{' '}
-                        once ready.
+                        {interpolate(
+                          (ollama, tryAgain) =>
+                            trans.__(
+                              'No Ollama models found! Make sure %1 is running and models are downloaded to your computer. %2 once ready.',
+                              ollama,
+                              tryAgain
+                            ),
+                          <a href="https://ollama.com/" target="_blank">
+                            Ollama
+                          </a>,
+                          <button
+                            type="button"
+                            className="link-button"
+                            onClick={handleRefreshOllamaModelListClick}
+                          >
+                            {trans._p(
+                              'Ollama hint: the button that retries listing models',
+                              'Try again'
+                            )}
+                          </button>
+                        )}
                       </div>
                     )}
                 </div>
@@ -657,27 +865,15 @@ function SettingsPanelComponentGeneral(props: any) {
 
               <div className="model-config-section-row">
                 <div className="model-config-section-column">
-                  {chatModelProperties.map((property: any, index: number) => (
-                    <div className="form-field-row" key={index}>
-                      <div className="form-field-description">
-                        {property.name} {property.optional ? '(optional)' : ''}
-                      </div>
-                      <input
-                        name="chat-model-id-input"
-                        placeholder={property.description}
-                        className="jp-mod-styled"
-                        spellCheck={false}
-                        value={property.value}
-                        onChange={event =>
-                          onModelPropertyChange(
-                            'chat',
-                            property.id,
-                            event.target.value
-                          )
-                        }
-                      />
-                    </div>
-                  ))}
+                  <ModelPropertyList
+                    properties={chatModelProperties}
+                    providerId={chatModelProvider}
+                    modelId={chatModel}
+                    inputName="chat-model-id-input"
+                    onPropertyChange={(propertyId, value) =>
+                      onModelPropertyChange('chat', propertyId, value)
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -685,13 +881,16 @@ function SettingsPanelComponentGeneral(props: any) {
         )}
 
         <div className="model-config-section">
-          <div className="model-config-section-header">Auto-complete model</div>
+          <div className="model-config-section-header">
+            {trans.__('Auto-complete model')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
-                <div>Provider</div>
+                <div>{trans.__('Provider')}</div>
                 <div
                   title={lockedTip(
+                    trans,
                     settingLocks.inline_completion_model_provider.locked
                   )}
                 >
@@ -727,7 +926,7 @@ function SettingsPanelComponentGeneral(props: any) {
                         )
                       }
                     >
-                      None
+                      {trans._p('model provider', 'None')}
                     </option>
                   </select>
                 </div>
@@ -736,13 +935,14 @@ function SettingsPanelComponentGeneral(props: any) {
                 inlineCompletionModelProvider
               ) && (
                 <div className="model-config-section-column">
-                  <div>Model</div>
+                  <div>{trans.__('Model')}</div>
                   {![
                     OPENAI_COMPATIBLE_INLINE_COMPLETION_MODEL_ID,
                     LITELLM_COMPATIBLE_INLINE_COMPLETION_MODEL_ID
                   ].includes(inlineCompletionModel) && (
                     <div
                       title={lockedTip(
+                        trans,
                         settingLocks.inline_completion_model_id.locked
                       )}
                     >
@@ -775,29 +975,19 @@ function SettingsPanelComponentGeneral(props: any) {
 
             <div className="model-config-section-row">
               <div className="model-config-section-column">
-                {inlineCompletionModelProperties.map(
-                  (property: any, index: number) => (
-                    <div className="form-field-row" key={index}>
-                      <div className="form-field-description">
-                        {property.name} {property.optional ? '(optional)' : ''}
-                      </div>
-                      <input
-                        name="inline-completion-model-id-input"
-                        placeholder={property.description}
-                        className="jp-mod-styled"
-                        spellCheck={false}
-                        value={property.value}
-                        onChange={event =>
-                          onModelPropertyChange(
-                            'inline-completion',
-                            property.id,
-                            event.target.value
-                          )
-                        }
-                      />
-                    </div>
-                  )
-                )}
+                <ModelPropertyList
+                  properties={inlineCompletionModelProperties}
+                  providerId={inlineCompletionModelProvider}
+                  modelId={inlineCompletionModel}
+                  inputName="inline-completion-model-id-input"
+                  onPropertyChange={(propertyId, value) =>
+                    onModelPropertyChange(
+                      'inline-completion',
+                      propertyId,
+                      value
+                    )
+                  }
+                />
               </div>
             </div>
           </div>
@@ -805,13 +995,18 @@ function SettingsPanelComponentGeneral(props: any) {
 
         <div className="model-config-section-row" style={{ width: '50%' }}>
           <div className="model-config-section-column">
-            <div className="form-field-row" style={{ paddingLeft: '10px' }}>
+            <div
+              className="form-field-row"
+              style={{ paddingInlineStart: '10px' }}
+            >
               <div className="form-field-description">
-                Auto-complete debouncer delay (ms)
+                {trans.__('Auto-complete debouncer delay (ms)')}
               </div>
               <input
                 name="inline-completion-debouncer-delay-input"
-                placeholder="Auto-complete debouncer delay (milliseconds)"
+                placeholder={trans.__(
+                  'Auto-complete debouncer delay (milliseconds)'
+                )}
                 className="jp-mod-styled"
                 spellCheck={false}
                 value={inlineCompletionDebouncerDelay}
@@ -829,7 +1024,7 @@ function SettingsPanelComponentGeneral(props: any) {
             inlineCompletionModelProvider === 'github-copilot') && (
             <div className="model-config-section">
               <div className="model-config-section-header access-token-config-header">
-                GitHub Copilot login{' '}
+                {trans.__('GitHub Copilot login')}{' '}
                 <a
                   href="https://github.com/plmbr/notebook-intelligence/blob/main/README.md#remembering-github-copilot-login"
                   target="_blank"
@@ -837,7 +1032,9 @@ function SettingsPanelComponentGeneral(props: any) {
                   {' '}
                   <VscWarning
                     className="access-token-warning"
-                    title="Click to learn more about security implications"
+                    title={trans.__(
+                      'Click to learn more about security implications'
+                    )}
                   />
                 </a>
               </div>
@@ -846,6 +1043,7 @@ function SettingsPanelComponentGeneral(props: any) {
                   <div className="model-config-section-column">
                     <label
                       title={lockedTip(
+                        trans,
                         featurePolicies.store_github_access_token.locked
                       )}
                     >
@@ -862,7 +1060,7 @@ function SettingsPanelComponentGeneral(props: any) {
                           setStoreGitHubAccessToken(event.target.checked);
                         }}
                       />
-                      Remember my GitHub Copilot access token
+                      {trans.__('Remember my GitHub Copilot access token')}
                     </label>
                   </div>
                 </div>
@@ -872,17 +1070,22 @@ function SettingsPanelComponentGeneral(props: any) {
 
         <div className="model-config-section">
           <div className="model-config-section-header">
-            Cell output features
+            {trans.__('Cell output features')}
           </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
                 <CheckBoxItem
-                  label="Explain cell errors"
-                  title="Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+                  label={trans.__('Explain cell errors')}
+                  title={trans.__(
+                    "Show a 'Troubleshoot errors in output' context-menu item on failed cells"
+                  )}
                   checked={featurePolicies.explain_error.enabled}
                   disabled={featurePolicies.explain_error.locked}
-                  tooltip={lockedTip(featurePolicies.explain_error.locked)}
+                  tooltip={lockedTip(
+                    trans,
+                    featurePolicies.explain_error.locked
+                  )}
                   onClick={toggleExplainError}
                 />
               </div>
@@ -890,11 +1093,16 @@ function SettingsPanelComponentGeneral(props: any) {
             <div className="model-config-section-row">
               <div className="model-config-section-column">
                 <CheckBoxItem
-                  label="Ask about cell outputs"
-                  title="Right-click a cell output to attach it to the chat"
+                  label={trans.__('Ask about cell outputs')}
+                  title={trans.__(
+                    'Right-click a cell output to attach it to the chat'
+                  )}
                   checked={featurePolicies.output_followup.enabled}
                   disabled={featurePolicies.output_followup.locked}
-                  tooltip={lockedTip(featurePolicies.output_followup.locked)}
+                  tooltip={lockedTip(
+                    trans,
+                    featurePolicies.output_followup.locked
+                  )}
                   onClick={toggleOutputFollowup}
                 />
               </div>
@@ -902,11 +1110,16 @@ function SettingsPanelComponentGeneral(props: any) {
             <div className="model-config-section-row">
               <div className="model-config-section-column">
                 <CheckBoxItem
-                  label="Show output toolbar"
-                  title="Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons"
+                  label={trans.__('Show output toolbar')}
+                  title={trans.__(
+                    'Show a hover toolbar over cell outputs with Explain / Ask / Troubleshoot buttons'
+                  )}
                   checked={featurePolicies.output_toolbar.enabled}
                   disabled={featurePolicies.output_toolbar.locked}
-                  tooltip={lockedTip(featurePolicies.output_toolbar.locked)}
+                  tooltip={lockedTip(
+                    trans,
+                    featurePolicies.output_toolbar.locked
+                  )}
                   onClick={toggleOutputToolbar}
                 />
               </div>
@@ -915,13 +1128,37 @@ function SettingsPanelComponentGeneral(props: any) {
         </div>
 
         <div className="model-config-section">
-          <div className="model-config-section-header">External changes</div>
+          <div className="model-config-section-header">
+            {trans._p('settings section', 'Language')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
                 <CheckBoxItem
-                  label="Refresh open files when changed on disk"
-                  title="Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits."
+                  label={trans.__('Reply in my JupyterLab language')}
+                  title={trans.__(
+                    'Ask the AI to write its chat replies and Chatbook cell descriptions in the language JupyterLab is set to. Code, identifiers and file contents are left as they are. Has no effect while JupyterLab is in English.'
+                  )}
+                  checked={NBIAPI.config.replyInUserLanguage}
+                  onClick={toggleReplyInUserLanguage}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="model-config-section">
+          <div className="model-config-section-header">
+            {trans.__('External changes')}
+          </div>
+          <div className="model-config-section-body">
+            <div className="model-config-section-row">
+              <div className="model-config-section-column">
+                <CheckBoxItem
+                  label={trans.__('Refresh open files when changed on disk')}
+                  title={trans.__(
+                    'Automatically reload notebook and file editor tabs when an external process (terminal command, sync client, or AI agent) edits the file. Skipped when the tab has unsaved local edits.'
+                  )}
                   checked={
                     featurePolicies.refresh_open_files_on_disk_change.enabled
                   }
@@ -929,6 +1166,7 @@ function SettingsPanelComponentGeneral(props: any) {
                     featurePolicies.refresh_open_files_on_disk_change.locked
                   }
                   tooltip={lockedTip(
+                    trans,
                     featurePolicies.refresh_open_files_on_disk_change.locked
                   )}
                   onClick={toggleRefreshOpenFilesOnDiskChange}
@@ -939,7 +1177,9 @@ function SettingsPanelComponentGeneral(props: any) {
         </div>
 
         <div className="model-config-section">
-          <div className="model-config-section-header">Config file path</div>
+          <div className="model-config-section-header">
+            {trans.__('Config file path')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
@@ -968,6 +1208,7 @@ function SettingsPanelComponentGeneral(props: any) {
 }
 
 function SettingsPanelComponentMCPServers(props: any) {
+  const trans = useTrans();
   const nbiConfig = NBIAPI.config;
   const mcpServersRef = useRef<any>(nbiConfig.toolConfig.mcpServers);
   const mcpServerSettingsRef = useRef<any>(nbiConfig.mcpServerSettings);
@@ -1089,13 +1330,15 @@ function SettingsPanelComponentMCPServers(props: any) {
             className="model-config-section-header"
             style={{ display: 'flex' }}
           >
-            <div style={{ flexGrow: 1 }}>MCP Servers</div>
+            <div style={{ flexGrow: 1 }}>{trans.__('MCP Servers')}</div>
             <div>
               <button
                 className="jp-toast-button jp-mod-small jp-Button"
                 onClick={handleReloadMCPServersClick}
               >
-                <div className="jp-Dialog-buttonLabel">Reload</div>
+                <div className="jp-Dialog-buttonLabel">
+                  {trans.__('Reload')}
+                </div>
               </button>
             </div>
           </div>
@@ -1104,8 +1347,9 @@ function SettingsPanelComponentMCPServers(props: any) {
               <div className="model-config-section-row">
                 <div className="model-config-section-column">
                   <div>
-                    No MCP servers found. Add MCP servers in the configuration
-                    file.
+                    {trans.__(
+                      'No MCP servers found. Add MCP servers in the configuration file.'
+                    )}
                   </div>
                 </div>
               </div>
@@ -1129,7 +1373,7 @@ function SettingsPanelComponentMCPServers(props: any) {
                         ></CheckBoxItem>
                         <div
                           className={`server-status-indicator ${server.status}`}
-                          title={mcpServerStatusTitle(server.status)}
+                          title={mcpServerStatusTitle(trans, server.status)}
                         ></div>
                       </div>
                       {getMCPServerEnabled(server.id) && (
@@ -1137,7 +1381,7 @@ function SettingsPanelComponentMCPServers(props: any) {
                           {server.tools.length > 0 && (
                             <div className="mcp-server-tools">
                               <div className="mcp-server-tools-header">
-                                Tools
+                                {trans.__('Tools')}
                               </div>
                               <div>
                                 {server.tools.map((tool: any) => (
@@ -1166,7 +1410,7 @@ function SettingsPanelComponentMCPServers(props: any) {
                           {server.prompts.length > 0 && (
                             <div className="mcp-server-prompts">
                               <div className="mcp-server-prompts-header">
-                                Prompts
+                                {trans.__('Prompts')}
                               </div>
                               <div>
                                 {server.prompts.map((prompt: any) => (
@@ -1196,7 +1440,9 @@ function SettingsPanelComponentMCPServers(props: any) {
                   style={{ width: 'max-content' }}
                   onClick={props.onEditMCPConfigClicked}
                 >
-                  <div className="jp-Dialog-buttonLabel">Add / Edit</div>
+                  <div className="jp-Dialog-buttonLabel">
+                    {trans.__('Add / Edit')}
+                  </div>
                 </button>
               </div>
             </div>
@@ -1207,7 +1453,233 @@ function SettingsPanelComponentMCPServers(props: any) {
   );
 }
 
+function chatbookModeLabel(
+  trans: TranslationBundle,
+  mode: ChatbookExecutionMode
+): { title: string; description: string } {
+  switch (mode) {
+    case 'always-confirm':
+      return {
+        title: trans.__('Always confirm'),
+        description: trans._p(
+          'Chatbook mode description; %1 and %2 are the confirm bar buttons',
+          'Show the generated code and wait for %1 or %2 on every natural-language run.',
+          trans._p('Chatbook confirm bar', 'Run'),
+          trans._p('Chatbook confirm bar', "Don't run")
+        )
+      };
+    case 'confirm-if-risky':
+      return {
+        title: trans.__('Confirm if risky'),
+        description: trans.__(
+          'Auto-run when a static scan looks clean. Confirm when it flags a risk or cannot parse the cell. The scan is a speed bump, not a security boundary; false negatives are inevitable.'
+        )
+      };
+    case 'auto-run':
+      return {
+        title: trans.__('Auto-run'),
+        description: trans.__(
+          'Generate and execute immediately, same as a normal notebook cell. Inspect generated code afterward if you need to.'
+        )
+      };
+    default: {
+      // A new execution mode must get its own label: it is a security setting.
+      const unknownMode: never = mode;
+      return { title: unknownMode, description: '' };
+    }
+  }
+}
+
+function SettingsPanelComponentChatbook() {
+  const trans = useTrans();
+  const nbiConfig = NBIAPI.config;
+  const maxMode = nbiConfig.chatbookMaxExecutionMode;
+  const [executionMode, setExecutionMode] = useState<ChatbookExecutionMode>(
+    nbiConfig.chatbookExecutionMode
+  );
+  const [llmDangerScan, setLlmDangerScan] = useState(
+    nbiConfig.chatbookLlmDangerScan
+  );
+  const [backendKernel, setBackendKernel] = useState(
+    nbiConfig.chatbookBackendKernel
+  );
+  const [backendProfiles, setBackendProfiles] = useState<
+    INotebookKernelProfile[]
+  >([]);
+  const [restartHint, setRestartHint] = useState(false);
+
+  useEffect(() => {
+    const handler = () => {
+      setExecutionMode(NBIAPI.config.chatbookExecutionMode);
+      setLlmDangerScan(NBIAPI.config.chatbookLlmDangerScan);
+      setBackendKernel(NBIAPI.config.chatbookBackendKernel);
+    };
+    NBIAPI.configChanged.connect(handler);
+    return () => {
+      NBIAPI.configChanged.disconnect(handler);
+    };
+  }, []);
+
+  useEffect(() => {
+    const kernels = sharedKernelSpecManager();
+    void kernels.ready.then(() => {
+      const profiles = listChatbookBackendProfiles(kernels.specs?.kernelspecs);
+      setBackendProfiles(profiles);
+      if (!NBIAPI.config.chatbookBackendKernel && profiles.length) {
+        setBackendKernel(
+          resolveChatbookBackendProfile(kernels.specs?.kernelspecs).kernelName
+        );
+      }
+    });
+  }, []);
+
+  const save = (
+    nextMode: ChatbookExecutionMode,
+    nextLlm: boolean = llmDangerScan,
+    nextBackend: string = backendKernel
+  ) => {
+    const mode = clampChatbookExecutionMode(nextMode, maxMode);
+    setExecutionMode(mode);
+    setLlmDangerScan(nextLlm);
+    setBackendKernel(nextBackend);
+    NBIAPI.setConfig({
+      chatbook_execution_mode: mode,
+      chatbook_llm_danger_scan: nextLlm,
+      chatbook_backend_kernel: nextBackend
+    });
+  };
+
+  const selectedBackend =
+    backendProfiles.find(profile => profile.kernelName === backendKernel) ||
+    resolveChatbookBackendProfile(undefined, backendKernel);
+
+  return (
+    <div className="config-dialog">
+      <div className="config-dialog-body">
+        <div className="model-config-section">
+          <div className="model-config-section-header">
+            {trans.__('Backend kernel')}
+          </div>
+          <div className="model-config-section-body">
+            <div className="model-config-section-row">
+              <span>
+                {trans.__(
+                  'Chatbook stays the notebook kernel, but generated code runs in this Jupyter kernelspec. Language, syntax highlighting, and export follow that kernel. Restart open Chatbook notebooks after changing it.'
+                )}
+              </span>
+            </div>
+            <div className="model-config-section-row">
+              <div className="model-config-section-column">
+                <div id="nbi-chatbook-backend-kernel-label">
+                  {trans.__('Execution kernel')}
+                </div>
+                <select
+                  className="jp-mod-styled"
+                  aria-labelledby="nbi-chatbook-backend-kernel-label"
+                  value={backendKernel}
+                  onChange={event => {
+                    const next = event.target.value;
+                    setRestartHint(
+                      next !== NBIAPI.config.chatbookBackendKernel
+                    );
+                    save(executionMode, llmDangerScan, next);
+                  }}
+                >
+                  {backendKernel &&
+                    !backendProfiles.some(
+                      profile => profile.kernelName === backendKernel
+                    ) && (
+                      <option value={backendKernel}>
+                        {trans.__('%1 (not installed)', backendKernel)}
+                      </option>
+                    )}
+                  {backendProfiles.map(profile => (
+                    <option key={profile.kernelName} value={profile.kernelName}>
+                      {profile.displayName} ({profile.language})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {restartHint && (
+              <div className="model-config-section-row">
+                <span>
+                  {trans.__(
+                    'Restart the Chatbook kernel in open notebooks so they pick up %1.',
+                    selectedBackend.displayName
+                  )}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="model-config-section">
+          <div className="model-config-section-header">
+            {trans.__('Natural-language execution')}
+          </div>
+          <div className="model-config-section-body">
+            <div className="model-config-section-row">
+              <span>
+                {trans.__(
+                  'Chatbook generates %1 and runs it in %2. That process has the same privileges as any Jupyter kernel: files, network, environment variables, and package installs.',
+                  selectedBackend.language,
+                  selectedBackend.displayName
+                )}
+              </span>
+            </div>
+            <fieldset className="nbi-chatbook-execution-modes">
+              <legend className="nbi-sr-only">
+                {trans.__('Execution mode')}
+              </legend>
+              {CHATBOOK_EXECUTION_MODES.map(mode => {
+                const spec = chatbookModeLabel(trans, mode);
+                const disabled =
+                  clampChatbookExecutionMode(mode, maxMode) !== mode;
+                return (
+                  <label
+                    key={mode}
+                    className="nbi-chatbook-execution-mode"
+                    title={disabled ? lockedTip(trans, true) : spec.description}
+                  >
+                    <input
+                      type="radio"
+                      name="chatbook-execution-mode"
+                      value={mode}
+                      checked={executionMode === mode}
+                      disabled={disabled}
+                      onChange={() => save(mode)}
+                    />
+                    <span>
+                      <strong>{spec.title}</strong>
+                      <span className="nbi-chatbook-execution-mode-help">
+                        {spec.description}
+                      </span>
+                    </span>
+                  </label>
+                );
+              })}
+            </fieldset>
+            {executionMode === 'confirm-if-risky' && (
+              <div className="model-config-section-row">
+                <CheckBoxItem
+                  label={trans.__('Also classify with the chat model')}
+                  title={trans.__(
+                    'Optional extra check. A static scan hit always wins; the model can only raise risk. Classifier failures confirm instead of auto-running.'
+                  )}
+                  checked={llmDangerScan}
+                  onClick={() => save(executionMode, !llmDangerScan)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SettingsPanelComponentClaude(props: any) {
+  const trans = useTrans();
   const nbiConfig = NBIAPI.config;
   const claudeSettingsRef = useRef<any>(nbiConfig.claudeSettings);
   const [_renderCount, setRenderCount] = useState(1);
@@ -1317,19 +1789,26 @@ function SettingsPanelComponentClaude(props: any) {
     <div className="config-dialog claude-mode-config-dialog">
       <div className="config-dialog-body">
         <div className="model-config-section">
-          <div className="model-config-section-header">Enable Claude mode</div>
+          <div className="model-config-section-header">
+            {trans.__('Enable Claude mode')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <span>
-                This requires a{' '}
-                <a href="https://claude.ai" target="_blank">
-                  Claude
-                </a>{' '}
-                account and{' '}
-                <a href="https://code.claude.com/" target="_blank">
-                  Claude Code
-                </a>{' '}
-                installed in your system.
+                {interpolate(
+                  (claude, claudeCode) =>
+                    trans.__(
+                      'This requires a %1 account and %2 installed in your system.',
+                      claude,
+                      claudeCode
+                    ),
+                  <a href="https://claude.ai" target="_blank">
+                    Claude
+                  </a>,
+                  <a href="https://code.claude.com/" target="_blank">
+                    Claude Code
+                  </a>
+                )}
               </span>
             </div>
             <div className="model-config-section-row">
@@ -1337,13 +1816,16 @@ function SettingsPanelComponentClaude(props: any) {
                 <div>
                   <CheckBoxItem
                     header={true}
-                    label="Enable Claude mode"
+                    label={trans.__('Enable Claude mode')}
                     checked={checkedValue(
                       featurePolicies.claude_mode,
                       claudeEnabled
                     )}
                     disabled={featurePolicies.claude_mode.locked}
-                    tooltip={lockedTip(featurePolicies.claude_mode.locked)}
+                    tooltip={lockedTip(
+                      trans,
+                      featurePolicies.claude_mode.locked
+                    )}
                     onClick={() => {
                       setClaudeEnabled(!claudeEnabled);
                     }}
@@ -1359,7 +1841,7 @@ function SettingsPanelComponentClaude(props: any) {
             className="model-config-section-header"
             style={{ display: 'flex' }}
           >
-            <div style={{ flexGrow: 1 }}>Models</div>
+            <div style={{ flexGrow: 1 }}>{trans.__('Models')}</div>
             <div>
               <button
                 className="jp-toast-button jp-mod-small jp-Button"
@@ -1367,7 +1849,7 @@ function SettingsPanelComponentClaude(props: any) {
                 disabled={loadingModels}
               >
                 <div className="jp-Dialog-buttonLabel">
-                  {loadingModels ? 'Loading...' : 'Refresh'}
+                  {loadingModels ? trans.__('Loading...') : trans.__('Refresh')}
                 </div>
               </button>
             </div>
@@ -1375,8 +1857,15 @@ function SettingsPanelComponentClaude(props: any) {
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
-                <div id="nbi-claude-chat-model-label">Chat model</div>
-                <div title={lockedTip(settingLocks.claude_chat_model.locked)}>
+                <div id="nbi-claude-chat-model-label">
+                  {trans.__('Chat model')}
+                </div>
+                <div
+                  title={lockedTip(
+                    trans,
+                    settingLocks.claude_chat_model.locked
+                  )}
+                >
                   <select
                     className="jp-mod-styled"
                     aria-labelledby="nbi-claude-chat-model-label"
@@ -1390,7 +1879,7 @@ function SettingsPanelComponentClaude(props: any) {
                     onChange={event => setChatModel(event.target.value)}
                   >
                     <option value={ClaudeModelType.Default}>
-                      Default (recommended)
+                      {trans.__('Default (recommended)')}
                     </option>
                     {/* Placeholder for a persisted model id that hasn't
                         landed in `claudeModels` yet (empty cache, no api
@@ -1413,7 +1902,7 @@ function SettingsPanelComponentClaude(props: any) {
                       id="nbi-claude-chat-model-lock-reason"
                       className="nbi-sr-only"
                     >
-                      Locked by your administrator
+                      {lockedTip(trans, true)}
                     </span>
                   )}
                 </div>
@@ -1442,7 +1931,7 @@ function SettingsPanelComponentClaude(props: any) {
                       className="expanded-icon"
                       aria-hidden="true"
                     />{' '}
-                    Inline chat model
+                    {trans.__('Inline chat model')}
                   </button>
                   <div
                     id="nbi-claude-inline-chat-model-body"
@@ -1450,12 +1939,13 @@ function SettingsPanelComponentClaude(props: any) {
                   >
                     <div
                       title={lockedTip(
+                        trans,
                         settingLocks.claude_inline_chat_model.locked
                       )}
                     >
                       <select
                         className="jp-mod-styled"
-                        aria-label="Inline chat model"
+                        aria-label={trans.__('Inline chat model')}
                         disabled={settingLocks.claude_inline_chat_model.locked}
                         value={inlineChatModel}
                         onChange={event =>
@@ -1463,7 +1953,7 @@ function SettingsPanelComponentClaude(props: any) {
                         }
                       >
                         <option value={ClaudeModelType.Default}>
-                          Inherit from chat model
+                          {trans.__('Inherit from chat model')}
                         </option>
                         {/* Same placeholder rule as the Chat model dropdown. */}
                         {inlineChatModel !== ClaudeModelType.Default &&
@@ -1487,10 +1977,11 @@ function SettingsPanelComponentClaude(props: any) {
               </div>
               <div className="model-config-section-column">
                 <div id="nbi-claude-inline-model-label">
-                  Auto-complete model
+                  {trans.__('Auto-complete model')}
                 </div>
                 <div
                   title={lockedTip(
+                    trans,
                     settingLocks.claude_inline_completion_model.locked
                   )}
                 >
@@ -1510,12 +2001,14 @@ function SettingsPanelComponentClaude(props: any) {
                       setInlineCompletionModel(event.target.value)
                     }
                   >
-                    <option value={ClaudeModelType.None}>None</option>
+                    <option value={ClaudeModelType.None}>
+                      {trans._p('model', 'None')}
+                    </option>
                     <option value={ClaudeModelType.Inherit}>
-                      Inherit from general settings
+                      {trans.__('Inherit from general settings')}
                     </option>
                     <option value={ClaudeModelType.Default}>
-                      Default (recommended)
+                      {trans.__('Default (recommended)')}
                     </option>
                     {![
                       ClaudeModelType.None,
@@ -1543,7 +2036,7 @@ function SettingsPanelComponentClaude(props: any) {
                       id="nbi-claude-inline-model-lock-reason"
                       className="nbi-sr-only"
                     >
-                      Locked by your administrator
+                      {lockedTip(trans, true)}
                     </span>
                   )}
                 </div>
@@ -1554,7 +2047,7 @@ function SettingsPanelComponentClaude(props: any) {
 
         <div className="model-config-section">
           <div className="model-config-section-header">
-            Chat Agent setting sources
+            {trans.__('Chat Agent setting sources')}
           </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
@@ -1562,13 +2055,14 @@ function SettingsPanelComponentClaude(props: any) {
                 <div>
                   <CheckBoxItem
                     header={true}
-                    label="User"
+                    label={trans._p('setting source', 'User')}
                     checked={checkedValue(
                       featurePolicies.claude_setting_source_user,
                       settingSources.includes('user')
                     )}
                     disabled={featurePolicies.claude_setting_source_user.locked}
                     tooltip={lockedTip(
+                      trans,
                       featurePolicies.claude_setting_source_user.locked
                     )}
                     onClick={() => {
@@ -1587,7 +2081,7 @@ function SettingsPanelComponentClaude(props: any) {
                 <div>
                   <CheckBoxItem
                     header={true}
-                    label="Project (Jupyter root directory)"
+                    label={trans.__('Project (Jupyter root directory)')}
                     checked={checkedValue(
                       featurePolicies.claude_setting_source_project,
                       settingSources.includes('project')
@@ -1596,6 +2090,7 @@ function SettingsPanelComponentClaude(props: any) {
                       featurePolicies.claude_setting_source_project.locked
                     }
                     tooltip={lockedTip(
+                      trans,
                       featurePolicies.claude_setting_source_project.locked
                     )}
                     onClick={() => {
@@ -1615,20 +2110,23 @@ function SettingsPanelComponentClaude(props: any) {
         </div>
 
         <div className="model-config-section">
-          <div className="model-config-section-header">Chat Agent tools</div>
+          <div className="model-config-section-header">
+            {trans.__('Chat Agent tools')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
                 <div>
                   <CheckBoxItem
                     header={true}
-                    label="Claude Code tools"
+                    label={trans.__('Claude Code tools')}
                     checked={checkedValue(
                       featurePolicies.claude_code_tools,
                       tools.includes(ClaudeToolType.ClaudeCodeTools)
                     )}
                     disabled={true}
                     tooltip={lockedTip(
+                      trans,
                       featurePolicies.claude_code_tools.locked
                     )}
                     onClick={() => {
@@ -1648,13 +2146,14 @@ function SettingsPanelComponentClaude(props: any) {
                 <div>
                   <CheckBoxItem
                     header={true}
-                    label="Jupyter UI tools"
+                    label={trans.__('Jupyter UI tools')}
                     checked={checkedValue(
                       featurePolicies.claude_jupyter_ui_tools,
                       tools.includes(ClaudeToolType.JupyterUITools)
                     )}
                     disabled={featurePolicies.claude_jupyter_ui_tools.locked}
                     tooltip={lockedTip(
+                      trans,
                       featurePolicies.claude_jupyter_ui_tools.locked
                     )}
                     onClick={() => {
@@ -1676,7 +2175,7 @@ function SettingsPanelComponentClaude(props: any) {
 
         <div className="model-config-section">
           <div className="model-config-section-header">
-            Conversation History
+            {trans.__('Conversation History')}
           </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
@@ -1684,7 +2183,7 @@ function SettingsPanelComponentClaude(props: any) {
                 <div>
                   <CheckBoxItem
                     header={true}
-                    label="Remember conversation history"
+                    label={trans.__('Remember conversation history')}
                     checked={checkedValue(
                       featurePolicies.claude_continue_conversation,
                       continueConversation
@@ -1693,6 +2192,7 @@ function SettingsPanelComponentClaude(props: any) {
                       featurePolicies.claude_continue_conversation.locked
                     }
                     tooltip={lockedTip(
+                      trans,
                       featurePolicies.claude_continue_conversation.locked
                     )}
                     onClick={() => {
@@ -1706,15 +2206,19 @@ function SettingsPanelComponentClaude(props: any) {
         </div>
 
         <div className="model-config-section">
-          <div className="model-config-section-header">Usage footer</div>
+          <div className="model-config-section-header">
+            {trans.__('Usage footer')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
                 <div>
                   <CheckBoxItem
                     header={true}
-                    label="Show usage after each turn (time / tokens / cost)"
-                    title="Adds a small footer under each reply."
+                    label={trans.__(
+                      'Show usage after each turn (time / tokens / cost)'
+                    )}
+                    title={trans.__('Adds a small footer under each reply.')}
                     checked={showTurnUsage}
                     onClick={() => {
                       setShowTurnUsage(!showTurnUsage);
@@ -1727,45 +2231,50 @@ function SettingsPanelComponentClaude(props: any) {
         </div>
 
         <div className="model-config-section">
-          <div className="model-config-section-header">Claude account</div>
+          <div className="model-config-section-header">
+            {trans.__('Claude account')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
                 <div className="form-field-row">
                   <div className="form-field-description">
-                    API Key (optional)
+                    {optionalLabel(trans, trans.__('API Key'))}
                   </div>
                   <input
                     name="chat-model-id-input"
                     placeholder={
                       settingLocks.claude_api_key.locked
-                        ? 'Locked by ANTHROPIC_API_KEY'
-                        : 'API Key'
+                        ? lockedByEnvironmentTip(trans, 'ANTHROPIC_API_KEY')
+                        : trans.__('API Key')
                     }
                     className="jp-mod-styled"
                     spellCheck={false}
                     value={settingLocks.claude_api_key.locked ? '' : apiKey}
                     disabled={settingLocks.claude_api_key.locked}
-                    title={lockedTip(settingLocks.claude_api_key.locked)}
+                    title={lockedTip(trans, settingLocks.claude_api_key.locked)}
                     onChange={event => setApiKey(event.target.value)}
                   />
                 </div>
                 <div className="form-field-row">
                   <div className="form-field-description">
-                    Base URL (optional)
+                    {optionalLabel(trans, trans.__('Base URL'))}
                   </div>
                   <input
                     name="chat-model-id-input"
                     placeholder={
                       settingLocks.claude_base_url.locked
-                        ? 'Locked by ANTHROPIC_BASE_URL'
+                        ? lockedByEnvironmentTip(trans, 'ANTHROPIC_BASE_URL')
                         : 'https://api.anthropic.com'
                     }
                     className="jp-mod-styled"
                     spellCheck={false}
                     value={baseUrl}
                     disabled={settingLocks.claude_base_url.locked}
-                    title={lockedTip(settingLocks.claude_base_url.locked)}
+                    title={lockedTip(
+                      trans,
+                      settingLocks.claude_base_url.locked
+                    )}
                     onChange={event => setBaseUrl(event.target.value)}
                   />
                 </div>
@@ -1779,6 +2288,7 @@ function SettingsPanelComponentClaude(props: any) {
 }
 
 function SettingsPanelComponentAcp(props: any) {
+  const trans = useTrans();
   const nbiConfig = NBIAPI.config;
   const acpAgents = nbiConfig.acpAgents;
   const [acpEnabled, setAcpEnabled] = useState(
@@ -1818,22 +2328,41 @@ function SettingsPanelComponentAcp(props: any) {
     <div className="config-dialog acp-mode-config-dialog">
       <div className="config-dialog-body">
         <div className="model-config-section">
-          <div className="model-config-section-header">Enable ACP mode</div>
+          <div className="model-config-section-header">
+            {trans.__('Enable ACP mode')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <span>
-                Experimental. Routes chat through an external coding agent over
-                the{' '}
-                <a
-                  href="https://agentclientprotocol.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Agent Client Protocol
-                </a>
-                . Requires <code>npx</code> available on the server. ACP mode
-                and Claude mode are mutually exclusive: enabling one turns the
-                other off.
+                {interpolate(
+                  (protocol, adapter, pkg, guide) =>
+                    trans.__(
+                      'Experimental. Routes chat through an external coding agent over the %1. Requires a preinstalled %2 adapter (%3). See the %4. ACP mode and Claude mode are mutually exclusive: enabling one turns the other off.',
+                      protocol,
+                      adapter,
+                      pkg,
+                      guide
+                    ),
+                  <a
+                    href="https://agentclientprotocol.com/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Agent Client Protocol
+                  </a>,
+                  <code>codex-acp</code>,
+                  <code>@zed-industries/codex-acp@0.16.0</code>,
+                  <a
+                    href="https://github.com/plmbr/notebook-intelligence/blob/main/docs/admin-guide.md#gating-the-experimental-acp-agent-378"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {trans._p(
+                      'ACP description: the link to the admin guide',
+                      'administrator installation guide'
+                    )}
+                  </a>
+                )}
               </span>
             </div>
             <div className="model-config-section-row">
@@ -1841,10 +2370,10 @@ function SettingsPanelComponentAcp(props: any) {
                 <div>
                   <CheckBoxItem
                     header={true}
-                    label="Enable ACP mode"
+                    label={trans.__('Enable ACP mode')}
                     checked={checkedValue(featurePolicies.acp_mode, acpEnabled)}
                     disabled={featurePolicies.acp_mode.locked}
-                    tooltip={lockedTip(featurePolicies.acp_mode.locked)}
+                    tooltip={lockedTip(trans, featurePolicies.acp_mode.locked)}
                     onClick={() => {
                       setAcpEnabled(!acpEnabled);
                     }}
@@ -1854,23 +2383,26 @@ function SettingsPanelComponentAcp(props: any) {
             </div>
             <div className="model-config-section-row">
               <span id="acp-full-access-warning" className="config-warning">
-                By default the agent asks before anything beyond trusted
-                read-only commands. Full access lets it run tools (edits, shell)
-                without asking. Content the agent reads can steer what it runs.
+                {trans.__(
+                  'By default the agent asks before anything beyond trusted read-only commands. Full access lets it edit workspace files and run shell commands without asking, in a sandbox with network access off by default. Anything the sandbox blocks fails instead of prompting. Content the agent reads can steer what it runs.'
+                )}
               </span>
             </div>
             <div className="model-config-section-row">
               <div className="model-config-section-column">
                 <div>
                   <CheckBoxItem
-                    label="Full access (run without asking)"
+                    label={trans.__('Full access (run without asking)')}
                     ariaDescribedBy="acp-full-access-warning"
                     checked={checkedValue(
                       featurePolicies.acp_full_access,
                       fullAccess
                     )}
                     disabled={featurePolicies.acp_full_access.locked}
-                    tooltip={lockedTip(featurePolicies.acp_full_access.locked)}
+                    tooltip={lockedTip(
+                      trans,
+                      featurePolicies.acp_full_access.locked
+                    )}
                     onClick={() => {
                       setFullAccess(!fullAccess);
                     }}
@@ -1882,7 +2414,9 @@ function SettingsPanelComponentAcp(props: any) {
         </div>
 
         <div className="model-config-section">
-          <div className="model-config-section-header">Agent</div>
+          <div className="model-config-section-header">
+            {trans._p('ACP settings section', 'Agent')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
@@ -1891,7 +2425,7 @@ function SettingsPanelComponentAcp(props: any) {
                     className="form-field-description"
                     id="acp-agent-select-label"
                   >
-                    Agent type
+                    {trans.__('Agent type')}
                   </div>
                   <select
                     name="acp-agent-select"
@@ -1909,20 +2443,20 @@ function SettingsPanelComponentAcp(props: any) {
                 </div>
                 <div className="form-field-row">
                   <div className="form-field-description">
-                    Chat model (optional)
+                    {optionalLabel(trans, trans.__('Chat model'))}
                   </div>
                   <input
                     name="acp-chat-model-input"
                     placeholder={
                       settingLocks.acp_chat_model.locked
-                        ? 'Locked by NBI_ACP_CHAT_MODEL'
-                        : "Agent default (e.g. 'gpt-5-codex')"
+                        ? lockedByEnvironmentTip(trans, 'NBI_ACP_CHAT_MODEL')
+                        : trans.__("Agent default (e.g. '%1')", 'gpt-5-codex')
                     }
                     className="jp-mod-styled"
                     spellCheck={false}
                     value={settingLocks.acp_chat_model.locked ? '' : chatModel}
                     disabled={settingLocks.acp_chat_model.locked}
-                    title={lockedTip(settingLocks.acp_chat_model.locked)}
+                    title={lockedTip(trans, settingLocks.acp_chat_model.locked)}
                     onChange={event => setChatModel(event.target.value)}
                   />
                 </div>
@@ -1932,45 +2466,47 @@ function SettingsPanelComponentAcp(props: any) {
         </div>
 
         <div className="model-config-section">
-          <div className="model-config-section-header">Agent account</div>
+          <div className="model-config-section-header">
+            {trans.__('Agent account')}
+          </div>
           <div className="model-config-section-body">
             <div className="model-config-section-row">
               <div className="model-config-section-column">
                 <div className="form-field-row">
                   <div className="form-field-description">
-                    API Key (optional)
+                    {optionalLabel(trans, trans.__('API Key'))}
                   </div>
                   <input
                     name="acp-api-key-input"
                     placeholder={
                       settingLocks.acp_api_key.locked
-                        ? 'Locked by OPENAI_API_KEY'
-                        : 'API Key'
+                        ? lockedByEnvironmentTip(trans, 'OPENAI_API_KEY')
+                        : trans.__('API Key')
                     }
                     className="jp-mod-styled"
                     spellCheck={false}
                     value={settingLocks.acp_api_key.locked ? '' : apiKey}
                     disabled={settingLocks.acp_api_key.locked}
-                    title={lockedTip(settingLocks.acp_api_key.locked)}
+                    title={lockedTip(trans, settingLocks.acp_api_key.locked)}
                     onChange={event => setApiKey(event.target.value)}
                   />
                 </div>
                 <div className="form-field-row">
                   <div className="form-field-description">
-                    Base URL (optional)
+                    {optionalLabel(trans, trans.__('Base URL'))}
                   </div>
                   <input
                     name="acp-base-url-input"
                     placeholder={
                       settingLocks.acp_base_url.locked
-                        ? 'Locked by OPENAI_BASE_URL'
+                        ? lockedByEnvironmentTip(trans, 'OPENAI_BASE_URL')
                         : 'https://api.openai.com/v1'
                     }
                     className="jp-mod-styled"
                     spellCheck={false}
                     value={settingLocks.acp_base_url.locked ? '' : baseUrl}
                     disabled={settingLocks.acp_base_url.locked}
-                    title={lockedTip(settingLocks.acp_base_url.locked)}
+                    title={lockedTip(trans, settingLocks.acp_base_url.locked)}
                     onChange={event => setBaseUrl(event.target.value)}
                   />
                 </div>

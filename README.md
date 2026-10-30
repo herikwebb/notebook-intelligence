@@ -12,6 +12,8 @@ NBI is free and open-source. Connect it to a free or paid LLM provider of your c
 - [Feature highlights](#feature-highlights)
   - [Claude mode](#claude-mode)
   - [Agent mode](#agent-mode)
+  - [ACP agent mode](#acp-agent-mode)
+  - [Chatbook](#chatbook)
   - [Code generation with inline chat](#code-generation-with-inline-chat)
   - [Auto-complete](#auto-complete)
   - [Chat interface](#chat-interface)
@@ -19,6 +21,7 @@ NBI is free and open-source. Connect it to a free or paid LLM provider of your c
   - [Notebook toolbar generation](#notebook-toolbar-generation)
   - [Multi-language and kernel-aware notebooks](#multi-language-and-kernel-aware-notebooks)
   - [Reload open files when changed on disk](#reload-open-files-when-changed-on-disk)
+  - [Replies in your language](#replies-in-your-language)
 - [Configuration](#configuration)
   - [Configuration files](#configuration-files)
   - [Remembering GitHub Copilot login](#remembering-github-copilot-login)
@@ -41,7 +44,7 @@ NBI is free and open-source. Connect it to a free or paid LLM provider of your c
 
 - Python 3.10+
 - JupyterLab 4.x
-- Node.js — only required for [Claude mode](#claude-mode) (the Claude Code CLI) and for MCP servers that launch via `npx`.
+- Node.js — required for [Claude mode](#claude-mode) (the Claude Code CLI), for the preinstalled `codex-acp` adapter used by [ACP agent mode](#acp-agent-mode), and for MCP servers that launch via `npx`. ACP mode requires a preinstalled adapter in a trusted location; NBI does not download it at startup.
 - A fresh virtualenv or conda env is recommended so NBI doesn't conflict with system Python.
 
 ## Quick start
@@ -150,6 +153,20 @@ In Agent mode, the built-in AI agent creates, edits, and executes notebooks for 
 
 ![Agent mode](media/agent-mode.gif)
 
+### ACP agent mode
+
+An experimental second agent mode that drives an external coding agent over the [Agent Client Protocol](https://agentclientprotocol.com/), with OpenAI Codex as the only agent type today. The agent runs as a subprocess and does its own file and command work, asking for approval through NBI's confirmation cards; NBI deliberately does not lend it the Jupyter server's filesystem or terminal.
+
+It is off by default and the Settings tab stays hidden until an admin allows the mode, and it cannot be used at the same time as Claude mode. See [`docs/acp.md`](docs/acp.md).
+
+### Chatbook
+
+A Chatbook is a notebook whose cells can be written in English. Running a prompt cell generates code for the notebook's backend kernel and runs it; each cell carries a badge showing whether it is a prompt (**NL**) or ordinary code (**Cd**), and `Ctrl J` switches between them.
+
+What happens to generated code before it runs is yours to choose: **Always confirm** (the default) shows the code and waits, **Confirm if risky** waits only when a scan finds destructive calls, and **Auto-run** executes straight away. Admins can cap that choice fleet-wide, or turn Chatbook off entirely.
+
+Prompts can pull in context with `@` mentions, rules apply to generation the same way they apply to chat, the backend kernel need not be Python, a Chatbook exports to a plain code notebook when you want to hand someone the result instead of the prompts, and an existing notebook converts to a Chatbook. See [`docs/chatbook.md`](docs/chatbook.md).
+
 ### Code generation with inline chat
 
 Use the sparkle icon on the cell toolbar or the keyboard shortcut to show the inline chat popover.
@@ -160,7 +177,7 @@ Use the sparkle icon on the cell toolbar or the keyboard shortcut to show the in
 
 ### Auto-complete
 
-Auto-complete suggestions are shown as you type. `Tab` accepts. NBI provides auto-complete in code cells and Python file editors.
+Auto-complete suggestions are shown as you type. `Tab` accepts one while it is on screen, and indents otherwise. NBI provides auto-complete in code cells and Python file editors.
 
 <img src="media/inline-completion.gif" alt="Auto-complete" width=700 />
 
@@ -180,6 +197,8 @@ Right-click a cell output (or hover for the toolbar) to send it straight into th
 
 Each is per-user toggleable from Settings (saved as `enable_explain_error`, `enable_output_followup`, `enable_output_toolbar` in `config.json`, default on) and admin-lockable via `NBI_EXPLAIN_ERROR_POLICY` / `NBI_OUTPUT_FOLLOWUP_POLICY` / `NBI_OUTPUT_TOOLBAR_POLICY`.
 
+A revert is skipped while that document's kernel is busy, so a change landing mid-execution is applied when the cell finishes rather than swapped in under it, and the notice naming the reloaded file is shown only for the document you are looking at.
+
 ### Notebook toolbar generation
 
 Active notebooks show a sparkle icon on the toolbar. Click it to open a popover that scopes the generation request to that specific notebook — handy for multi-notebook sessions where you don't want the chat sidebar to compete for context.
@@ -193,6 +212,10 @@ When the agent needs a notebook in a language the current context has not establ
 ### Reload open files when changed on disk
 
 NBI reloads open document tabs when their files change on disk, so edits an AI agent makes via its Read/Write tools appear in the editor without a manual refresh. Tabs with unsaved local edits are skipped so user work is never clobbered. Toggle via the **NBI Settings dialog → External changes → "Refresh open files when changed on disk"** (default on).
+
+### Replies in your language
+
+When JupyterLab is set to another language through a language pack, turn on **NBI Settings dialog → Language → "Reply in my JupyterLab language"** (default off) to have the AI write its chat replies and Chatbook cell descriptions in that language, in every chat mode (the configured provider, Claude, and ACP agents). Code, identifiers, file names and file contents are left as they are. The language is sent to the model by the English name of its JupyterLab language pack ("German (Germany)"), and while JupyterLab is in English, or the setting is off, prompts are unchanged. In Claude and ACP mode the instruction goes with each message rather than a slash command, and a conversation keeps following it after the setting is turned off until you start a new chat.
 
 ## Configuration
 
@@ -214,26 +237,35 @@ Most settings panel toggles can be locked by org administrators. Two shapes:
 
 **Boolean policies** use the `*_POLICY` suffix and accept three values: `user-choice` (default — user toggles freely), `force-on` (locked enabled), `force-off` (locked disabled). When forced, the panel control is disabled with a "Locked by your administrator" tooltip and any client-side write is ignored.
 
-| Env var                                        | Locks the Settings panel control for                                                                                                                                                                                         |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NBI_EXPLAIN_ERROR_POLICY`                     | "Explain cell errors"                                                                                                                                                                                                        |
-| `NBI_OUTPUT_FOLLOWUP_POLICY`                   | "Ask about cell outputs"                                                                                                                                                                                                     |
-| `NBI_OUTPUT_TOOLBAR_POLICY`                    | "Show output toolbar"                                                                                                                                                                                                        |
-| `NBI_CLAUDE_MODE_POLICY`                       | "Enable Claude mode"                                                                                                                                                                                                         |
-| `NBI_ACP_MODE_POLICY`                          | "Enable ACP mode" (experimental agent mode over the Agent Client Protocol, with Codex as the first agent type; defaults to `force-off`, set `user-choice` to allow it)                                                       |
-| `NBI_ACP_FULL_ACCESS_POLICY`                   | "Full access" for the ACP agent: run tools without asking (defaults to `force-off`, so the agent asks before anything beyond trusted read-only commands; `user-choice` lets users opt into unattended runs)                  |
-| `NBI_CLAUDE_CONTINUE_CONVERSATION_POLICY`      | "Remember conversation history"                                                                                                                                                                                              |
-| `NBI_CLAUDE_CODE_TOOLS_POLICY`                 | "Claude Code tools"                                                                                                                                                                                                          |
-| `NBI_CLAUDE_JUPYTER_UI_TOOLS_POLICY`           | "Jupyter UI tools"                                                                                                                                                                                                           |
-| `NBI_CLAUDE_SETTING_SOURCE_USER_POLICY`        | Setting source: User                                                                                                                                                                                                         |
-| `NBI_CLAUDE_SETTING_SOURCE_PROJECT_POLICY`     | Setting source: Project                                                                                                                                                                                                      |
-| `NBI_STORE_GITHUB_ACCESS_TOKEN_POLICY`         | "Remember my GitHub Copilot access token"                                                                                                                                                                                    |
-| `NBI_SKILLS_MANAGEMENT_POLICY`                 | The Skills tab (force-off hides it and 403s the API; also disables the managed-skills reconciler)                                                                                                                            |
-| `NBI_CLAUDE_MCP_MANAGEMENT_POLICY`             | The Claude-mode MCP Servers tab (force-off hides it and 403s `/claude-mcp/*`; independent of the non-Claude MCP Servers tab)                                                                                                 |
-| `NBI_CLAUDE_PLUGINS_MANAGEMENT_POLICY`         | The Claude-mode Plugins tab (force-off hides it and 403s `/plugins/*`)                                                                                                                                                       |
-| `NBI_CLAUDE_BYPASS_PERMISSIONS_POLICY`         | "Bypass Permissions" in the Claude permission-mode selector (defaults to `force-off`, as do `NBI_ACP_MODE_POLICY` and `NBI_ACP_FULL_ACCESS_POLICY`; `user-choice` exposes the option, which the user still arms per session) |
-| `NBI_TERMINAL_DRAG_DROP_POLICY`                | Terminal drag-drop file attach feature                                                                                                                                                                                       |
-| `NBI_REFRESH_OPEN_FILES_ON_DISK_CHANGE_POLICY` | "Refresh open files when changed on disk"                                                                                                                                                                                    |
+| Env var                                        | Locks the Settings panel control for                                                                                                                                                                                                                                                                                                     |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NBI_EXPLAIN_ERROR_POLICY`                     | "Explain cell errors"                                                                                                                                                                                                                                                                                                                    |
+| `NBI_OUTPUT_FOLLOWUP_POLICY`                   | "Ask about cell outputs"                                                                                                                                                                                                                                                                                                                 |
+| `NBI_OUTPUT_TOOLBAR_POLICY`                    | "Show output toolbar"                                                                                                                                                                                                                                                                                                                    |
+| `NBI_CLAUDE_MODE_POLICY`                       | "Enable Claude mode"                                                                                                                                                                                                                                                                                                                     |
+| `NBI_ACP_MODE_POLICY`                          | "Enable ACP mode" (experimental agent mode over the Agent Client Protocol, with Codex as the first agent type; defaults to `force-off`, set `user-choice` to allow it)                                                                                                                                                                   |
+| `NBI_ACP_FULL_ACCESS_POLICY`                   | "Full access" for the ACP agent: edit workspace files and run commands without asking, inside Codex's workspace-write sandbox with network access off unless Codex's config enables it (defaults to `force-off`, so the agent asks before anything beyond trusted read-only commands; `user-choice` lets users opt into unattended runs) |
+| `NBI_CLAUDE_CONTINUE_CONVERSATION_POLICY`      | "Remember conversation history"                                                                                                                                                                                                                                                                                                          |
+| `NBI_CLAUDE_CODE_TOOLS_POLICY`                 | "Claude Code tools"                                                                                                                                                                                                                                                                                                                      |
+| `NBI_CLAUDE_JUPYTER_UI_TOOLS_POLICY`           | "Jupyter UI tools"                                                                                                                                                                                                                                                                                                                       |
+| `NBI_CLAUDE_SETTING_SOURCE_USER_POLICY`        | Setting source: User                                                                                                                                                                                                                                                                                                                     |
+| `NBI_CLAUDE_SETTING_SOURCE_PROJECT_POLICY`     | Setting source: Project                                                                                                                                                                                                                                                                                                                  |
+| `NBI_STORE_GITHUB_ACCESS_TOKEN_POLICY`         | "Remember my GitHub Copilot access token"                                                                                                                                                                                                                                                                                                |
+| `NBI_SKILLS_MANAGEMENT_POLICY`                 | The Skills tab (force-off hides it and 403s the API; also disables the managed-skills reconciler)                                                                                                                                                                                                                                        |
+| `NBI_CLAUDE_MCP_MANAGEMENT_POLICY`             | The Claude-mode MCP Servers tab (force-off hides it and 403s `/claude-mcp/*`; independent of the non-Claude MCP Servers tab)                                                                                                                                                                                                             |
+| `NBI_CLAUDE_PLUGINS_MANAGEMENT_POLICY`         | The Claude-mode Plugins tab (force-off hides it and 403s `/plugins/*`)                                                                                                                                                                                                                                                                   |
+| `NBI_CLAUDE_BYPASS_PERMISSIONS_POLICY`         | "Bypass Permissions" in the Claude permission-mode selector (defaults to `force-off`, as do `NBI_ACP_MODE_POLICY` and `NBI_ACP_FULL_ACCESS_POLICY`; `user-choice` exposes the option, which the user still arms per session)                                                                                                             |
+| `NBI_TERMINAL_DRAG_DROP_POLICY`                | Terminal drag-drop file attach feature                                                                                                                                                                                                                                                                                                   |
+| `NBI_REFRESH_OPEN_FILES_ON_DISK_CHANGE_POLICY` | "Refresh open files when changed on disk"                                                                                                                                                                                                                                                                                                |
+| `NBI_CHATBOOK_POLICY`                          | Chatbook natural-language notebook cells (force-off hides the kernel, launcher tile, Settings tab, and commands, and 403s the generate and mention APIs)                                                                                                                                                                                 |
+
+Chatbook NL execution is capped separately (not a boolean policy):
+
+| Env var / traitlet                | Effect                                                                                                                                     |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `NBI_CHATBOOK_MAX_EXECUTION_MODE` | Users cannot choose a more permissive Chatbook mode than this. Values: `always-confirm`, `confirm-if-risky`, `auto-run` (default, no cap). |
+
+The matching traitlets are `c.NotebookIntelligence.chatbook_policy` and `c.NotebookIntelligence.chatbook_max_execution_mode`. See [`docs/chatbook.md`](docs/chatbook.md).
 
 The first three also have matching traitlets on `NotebookIntelligence` (`explain_error_policy`, `output_followup_policy`, `output_toolbar_policy`); add the others as needed in the same shape:
 
@@ -265,7 +297,9 @@ Per-user preferences (default on for the cell-output features) live in `config.j
 
 Inline chat calls the Anthropic API directly while the other Claude modes go through the Claude Code CLI, so a deployment can need a different model id for each. It uses `inline_chat_model`, falling back to `chat_model` when that is unset. `NBI_CLAUDE_CHAT_MODEL` therefore governs both surfaces: while it is set, a stored `inline_chat_model` is ignored and its control is disabled. Set `NBI_CLAUDE_INLINE_CHAT_MODEL` as well to pin inline chat to a different model — it takes precedence and re-enables nothing, so both surfaces stay administrator-controlled.
 
-`NBI_ACP_AGENT_COMMAND` (not a settings lock) overrides the adapter command NBI launches for the selected ACP agent type; the value is shell-split. Leave it unset to use the agent's registered default command.
+`NBI_ACP_AGENT_COMMAND` (not a settings lock) selects an installed adapter by absolute executable path, for example `/opt/nbi/acp/bin/codex-acp`; the value is shell-split, so quote paths containing spaces. Point it at the installed adapter itself, not `npx`, `npm exec`, `pnpm dlx`, `bunx`, or an `env` wrapper: making a package runner's path absolute does not prevent it from selecting code from a project. For Codex, the adapter must honor the `-c` approval and sandbox options NBI appends. An override is an administrator trust decision covering the command, its runtime and packages, inherited `PATH`, and their parent directories.
+
+Leave the override unset to discover a preinstalled `codex-acp` in an absolute server `PATH` directory outside the Jupyter workspace. Empty or whitespace-only values are errors; use `unset NBI_ACP_AGENT_COMMAND` in a POSIX shell to restore default discovery. NBI follows symlinks before launching it; installations using a shim that depends on the name `codex-acp` need an explicit absolute path to that trusted shim. Default startup removes workspace directories from the `PATH` inherited by the agent and its commands, which can exclude a project's `.venv/bin`; an explicit override retains the full server `PATH`. Install the tested `@zed-industries/codex-acp@0.16.0` and maintain that version yourself: NBI does not verify or update versions for either discovery method. See the [adapter installation and migration guidance](docs/admin-guide.md#gating-the-experimental-acp-agent-378) for a concrete install command, home-directory workspace layouts, and the explicit adapter-path requirement for Windows with Python 3.10 or 3.11.
 
 Provider IDs: `github-copilot`, `openai-compatible`, `litellm-compatible`, `ollama`, `none`. The `*_MODEL_ID` value is whatever the chosen provider exposes (e.g. `gpt-4o`, `llama3:latest`). Claude model IDs are the literal IDs from the Anthropic API (e.g. `claude-opus-4-7`, `claude-sonnet-4-6`); empty string = "Default (recommended)"; `NBI_CLAUDE_INLINE_COMPLETION_MODEL` also accepts `none` (no inline completion in Claude mode) or `inherit` (use the General-tab Auto-complete model).
 
@@ -380,7 +414,7 @@ To temporarily disable a configured server without removing it, set `"disabled":
 
 ## Rulesets
 
-NBI's ruleset system lets you define guidelines and best practices that get injected into AI prompts automatically — for consistent coding standards, project conventions, or domain knowledge. Rules are markdown files in `~/.jupyter/nbi/rules/` and can scope by file pattern, kernel, directory, or chat mode.
+NBI's ruleset system lets you define guidelines and best practices that get injected into AI prompts automatically — for consistent coding standards, project conventions, or domain knowledge. Rules are markdown files in `~/.jupyter/nbi/rules/` and can scope by file pattern, kernel, directory, or mode (`ask`, `agent`, `inline-chat`, `chatbook`).
 
 A two-line example:
 
@@ -443,7 +477,7 @@ c.NotebookIntelligence.enable_chat_feedback_always_visible = True
 
 NBI Settings opens on a **Status** card that answers one question: is this deployment configured to work, and if not, which specific piece is missing? Each check reports `ok`, `warn`, or `blocked`, and anything that is not `ok` carries the next action rather than just the failure ("the claude CLI was not found" plus "install it, or set `NBI_CLAUDE_CLI_PATH` and restart").
 
-It runs on open and costs nothing: it resolves your provider and model, checks the model list is reachable and that your selected model is one the endpoint actually serves, and for the agent modes checks that the CLI answers `--version` and that credentials are present. A missing key is a warning rather than an error, because the Claude CLI and ACP agents can hold their own subscription logins that NBI cannot see.
+It runs on open and costs nothing: it resolves your provider and model, checks the model list is reachable and that your selected model is one the endpoint actually serves, checks the Claude CLI with `--version`, and checks ACP's adapter executable without running it. Both agent modes also check whether credentials are present. A missing key is a warning rather than an error, because the Claude CLI and ACP agents can hold their own subscription logins that NBI cannot see.
 
 **Test the endpoint** sends one short request to your configured model, after asking first. It is the only way to catch two failures nothing cheaper can see: a gateway that returns 200s but buffers instead of streaming, and a proxy that strips the `tools` field so agent mode silently never calls a tool. No model output is kept, so the result is safe to paste into a support ticket.
 
@@ -477,8 +511,12 @@ Full guide, including the span and event reference, the probe thresholds, worked
 - [`docs/admin-guide.md`](docs/admin-guide.md) — deployment, env vars, security model, air-gap, multi-tenancy.
 - [`docs/skills.md`](docs/skills.md) — Claude Skills management and the org-manifest reconciler.
 - [`docs/rulesets.md`](docs/rulesets.md) — ruleset frontmatter and discovery.
+- [`docs/acp.md`](docs/acp.md) — using the experimental ACP agent mode, and its limits.
+- [`docs/chatbook.md`](docs/chatbook.md): writing Chatbook cells, execution modes, conversion and export, and why there is no per-cell sandbox.
+- [`docs/chatbook-extensions.md`](docs/chatbook-extensions.md) — dynamic Chatbook context and mention providers.
 - [`docs/troubleshooting.md`](docs/troubleshooting.md) — common problems with copy-pasteable fixes.
 - [`docs/performance-diagnostics.md`](docs/performance-diagnostics.md): turn timelines, the environment probe, and how to read both.
+- [`docs/translating.md`](docs/translating.md): using NBI in your language, and fixing or adding a translation.
 - [`PRIVACY.md`](PRIVACY.md) — what NBI sends to which provider, and the egress allowlist.
 - [`SECURITY.md`](SECURITY.md) — how to report a vulnerability.
 - [`CHANGELOG.md`](CHANGELOG.md) — release history.
@@ -493,7 +531,7 @@ Full guide, including the span and event reference, the probe thresholds, worked
 
 ## Roadmap
 
-NBI 5.x is stable. New features land in minor releases (5.1, 5.2, …); breaking changes are reserved for the next major (6.x) and will be announced in the [changelog](CHANGELOG.md). Upgrading from 4.x? See the [5.0.0 migration note](CHANGELOG.md#migration-note) for the `fastmcp` → `mcp` dependency swap, the new path sandboxes, and the workspace-file-attach behavior change.
+NBI 6.x is the current line. New features land in minor releases (6.1, 6.2, …); breaking changes are reserved for a major release and announced in the [changelog](CHANGELOG.md). 6.0 marks Chatbook's arrival, and no traitlet, env var, REST route, or on-disk format was renamed or removed. Deployments using the experimental ACP mode must now preinstall its adapter; see the [migration guidance](docs/admin-guide.md#gating-the-experimental-acp-agent-378). Upgrading from 4.x? See the [5.0.0 migration note](CHANGELOG.md#migration-note-1) for the `fastmcp` → `mcp` dependency swap, the new path sandboxes, and the workspace-file-attach behavior change.
 
 ## License
 
