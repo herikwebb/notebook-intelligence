@@ -1,54 +1,42 @@
 // Copyright (c) Mehmet Bektas <mbektasgh@outlook.com>
 
 import React from 'react';
-import { hasDangerousTextCodepoints } from '../utils';
+import { useTrans } from '../i18n';
+import { isControlOrBidiCodepoint } from '../text-codepoints';
 
 type MarkdownImageProps = {
   alt?: unknown;
-  title?: unknown;
 };
 
 /**
- * The single render path for image nodes driven by LLM / tool output.
- *
- * Anchors are already funneled through `MarkdownLink` / `SafeAnchor` so a
- * chat link can never navigate the shell or carry a dangerous scheme, but
- * an image is worse than a link: the browser fetches `src` the moment the
- * node renders, with no click. A CommonMark `![](https://host/p?d=...)`
- * emitted by the model is therefore a zero-interaction outbound request
- * whose URL the model chooses, which is exactly the shape an indirect
- * prompt injection needs to move context off the machine.
- *
- * No `src` reaches the DOM. Every markdown image renders as inert text —
- * the alt text when the model supplied one, plus an SR-only "(image
- * blocked)" note so screen readers can tell why nothing appeared. That
- * costs no real functionality: raw HTML never renders (no `rehype-raw`),
- * react-markdown's `urlTransform` already strips `data:` URIs, and
- * notebook figures reach the sidebar over the dedicated image response
- * stream rather than as chat markdown.
- *
- * `alt` and `title` are scrubbed for the same dangerous codepoints
- * `SafeAnchor` rejects, since an LLM can smuggle bidi-override or
- * zero-width characters through them to impersonate other chat text.
+ * Chat Markdown images must not fetch model-selected URLs automatically.
+ * Render a visible notice instead, without forwarding any image attributes.
+ * This blocks local and remote Markdown images; dedicated image response
+ * events and notebook Markdown use separate renderers.
  */
-export function MarkdownImage({
-  alt,
-  title
-}: MarkdownImageProps): React.ReactElement {
+export function MarkdownImage({ alt }: MarkdownImageProps): React.ReactElement {
+  const trans = useTrans();
+  // Reject controls that can disguise the notice, while retaining ordinary
+  // Unicode text, nonbreaking spaces, and joiners used in scripts and emoji.
   const safeAlt =
-    typeof alt === 'string' && alt !== '' && !hasDangerousTextCodepoints(alt)
+    typeof alt === 'string' &&
+    alt.trim() !== '' &&
+    !Array.from(alt).some(char => {
+      const code = char.codePointAt(0)!;
+      return (
+        isControlOrBidiCodepoint(code) ||
+        code === 0x061c ||
+        code === 0x200e ||
+        code === 0x200f
+      );
+    })
       ? alt
       : undefined;
-  const safeTitle =
-    typeof title === 'string' &&
-    title !== '' &&
-    !hasDangerousTextCodepoints(title)
-      ? title
-      : undefined;
   return (
-    <span className="nbi-blocked-image" title={safeTitle}>
-      {safeAlt}
-      <span className="nbi-sr-only"> (image blocked)</span>
+    <span className="nbi-blocked-image" dir="auto">
+      {safeAlt
+        ? trans.__('[Image blocked: %1]', safeAlt)
+        : trans.__('[Image blocked]')}
     </span>
   );
 }

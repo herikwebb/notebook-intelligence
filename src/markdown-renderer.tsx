@@ -102,7 +102,7 @@ export function MarkdownRenderer({
         // steered by injected content could stream out an image URL that
         // carries chat/workspace context in its query string. `MarkdownImage`
         // keeps `src` out of the DOM entirely.
-        img: ({ alt, title }: any) => <MarkdownImage alt={alt} title={title} />,
+        img: ({ alt }: any) => <MarkdownImage alt={alt} />,
         code({ node, inline, className, children, getApp, ...props }: any) {
           const match = /language-(\w+)/.exec(className || '');
           const codeString =
