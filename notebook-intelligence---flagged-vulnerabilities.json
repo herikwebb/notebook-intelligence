@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-11-05T05:30:00-08:00",
+    "last_scan": "2026-11-06T04:15:00-08:00",
     "scanner": "manual trace-based review at upstream tip 2d5a8ae (6.2.0-a1) focused on the 9-commit delta since 11ff327 (chatbook_mentions.py quoted/punctuation-trimmed mention parsing #505, Convert to Chatbook #508/#510 in src/chatbook-core.ts, src/chatbook-toolbar.ts, src/chatbook.ts, src/index.ts, src/chatbook-mentions.ts), each path verified against the source",
     "findings": [
         {
@@ -780,6 +780,7 @@
         "Pass B 2026-10-31: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-11-01: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-11-02: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
-        "Pass B 2026-11-05: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post."
+        "Pass B 2026-11-05: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
+        "Pass B 2026-11-06: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post."
     ]
 }
