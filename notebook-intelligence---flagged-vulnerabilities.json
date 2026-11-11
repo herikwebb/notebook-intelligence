@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-11-10T04:09:00-08:00",
+    "last_scan": "2026-11-11T04:10:00-08:00",
     "scanner": "manual trace-based review at upstream tip 2d5a8ae (6.2.0-a1) focused on the 9-commit delta since 11ff327 (chatbook_mentions.py quoted/punctuation-trimmed mention parsing #505, Convert to Chatbook #508/#510 in src/chatbook-core.ts, src/chatbook-toolbar.ts, src/chatbook.ts, src/index.ts, src/chatbook-mentions.ts), each path verified against the source",
     "findings": [
         {
@@ -92,7 +92,7 @@
         {
             "id": "NBI-2026-006",
             "title": "Chat markdown renderer emits LLM-supplied image URLs as live <img> src, giving indirect prompt injection a zero-click outbound exfiltration channel",
-            "status": "active",
+            "status": "fixed_upstream",
             "severity": "high",
             "primary_location": "src/markdown-renderer.tsx",
             "commit_hash": "2aae9c8c4d063d358936e69c05425787ae54281c",
@@ -109,8 +109,10 @@
                 "compare_url": "https://github.com/plmbr/notebook-intelligence/compare/main...herikwebb:security/fix-markdown-image-exfil-20260901131422-31679?expand=1",
                 "upstream_pr": "DENIED (fork-scoped App; session GitHub scope is herikwebb/notebook-intelligence only) -- open manually via compare_url",
                 "advisory": "NOT filed publicly: upstream SECURITY.md mandates private disclosure (mbektasgh@outlook.com) and lists the JupyterLab frontend as in scope; exploit detail is kept in this memory record and out of the public PR body. No GitHub advisory-creation tool is available to this session.",
-                "validation": "jest 33 suites / 428 tests pass; tsc --noEmit clean; eslint + prettier clean on the changed files. Python suite not run (frontend-only change). Fork-only-file guard passed; git log -1 author = Herik Webb <herikwebb@gmail.com>."
-            }
+                "validation": "jest 33 suites / 428 tests pass; tsc --noEmit clean; eslint + prettier clean on the changed files. Python suite not run (frontend-only change). Fork-only-file guard passed; git log -1 author = Herik Webb <herikwebb@gmail.com>.",
+                "upstream_fix": "d80ad98 fix(chat): prevent automatic Markdown image requests (#533) (includes 78bc85e/41d91f9/9b7d17f)"
+            },
+            "notes": "2026-11-11: RESOLVED upstream - #533 (d80ad98) maps react-markdown `img` to MarkdownImage, which renders a \"[Image blocked]\" notice and never puts src in the DOM; anchors wrapping an image render as plain text; no rehype-raw so raw <img> HTML stays inert. Verified at 6e9a08459d9f92484b25d1d6ab44dc16c6f46501. Separate notebook-cell markdown finding (agent-markdown-cell-media) is a different renderer and remains active."
         },
         {
             "id": "NBI-2026-007",
@@ -783,6 +785,7 @@
         "Pass B 2026-11-05: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-11-06: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-11-08: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
-        "Pass B 2026-11-10: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post."
+        "Pass B 2026-11-10: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
+        "Pass B 2026-11-11: upstream tip 6e9a08459d9f92484b25d1d6ab44dc16c6f46501 (6.3.0 + 8 commits since 58fa301). Delta reviewed: src/components/markdown-image.tsx + src/markdown-renderer.tsx (#533 blocks chat Markdown images; closes NBI-2026-006, marked fixed_upstream), src/inline-completion-request.ts + src/index.ts (#536 type-guards inline completion text; no trust-boundary change), locale .po/.pot strings and tests only. 0 new findings, nothing filed, no Slack post."
     ]
 }
