@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-11-11T04:10:00-08:00",
+    "last_scan": "2026-11-12T04:10:00-08:00",
     "scanner": "manual trace-based review at upstream tip 2d5a8ae (6.2.0-a1) focused on the 9-commit delta since 11ff327 (chatbook_mentions.py quoted/punctuation-trimmed mention parsing #505, Convert to Chatbook #508/#510 in src/chatbook-core.ts, src/chatbook-toolbar.ts, src/chatbook.ts, src/index.ts, src/chatbook-mentions.ts), each path verified against the source",
     "findings": [
         {
@@ -786,6 +786,7 @@
         "Pass B 2026-11-06: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-11-08: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-11-10: 0 new findings at upstream tip 58fa301 (6.3.0; unchanged since 2026-10-29 scan, no code delta). All surfaces already traced in surfaces_reviewed; prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
-        "Pass B 2026-11-11: upstream tip 6e9a08459d9f92484b25d1d6ab44dc16c6f46501 (6.3.0 + 8 commits since 58fa301). Delta reviewed: src/components/markdown-image.tsx + src/markdown-renderer.tsx (#533 blocks chat Markdown images; closes NBI-2026-006, marked fixed_upstream), src/inline-completion-request.ts + src/index.ts (#536 type-guards inline completion text; no trust-boundary change), locale .po/.pot strings and tests only. 0 new findings, nothing filed, no Slack post."
+        "Pass B 2026-11-11: upstream tip 6e9a08459d9f92484b25d1d6ab44dc16c6f46501 (6.3.0 + 8 commits since 58fa301). Delta reviewed: src/components/markdown-image.tsx + src/markdown-renderer.tsx (#533 blocks chat Markdown images; closes NBI-2026-006, marked fixed_upstream), src/inline-completion-request.ts + src/index.ts (#536 type-guards inline completion text; no trust-boundary change), locale .po/.pot strings and tests only. 0 new findings, nothing filed, no Slack post.",
+        "Pass B 2026-11-12: 0 new findings at upstream tip 6e9a08459d9f92484b25d1d6ab44dc16c6f46501 (unchanged since the 2026-11-11 scan, no code delta). Prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post."
     ]
 }
