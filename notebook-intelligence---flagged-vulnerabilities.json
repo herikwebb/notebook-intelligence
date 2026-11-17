@@ -1,7 +1,7 @@
 {
     "schema_version": 1,
     "repo": "herikwebb/notebook-intelligence",
-    "last_scan": "2026-11-16T04:15:00-08:00",
+    "last_scan": "2026-11-17T04:07:00-08:00",
     "scanner": "manual trace-based review at upstream tip 2d5a8ae (6.2.0-a1) focused on the 9-commit delta since 11ff327 (chatbook_mentions.py quoted/punctuation-trimmed mention parsing #505, Convert to Chatbook #508/#510 in src/chatbook-core.ts, src/chatbook-toolbar.ts, src/chatbook.ts, src/index.ts, src/chatbook-mentions.ts), each path verified against the source",
     "findings": [
         {
@@ -791,6 +791,7 @@
         "Pass B 2026-11-13: 0 new findings at upstream tip 6e9a08459d9f92484b25d1d6ab44dc16c6f46501 (unchanged since the 2026-11-11 delta review, no code delta). Prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-11-14: 0 new findings at upstream tip 6e9a08459d9f92484b25d1d6ab44dc16c6f46501 (unchanged since the 2026-11-11 delta review, no code delta). Prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
         "Pass B 2026-11-15: 0 new findings at upstream tip 85981a3816fcb7e38a8cb9839ae1192a4f25d6ee. Delta since 6e9a084 is docs (CHANGELOG, README, docs/*.md, PRIVACY/CONTRIBUTING/RELEASE) plus dependency floors in pyproject.toml/package.json/yarn.lock (#538, #539); no Python/TS source change, no trust-boundary change. Prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
-        "Pass B 2026-11-16: 0 new findings at upstream tip 85981a3816fcb7e38a8cb9839ae1192a4f25d6ee (unchanged since the 2026-11-15 review, no code delta). Prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post."
+        "Pass B 2026-11-16: 0 new findings at upstream tip 85981a3816fcb7e38a8cb9839ae1192a4f25d6ee (unchanged since the 2026-11-15 review, no code delta). Prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post.",
+        "Pass B 2026-11-17: 0 new findings at upstream tip 85981a3816fcb7e38a8cb9839ae1192a4f25d6ee (unchanged since the 2026-11-15 review, no code delta). Prior actives unchanged and NOT re-filed. Existing findings and feedback preserved verbatim. Nothing filed, no Slack post."
     ]
 }
